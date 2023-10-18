@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
+import CreateCredentialsContainer1 from '../uncategorized/create-credentials-container1'
 import UploadDataContainer1 from '../upload/upload-data-container1'
-import CreateCredentialsContainer1 from './create-credentials-container1'
 
 type WidgetTopTitleBarUploadData1Type = {
   uploadIconContainer?: string

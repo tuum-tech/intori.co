@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
+import CreateCredentialsContainer from '../uncategorized/create-credentials-container'
+import WidgetTitleHeaderContainer from '../uncategorized/widget-title-header-container'
 import UploadDataContainer from '../upload/upload-data-container'
-import CreateCredentialsContainer from './create-credentials-container'
-import WidgetTitleHeaderContainer from './widget-title-header-container'
 
 const WidgetTopTitleBarUploadData: NextPage = () => {
   return (
