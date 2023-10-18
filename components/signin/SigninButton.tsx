@@ -1,13 +1,13 @@
 // SigninButton.tsx
-import React from 'react'
+import { NextPage } from 'next'
 import Button from '../common/Button'
 
 type Props = {
   onClick: () => void
 }
 
-const SigninButton: React.FC<Props> = ({ onClick }) => (
-  <Button label='Sign in' onClick={onClick} />
-)
+const SigninButton: NextPage<Props> = ({ onClick }) => {
+  return <Button label='Sign in' onClick={onClick} />
+}
 
 export default SigninButton
