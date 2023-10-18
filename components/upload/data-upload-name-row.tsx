@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import EmptyActionContainer from '../shared/empty-action-container'
-import CheckboxActionNullIconContaine from '../uncategorized/checkbox-action-null-icon-containe'
+import CheckboxActionNullIconContaine from './checkbox-action-null-icon-container'
 
 const DataUploadNameRow: NextPage = () => {
   return (

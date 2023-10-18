@@ -22,6 +22,9 @@ const config: Config = {
         'brand-primary': '#ffd8d2',
         'grey-2': '#e4e2df'
       },
+      backgroundColor: {
+        'primary-hover': '#bdb5ab'
+      },
       spacing: {
         boundvariablesdata: '24px',
         boundvariablesdata2: '8px',
@@ -69,6 +72,7 @@ const config: Config = {
       }
     }
   },
+  variants: {},
   corePlugins: {
     preflight: false
   },
