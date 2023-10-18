@@ -1,11 +1,11 @@
 import type { NextPage } from 'next'
-import TopNavBarContainer from '../top-navigation/top-nav-bar-container'
 import AmazonIconLargeContainer from '../shared/amazon-icon-large-container'
+import HeaderContainerGroup from '../shared/header-container-group'
+import TopNavBarContainer from '../top-navigation/TopNavigationMenu'
 import CredentailDescriptionWidgetBlo from './credentail-description-widget-blo'
 import CredentailExpireDateWidgetBloc from './credentail-expire-date-widget-bloc'
 import CredentailIssuedByWidgetBlock from './credentail-issued-by-widget-block'
 import CredentailIssuedOnWidgetBlock from './credentail-issued-on-widget-block'
-import HeaderContainerGroup from '../shared/header-container-group'
 
 const CredentailDetailsContentSection: NextPage = () => {
   return (

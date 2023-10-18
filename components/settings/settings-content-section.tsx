@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import TopNavBarContainer from '../top-navigation/top-nav-bar-container'
+import TopNavBarContainer from '../top-navigation/TopNavigationMenu'
 import SettingsWidgetBlock from './settings-widget-block'
 import TopTitleSettingsContainerSection from './top-title-settings-container-section'
 

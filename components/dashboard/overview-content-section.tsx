@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import TopNavBarContainer from '../top-navigation/top-nav-bar-container'
+import TopNavBarContainer from '../top-navigation/TopNavigationMenu'
 import MiddleDashboardContainer from './middle-dashboard-container'
 import WelcomeHeaderContentContainer from './welcome-header-content-container'
 

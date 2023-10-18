@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import DashboardFullContentSection from '../components/dashboard/dashboard-full-content-section'
-import SideNavigationMenu from '../components/side-navigation/side-navigation-menu'
+import SideNavigationMenu from '../components/side-navigation/SideNavigationMenu'
 
 const Dashboard: NextPage = () => {
   return (

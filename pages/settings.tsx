@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import SettingsFullContentSection from '../components/settings/settings-full-content-section'
-import SideNavigationMenu from '../components/side-navigation/side-navigation-menu'
+import SideNavigationMenu from '../components/side-navigation/SideNavigationMenu'
 
 const Settings: NextPage = () => {
   return (

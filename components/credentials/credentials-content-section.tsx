@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import TopNavBarContainer from '../top-navigation/top-nav-bar-container'
+import TopNavBarContainer from '../top-navigation/TopNavigationMenu'
 import CredWidgetDesktopList from './cred-widget-desktop-list'
 import CredentialsWidgetMainContainer from './credentials-widget-main-container'
 
