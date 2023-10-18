@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss'
+import { COLORS } from './lib/colors'
 
 const config: Config = {
   content: [
@@ -9,18 +10,18 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        'black-2': '#181716',
-        'white-1': '#bdb5ab',
-        'white-0': '#fff',
-        'grey-1': '#777169',
-        'black-1': '#110f0d',
-        'black-4': '#2c261e',
-        'black-3': '#1b1a19',
-        primary: '#ff3b00',
-        orangered: '#ff5927',
-        'black-0': '#0f0a05',
-        'brand-primary': '#ffd8d2',
-        'grey-2': '#e4e2df'
+        'black-2': COLORS['black-2'],
+        'white-1': COLORS['white-1'],
+        'white-0': COLORS['white-0'],
+        'grey-1': COLORS['grey-1'],
+        'black-1': COLORS['black-1'],
+        'black-4': COLORS['black-4'],
+        'black-3': COLORS['black-3'],
+        primary: COLORS['primary'],
+        orangered: COLORS['orangered'],
+        'black-0': COLORS['black-0'],
+        'brand-primary': COLORS['brand-primary'],
+        'grey-2': COLORS['grey-2']
       },
       backgroundColor: {
         'primary-hover': '#bdb5ab'
@@ -72,7 +73,11 @@ const config: Config = {
       }
     }
   },
-  variants: {},
+  variants: {
+    extend: {
+      backgroundColor: ['hover', 'focus']
+    }
+  },
   corePlugins: {
     preflight: false
   },

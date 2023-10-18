@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import CredDetailsFullContentSection from '../components/credential-details/cred-details-full-content-section'
-import SideNavigationMenu from '../components/side-navigation/side-navigation-menu'
+import SideNavigationMenu from '../components/side-navigation/SideNavigationMenu'
 
 const CredentialDetails: NextPage = () => {
   return (

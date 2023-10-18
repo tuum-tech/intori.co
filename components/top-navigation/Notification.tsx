@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 
-const NotificationIconActiveContainer: NextPage = () => {
+const Notification: NextPage = () => {
   return (
     <div className='rounded-mini flex flex-col items-center justify-center p-4'>
       <img
@@ -12,4 +12,4 @@ const NotificationIconActiveContainer: NextPage = () => {
   )
 }
 
-export default NotificationIconActiveContainer
+export default Notification
