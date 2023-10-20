@@ -1,32 +1,34 @@
 import { NextPage } from 'next'
-import Link from 'next/link'
+import { useRouter } from 'next/router'
 import AmazonIconContainer from '../shared/amazon-icon-container'
 import MoreDotsIconActionContainer from '../shared/more-dots-icon-action-container'
 import CheckboxAction from '../upload/CheckboxAction'
+import DateFormatter from '../utils/DateFormatter'
+import { VerifiableCredential } from './CredTypes'
 
-interface DataRowProps {
-  key: string
-  credentialOrDataType: string
-  value: string
-  issuedOrPurchasedDate: string
-  expireOrUploadedDate: string
-  description: string
+interface CredRowProps {
+  id: string
+  verifiableCredential: VerifiableCredential
   onSelect: (isSelected: boolean) => void
   isChecked: boolean
   isSelectable?: boolean
 }
 
-const DataRow: NextPage<DataRowProps> = ({
-  key,
-  credentialOrDataType,
-  value,
-  issuedOrPurchasedDate,
-  expireOrUploadedDate,
-  description,
+const CredRow: NextPage<CredRowProps> = ({
+  id,
+  verifiableCredential,
   onSelect,
   isChecked,
   isSelectable
 }) => {
+  const router = useRouter()
+
+  const handleRowClick = () => {
+    router.push({
+      pathname: `/credential-details/${id}`
+    })
+  }
+
   const handleCheckboxChange = () => {
     onSelect(!isChecked)
   }
@@ -37,40 +39,40 @@ const DataRow: NextPage<DataRowProps> = ({
         {isSelectable && (
           <CheckboxAction
             boxSizing='border-box'
-            isChecked={isChecked} // pass isChecked state
-            handleCheckboxChange={handleCheckboxChange} // pass handleCheckboxChange function
+            isChecked={isChecked}
+            handleCheckboxChange={handleCheckboxChange}
           />
         )}
       </div>
+
       <div className='flex-1 overflow-hidden flex flex-row items-center justify-start py-0 pr-[7px] pl-0'>
-        <Link
-          href={`/credential-details/${key}`}
-          className='no-underline outline-none visited:text-current'
-        >
-          <div className='overflow-hidden flex flex-row items-start justify-start py-0 pr-[7px] pl-0 box-border gap-[20px] max-w-[500px] text-left text-xs text-white-0 font-kumbh-sans flex-1'>
-            <AmazonIconContainer
-              amazonIconContainerFlexShrink='0'
-              amazonIconContainerWidth='46px'
-              amazonIconContainerHeight='46px'
-            />
+        <div className='overflow-hidden flex flex-row items-start justify-start py-0 pr-[7px] pl-0 box-border gap-[20px] max-w-[500px] text-left text-xs text-white-0 font-kumbh-sans flex-1'>
+          <AmazonIconContainer
+            amazonIconContainerFlexShrink='0'
+            amazonIconContainerWidth='46px'
+            amazonIconContainerHeight='46px'
+          />
+          <div onClick={handleRowClick} className='cursor-pointer'>
             <div className='flex-1 overflow-hidden flex flex-col items-start justify-center gap-[5px]'>
               <div className='relative font-semibold'>
-                {credentialOrDataType}
+                {verifiableCredential.vcType.join(', ')}
               </div>
               <div className='self-stretch relative text-white-1'>
-                {description}
+                {verifiableCredential.description}
               </div>
             </div>
           </div>
-        </Link>
+        </div>
       </div>
       <div className='w-[333px] flex flex-row items-center justify-between'>
-        <div className='relative inline-block w-[70px] shrink-0'>{value}</div>
-        <div className='relative inline-block w-[90px] shrink-0'>
-          {issuedOrPurchasedDate}
+        <div className='relative inline-block w-[70px] shrink-0'>
+          {verifiableCredential.amount}
         </div>
         <div className='relative inline-block w-[90px] shrink-0'>
-          {expireOrUploadedDate}
+          <DateFormatter dateStr={verifiableCredential.vcIssuedDate} />
+        </div>
+        <div className='relative inline-block w-[90px] shrink-0'>
+          <DateFormatter dateStr={verifiableCredential.vcExpiryDate} />
         </div>
         <MoreDotsIconActionContainer moreDotsIconActionContainBoxSizing='border-box' />
       </div>
@@ -78,4 +80,4 @@ const DataRow: NextPage<DataRowProps> = ({
   )
 }
 
-export default DataRow
+export default CredRow

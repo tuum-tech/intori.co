@@ -1,28 +1,53 @@
 import DataCard from '@/components/common/DataCard'
-import DataTable from '@/components/common/DataTable'
+import {
+  CredentialDetail,
+  VerifiableCredential
+} from '@/components/credentials/CredRow'
+import CredTable from '@/components/credentials/CredTable'
 import SideNavigationMenu from '@/components/side-navigation/SideNavigationMenu'
 import TopNavigationMenu from '@/components/top-navigation/TopNavigationMenu'
 import type { NextPage } from 'next'
+import { useEffect } from 'react'
 
 const Credentials: NextPage = () => {
   const credentialRows = [
     {
       id: 'AmazonOrder1',
-      credentialOrDataType: 'OrderCredential',
-      value: '$1',
-      issuedOrPurchasedDate: '05 Jan 2021',
-      expireOrUploadedDate: '26 Feb 2027',
-      description: 'Amazon'
-    },
+      verifiableCredential: {
+        name: 'The Brothers Karamazov',
+        description: 'Sample description for ASIN: 374528373',
+        category: 'TODO',
+        store: 'Amazon',
+        orderDate: '2013-05-07T21:00:21Z',
+        amount: '$13.28',
+        vcType: ['VerifiableCredential', 'OrderCredential'],
+        vcIssuedBy:
+          'did:pkh:eip155:1:0xbfecd5e5dff7f08b0a2eefe91bc9a7e492f54320',
+        vcIssuedDate: '2023-10-20T14:28:31.000Z',
+        vcExpiryDate: '2024-10-20T14:28:31.000Z'
+      } as VerifiableCredential
+    } as CredentialDetail,
     {
       id: 'AmazonOrder2',
-      credentialOrDataType: 'OrderCredential',
-      value: '$2',
-      issuedOrPurchasedDate: '21 Aug 2019',
-      expireOrUploadedDate: '01 Sep 2024',
-      description: 'Amazon'
-    }
+      verifiableCredential: {
+        name: 'Raspberry Pi Face',
+        description: 'Sample description for ASIN: B00BBK072Y',
+        category: 'TODO',
+        store: 'Amazon',
+        orderDate: '2013-05-19T14:29:25Z',
+        amount: '$49.98',
+        vcType: ['VerifiableCredential', 'OrderCredential'],
+        vcIssuedBy:
+          'did:pkh:eip155:1:0xbfecd5e5dff7f08b0a2eefe91bc9a7e492f54320',
+        vcIssuedDate: '2023-10-20T14:28:31.000Z',
+        vcExpiryDate: '2024-10-20T14:28:31.000Z'
+      } as VerifiableCredential
+    } as CredentialDetail
   ]
+
+  useEffect(() => {
+    localStorage.setItem('credentials', JSON.stringify(credentialRows))
+  }, [])
 
   return (
     <div className='relative bg-black-0 w-full h-screen overflow-y-auto flex flex-row items-start justify-start'>
@@ -38,10 +63,9 @@ const Credentials: NextPage = () => {
             />
             <DataCard title='Total Credentials' value='0' />
           </div>
-          <DataTable
+          <CredTable
             title='Your credentials'
-            isCredentialType={true}
-            dataRows={credentialRows}
+            rows={credentialRows}
             isSelectable={false}
           />
         </div>
