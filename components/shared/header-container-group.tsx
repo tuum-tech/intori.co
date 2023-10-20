@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import BackButtonActionContainer from './back-button-action-container'
+import BackButtonActionContainer from '../common/BackButton'
 
 const HeaderContainerGroup: NextPage = () => {
   return (
