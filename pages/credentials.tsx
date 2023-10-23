@@ -1,4 +1,4 @@
-import DataCard from '@/components/common/DataCard'
+import BiDataCard from '@/components/common/BiDataCard'
 import DataTable from '@/components/common/DataTable'
 import {
   CredentialDetail,
@@ -56,12 +56,12 @@ const Credentials: NextPage = () => {
         <div className='w-full flex flex-col items-start justify-start pt-0 px-0 pb-[50px] box-border gap-[24px] max-w-[1100px] text-left text-lg text-white-1 font-kumbh-sans'>
           <TopNavigationMenu />
           <div className='self-stretch flex flex-row flex-wrap items-start justify-start gap-[28px] text-left text-lg text-white-1 font-kumbh-sans'>
-            <DataCard
+            <BiDataCard
               title='Total Credential Value'
               value='$0.00'
               percentageChange='+0.00%'
             />
-            <DataCard title='Total Credentials' value='0' />
+            <BiDataCard title='Total Credentials' value='0' />
           </div>
           <DataTable
             title='Your credentials'

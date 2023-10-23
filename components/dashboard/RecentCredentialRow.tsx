@@ -1,12 +1,11 @@
-import { NextPage } from 'next'
+import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
+import { VerifiableCredential } from '../credentials/CredTypes'
 import AmazonIconContainer from '../shared/amazon-icon-container'
 import MoreDotsIconActionContainer from '../shared/more-dots-icon-action-container'
 import CheckboxAction from '../upload/CheckboxAction'
-import DateFormatter from '../utils/DateFormatter'
-import { VerifiableCredential } from './CredTypes'
 
-interface CredRowProps {
+interface RecentCredentialRowProps {
   id: string
   verifiableCredential: VerifiableCredential
   onSelect: (isSelected: boolean) => void
@@ -14,7 +13,7 @@ interface CredRowProps {
   isSelectable?: boolean
 }
 
-const CredRow: NextPage<CredRowProps> = ({
+const RecentCredentialRow: NextPage<RecentCredentialRowProps> = ({
   id,
   verifiableCredential,
   onSelect,
@@ -26,7 +25,7 @@ const CredRow: NextPage<CredRowProps> = ({
   const handleRowClick = () => {
     router.push({
       pathname: `/credential-details/${id}`,
-      query: { backToUrl: '/credentials' }
+      query: { backToUrl: '/dashboard' }
     })
   }
 
@@ -35,7 +34,7 @@ const CredRow: NextPage<CredRowProps> = ({
   }
 
   return (
-    <div className='self-stretch rounded-mini flex flex-row items-start justify-start py-3 px-6 gap-[31px] text-left text-xs text-white-1 font-kumbh-sans'>
+    <div className='self-stretch rounded-mini flex flex-row items-start justify-start py-3 px-6 gap-[31px] text-left text-xs text-white-0 font-kumbh-sans'>
       <div className='self-stretch flex flex-row items-start justify-start'>
         {isSelectable && (
           <CheckboxAction
@@ -47,33 +46,27 @@ const CredRow: NextPage<CredRowProps> = ({
       </div>
 
       <div className='flex-1 overflow-hidden flex flex-row items-center justify-start py-0 pr-[7px] pl-0'>
-        <div className='overflow-hidden flex flex-row items-start justify-start py-0 pr-[7px] pl-0 box-border gap-[20px] max-w-[500px] text-left text-xs text-white-0 font-kumbh-sans flex-1'>
+        <div className='flex-1 overflow-hidden flex flex-row items-center justify-start py-0 pr-[7px] pl-0 box-border gap-[20px] max-w-[500px]'>
           <AmazonIconContainer
             amazonIconContainerFlexShrink='0'
-            amazonIconContainerWidth='46px'
-            amazonIconContainerHeight='46px'
+            amazonIconContainerWidth='56px'
+            amazonIconContainerHeight='56px'
           />
           <div onClick={handleRowClick} className='cursor-pointer'>
             <div className='flex-1 overflow-hidden flex flex-col items-start justify-center gap-[5px]'>
               <div className='relative font-semibold'>
                 {verifiableCredential.vcType.join(', ')}
               </div>
-              <div className='self-stretch relative text-white-1'>
+              <div className='self-stretch relative font-medium text-white-1'>
                 {verifiableCredential.description}
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div className='w-[333px] flex flex-row items-center justify-between'>
+      <div className='flex flex-row items-center justify-start gap-[24px] text-white-1 Small_Tablet:flex'>
         <div className='relative inline-block w-[70px] shrink-0'>
           {verifiableCredential.amount}
-        </div>
-        <div className='relative inline-block w-[90px] shrink-0'>
-          <DateFormatter dateStr={verifiableCredential.vcIssuedDate} />
-        </div>
-        <div className='relative inline-block w-[90px] shrink-0'>
-          <DateFormatter dateStr={verifiableCredential.vcExpiryDate} />
         </div>
         <MoreDotsIconActionContainer moreDotsIconActionContainBoxSizing='border-box' />
       </div>
@@ -81,4 +74,4 @@ const CredRow: NextPage<CredRowProps> = ({
   )
 }
 
-export default CredRow
+export default RecentCredentialRow
