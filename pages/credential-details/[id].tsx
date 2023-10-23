@@ -51,7 +51,7 @@ const CredentialDetails: NextPage<CredentialDetailsProps> = ({
         <div className='w-full flex flex-col items-start justify-start pt-0 px-0 pb-[50px] box-border gap-[24px] max-w-[1100px] text-left text-base text-white-1 font-kumbh-sans'>
           <TopNavigationMenu />
           <div className='self-stretch flex flex-col items-start justify-start text-left text-base text-white-1 font-kumbh-sans'>
-            <BackButton />
+            <BackButton backTo='/credentials' />
           </div>
           {credentialDetail && (
             <>
