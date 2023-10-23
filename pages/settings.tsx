@@ -1,14 +1,48 @@
+import SettingsSelection from '@/components/settings/SettingsSelection'
+import SwitchTheme from '@/components/settings/SwitchTheme'
+import TopNavigationMenu from '@/components/top-navigation/TopNavigationMenu'
 import type { NextPage } from 'next'
-import SettingsFullContentSection from '../components/settings/settings-full-content-section'
+import { useState } from 'react'
 import SideNavigationMenu from '../components/side-navigation/SideNavigationMenu'
 
 const Settings: NextPage = () => {
+  const [activeTab, setActiveTab] = useState<'General' | 'Profile'>('General')
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark')
+
   return (
     <div className='relative bg-black-0 w-full h-screen overflow-y-auto flex flex-row items-start justify-start'>
-      <SideNavigationMenu
-        logoutIconContainer={`https://d1xzdqg8s8ggsr.cloudfront.net/651eff624d493ebdb30533e4/d6fad1ad-c629-4d54-9ece-1f08eb1c22d4_1697120606059746562?Expires=-62135596800&Signature=abGQIwTFqcAuXLcZubCIcaq3G4PrMETYL40fB5om0w9mj8sIeg46PCYgGQZgquk3QuaV72nrgXGqj962Sdg-XGDxBZ~V4l~LN2A4~5trIZEG71mvxi2gq9MQFpJgpi9HCPR8El8B0RNRdJQjoDKjG5N1FgbHfq5MazSqpIdTBXIm~zRxvqGns3rcePD6148BbfYZC8zuD4lZkqa0OECxZF6zXuRJ-XxlwOmn2vtsLkuaPlFEvhCrdGS~dabztd9rmswp7oev8zd70mtUg4-lLq2EgSXTL9wgUJfMwTqg6MRsHzfsSA~oVaKSO1-3LKWlWABLnZmM7WsNPseeunFXrw__&Key-Pair-Id=K1P54FZWCHCL6J`}
-      />
-      <SettingsFullContentSection />
+      <SideNavigationMenu />
+      <div className='self-stretch flex-1 overflow-y-auto flex flex-col items-center justify-start p-6 text-left text-base text-white-0 font-kumbh-sans'>
+        <div className='w-full flex flex-col items-start justify-start pt-0 px-0 pb-[50px] box-border gap-[24px] max-w-[1100px] text-left text-base text-white-0 font-kumbh-sans'>
+          <TopNavigationMenu />
+          <div className='self-stretch flex flex-col items-start justify-start'>
+            <SettingsSelection
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+              alignSelf='stretch'
+            />
+          </div>
+          <div className='self-stretch rounded-mini bg-black-1 overflow-hidden flex flex-col items-start justify-start p-6 gap-[35px] text-left text-base text-white-0 font-kumbh-sans border-[1px] border-solid border-black-4'>
+            <div className='self-stretch relative text-base font-semibold font-kumbh-sans text-white-0 text-left'>
+              Application Preferences
+            </div>
+            <div className='self-stretch flex flex-row items-center justify-between text-left text-base text-white-0 font-kumbh-sans'>
+              <div className='flex-1 flex flex-col items-start justify-start gap-[6px] text-left text-base text-white-0 font-kumbh-sans'>
+                <div className='self-stretch relative font-semibold'>Theme</div>
+                <div className='self-stretch relative text-xs text-white-1'>
+                  Choose light or dark mode.
+                </div>
+              </div>
+              <SwitchTheme
+                theme={theme}
+                onToggle={() =>
+                  setTheme((prev) => (prev === 'light' ? 'dark' : 'light'))
+                }
+              />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
