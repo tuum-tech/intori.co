@@ -1,12 +1,12 @@
 import { NextPage } from 'next'
 
-type DataCardProps = {
+type BiDataCardProps = {
   title: string
   value: string | number
   percentageChange?: string
 }
 
-const DataCard: NextPage<DataCardProps> = ({
+const BiDataCard: NextPage<BiDataCardProps> = ({
   title,
   value,
   percentageChange
@@ -40,4 +40,4 @@ const DataCard: NextPage<DataCardProps> = ({
   )
 }
 
-export default DataCard
+export default BiDataCard

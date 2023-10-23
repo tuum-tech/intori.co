@@ -2,8 +2,8 @@
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
+import Button from '../components/common/Button'
 import EmailInput from '../components/signin/EmailInput'
-import SigninButton from '../components/signin/SigninButton'
 import SigninHeader from '../components/signin/SigninHeader'
 
 const SigninDefaultScreen: NextPage = () => {
@@ -22,7 +22,7 @@ const SigninDefaultScreen: NextPage = () => {
           <SigninHeader />
           <div className='self-stretch flex flex-col items-center justify-start gap-[25px] text-left'>
             <EmailInput value={email} onChange={setEmail} />
-            <SigninButton onClick={handleSignIn} />
+            <Button title='Sign in' onClick={handleSignIn} />
           </div>
         </div>
       </div>

@@ -7,23 +7,9 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import SideNavigationMenu from '../../components/side-navigation/SideNavigationMenu'
 
-interface CredentialDetailsProps {
-  credentialType: string
-  value: string
-  issuedDate: string
-  expireDate: string
-  description: string
-}
-
-const CredentialDetails: NextPage<CredentialDetailsProps> = ({
-  credentialType,
-  value,
-  issuedDate,
-  expireDate,
-  description
-}) => {
+const CredentialDetails: NextPage = ({}) => {
   const router = useRouter()
-  const { id } = router.query
+  const { id, backToUrl } = router.query
 
   const [credentialDetail, setCredentialDetail] =
     useState<CredentialDetail | null>(null)
@@ -51,7 +37,7 @@ const CredentialDetails: NextPage<CredentialDetailsProps> = ({
         <div className='w-full flex flex-col items-start justify-start pt-0 px-0 pb-[50px] box-border gap-[24px] max-w-[1100px] text-left text-base text-white-1 font-kumbh-sans'>
           <TopNavigationMenu />
           <div className='self-stretch flex flex-col items-start justify-start text-left text-base text-white-1 font-kumbh-sans'>
-            <BackButton backTo='/credentials' />
+            <BackButton backTo={backToUrl as string} />
           </div>
           {credentialDetail && (
             <>

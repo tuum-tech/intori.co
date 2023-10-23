@@ -20,7 +20,6 @@ const UploadedDataRow: NextPage<UploadedDataRowProps> = ({
   isChecked,
   isSelectable
 }) => {
-  console.log('orderData: ', orderData)
   const handleCheckboxChange = () => {
     onSelect(!isChecked)
   }
