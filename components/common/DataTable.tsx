@@ -1,21 +1,22 @@
 import { NextPage } from 'next'
 import { useState } from 'react'
-import DataRow from '../common/DataRow'
+import CredRow from '../credentials/CredRow'
 import CheckboxAction from '../upload/CheckboxAction'
+import UploadedDataRow from '../upload/UploadedDataRow'
 
-type CredTableProps = {
+type DataTableProps = {
   title: string
   titleContainers?: JSX.Element[]
   isCredentialType?: boolean
-  dataRows?: any[]
+  rows?: any[]
   isSelectable?: boolean
 }
 
-const CredTable: NextPage<CredTableProps> = ({
+const DataTable: NextPage<DataTableProps> = ({
   title,
   titleContainers,
   isCredentialType,
-  dataRows = [],
+  rows = [],
   isSelectable
 }) => {
   const [allSelected, setAllSelected] = useState(false)
@@ -32,7 +33,7 @@ const CredTable: NextPage<CredTableProps> = ({
     setAllSelected(newAllSelected)
 
     const newSelectedRows = {}
-    dataRows.forEach((row) => (newSelectedRows[row.id] = newAllSelected))
+    rows.forEach((row) => (newSelectedRows[row.id] = newAllSelected))
     setSelectedRows(newSelectedRows)
   }
 
@@ -75,22 +76,30 @@ const CredTable: NextPage<CredTableProps> = ({
       </div>
 
       <div className='self-stretch flex flex-col items-start justify-start gap-[15px] text-center text-xs text-white-0 font-kumbh-sans'>
-        {dataRows.map((row) => (
-          <DataRow
-            key={row.id}
-            credentialOrDataType={row.credentialOrDataType}
-            value={row.value}
-            issuedOrPurchasedDate={row.issuedOrPurchasedDate}
-            expireOrUploadedDate={row.expireOrUploadedDate}
-            description={row.description}
-            isSelectable={isSelectable}
-            onSelect={(isSelected) => handleRowSelect(isSelected, row.id)}
-            isChecked={selectedRows[row.id] || false}
-          />
-        ))}
+        {rows.map((row) =>
+          isCredentialType ? (
+            <CredRow
+              key={row.id}
+              id={row.id}
+              verifiableCredential={row.verifiableCredential}
+              isSelectable={isSelectable}
+              onSelect={(isSelected) => handleRowSelect(isSelected, row.id)}
+              isChecked={selectedRows[row.id] || false}
+            />
+          ) : (
+            <UploadedDataRow
+              key={row.id}
+              id={row.id}
+              orderData={row.orderData}
+              isSelectable={isSelectable}
+              onSelect={(isSelected) => handleRowSelect(isSelected, row.id)}
+              isChecked={selectedRows[row.id] || false}
+            />
+          )
+        )}
       </div>
     </div>
   )
 }
 
-export default CredTable
+export default DataTable

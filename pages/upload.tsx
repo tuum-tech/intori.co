@@ -4,28 +4,36 @@ import SideNavigationMenu from '@/components/side-navigation/SideNavigationMenu'
 import TopNavigationMenu from '@/components/top-navigation/TopNavigationMenu'
 import CreateCredentialsButton from '@/components/upload/CreateCredentialsButton'
 import UploadDataButton from '@/components/upload/UploadDataButton'
+import {
+  OrderData,
+  UploadedDataDetail
+} from '@/components/upload/UploadedTypes'
 import type { NextPage } from 'next'
 
 const Upload: NextPage = () => {
   const uploadedDataRows = [
     {
       id: 'AmazonOrder1',
-      credentialOrDataType: 'Amazon Order',
-      value: '$1',
-      issuedOrPurchasedDate: '05 Jan 2021',
-      expireOrUploadedDate: '26 Feb 2027',
-      description:
-        'Classic Signature 1 x Auto Extreme Black Matt Spray Paint 400ml, Professional Quality, Perfect Finish for Cars.'
-    },
+      orderData: {
+        name: 'The Brothers Karamazov',
+        description: 'Sample description for ASIN: 374528373',
+        store: 'Amazon',
+        purchasedDate: '2021-01-05T14:28:31.000Z',
+        uploadedDate: '2022-05-20T14:28:31.000Z',
+        amount: '$13.28'
+      } as OrderData
+    } as UploadedDataDetail,
     {
       id: 'AmazonOrder2',
-      credentialOrDataType: 'Amazon Order',
-      value: '$2',
-      issuedOrPurchasedDate: '21 Aug 2019',
-      expireOrUploadedDate: '01 Sep 2024',
-      description:
-        'Classic Signature 1 x Auto Extreme Black Matt Spray Paint 400ml, Professional Quality, Perfect Finish for Cars.'
-    }
+      orderData: {
+        name: 'Raspberry Pi Face',
+        description: 'Sample description for ASIN: B00BBK072Y',
+        store: 'Amazon',
+        purchasedDate: '2021-08-09T14:28:31.000Z',
+        uploadedDate: '2022-04-20T14:28:31.000Z',
+        amount: '$49.98'
+      } as OrderData
+    } as UploadedDataDetail
   ]
 
   return (
@@ -45,7 +53,7 @@ const Upload: NextPage = () => {
               <UploadDataButton key='upload-data-button' />
             ]}
             isCredentialType={false}
-            dataRows={uploadedDataRows}
+            rows={uploadedDataRows}
             isSelectable={true}
           />
         </div>

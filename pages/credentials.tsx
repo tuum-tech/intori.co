@@ -1,9 +1,9 @@
 import DataCard from '@/components/common/DataCard'
+import DataTable from '@/components/common/DataTable'
 import {
   CredentialDetail,
   VerifiableCredential
 } from '@/components/credentials/CredRow'
-import CredTable from '@/components/credentials/CredTable'
 import SideNavigationMenu from '@/components/side-navigation/SideNavigationMenu'
 import TopNavigationMenu from '@/components/top-navigation/TopNavigationMenu'
 import type { NextPage } from 'next'
@@ -63,8 +63,9 @@ const Credentials: NextPage = () => {
             />
             <DataCard title='Total Credentials' value='0' />
           </div>
-          <CredTable
+          <DataTable
             title='Your credentials'
+            isCredentialType={true}
             rows={credentialRows}
             isSelectable={false}
           />
