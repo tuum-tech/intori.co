@@ -4,37 +4,82 @@ import SideNavigationMenu from '@/components/side-navigation/SideNavigationMenu'
 import TopNavigationMenu from '@/components/top-navigation/TopNavigationMenu'
 import CreateCredentialsButton from '@/components/upload/CreateCredentialsButton'
 import UploadDataButton from '@/components/upload/UploadDataButton'
-import {
-  OrderData,
-  UploadedDataDetail
-} from '@/components/upload/UploadedTypes'
+import { analytics, auth, functions } from '@/utils/firebase'
+import axios from 'axios'
+import { logEvent } from 'firebase/analytics'
+import { httpsCallable } from 'firebase/functions'
+import { MagicUserMetadata } from 'magic-sdk'
 import type { NextPage } from 'next'
+import { useState } from 'react'
+
+type Response = {
+  success: boolean
+}
 
 const Upload: NextPage = () => {
-  const uploadedDataRows = [
-    {
-      id: 'AmazonOrder1',
-      orderData: {
-        name: 'The Brothers Karamazov',
-        description: 'Sample description for ASIN: 374528373',
-        store: 'Amazon',
-        purchasedDate: '2021-01-05T14:28:31.000Z',
-        uploadedDate: '2022-05-20T14:28:31.000Z',
-        amount: '$13.28'
-      } as OrderData
-    } as UploadedDataDetail,
-    {
-      id: 'AmazonOrder2',
-      orderData: {
-        name: 'Raspberry Pi Face',
-        description: 'Sample description for ASIN: B00BBK072Y',
-        store: 'Amazon',
-        purchasedDate: '2021-08-09T14:28:31.000Z',
-        uploadedDate: '2022-04-20T14:28:31.000Z',
-        amount: '$49.98'
-      } as OrderData
-    } as UploadedDataDetail
-  ]
+  // State to hold the uploaded data
+  const [uploadedDataRows, setUploadedDataRows] = useState([])
+
+  // Handler function for file selection
+  const handleFileSelect = async (file: File) => {
+    // Use FormData to store file for sending
+    const formData = new FormData()
+    formData.append('file', file)
+
+    // Reset the current uploaded data state before uploading the new file
+    setUploadedDataRows([])
+
+    // Post the form data to the upload endpoint
+    try {
+      const response = await axios.post('/api/uploadFile', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      if (response.data && response.data.data) {
+        // After parsing, call the Firebase function
+        const userInfo: MagicUserMetadata = JSON.parse(
+          localStorage.getItem('magicUserInfo') || '{}'
+        ) as MagicUserMetadata
+        const uploadFileFunction = httpsCallable(functions, 'uploadFile')
+        try {
+          const token = await auth.currentUser?.getIdToken(true)
+          const response = await uploadFileFunction({ authToken: token })
+          const success = (response.data as Response).success
+
+          if (success) {
+            console.log('File uploaded successfully')
+            if (analytics) {
+              // Log the event to firebase
+              logEvent(analytics, `fileUpload: successful for user ${userInfo}`)
+            }
+          }
+        } catch (error) {
+          console.error(
+            'Error while calling firebase function for uploadFile:',
+            error
+          )
+          if (analytics) {
+            // Log the event to firebase
+            logEvent(
+              analytics,
+              `fileUpload: failure for user ${userInfo}: ${error}`
+            )
+          }
+        }
+        setUploadedDataRows(response.data.data)
+      }
+    } catch (error) {
+      console.error('Error uploading the file:', error)
+      if (analytics) {
+        // Log the event to firebase
+        logEvent(
+          analytics,
+          `fileUpload: failure while uploading the file: ${error}`
+        )
+      }
+    }
+  }
 
   return (
     <div className='relative bg-black-0 w-full h-screen overflow-y-auto flex flex-row items-start justify-start'>
@@ -50,7 +95,10 @@ const Upload: NextPage = () => {
             title='Current data upload'
             titleContainers={[
               <CreateCredentialsButton key='create-credentials-button' />,
-              <UploadDataButton key='upload-data-button' />
+              <UploadDataButton
+                key='upload-data-button'
+                onFileSelect={handleFileSelect}
+              />
             ]}
             isCredentialType={false}
             rows={uploadedDataRows}

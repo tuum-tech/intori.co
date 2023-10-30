@@ -40,7 +40,7 @@ const firebaseApp: FirebaseApp = initializeApp(firebaseConfig)
 // site key and passing it to initializeAppCheck().
 const appCheck = initializeAppCheck(firebaseApp, {
   provider: new ReCaptchaEnterpriseProvider(
-    process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!
+    process.env.NEXT_PUBLIC_FIREBASE_RECAPTCHA_SITE_KEY!
   ),
   isTokenAutoRefreshEnabled: true // Set to true to allow auto-refresh.
 })
