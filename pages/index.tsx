@@ -1,18 +1,25 @@
-// index.tsx
-import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import Button from '../components/common/Button'
 import EmailInput from '../components/signin/EmailInput'
 import SigninHeader from '../components/signin/SigninHeader'
+import { useAuth } from '../contexts/AuthContext' // Import the useAuth hook
 
-const SigninDefaultScreen: NextPage = () => {
+const SigninDefaultScreen = () => {
   const [email, setEmail] = useState('')
+  const { loginWithEmail, loading } = useAuth() // Destructure loginWithEmail and loading from the useAuth hook
   const router = useRouter()
 
-  const handleSignIn = () => {
+  const handleSignIn = async () => {
     // Here, you might want to add some validation for the email.
-    router.push('/upload')
+    const success = await loginWithEmail(email)
+    if (success) {
+      router.push('/upload')
+    }
+  }
+
+  if (loading) {
+    return <div>Loading...</div>
   }
 
   return (
@@ -21,7 +28,7 @@ const SigninDefaultScreen: NextPage = () => {
         <div className='self-stretch flex-1 flex flex-col items-center justify-center py-10 px-3 box-border max-w-[400px] h-screen text-center'>
           <SigninHeader />
           <div className='self-stretch flex flex-col items-center justify-start gap-[25px] text-left'>
-            <EmailInput value={email} onChange={setEmail} />
+            <EmailInput value={email} onChange={(value) => setEmail(value)} />
             <Button title='Sign in' onClick={handleSignIn} />
           </div>
         </div>
