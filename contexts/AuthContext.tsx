@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     // Only instantiate Magic on the client side
     if (typeof window !== 'undefined' && !magic) {
-      const magicInstance = new Magic('pk_live_07F1F9740FB4BA3B')
+      const magicInstance = new Magic(process.env.NEXT_PUBLIC_MAGIC_API_KEY!)
       setMagic(magicInstance)
       magicInstance.preload().then(() => console.log('Magic <iframe> loaded.'))
     }
