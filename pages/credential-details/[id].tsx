@@ -1,7 +1,7 @@
 import BackButton from '@/components/common/BackButton'
+import DateFormatter from '@/components/common/DateFormatter'
 import { CredentialDetail } from '@/components/credentials/CredTypes'
 import TopNavigationMenu from '@/components/top-navigation/TopNavigationMenu'
-import DateFormatter from '@/components/utils/DateFormatter'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
