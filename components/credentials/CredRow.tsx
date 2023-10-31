@@ -1,9 +1,9 @@
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import AmazonIconContainer from '../shared/amazon-icon-container'
-import MoreDotsIconActionContainer from '../shared/more-dots-icon-action-container'
+import DateFormatter from '../common/DateFormatter'
+import AmazonIconContainer from '../icons/AmazonIcon'
+import MoreDotsIconActionContainer from '../icons/MoreDotsIcon'
 import CheckboxAction from '../upload/CheckboxAction'
-import DateFormatter from '../utils/DateFormatter'
 import { VerifiableCredential } from './CredTypes'
 
 interface CredRowProps {

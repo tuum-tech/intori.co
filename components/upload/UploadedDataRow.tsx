@@ -1,7 +1,7 @@
 import { NextPage } from 'next'
-import AmazonIconContainer from '../shared/amazon-icon-container'
-import MoreDotsIconActionContainer from '../shared/more-dots-icon-action-container'
-import DateFormatter from '../utils/DateFormatter'
+import DateFormatter from '../common/DateFormatter'
+import AmazonIconContainer from '../icons/AmazonIcon'
+import MoreDotsIconActionContainer from '../icons/MoreDotsIcon'
 import CheckboxAction from './CheckboxAction'
 import { OrderData } from './UploadedTypes'
 

@@ -1,8 +1,8 @@
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { VerifiableCredential } from '../credentials/CredTypes'
-import AmazonIconContainer from '../shared/amazon-icon-container'
-import MoreDotsIconActionContainer from '../shared/more-dots-icon-action-container'
+import AmazonIconContainer from '../icons/AmazonIcon'
+import MoreDotsIconActionContainer from '../icons/MoreDotsIcon'
 import CheckboxAction from '../upload/CheckboxAction'
 
 interface RecentCredentialRowProps {

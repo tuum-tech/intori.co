@@ -10,6 +10,7 @@ type DataTableProps = {
   isCredentialType?: boolean
   rows?: any[]
   isSelectable?: boolean
+  onSelectionChange?: (selectedRows: { [key: string]: boolean }) => void
 }
 
 const DataTable: NextPage<DataTableProps> = ({
@@ -17,15 +18,21 @@ const DataTable: NextPage<DataTableProps> = ({
   titleContainers,
   isCredentialType,
   rows = [],
-  isSelectable
+  isSelectable,
+  onSelectionChange
 }) => {
   const [allSelected, setAllSelected] = useState(false)
   const [selectedRows, setSelectedRows] = useState<{ [key: string]: boolean }>(
     {}
   )
 
+  // Update the existing handleRowSelect and handleSelectAll to call onSelectionChange
   const handleRowSelect = (isSelected: boolean, id: string) => {
-    setSelectedRows((prevSelected) => ({ ...prevSelected, [id]: isSelected }))
+    setSelectedRows((prevSelected) => {
+      const newSelected = { ...prevSelected, [id]: isSelected }
+      onSelectionChange?.(newSelected) // Call the callback with the new selection state
+      return newSelected
+    })
   }
 
   const handleSelectAll = () => {
@@ -35,6 +42,7 @@ const DataTable: NextPage<DataTableProps> = ({
     const newSelectedRows = {}
     rows.forEach((row) => (newSelectedRows[row.id] = newAllSelected))
     setSelectedRows(newSelectedRows)
+    onSelectionChange?.(newSelectedRows) // Call the callback with the new selection state
   }
 
   return (

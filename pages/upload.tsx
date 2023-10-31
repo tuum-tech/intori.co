@@ -1,4 +1,5 @@
 import BiDataCard from '@/components/common/BiDataCard'
+import Button from '@/components/common/Button'
 import DataTable from '@/components/common/DataTable'
 import SideNavigationMenu from '@/components/side-navigation/SideNavigationMenu'
 import TopNavigationMenu from '@/components/top-navigation/TopNavigationMenu'
@@ -10,6 +11,7 @@ import { logEvent } from 'firebase/analytics'
 import { httpsCallable } from 'firebase/functions'
 import { MagicUserMetadata } from 'magic-sdk'
 import type { NextPage } from 'next'
+import { useRouter } from 'next/router'
 import { useState } from 'react'
 
 type Response = {
@@ -19,6 +21,9 @@ type Response = {
 const Upload: NextPage = () => {
   // State to hold the uploaded data
   const [uploadedDataRows, setUploadedDataRows] = useState([])
+  const [selectedCount, setSelectedCount] = useState(0)
+
+  const router = useRouter()
 
   // Handler function for file selection
   const handleFileSelect = async (file: File) => {
@@ -81,6 +86,16 @@ const Upload: NextPage = () => {
     }
   }
 
+  const handleSelectionChange = (selectedRows: { [key: string]: boolean }) => {
+    const count = Object.values(selectedRows).filter(Boolean).length
+    setSelectedCount(count)
+  }
+
+  // Navigate to the /credentials page
+  const handleContinue = () => {
+    router.push('/credentials')
+  }
+
   return (
     <div className='relative bg-black-0 w-full h-screen overflow-y-auto flex flex-row items-start justify-start'>
       <SideNavigationMenu />
@@ -103,7 +118,16 @@ const Upload: NextPage = () => {
             isCredentialType={false}
             rows={uploadedDataRows}
             isSelectable={true}
+            onSelectionChange={handleSelectionChange}
           />
+          {/* Conditionally render the Continue button */}
+          {uploadedDataRows.length > 0 && (
+            <Button
+              title='Continue'
+              onClick={handleContinue}
+              disabled={selectedCount === 0} // Button is disabled when no items are selected
+            />
+          )}
         </div>
       </div>
     </div>
