@@ -2,6 +2,7 @@ import {
   OrderData,
   UploadedDataDetail
 } from '@/components/upload/UploadedTypes'
+import { generateUniqueId } from '@/utils/normalizer'
 import { File, IncomingForm } from 'formidable'
 import fs from 'fs'
 import type { NextApiRequest, NextApiResponse } from 'next'
@@ -70,20 +71,25 @@ export default async function uploadFile(
           }
 
           const uploadedDataDetails: UploadedDataDetail[] = results.data.map(
-            (row: any, index: number) => {
-              // Create a unique ID by appending the index to the 'Order ID'
-              const uniqueId = `${row['Order ID']}-${index}`
+            (row: any) => {
+              const orderData = {
+                name: row['Product Name'],
+                description: `Sample description for ASIN: ${row['ASIN']}`,
+                store: row['Website'],
+                purchasedDate: row['Order Date'],
+
+                amount: `${row['Total Owed']} ${row['Currency']}`
+              } as OrderData
+
+              // Create a unique ID
+              const uniqueId = generateUniqueId(orderData)
+
+              // Now, we can add the uploadedDate
+              orderData.uploadedDate = new Date().toISOString()
 
               return {
                 id: uniqueId,
-                orderData: {
-                  name: row['Product Name'],
-                  description: `Sample description for ASIN: ${row['ASIN']}`, // You might need to adjust this if you have a specific ASIN field
-                  store: row['Website'],
-                  purchasedDate: row['Order Date'],
-                  uploadedDate: new Date().toISOString(),
-                  amount: `${row['Total Owed']} ${row['Currency']}`
-                } as OrderData
+                orderData
               } as UploadedDataDetail
             }
           )

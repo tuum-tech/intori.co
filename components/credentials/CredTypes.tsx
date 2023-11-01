@@ -1,17 +1,9 @@
-export type VerifiableCredential = {
-  name: string
-  description: string
-  category: string
-  store: string
-  orderDate: string
-  amount: string
-  vcType: string[]
-  vcIssuedBy: string
-  vcIssuedDate: string
-  vcExpiryDate: string
-}
+import { VCMetadata } from '@/lib/firebase/functions/getVCs'
+import { CreateVCResponseResult } from '@/lib/veramo/types/params'
+import { UploadedDataDetail } from '../upload/UploadedTypes'
 
 export type CredentialDetail = {
-  id: string
-  verifiableCredential: VerifiableCredential
+  uploadedDataDetail: UploadedDataDetail
+  vCred: CreateVCResponseResult
+  vCredMetadata: VCMetadata
 }

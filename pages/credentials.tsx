@@ -1,53 +1,164 @@
 import BiDataCard from '@/components/common/BiDataCard'
 import DataTable from '@/components/common/DataTable'
-import {
-  CredentialDetail,
-  VerifiableCredential
-} from '@/components/credentials/CredRow'
+import { CredentialDetail } from '@/components/credentials/CredTypes'
 import SideNavigationMenu from '@/components/side-navigation/SideNavigationMenu'
 import TopNavigationMenu from '@/components/top-navigation/TopNavigationMenu'
+import { UploadedDataDetail } from '@/components/upload/UploadedTypes'
+import { useDid } from '@/contexts/DidContext'
+import {
+  AgeOfOrder,
+  ProductValueRange,
+  VCMetadata
+} from '@/lib/firebase/functions/getVCs'
+import { createVC } from '@/lib/veramo/createVC'
+import {
+  CreateVCRequestParams,
+  CreateVCResponseResult
+} from '@/lib/veramo/types/params'
+import {
+  calculateAgeInMonths,
+  ensureString,
+  ensureStringArray,
+  getIdFromIssuer,
+  getProductDescription
+} from '@/utils/normalizer'
 import type { NextPage } from 'next'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 const Credentials: NextPage = () => {
-  const credentialRows = [
-    {
-      id: 'AmazonOrder1',
-      verifiableCredential: {
-        name: 'The Brothers Karamazov',
-        description: 'Sample description for ASIN: 374528373',
-        category: 'TODO',
-        store: 'Amazon',
-        orderDate: '2013-05-07T21:00:21Z',
-        amount: '$13.28',
-        vcType: ['VerifiableCredential', 'OrderCredential'],
-        vcIssuedBy:
-          'did:pkh:eip155:1:0xbfecd5e5dff7f08b0a2eefe91bc9a7e492f54320',
-        vcIssuedDate: '2023-10-20T14:28:31.000Z',
-        vcExpiryDate: '2024-10-20T14:28:31.000Z'
-      } as VerifiableCredential
-    } as CredentialDetail,
-    {
-      id: 'AmazonOrder2',
-      verifiableCredential: {
-        name: 'Raspberry Pi Face',
-        description: 'Sample description for ASIN: B00BBK072Y',
-        category: 'TODO',
-        store: 'Amazon',
-        orderDate: '2013-05-19T14:29:25Z',
-        amount: '$49.98',
-        vcType: ['VerifiableCredential', 'OrderCredential'],
-        vcIssuedBy:
-          'did:pkh:eip155:1:0xbfecd5e5dff7f08b0a2eefe91bc9a7e492f54320',
-        vcIssuedDate: '2023-10-20T14:28:31.000Z',
-        vcExpiryDate: '2024-10-20T14:28:31.000Z'
-      } as VerifiableCredential
-    } as CredentialDetail
-  ]
+  const {
+    state: { credentialRows, veramoState },
+    dispatch
+  } = useDid()
+  const isGeneratingCredentials = useRef(false)
 
   useEffect(() => {
-    localStorage.setItem('credentials', JSON.stringify(credentialRows))
-  }, [])
+    const storedSelectedItems = sessionStorage.getItem('selectedItems')
+    if (storedSelectedItems) {
+      try {
+        const selectedItems = JSON.parse(storedSelectedItems)
+        const existingOrderIds = new Set(
+          credentialRows.map((cred) => cred.uploadedDataDetail.id)
+        )
+
+        const newCredentials = selectedItems.filter(
+          (item: UploadedDataDetail) => !existingOrderIds.has(item.id)
+        )
+
+        if (newCredentials.length > 0 && !isGeneratingCredentials.current) {
+          isGeneratingCredentials.current = true
+          generateCredentials(newCredentials).finally(() => {
+            isGeneratingCredentials.current = false
+          })
+        }
+      } catch (error) {
+        console.error(
+          'Error parsing selected items from sessionStorage:',
+          error
+        )
+      }
+    }
+  }, [dispatch])
+
+  // Logic to generate credentials for each selected item...
+  const generateCredentials = async (newCredentials: UploadedDataDetail[]) => {
+    const promises = newCredentials.map(
+      async (order: UploadedDataDetail, index: number) => {
+        console.log('Rendering credential:', order, 'at index:', index)
+
+        // Check if there's an existing credential for this order
+        const existingCredential = credentialRows.find((cred) => {
+          return (
+            JSON.stringify(cred.uploadedDataDetail.orderData) ===
+            JSON.stringify(order.orderData)
+          )
+        })
+
+        // If a credential already exists, return null
+        if (existingCredential) {
+          return null
+        }
+
+        const credentialRow = {} as CredentialDetail
+        credentialRow.uploadedDataDetail = order
+        // Logic to generate verifiable credentials...
+        try {
+          const vcRequestParams: CreateVCRequestParams = {
+            vcKey: 'Order',
+            vcValue: {
+              productName: order.orderData.name,
+              store: order.orderData.store,
+              category: 'TODO',
+              description: getProductDescription(order.orderData.store), // change this to order.orderData.asin
+              orderDate: order.orderData.purchasedDate,
+              amount: order.orderData.amount
+            },
+            credTypes: ['OrderCredential']
+          }
+          const saved: CreateVCResponseResult = (await createVC(
+            veramoState,
+            vcRequestParams
+          )) as CreateVCResponseResult
+          if (saved) {
+            console.log('Created a VC: ', saved)
+
+            credentialRow.vCred = saved
+
+            const totalOwed = parseFloat(order.orderData.amount)
+            let productValueRange = -1
+            if (order.orderData.amount.trim().split(/\s+/).pop() === 'USD') {
+              productValueRange = isNaN(totalOwed)
+                ? -1
+                : totalOwed > 100
+                ? ProductValueRange.GreaterThanHundred
+                : totalOwed > 50
+                ? ProductValueRange.BetweenFiftyAndHundred
+                : ProductValueRange.LessThanFifty
+            }
+
+            const ageInMonths = calculateAgeInMonths(
+              order.orderData.purchasedDate
+            )
+            let ageOfOrder =
+              ageInMonths === -1
+                ? -1
+                : ageInMonths > 12
+                ? AgeOfOrder.GreaterThanOneYear
+                : ageInMonths > 6
+                ? AgeOfOrder.BetweenSixAndTwelveMonths
+                : AgeOfOrder.LessThanSixMonths
+            credentialRow.vCredMetadata = {
+              productValueRange,
+              ageOfOrder,
+              vcData: {
+                order: {
+                  store: saved.data.credentialSubject['Order'].store,
+                  category: saved.data.credentialSubject['Order'].category
+                },
+                credentialType: ensureStringArray(saved.data.type),
+                issuedTo: ensureString(saved.data.credentialSubject.id),
+                issuedBy: getIdFromIssuer(saved.data.issuer),
+                issuedDate: saved.data.issuanceDate,
+                expiryDate: ensureString(saved.data.expirationDate)
+              },
+              vcMetadata: {
+                id: saved.metadata.id,
+                store: ensureStringArray(saved.metadata.store)
+              }
+            } as VCMetadata
+          }
+          // Dispatch the action to add a new credential row
+          dispatch({ type: 'ADD_CREDENTIAL_ROW', payload: credentialRow })
+        } catch (error) {
+          console.error(`Error while creating a VC: ${error}`)
+        }
+
+        return credentialRow
+      }
+    )
+
+    await Promise.allSettled(promises)
+  }
 
   return (
     <div className='relative bg-black-0 w-full h-screen overflow-y-auto flex flex-row items-start justify-start'>
@@ -61,7 +172,10 @@ const Credentials: NextPage = () => {
               value='$0.00'
               percentageChange='+0.00%'
             />
-            <BiDataCard title='Total Credentials' value='0' />
+            <BiDataCard
+              title='Total Credentials'
+              value={`${credentialRows.length}`}
+            />
           </div>
           <DataTable
             title='Your credentials'
