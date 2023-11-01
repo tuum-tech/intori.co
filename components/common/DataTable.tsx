@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import { NextPage } from 'next'
 import { useState } from 'react'
 import CredRow from '../credentials/CredRow'
@@ -26,7 +27,6 @@ const DataTable: NextPage<DataTableProps> = ({
     {}
   )
 
-  // Update the existing handleRowSelect and handleSelectAll to call onSelectionChange
   const handleRowSelect = (isSelected: boolean, id: string) => {
     setSelectedRows((prevSelected) => {
       const newSelected = { ...prevSelected, [id]: isSelected }
@@ -40,7 +40,11 @@ const DataTable: NextPage<DataTableProps> = ({
     setAllSelected(newAllSelected)
 
     const newSelectedRows = {}
-    rows.forEach((row) => (newSelectedRows[row.id] = newAllSelected))
+    // If we are selecting all, set the state for each row to true, otherwise to false.
+    rows.forEach((row) => {
+      newSelectedRows[row.id] = newAllSelected
+    })
+
     setSelectedRows(newSelectedRows)
     onSelectionChange?.(newSelectedRows) // Call the callback with the new selection state
   }
@@ -84,17 +88,41 @@ const DataTable: NextPage<DataTableProps> = ({
       </div>
 
       <div className='self-stretch flex flex-col items-start justify-start gap-[15px] text-center text-xs text-white-0 font-kumbh-sans'>
-        {rows.map((row) =>
-          isCredentialType ? (
-            <CredRow
-              key={row.id}
-              id={row.id}
-              verifiableCredential={row.verifiableCredential}
-              isSelectable={isSelectable}
-              onSelect={(isSelected) => handleRowSelect(isSelected, row.id)}
-              isChecked={selectedRows[row.id] || false}
-            />
-          ) : (
+        {rows.map((row) => {
+          // Check for null or undefined row
+          if (!row) return null
+
+          // Check if the row has the necessary properties
+          const hasVCredMetadata =
+            'vCredMetadata' in row &&
+            !_.isNull(row.vCredMetadata) &&
+            !_.isEmpty(row.vCredMetadata)
+          const hasUploadedDataDetail =
+            'uploadedDataDetail' in row &&
+            !_.isNull(row.uploadedDataDetail) &&
+            !_.isEmpty(row.uploadedDataDetail)
+
+          const hasId = 'id' in row && !_.isEmpty(row.id)
+          const hasOrderData =
+            'orderData' in row &&
+            !_.isNull(row.orderData) &&
+            !_.isEmpty(row.orderData)
+
+          // Conditionally render components based on the presence of properties and isCredentialType
+          return isCredentialType ? (
+            hasVCredMetadata && hasUploadedDataDetail ? (
+              <CredRow
+                key={row.uploadedDataDetail.id}
+                id={row.uploadedDataDetail.id}
+                credentialDetail={row}
+                isSelectable={isSelectable}
+                onSelect={(isSelected) =>
+                  handleRowSelect(isSelected, row.uploadedDataDetail.id)
+                }
+                isChecked={selectedRows[row.uploadedDataDetail.id] || false}
+              />
+            ) : null
+          ) : hasId && hasOrderData ? (
             <UploadedDataRow
               key={row.id}
               id={row.id}
@@ -103,8 +131,8 @@ const DataTable: NextPage<DataTableProps> = ({
               onSelect={(isSelected) => handleRowSelect(isSelected, row.id)}
               isChecked={selectedRows[row.id] || false}
             />
-          )
-        )}
+          ) : null
+        })}
       </div>
     </div>
   )

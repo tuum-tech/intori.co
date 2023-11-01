@@ -23,15 +23,15 @@ export type VCMetadata = {
       store: string
       category: string
     }
-    credentialType: string | string[] | undefined
-    issuedTo: string | undefined
+    credentialType: string[]
+    issuedTo: string
     issuedBy: string
     issuedDate: string
-    expiryDate: string | undefined
+    expiryDate: string
   }
   vcMetadata: {
     id: string
-    store: string | string[] | undefined
+    store: string[]
   }
 }
 

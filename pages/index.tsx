@@ -1,3 +1,6 @@
+import { useDid } from '@/contexts/DidContext'
+import { loadOrCreateWallet } from '@/lib/thirdweb/localWallet'
+import { loadVeramoState } from '@/lib/veramo/loadVeramoState'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import Button from '../components/common/Button'
@@ -8,12 +11,21 @@ import { useAuth } from '../contexts/AuthContext' // Import the useAuth hook
 const SigninDefaultScreen = () => {
   const [email, setEmail] = useState('')
   const { loginWithEmail, loading } = useAuth() // Destructure loginWithEmail and loading from the useAuth hook
+  const {
+    state: { veramoState },
+    dispatch
+  } = useDid() // Destructure state and dispatch from the useDid hook
   const router = useRouter()
 
   const handleSignIn = async () => {
     // Here, you might want to add some validation for the email.
     const success = await loginWithEmail(email)
     if (success) {
+      const wallet = await loadOrCreateWallet()
+      const newVeramoState = await loadVeramoState(veramoState, wallet)
+
+      // Dispatch the action to update veramoState
+      dispatch({ type: 'SET_VERAMO_STATE', payload: newVeramoState })
       router.push('/upload')
     }
   }

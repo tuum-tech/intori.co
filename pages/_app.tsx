@@ -1,4 +1,5 @@
 import { AuthProvider } from '@/contexts/AuthContext'
+import { DidProvider } from '@/contexts/DidContext'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import { Fragment } from 'react'
@@ -15,7 +16,9 @@ function MyApp({ Component, pageProps }: AppProps) {
         />
       </Head>
       <AuthProvider>
-        <Component {...pageProps} />
+        <DidProvider>
+          <Component {...pageProps} />
+        </DidProvider>
       </AuthProvider>
     </Fragment>
   )

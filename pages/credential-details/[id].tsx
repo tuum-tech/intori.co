@@ -18,7 +18,7 @@ const CredentialDetails: NextPage = ({}) => {
     const storedData = localStorage.getItem('credentials')
     const credentialRows = storedData ? JSON.parse(storedData) : []
     const selectedCredential = credentialRows.find(
-      (row: CredentialDetail) => String(row.id) === id
+      (row: CredentialDetail) => String(row.uploadedDataDetail.id) === id
     )
 
     if (selectedCredential) {
@@ -55,7 +55,10 @@ const CredentialDetails: NextPage = ({}) => {
                 <div className='self-stretch flex flex-row items-center justify-between text-sm text-grey-2'>
                   <div className='flex-1 flex flex-col items-start justify-start'>
                     <div className='self-stretch relative leading-[150%]'>
-                      {credentialDetail.verifiableCredential.description}
+                      {
+                        credentialDetail.uploadedDataDetail.orderData
+                          .description
+                      }
                     </div>
                   </div>
                 </div>
@@ -67,7 +70,7 @@ const CredentialDetails: NextPage = ({}) => {
                 <div className='self-stretch flex flex-row items-center justify-between text-sm text-grey-2'>
                   <div className='flex-1 flex flex-col items-start justify-start'>
                     <div className='self-stretch relative leading-[150%]'>
-                      {credentialDetail.verifiableCredential.vcIssuedBy}
+                      {credentialDetail.vCredMetadata.vcData.issuedBy}
                     </div>
                   </div>
                 </div>
@@ -81,7 +84,7 @@ const CredentialDetails: NextPage = ({}) => {
                     <div className='self-stretch relative leading-[150%]'>
                       <DateFormatter
                         dateStr={
-                          credentialDetail.verifiableCredential.vcIssuedDate
+                          credentialDetail.vCredMetadata.vcData.issuedDate
                         }
                       />
                     </div>
@@ -97,7 +100,7 @@ const CredentialDetails: NextPage = ({}) => {
                     <div className='self-stretch relative leading-[150%]'>
                       <DateFormatter
                         dateStr={
-                          credentialDetail.verifiableCredential.vcExpiryDate
+                          credentialDetail.vCredMetadata.vcData.expiryDate
                         }
                       />
                     </div>

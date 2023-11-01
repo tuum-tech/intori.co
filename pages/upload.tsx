@@ -5,6 +5,7 @@ import SideNavigationMenu from '@/components/side-navigation/SideNavigationMenu'
 import TopNavigationMenu from '@/components/top-navigation/TopNavigationMenu'
 import CreateCredentialsButton from '@/components/upload/CreateCredentialsButton'
 import UploadDataButton from '@/components/upload/UploadDataButton'
+import { UploadedDataDetail } from '@/components/upload/UploadedTypes'
 import { analytics, auth, functions } from '@/utils/firebase'
 import axios from 'axios'
 import { logEvent } from 'firebase/analytics'
@@ -20,8 +21,10 @@ type Response = {
 
 const Upload: NextPage = () => {
   // State to hold the uploaded data
-  const [uploadedDataRows, setUploadedDataRows] = useState([])
-  const [selectedCount, setSelectedCount] = useState(0)
+  const [uploadedDataRows, setUploadedDataRows] = useState(
+    [] as UploadedDataDetail[]
+  )
+  const [selectedItems, setSelectedItems] = useState([] as UploadedDataDetail[])
 
   const router = useRouter()
 
@@ -87,12 +90,19 @@ const Upload: NextPage = () => {
   }
 
   const handleSelectionChange = (selectedRows: { [key: string]: boolean }) => {
-    const count = Object.values(selectedRows).filter(Boolean).length
-    setSelectedCount(count)
+    // Filter the uploadedDataRows to get only those that are selected.
+    const newSelectedItems = uploadedDataRows.filter(
+      (row) => selectedRows[row.id]
+    )
+    setSelectedItems(newSelectedItems)
   }
 
   // Navigate to the /credentials page
   const handleContinue = () => {
+    // Save the selected items to sessionStorage before navigating
+    if (selectedItems.length > 0) {
+      sessionStorage.setItem('selectedItems', JSON.stringify(selectedItems))
+    }
     router.push('/credentials')
   }
 
@@ -104,7 +114,10 @@ const Upload: NextPage = () => {
           <TopNavigationMenu />
           <div className='self-stretch flex flex-row flex-wrap items-start justify-start gap-[28px] text-left text-lg text-white-1 font-kumbh-sans'>
             <BiDataCard title='Data Value' value='$0.00' />
-            <BiDataCard title='Items Selected' value='0/0' />
+            <BiDataCard
+              title='Items Selected'
+              value={`${selectedItems.length}/${uploadedDataRows.length}`}
+            />
           </div>
           <DataTable
             title='Current data upload'
@@ -125,7 +138,7 @@ const Upload: NextPage = () => {
             <Button
               title='Continue'
               onClick={handleContinue}
-              disabled={selectedCount === 0} // Button is disabled when no items are selected
+              disabled={selectedItems.length === 0} // Button is disabled when no items are selected
             />
           )}
         </div>
