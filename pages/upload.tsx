@@ -13,7 +13,7 @@ import { httpsCallable } from 'firebase/functions'
 import { MagicUserMetadata } from 'magic-sdk'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 type Response = {
   success: boolean
@@ -27,6 +27,13 @@ const Upload: NextPage = () => {
   const [selectedItems, setSelectedItems] = useState([] as UploadedDataDetail[])
 
   const router = useRouter()
+
+  // Calculate the total value of all the selected items
+  const totalSelectedValue = useMemo(() => {
+    return selectedItems.reduce((total, selectedItem) => {
+      return total + (selectedItem.orderData.worth || 0)
+    }, 0)
+  }, [selectedItems])
 
   // Handler function for file selection
   const handleFileSelect = async (file: File) => {
@@ -113,7 +120,10 @@ const Upload: NextPage = () => {
         <div className='w-full flex flex-col items-start justify-start pt-0 px-0 pb-[50px] box-border gap-[24px] max-w-[1100px] text-left text-lg text-white-1 font-kumbh-sans'>
           <TopNavigationMenu />
           <div className='self-stretch flex flex-row flex-wrap items-start justify-start gap-[28px] text-left text-lg text-white-1 font-kumbh-sans'>
-            <BiDataCard title='Data Value' value='$0.00' />
+            <BiDataCard
+              title='Data Value'
+              value={`$${totalSelectedValue.toFixed(2)}`}
+            />
             <BiDataCard
               title='Items Selected'
               value={`${selectedItems.length}/${uploadedDataRows.length}`}

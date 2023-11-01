@@ -4,12 +4,14 @@ import type { MagicUserMetadata } from 'magic-sdk'
 import { analytics, auth, functions } from '../../../utils/firebase'
 
 export enum ProductValueRange {
+  Invalid,
   LessThanFifty,
   BetweenFiftyAndHundred,
   GreaterThanHundred
 }
 
 export enum AgeOfOrder {
+  Invalid,
   LessThanSixMonths,
   BetweenSixAndTwelveMonths,
   GreaterThanOneYear
@@ -18,6 +20,7 @@ export enum AgeOfOrder {
 export type VCMetadata = {
   productValueRange: ProductValueRange
   ageOfOrder: AgeOfOrder
+  vcValue: number
   vcData: {
     order: {
       store: string
@@ -64,13 +67,17 @@ export async function getVCs(
     if (result.success) {
       console.log('Retrieved my VCs successfully')
       // Log the event to firebase
-      logEvent(analytics, `getVCs: successful for user ${userInfo}`)
+      if (analytics) {
+        logEvent(analytics, `getVCs: successful for user ${userInfo}`)
+      }
     }
     return result.vcs
   } catch (error) {
     console.error(`Error retrieving my VCs: ${error}`)
     // Log the event to firebase
-    logEvent(analytics, `getMyVCs: failure for user ${userInfo}: ${error}`)
+    if (analytics) {
+      logEvent(analytics, `getMyVCs: failure for user ${userInfo}: ${error}`)
+    }
     return []
   }
 }

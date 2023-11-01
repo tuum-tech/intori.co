@@ -5,25 +5,21 @@ import SideNavigationMenu from '@/components/side-navigation/SideNavigationMenu'
 import TopNavigationMenu from '@/components/top-navigation/TopNavigationMenu'
 import { UploadedDataDetail } from '@/components/upload/UploadedTypes'
 import { useDid } from '@/contexts/DidContext'
-import {
-  AgeOfOrder,
-  ProductValueRange,
-  VCMetadata
-} from '@/lib/firebase/functions/getVCs'
+import { VCMetadata } from '@/lib/firebase/functions/getVCs'
 import { createVC } from '@/lib/veramo/createVC'
 import {
   CreateVCRequestParams,
   CreateVCResponseResult
 } from '@/lib/veramo/types/params'
 import {
-  calculateAgeInMonths,
   ensureString,
   ensureStringArray,
   getIdFromIssuer,
   getProductDescription
-} from '@/utils/normalizer'
+} from '@/utils/credNormalizer'
+import { calculateVCUSDValue } from '@/utils/credValue'
 import type { NextPage } from 'next'
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 
 const Credentials: NextPage = () => {
   const {
@@ -31,6 +27,14 @@ const Credentials: NextPage = () => {
     dispatch
   } = useDid()
   const isGeneratingCredentials = useRef(false)
+
+  // Calculate the total value of all credentials
+  const totalCredentialValue = useMemo(() => {
+    return credentialRows.reduce((total, credential) => {
+      // Use the `vcValue` property from the `vCredMetadata`
+      return total + (credential.vCredMetadata.vcValue || 0)
+    }, 0)
+  }, [credentialRows])
 
   useEffect(() => {
     const storedSelectedItems = sessionStorage.getItem('selectedItems')
@@ -64,8 +68,6 @@ const Credentials: NextPage = () => {
   const generateCredentials = async (newCredentials: UploadedDataDetail[]) => {
     const promises = newCredentials.map(
       async (order: UploadedDataDetail, index: number) => {
-        console.log('Rendering credential:', order, 'at index:', index)
-
         // Check if there's an existing credential for this order
         const existingCredential = credentialRows.find((cred) => {
           return (
@@ -79,19 +81,21 @@ const Credentials: NextPage = () => {
           return null
         }
 
-        const credentialRow = {} as CredentialDetail
-        credentialRow.uploadedDataDetail = order
+        const credentialRow = { uploadedDataDetail: order } as CredentialDetail
         // Logic to generate verifiable credentials...
         try {
           const vcRequestParams: CreateVCRequestParams = {
             vcKey: 'Order',
             vcValue: {
-              productName: order.orderData.name,
-              store: order.orderData.store,
+              productName: credentialRow.uploadedDataDetail.orderData.name,
+              store: credentialRow.uploadedDataDetail.orderData.store,
               category: 'TODO',
-              description: getProductDescription(order.orderData.store), // change this to order.orderData.asin
-              orderDate: order.orderData.purchasedDate,
-              amount: order.orderData.amount
+              description: getProductDescription(
+                credentialRow.uploadedDataDetail.orderData.asin
+              ),
+              orderDate:
+                credentialRow.uploadedDataDetail.orderData.purchasedDate,
+              amount: credentialRow.uploadedDataDetail.orderData.amount
             },
             credTypes: ['OrderCredential']
           }
@@ -104,32 +108,11 @@ const Credentials: NextPage = () => {
 
             credentialRow.vCred = saved
 
-            const totalOwed = parseFloat(order.orderData.amount)
-            let productValueRange = -1
-            if (order.orderData.amount.trim().split(/\s+/).pop() === 'USD') {
-              productValueRange = isNaN(totalOwed)
-                ? -1
-                : totalOwed > 100
-                ? ProductValueRange.GreaterThanHundred
-                : totalOwed > 50
-                ? ProductValueRange.BetweenFiftyAndHundred
-                : ProductValueRange.LessThanFifty
-            }
-
-            const ageInMonths = calculateAgeInMonths(
-              order.orderData.purchasedDate
-            )
-            let ageOfOrder =
-              ageInMonths === -1
-                ? -1
-                : ageInMonths > 12
-                ? AgeOfOrder.GreaterThanOneYear
-                : ageInMonths > 6
-                ? AgeOfOrder.BetweenSixAndTwelveMonths
-                : AgeOfOrder.LessThanSixMonths
             credentialRow.vCredMetadata = {
-              productValueRange,
-              ageOfOrder,
+              productValueRange:
+                credentialRow.uploadedDataDetail.orderData.productValueRange,
+              ageOfOrder: credentialRow.uploadedDataDetail.orderData.ageOfOrder,
+              vcValue: credentialRow.uploadedDataDetail.orderData.worth,
               vcData: {
                 order: {
                   store: saved.data.credentialSubject['Order'].store,
@@ -169,7 +152,7 @@ const Credentials: NextPage = () => {
           <div className='self-stretch flex flex-row flex-wrap items-start justify-start gap-[28px] text-left text-lg text-white-1 font-kumbh-sans'>
             <BiDataCard
               title='Total Credential Value'
-              value='$0.00'
+              value={`$${totalCredentialValue.toFixed(2)}`}
               percentageChange='+0.00%'
             />
             <BiDataCard
