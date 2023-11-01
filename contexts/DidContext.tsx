@@ -36,8 +36,8 @@ interface DidContextType {
 }
 
 const defaultDidState: DidState = {
-  selectedOrders: [],
-  credentialRows: [],
+  selectedOrders: [] as UploadedDataDetail[],
+  credentialRows: [] as CredentialDetail[],
   veramoState: {
     currentAccount: {} as AccountInfo,
     identityData: {}

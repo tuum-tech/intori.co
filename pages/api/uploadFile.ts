@@ -2,7 +2,9 @@ import {
   OrderData,
   UploadedDataDetail
 } from '@/components/upload/UploadedTypes'
-import { generateUniqueId } from '@/utils/normalizer'
+import { AgeOfOrder, ProductValueRange } from '@/lib/firebase/functions/getVCs'
+import { calculateAgeInMonths, generateUniqueId } from '@/utils/credNormalizer'
+import { calculateVCUSDValue } from '@/utils/credValue'
 import { File, IncomingForm } from 'formidable'
 import fs from 'fs'
 import type { NextApiRequest, NextApiResponse } from 'next'
@@ -74,10 +76,10 @@ export default async function uploadFile(
             (row: any) => {
               const orderData = {
                 name: row['Product Name'],
+                asin: row['ASIN'],
                 description: `Sample description for ASIN: ${row['ASIN']}`,
                 store: row['Website'],
                 purchasedDate: row['Order Date'],
-
                 amount: `${row['Total Owed']} ${row['Currency']}`
               } as OrderData
 
@@ -87,6 +89,31 @@ export default async function uploadFile(
               // Now, we can add the uploadedDate
               orderData.uploadedDate = new Date().toISOString()
 
+              // Calculate the produce price range
+              orderData.productValueRange = ProductValueRange.Invalid
+              if (row['Currency'] === 'USD') {
+                orderData.productValueRange = isNaN(row['Total Owed'])
+                  ? ProductValueRange.Invalid
+                  : row['Total Owed'] > 100
+                  ? ProductValueRange.GreaterThanHundred
+                  : row['Total Owed'] > 50
+                  ? ProductValueRange.BetweenFiftyAndHundred
+                  : ProductValueRange.LessThanFifty
+              }
+              const ageInMonths = calculateAgeInMonths(row['Order Date'])
+              orderData.ageOfOrder =
+                ageInMonths === -1
+                  ? AgeOfOrder.Invalid
+                  : ageInMonths > 12
+                  ? AgeOfOrder.GreaterThanOneYear
+                  : ageInMonths > 6
+                  ? AgeOfOrder.BetweenSixAndTwelveMonths
+                  : AgeOfOrder.LessThanSixMonths
+
+              orderData.worth = calculateVCUSDValue(
+                orderData.ageOfOrder,
+                orderData.productValueRange
+              )
               return {
                 id: uniqueId,
                 orderData
