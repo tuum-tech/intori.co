@@ -28,6 +28,7 @@ interface DidState {
 type DidAction =
   | { type: 'SET_VERAMO_STATE'; payload: DidState['veramoState'] }
   | { type: 'ADD_CREDENTIAL_ROW'; payload: CredentialDetail }
+  | { type: 'SET_CREDENTIAL_ROWS'; payload: CredentialDetail[] }
   | { type: 'SET_SELECTED_ORDERS'; payload: UploadedDataDetail[] }
 
 interface DidContextType {
@@ -54,6 +55,8 @@ function didReducer(state: DidState, action: DidAction): DidState {
         ...state,
         credentialRows: [...state.credentialRows, action.payload]
       }
+    case 'SET_CREDENTIAL_ROWS':
+      return { ...state, credentialRows: action.payload }
     case 'SET_SELECTED_ORDERS':
       return { ...state, selectedOrders: action.payload }
     default:
@@ -73,7 +76,7 @@ export const DidProvider = ({ children }: DidProviderProps) => {
     didReducer,
     defaultDidState,
     (initialState) => {
-      // Attempt to load `veramoState` from `localStorage` and if it exists, use it to override the initial state
+      // Attempt to load the state from `localStorage`
       const storedVeramoState = localStorage.getItem('veramoState')
       const storedCredentialRows = localStorage.getItem('credentials')
       return {
@@ -91,8 +94,11 @@ export const DidProvider = ({ children }: DidProviderProps) => {
   // Store state changes in localStorage
   useEffect(() => {
     localStorage.setItem('veramoState', JSON.stringify(state.veramoState))
+  }, [state.veramoState])
+
+  useEffect(() => {
     localStorage.setItem('credentials', JSON.stringify(state.credentialRows))
-  }, [state.veramoState, state.credentialRows])
+  }, [state.credentialRows])
 
   return (
     <DidContext.Provider value={{ state, dispatch }}>

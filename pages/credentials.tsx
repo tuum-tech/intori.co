@@ -1,4 +1,5 @@
 import BiDataCard from '@/components/common/BiDataCard'
+import Button from '@/components/common/Button'
 import DataTable from '@/components/common/DataTable'
 import { CredentialDetail } from '@/components/credentials/CredTypes'
 import SideNavigationMenu from '@/components/side-navigation/SideNavigationMenu'
@@ -17,11 +18,11 @@ import {
   getIdFromIssuer,
   getProductDescription
 } from '@/utils/credNormalizer'
-import { calculateVCUSDValue } from '@/utils/credValue'
 import type { NextPage } from 'next'
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 const Credentials: NextPage = () => {
+  const [selectedItems, setSelectedItems] = useState([] as CredentialDetail[])
   const {
     state: { credentialRows, veramoState },
     dispatch
@@ -54,6 +55,7 @@ const Credentials: NextPage = () => {
           generateCredentials(newCredentials).finally(() => {
             isGeneratingCredentials.current = false
           })
+          sessionStorage.removeItem('selectedItems')
         }
       } catch (error) {
         console.error(
@@ -143,6 +145,30 @@ const Credentials: NextPage = () => {
     await Promise.allSettled(promises)
   }
 
+  // Helper function to determine if any items are selected
+  const anySelected = (selected: { [key: string]: boolean }) => {
+    return Object.values(selected).some((value) => value === true)
+  }
+
+  const handleSelectionChange = (selectedRows: { [key: string]: boolean }) => {
+    // Filter the credentialRows to get only those that are selected.
+    const newSelectedItems = credentialRows.filter(
+      (cred: CredentialDetail) => selectedRows[cred.uploadedDataDetail.id]
+    )
+    setSelectedItems(newSelectedItems)
+  }
+
+  const handleDelete = () => {
+    const idsToRemove = new Set(
+      selectedItems.map((item) => item.uploadedDataDetail.id)
+    )
+    const newSelectedItems = credentialRows.filter(
+      (item) => !idsToRemove.has(item.uploadedDataDetail.id)
+    )
+    dispatch({ type: 'SET_CREDENTIAL_ROWS', payload: newSelectedItems })
+    setSelectedItems([]) // Clear the selected items
+  }
+
   return (
     <div className='relative bg-black-0 w-full h-screen overflow-y-auto flex flex-row items-start justify-start'>
       <SideNavigationMenu />
@@ -164,8 +190,17 @@ const Credentials: NextPage = () => {
             title='Your credentials'
             isCredentialType={true}
             rows={credentialRows}
-            isSelectable={false}
+            isSelectable={true}
+            onSelectionChange={handleSelectionChange}
           />
+          {/* Conditionally render the Delete button */}
+          {selectedItems.length > 0 && (
+            <Button
+              title='Delete'
+              onClick={handleDelete}
+              disabled={selectedItems.length === 0} // Button is disabled when no items are selected
+            />
+          )}
         </div>
       </div>
     </div>

@@ -3,7 +3,6 @@ import Button from '@/components/common/Button'
 import DataTable from '@/components/common/DataTable'
 import SideNavigationMenu from '@/components/side-navigation/SideNavigationMenu'
 import TopNavigationMenu from '@/components/top-navigation/TopNavigationMenu'
-import CreateCredentialsButton from '@/components/upload/CreateCredentialsButton'
 import UploadDataButton from '@/components/upload/UploadDataButton'
 import { UploadedDataDetail } from '@/components/upload/UploadedTypes'
 import { analytics, auth, functions } from '@/utils/firebase'
@@ -132,7 +131,6 @@ const Upload: NextPage = () => {
           <DataTable
             title='Current data upload'
             titleContainers={[
-              <CreateCredentialsButton key='create-credentials-button' />,
               <UploadDataButton
                 key='upload-data-button'
                 onFileSelect={handleFileSelect}

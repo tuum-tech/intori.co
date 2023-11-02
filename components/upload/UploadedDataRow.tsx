@@ -50,14 +50,17 @@ const UploadedDataRow: NextPage<UploadedDataRowProps> = ({
           </div>
         </div>
       </div>
-      <div className='w-[333px] flex flex-row items-center justify-between'>
-        <div className='relative inline-block w-[70px] shrink-0'>
+      <div className='w-[400px] flex flex-row items-center justify-between'>
+        <div className='relative inline-block w-[98px] shrink-0'>
+          ${orderData.worth}
+        </div>
+        <div className='relative inline-block w-[98px] shrink-0'>
           {orderData.amount}
         </div>
-        <div className='relative inline-block w-[90px] shrink-0'>
+        <div className='relative inline-block w-[98px] shrink-0'>
           <DateFormatter dateStr={orderData.purchasedDate} />
         </div>
-        <div className='relative inline-block w-[90px] shrink-0'>
+        <div className='relative inline-block w-[98px] shrink-0'>
           <DateFormatter dateStr={orderData.uploadedDate} />
         </div>
         <MoreDotsIconActionContainer moreDotsIconActionContainBoxSizing='border-box' />
