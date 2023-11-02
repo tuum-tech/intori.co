@@ -42,7 +42,11 @@ const DataTable: NextPage<DataTableProps> = ({
     const newSelectedRows = {}
     // If we are selecting all, set the state for each row to true, otherwise to false.
     rows.forEach((row) => {
-      newSelectedRows[row.id] = newAllSelected
+      if (isCredentialType) {
+        newSelectedRows[row.uploadedDataDetail.id] = newAllSelected
+      } else {
+        newSelectedRows[row.id] = newAllSelected
+      }
     })
 
     setSelectedRows(newSelectedRows)
@@ -73,9 +77,12 @@ const DataTable: NextPage<DataTableProps> = ({
             {isCredentialType ? 'Credential' : 'Data'} Type
           </div>
         </div>
-        <div className='w-[333px] flex flex-row items-center justify-between Small_Tablet:flex'>
-          <div className='relative font-semibold inline-block w-[70px] shrink-0'>
-            Value
+        <div className='w-[400px] flex flex-row items-center justify-between Small_Tablet:flex'>
+          <div className='relative font-semibold inline-block w-[90px] shrink-0'>
+            Credential Value
+          </div>
+          <div className='relative font-semibold inline-block w-[90px] shrink-0'>
+            Transaction Amount
           </div>
           <div className='relative font-semibold inline-block w-[90px] shrink-0'>
             {isCredentialType ? 'Issued' : 'Purchased'}

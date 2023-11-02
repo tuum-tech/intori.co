@@ -67,16 +67,19 @@ const CredRow: NextPage<CredRowProps> = ({
           </div>
         </div>
       </div>
-      <div className='w-[333px] flex flex-row items-center justify-between'>
-        <div className='relative inline-block w-[70px] shrink-0'>
+      <div className='w-[400px] flex flex-row items-center justify-between'>
+        <div className='relative inline-block w-[98px] shrink-0'>
+          ${credentialDetail.vCredMetadata.vcValue}
+        </div>
+        <div className='relative inline-block w-[98px] shrink-0'>
           {credentialDetail.uploadedDataDetail.orderData.amount}
         </div>
-        <div className='relative inline-block w-[90px] shrink-0'>
+        <div className='relative inline-block w-[98px] shrink-0'>
           <DateFormatter
             dateStr={credentialDetail.vCredMetadata.vcData.issuedDate}
           />
         </div>
-        <div className='relative inline-block w-[90px] shrink-0'>
+        <div className='relative inline-block w-[98px] shrink-0'>
           <DateFormatter
             dateStr={credentialDetail.vCredMetadata.vcData.expiryDate}
           />
