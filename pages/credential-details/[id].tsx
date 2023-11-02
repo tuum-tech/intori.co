@@ -2,6 +2,10 @@ import BackButton from '@/components/common/BackButton'
 import DateFormatter from '@/components/common/DateFormatter'
 import { CredentialDetail } from '@/components/credentials/CredTypes'
 import TopNavigationMenu from '@/components/top-navigation/TopNavigationMenu'
+import {
+  mapAgeOfOrderToString,
+  mapProductValueRangeToString
+} from '@/utils/credValue'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -50,15 +54,78 @@ const CredentialDetails: NextPage = ({}) => {
               </div>
               <div className='self-stretch rounded-mini bg-black-1 overflow-hidden flex flex-col items-start justify-start p-6 gap-[15px] text-left text-base text-white-1 font-kumbh-sans border-[1px] border-solid border-black-4'>
                 <div className='self-stretch relative font-semibold'>
-                  Credential Description
+                  What is the price range of this order?
                 </div>
                 <div className='self-stretch flex flex-row items-center justify-between text-sm text-grey-2'>
                   <div className='flex-1 flex flex-col items-start justify-start'>
                     <div className='self-stretch relative leading-[150%]'>
-                      {
-                        credentialDetail.uploadedDataDetail.orderData
-                          .description
-                      }
+                      {mapProductValueRangeToString(
+                        credentialDetail.vCredMetadata.productValueRange
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className='self-stretch rounded-mini bg-black-1 overflow-hidden flex flex-col items-start justify-start p-6 gap-[15px] text-left text-base text-white-1 font-kumbh-sans border-[1px] border-solid border-black-4'>
+                <div className='self-stretch relative font-semibold'>
+                  How old is this order?
+                </div>
+                <div className='self-stretch flex flex-row items-center justify-between text-sm text-grey-2'>
+                  <div className='flex-1 flex flex-col items-start justify-start'>
+                    <div className='self-stretch relative leading-[150%]'>
+                      {mapAgeOfOrderToString(
+                        credentialDetail.vCredMetadata.ageOfOrder
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className='self-stretch rounded-mini bg-black-1 overflow-hidden flex flex-col items-start justify-start p-6 gap-[15px] text-left text-base text-white-1 font-kumbh-sans border-[1px] border-solid border-black-4'>
+                <div className='self-stretch relative font-semibold'>
+                  How much is this credential worth?(According to Intori)
+                </div>
+                <div className='self-stretch flex flex-row items-center justify-between text-sm text-grey-2'>
+                  <div className='flex-1 flex flex-col items-start justify-start'>
+                    <div className='self-stretch relative leading-[150%]'>
+                      ${credentialDetail.vCredMetadata.vcValue}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className='self-stretch rounded-mini bg-black-1 overflow-hidden flex flex-col items-start justify-start p-6 gap-[15px] text-left text-base text-white-1 font-kumbh-sans border-[1px] border-solid border-black-4'>
+                <div className='self-stretch relative font-semibold'>
+                  Category
+                </div>
+                <div className='self-stretch flex flex-row items-center justify-between text-sm text-grey-2'>
+                  <div className='flex-1 flex flex-col items-start justify-start'>
+                    <div className='self-stretch relative leading-[150%]'>
+                      {credentialDetail.vCredMetadata.vcData.order.category}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className='self-stretch rounded-mini bg-black-1 overflow-hidden flex flex-col items-start justify-start p-6 gap-[15px] text-left text-base text-white-1 font-kumbh-sans border-[1px] border-solid border-black-4'>
+                <div className='self-stretch relative font-semibold'>
+                  Credential Type
+                </div>
+                <div className='self-stretch flex flex-row items-center justify-between text-sm text-grey-2'>
+                  <div className='flex-1 flex flex-col items-start justify-start'>
+                    <div className='self-stretch relative leading-[150%]'>
+                      {credentialDetail.vCredMetadata.vcData.credentialType.join(
+                        ', '
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className='self-stretch rounded-mini bg-black-1 overflow-hidden flex flex-col items-start justify-start p-6 gap-[15px] text-left text-base text-white-1 font-kumbh-sans border-[1px] border-solid border-black-4'>
+                <div className='self-stretch relative font-semibold'>
+                  Issued To
+                </div>
+                <div className='self-stretch flex flex-row items-center justify-between text-sm text-grey-2'>
+                  <div className='flex-1 flex flex-col items-start justify-start'>
+                    <div className='self-stretch relative leading-[150%]'>
+                      {credentialDetail.vCredMetadata.vcData.issuedTo}
                     </div>
                   </div>
                 </div>
@@ -103,6 +170,24 @@ const CredentialDetails: NextPage = ({}) => {
                           credentialDetail.vCredMetadata.vcData.expiryDate
                         }
                       />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className='self-stretch rounded-mini bg-black-1 overflow-hidden flex flex-col items-start justify-start p-6 gap-[15px] text-left text-base text-white-1 font-kumbh-sans border-[1px] border-solid border-black-4'>
+                <div className='self-stretch relative font-semibold'>
+                  Where is this credential stored?
+                </div>
+                <div className='self-stretch flex flex-row items-center justify-between text-sm text-grey-2'>
+                  <div className='flex-1 flex flex-col items-start justify-start'>
+                    <div className='self-stretch relative leading-[150%]'>
+                      {credentialDetail.vCredMetadata.vcMetadata.store.includes(
+                        'intori'
+                      )
+                        ? 'Local Browser'
+                        : credentialDetail.vCredMetadata.vcMetadata.store.join(
+                            ', '
+                          )}
                     </div>
                   </div>
                 </div>

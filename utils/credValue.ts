@@ -24,3 +24,35 @@ export function calculateTotalVCUSDValue(credentialRows: CredentialDetail[]) {
     return total + (credential.vCredMetadata.vcValue || 0)
   }, 0)
 }
+
+export function mapProductValueRangeToString(
+  valueRange: ProductValueRange
+): string {
+  switch (valueRange) {
+    case ProductValueRange.Invalid:
+      return 'Order amount could not be determined'
+    case ProductValueRange.LessThanFifty:
+      return 'Order amount is between $0 and $50'
+    case ProductValueRange.BetweenFiftyAndHundred:
+      return 'Order amount is between $50 and $100'
+    case ProductValueRange.GreaterThanHundred:
+      return 'Order amount is greater than $100'
+    default:
+      return 'Invalid order amount'
+  }
+}
+
+export function mapAgeOfOrderToString(ageRange: AgeOfOrder): string {
+  switch (ageRange) {
+    case AgeOfOrder.Invalid:
+      return 'Age of order could not be determined'
+    case AgeOfOrder.LessThanSixMonths:
+      return 'Order was placed sometime in the last 6 months'
+    case AgeOfOrder.BetweenSixAndTwelveMonths:
+      return 'Order was placed sometime between the last 6 months and 1 year'
+    case AgeOfOrder.GreaterThanOneYear:
+      return 'Order was placed more than 1 year ago'
+    default:
+      return 'Invalid order amount'
+  }
+}
