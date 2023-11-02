@@ -1,52 +1,26 @@
 import BiDataCard from '@/components/common/BiDataCard'
 import DropdownFilter from '@/components/common/DropdownFilter'
 import UniDataCard from '@/components/common/UniDataCard'
-import {
-  CredentialDetail,
-  VerifiableCredential
-} from '@/components/credentials/CredTypes'
 import RecentCredentialsTable from '@/components/dashboard/RecentCredentialsTable'
 import RequestAmazonHistory from '@/components/dashboard/RequestAmazonHistory'
 import UserActivity from '@/components/dashboard/UserActivity'
 import TopNavigationMenu from '@/components/top-navigation/TopNavigationMenu'
+import { useDid } from '@/contexts/DidContext'
+import { calculateTotalVCUSDValue } from '@/utils/credValue'
 import type { NextPage } from 'next'
+import { useMemo } from 'react'
 import SideNavigationMenu from '../components/side-navigation/SideNavigationMenu'
 
 const Dashboard: NextPage = () => {
-  const credentialRows = [
-    {
-      id: 'AmazonOrder1',
-      verifiableCredential: {
-        name: 'The Brothers Karamazov',
-        description: 'Sample description for ASIN: 374528373',
-        category: 'TODO',
-        store: 'Amazon',
-        orderDate: '2013-05-07T21:00:21Z',
-        amount: '$13.28',
-        vcType: ['VerifiableCredential', 'OrderCredential'],
-        vcIssuedBy:
-          'did:pkh:eip155:1:0xbfecd5e5dff7f08b0a2eefe91bc9a7e492f54320',
-        vcIssuedDate: '2023-10-20T14:28:31.000Z',
-        vcExpiryDate: '2024-10-20T14:28:31.000Z'
-      } as VerifiableCredential
-    } as CredentialDetail,
-    {
-      id: 'AmazonOrder2',
-      verifiableCredential: {
-        name: 'Raspberry Pi Face',
-        description: 'Sample description for ASIN: B00BBK072Y',
-        category: 'TODO',
-        store: 'Amazon',
-        orderDate: '2013-05-19T14:29:25Z',
-        amount: '$49.98',
-        vcType: ['VerifiableCredential', 'OrderCredential'],
-        vcIssuedBy:
-          'did:pkh:eip155:1:0xbfecd5e5dff7f08b0a2eefe91bc9a7e492f54320',
-        vcIssuedDate: '2023-10-20T14:28:31.000Z',
-        vcExpiryDate: '2024-10-20T14:28:31.000Z'
-      } as VerifiableCredential
-    } as CredentialDetail
-  ]
+  const {
+    state: { credentialRows },
+    dispatch
+  } = useDid()
+
+  // Calculate the total value of all credentials
+  const totalCredentialValue = useMemo(() => {
+    return calculateTotalVCUSDValue(credentialRows)
+  }, [credentialRows])
 
   return (
     <div className='relative bg-black-0 w-full h-screen overflow-y-auto flex flex-row items-start justify-start'>
@@ -73,10 +47,13 @@ const Dashboard: NextPage = () => {
               <div className='self-stretch flex flex-row flex-wrap items-start justify-start gap-[28px] text-left text-lg text-white-1 font-kumbh-sans'>
                 <BiDataCard
                   title='Portfolio Value'
-                  value='$0.00'
+                  value={`$${totalCredentialValue.toFixed(2)}`}
                   percentageChange='+0.00%'
                 />
-                <BiDataCard title='Total Credentials' value='0' />
+                <BiDataCard
+                  title='Total Credentials'
+                  value={`${credentialRows.length}`}
+                />
               </div>
               <RecentCredentialsTable rows={credentialRows} />
             </div>

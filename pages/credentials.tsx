@@ -18,6 +18,7 @@ import {
   getIdFromIssuer,
   getProductDescription
 } from '@/utils/credNormalizer'
+import { calculateTotalVCUSDValue } from '@/utils/credValue'
 import type { NextPage } from 'next'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
@@ -31,10 +32,7 @@ const Credentials: NextPage = () => {
 
   // Calculate the total value of all credentials
   const totalCredentialValue = useMemo(() => {
-    return credentialRows.reduce((total, credential) => {
-      // Use the `vcValue` property from the `vCredMetadata`
-      return total + (credential.vCredMetadata.vcValue || 0)
-    }, 0)
+    return calculateTotalVCUSDValue(credentialRows)
   }, [credentialRows])
 
   useEffect(() => {

@@ -7,11 +7,13 @@ import ViewAllButton from './ViewAllButton'
 type RecentCredentialsTableProps = {
   rows?: any[]
   isSelectable?: boolean
+  onSelectionChange?: (selectedRows: { [key: string]: boolean }) => void
 }
 
 const RecentCredentialsTable: NextPage<RecentCredentialsTableProps> = ({
   rows = [],
-  isSelectable
+  isSelectable,
+  onSelectionChange
 }) => {
   const [allSelected, setAllSelected] = useState(false)
   const [selectedRows, setSelectedRows] = useState<{ [key: string]: boolean }>(
@@ -19,7 +21,11 @@ const RecentCredentialsTable: NextPage<RecentCredentialsTableProps> = ({
   )
 
   const handleRowSelect = (isSelected: boolean, id: string) => {
-    setSelectedRows((prevSelected) => ({ ...prevSelected, [id]: isSelected }))
+    setSelectedRows((prevSelected) => {
+      const newSelected = { ...prevSelected, [id]: isSelected }
+      onSelectionChange?.(newSelected) // Call the callback with the new selection state
+      return newSelected
+    })
   }
 
   const handleSelectAll = () => {
@@ -27,8 +33,11 @@ const RecentCredentialsTable: NextPage<RecentCredentialsTableProps> = ({
     setAllSelected(newAllSelected)
 
     const newSelectedRows = {}
-    rows.forEach((row) => (newSelectedRows[row.id] = newAllSelected))
+    rows.forEach(
+      (row) => (newSelectedRows[row.uploadedDataDetail.id] = newAllSelected)
+    )
     setSelectedRows(newSelectedRows)
+    onSelectionChange?.(newSelectedRows) // Call the callback with the new selection state
   }
 
   return (
@@ -52,20 +61,25 @@ const RecentCredentialsTable: NextPage<RecentCredentialsTableProps> = ({
         <div className='flex-1 h-6 overflow-hidden flex flex-row items-center justify-start py-0 pr-[7px] pl-0 box-border'>
           <div className='relative font-semibold'>Credential Type</div>
         </div>
-        <div className='w-[195px] flex flex-row items-center justify-end gap-[24px] Small_Tablet:flex'>
-          <div className='relative font-semibold inline-block w-[70px] shrink-0'>
-            Value
+        <div className='w-[200px] flex flex-row items-center justify-end gap-[30px] Small_Tablet:flex'>
+          <div className='relative font-semibold inline-block w-[98px] shrink-0'>
+            Credential Value
+          </div>
+          <div className='relative font-semibold inline-block w-[98px] shrink-0'>
+            Transaction Amount
           </div>
         </div>
       </div>
       {rows.map((row) => (
         <RecentCredentialRow
-          key={row.id}
-          id={row.id}
-          verifiableCredential={row.verifiableCredential}
+          key={row.uploadedDataDetail.id}
+          id={row.uploadedDataDetail.id}
+          credentialDetail={row}
           isSelectable={isSelectable}
-          onSelect={(isSelected) => handleRowSelect(isSelected, row.id)}
-          isChecked={selectedRows[row.id] || false}
+          onSelect={(isSelected) =>
+            handleRowSelect(isSelected, row.uploadedDataDetail.id)
+          }
+          isChecked={selectedRows[row.uploadedDataDetail.id] || false}
         />
       ))}
     </div>

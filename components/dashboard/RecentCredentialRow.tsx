@@ -1,13 +1,13 @@
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import { VerifiableCredential } from '../credentials/CredTypes'
+import { CredentialDetail } from '../credentials/CredTypes'
 import AmazonIconContainer from '../icons/AmazonIcon'
 import MoreDotsIconActionContainer from '../icons/MoreDotsIcon'
 import CheckboxAction from '../upload/CheckboxAction'
 
 interface RecentCredentialRowProps {
   id: string
-  verifiableCredential: VerifiableCredential
+  credentialDetail: CredentialDetail
   onSelect: (isSelected: boolean) => void
   isChecked: boolean
   isSelectable?: boolean
@@ -15,7 +15,7 @@ interface RecentCredentialRowProps {
 
 const RecentCredentialRow: NextPage<RecentCredentialRowProps> = ({
   id,
-  verifiableCredential,
+  credentialDetail,
   onSelect,
   isChecked,
   isSelectable
@@ -55,18 +55,23 @@ const RecentCredentialRow: NextPage<RecentCredentialRowProps> = ({
           <div onClick={handleRowClick} className='cursor-pointer'>
             <div className='flex-1 overflow-hidden flex flex-col items-start justify-center gap-[5px]'>
               <div className='relative font-semibold'>
-                {verifiableCredential.vcType.join(', ')}
+                {credentialDetail.vCredMetadata.vcData.credentialType.join(
+                  ', '
+                )}{' '}
               </div>
               <div className='self-stretch relative font-medium text-white-1'>
-                {verifiableCredential.description}
+                {credentialDetail.uploadedDataDetail.orderData.description}
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div className='flex flex-row items-center justify-start gap-[24px] text-white-1 Small_Tablet:flex'>
-        <div className='relative inline-block w-[70px] shrink-0'>
-          {verifiableCredential.amount}
+      <div className='w-[200px] flex flex-row items-center justify-between'>
+        <div className='relative inline-block w-[98px] shrink-0'>
+          ${credentialDetail.vCredMetadata.vcValue}
+        </div>
+        <div className='relative inline-block w-[98px] shrink-0'>
+          {credentialDetail.uploadedDataDetail.orderData.amount}
         </div>
         <MoreDotsIconActionContainer moreDotsIconActionContainBoxSizing='border-box' />
       </div>
