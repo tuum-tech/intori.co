@@ -447,7 +447,6 @@ export class IntoriVCStore extends AbstractDataStore {
     return true
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async clearVCs(_args: IFilterArgs): Promise<boolean> {
     const account = this.state.currentAccount.evmAddress
     if (!account) {
