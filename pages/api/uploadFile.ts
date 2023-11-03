@@ -58,6 +58,7 @@ export default async function uploadFile(
             console.error('Errors while parsing:', results.errors)
             // Filter out rows with missing fields
             results.data = results.data.filter(
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               (row: any) => !row.hasOwnProperty('__parsed_extra')
             )
           }
@@ -73,6 +74,7 @@ export default async function uploadFile(
           }
 
           const uploadedDataDetails: UploadedDataDetail[] = results.data.map(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (row: any) => {
               const orderData = {
                 name: row['Product Name'],

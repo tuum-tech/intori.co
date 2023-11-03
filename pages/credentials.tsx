@@ -68,7 +68,7 @@ const Credentials: NextPage = () => {
   // Logic to generate credentials for each selected item...
   const generateCredentials = async (newCredentials: UploadedDataDetail[]) => {
     const promises = newCredentials.map(
-      async (order: UploadedDataDetail, index: number) => {
+      async (order: UploadedDataDetail) => {
         // Check if there's an existing credential for this order
         const existingCredential = credentialRows.find((cred) => {
           return (
@@ -144,11 +144,6 @@ const Credentials: NextPage = () => {
     )
 
     await Promise.allSettled(promises)
-  }
-
-  // Helper function to determine if any items are selected
-  const anySelected = (selected: { [key: string]: boolean }) => {
-    return Object.values(selected).some((value) => value === true)
   }
 
   const handleSelectionChange = (selectedRows: { [key: string]: boolean }) => {

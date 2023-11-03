@@ -98,7 +98,7 @@ const Dashboard: NextPage<Props> = ({ initialAppStat }) => {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async () => {
   try {
     const initialAppStat = await getTotalUsersFirebase()
     return { props: { initialAppStat } }
