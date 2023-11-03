@@ -1,6 +1,7 @@
 import BiDataCard from '@/components/common/BiDataCard'
 import Button from '@/components/common/Button'
 import DataTable from '@/components/common/DataTable'
+import LoadingSpinner from '@/components/common/LoadingSpinner'
 import SideNavigationMenu from '@/components/side-navigation/SideNavigationMenu'
 import TopNavigationMenu from '@/components/top-navigation/TopNavigationMenu'
 import UploadDataButton from '@/components/upload/UploadDataButton'
@@ -24,6 +25,10 @@ const Upload: NextPage = () => {
     [] as UploadedDataDetail[]
   )
   const [selectedItems, setSelectedItems] = useState([] as UploadedDataDetail[])
+  const [isProcessing, setIsProcessing] = useState({
+    upload: false,
+    continue: false
+  })
 
   const router = useRouter()
 
@@ -36,6 +41,11 @@ const Upload: NextPage = () => {
 
   // Handler function for file selection
   const handleFileSelect = async (file: File) => {
+    setIsProcessing((prevState) => ({
+      ...prevState,
+      upload: true
+    }))
+
     // Use FormData to store file for sending
     const formData = new FormData()
     formData.append('file', file)
@@ -93,6 +103,10 @@ const Upload: NextPage = () => {
         )
       }
     }
+    setIsProcessing((prevState) => ({
+      ...prevState,
+      upload: false
+    }))
   }
 
   const handleSelectionChange = (selectedRows: { [key: string]: boolean }) => {
@@ -105,11 +119,29 @@ const Upload: NextPage = () => {
 
   // Navigate to the /credentials page
   const handleContinue = () => {
+    setIsProcessing((prevState) => ({
+      ...prevState,
+      continue: true
+    }))
     // Save the selected items to sessionStorage before navigating
     if (selectedItems.length > 0) {
       sessionStorage.setItem('selectedItems', JSON.stringify(selectedItems))
     }
     router.push('/credentials')
+    setIsProcessing((prevState) => ({
+      ...prevState,
+      continue: false
+    }))
+  }
+
+  if (isProcessing.upload) {
+    return <LoadingSpinner loadingText='Uploading your file...' />
+  }
+
+  if (isProcessing.continue) {
+    return (
+      <LoadingSpinner loadingText='Generating credentials from your data...' />
+    )
   }
 
   return (

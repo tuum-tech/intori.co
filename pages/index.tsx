@@ -1,3 +1,4 @@
+import LoadingSpinner from '@/components/common/LoadingSpinner'
 import { useDid } from '@/contexts/DidContext'
 import { loadOrCreateWallet } from '@/lib/thirdweb/localWallet'
 import { loadVeramoState } from '@/lib/veramo/loadVeramoState'
@@ -15,10 +16,13 @@ const SigninDefaultScreen = () => {
     state: { veramoState },
     dispatch
   } = useDid() // Destructure state and dispatch from the useDid hook
+  const [isProcessing, setIsProcessing] = useState(false)
+
   const router = useRouter()
 
   const handleSignIn = async () => {
-    // Here, you might want to add some validation for the email.
+    setIsProcessing(true)
+
     const success = await loginWithEmail(email)
     if (success) {
       const wallet = await loadOrCreateWallet()
@@ -27,11 +31,13 @@ const SigninDefaultScreen = () => {
       // Dispatch the action to update veramoState
       dispatch({ type: 'SET_VERAMO_STATE', payload: newVeramoState })
       router.push('/upload')
+    } else {
+      setIsProcessing(false)
     }
   }
 
-  if (loading) {
-    return <div>Loading...</div>
+  if (loading || isProcessing) {
+    return <LoadingSpinner loadingText='Signing you in...' />
   }
 
   return (
