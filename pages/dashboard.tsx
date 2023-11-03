@@ -62,19 +62,18 @@ const Dashboard: NextPage = () => {
                   percentageChange='+0.00%'
                 />
                 <BiDataCard
-                  title='Total VCs'
+                  title='Total Credentials'
                   value={appStat.totalVCsCreated.toString()}
                   percentageChange='+0.00%'
                 />
               </div>
               <div className='self-stretch flex flex-row flex-wrap items-start justify-start gap-[28px] text-left text-lg text-white-1 font-kumbh-sans'>
                 <BiDataCard
-                  title='Portfolio Value'
+                  title='My Portfolio'
                   value={`$${totalCredentialValue.toFixed(2)}`}
-                  percentageChange='+0.00%'
                 />
                 <BiDataCard
-                  title='Total Credentials'
+                  title='My Credentials'
                   value={`${credentialRows.length}`}
                 />
               </div>
