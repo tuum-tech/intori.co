@@ -21,6 +21,7 @@ export type VCMetadata = {
   productValueRange: ProductValueRange
   ageOfOrder: AgeOfOrder
   vcValue: number
+  vcHash: string
   vcData: {
     order: {
       store: string
@@ -43,7 +44,7 @@ export type Response = {
   vcs: VCMetadata[]
 }
 
-export async function getVCs(
+export async function getVCsFirebase(
   self: boolean = true,
   startAfterDoc?: string
 ): Promise<VCMetadata[]> {
