@@ -6,6 +6,7 @@ import SideNavigationMenu from '@/components/side-navigation/SideNavigationMenu'
 import TopNavigationMenu from '@/components/top-navigation/TopNavigationMenu'
 import { UploadedDataDetail } from '@/components/upload/UploadedTypes'
 import { useDid } from '@/contexts/DidContext'
+import { createVCFirebase } from '@/lib/firebase/functions/createVC'
 import { VCMetadata } from '@/lib/firebase/functions/getVCs'
 import { createVC } from '@/lib/veramo/createVC'
 import {
@@ -113,6 +114,7 @@ const Credentials: NextPage = () => {
                 credentialRow.uploadedDataDetail.orderData.productValueRange,
               ageOfOrder: credentialRow.uploadedDataDetail.orderData.ageOfOrder,
               vcValue: credentialRow.uploadedDataDetail.orderData.worth,
+              vcHash: credentialRow.uploadedDataDetail.id,
               vcData: {
                 order: {
                   store: saved.data.credentialSubject['Order'].store,
@@ -132,6 +134,7 @@ const Credentials: NextPage = () => {
           }
           // Dispatch the action to add a new credential row
           dispatch({ type: 'ADD_CREDENTIAL_ROW', payload: credentialRow })
+          await createVCFirebase([credentialRow.vCredMetadata])
         } catch (error) {
           console.error(`Error while creating a VC: ${error}`)
         }

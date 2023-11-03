@@ -17,7 +17,7 @@ export type AppStat = {
   totalVCsCreated: 0
 }
 
-export async function getTotalUsers(): Promise<AppStat> {
+export async function getTotalUsersFirebase(): Promise<AppStat> {
   const usersCollection = collection(firestore, 'users')
   const userSnapshot = await getDocs(usersCollection)
   let totalUploadedFiles = 0
