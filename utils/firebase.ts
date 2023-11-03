@@ -1,6 +1,7 @@
 import { getAnalytics, isSupported, type Analytics } from 'firebase/analytics'
 import { initializeApp, type FirebaseApp } from 'firebase/app'
 import {
+  AppCheck,
   ReCaptchaEnterpriseProvider,
   initializeAppCheck
 } from 'firebase/app-check'
@@ -36,22 +37,17 @@ const firebaseConfig = {
 // Initialize Firebase
 const firebaseApp: FirebaseApp = initializeApp(firebaseConfig)
 
-// Create a ReCaptchaEnterpriseProvider instance using reCAPTCHA Enterprise
-// site key and passing it to initializeAppCheck().
-const appCheck = initializeAppCheck(firebaseApp, {
-  provider: new ReCaptchaEnterpriseProvider(
-    process.env.NEXT_PUBLIC_FIREBASE_RECAPTCHA_SITE_KEY!
-  ),
-  isTokenAutoRefreshEnabled: true // Set to true to allow auto-refresh.
-})
+// Initialize Firebase services
+let analytics: Analytics
+let auth: Auth
+let functions: Functions
+let firestore: Firestore
+let appCheck: AppCheck
 
-// Initialize analytics
-let analytics: Analytics | undefined
-
-// This ensures Firebase Analytics is only initialized on the client side
-const initAnalytics = () => {
-  if (typeof window !== 'undefined' && !analytics) {
-    // isSupported() checks for compatibility with the current environment
+// This function initializes Firebase Analytics and App Check if supported and on the client side
+const initFirebaseClientSide = () => {
+  if (typeof window !== 'undefined') {
+    // Initialize Firebase Analytics
     isSupported()
       .then((supported) => {
         if (supported) {
@@ -61,24 +57,34 @@ const initAnalytics = () => {
       .catch((error) => {
         console.error('Analytics not supported', error)
       })
+
+    // Initialize Firebase App Check
+    appCheck = initializeAppCheck(firebaseApp, {
+      provider: new ReCaptchaEnterpriseProvider(
+        process.env.NEXT_PUBLIC_FIREBASE_RECAPTCHA_SITE_KEY!
+      ),
+      isTokenAutoRefreshEnabled: true // Set to true to allow auto-refresh.
+    })
+
+    // Initialize Auth
+    auth = getAuth(firebaseApp)
+    setPersistence(auth, browserLocalPersistence)
+
+    // Initialize Functions
+    functions = getFunctions(firebaseApp)
+
+    // Initialize Firestore
+    firestore = getFirestore(firebaseApp)
+
+    // Connect to emulators if not in production
+    if (process.env.NODE_ENV !== 'production') {
+      connectAuthEmulator(auth, 'http://127.0.0.1:10001')
+      connectFunctionsEmulator(functions, '127.0.0.1', 10002)
+      connectFirestoreEmulator(firestore, '127.0.0.1', 10003)
+    }
   }
 }
 
-// Call this function at the top-level of a component, or within a useEffect hook
-initAnalytics()
-
-const auth: Auth = getAuth(firebaseApp) // Initialize Auth
-// User will remain logged in even after closing and reopening the app
-setPersistence(auth, browserLocalPersistence)
-
-const functions: Functions = getFunctions(firebaseApp) // Initialize Functions
-const firestore: Firestore = getFirestore(firebaseApp) // <-- Initialize Firestore
-
-// When working locally, we can just use the firestore emulator for testing purposes
-if (process.env.NODE_ENV !== 'production') {
-  connectAuthEmulator(auth, 'http://127.0.0.1:10001')
-  connectFunctionsEmulator(functions, '127.0.0.1', 10002)
-  connectFirestoreEmulator(firestore, '127.0.0.1', 10003)
-}
+initFirebaseClientSide()
 
 export { analytics, appCheck, auth, firestore, functions }
