@@ -10,5 +10,6 @@
       "error",
       { "argsIgnorePattern": "^_" }
     ]
-  }
+  },
+  "ignorePatterns": ["next.config.js"]
 }
