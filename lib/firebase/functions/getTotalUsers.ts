@@ -24,8 +24,8 @@ export async function getTotalUsersFirebase(): Promise<AppStat> {
   let totalVCsCreated = 0
   userSnapshot.forEach((doc) => {
     const data = doc.data() as UserData
-    totalUploadedFiles += data.filesUploaded
-    totalVCsCreated += data.totalVCs
+    totalUploadedFiles += data.filesUploaded || 0
+    totalVCsCreated += data.totalVCs || 0
   })
   return {
     totalUsers: userSnapshot.size,
