@@ -6,18 +6,11 @@ import SideNavigationMenu from '@/components/side-navigation/SideNavigationMenu'
 import TopNavigationMenu from '@/components/top-navigation/TopNavigationMenu'
 import UploadDataButton from '@/components/upload/UploadDataButton'
 import { UploadedDataDetail } from '@/components/upload/UploadedTypes'
-import { analytics, auth, functions } from '@/utils/firebase'
+import { uploadFileFirebase } from '@/lib/firebase/functions/uploadFile'
 import axios from 'axios'
-import { logEvent } from 'firebase/analytics'
-import { httpsCallable } from 'firebase/functions'
-import { MagicUserMetadata } from 'magic-sdk'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
-
-type Response = {
-  success: boolean
-}
 
 const Upload: NextPage = () => {
   // State to hold the uploaded data
@@ -50,59 +43,18 @@ const Upload: NextPage = () => {
     const formData = new FormData()
     formData.append('file', file)
 
-    // Reset the current uploaded data state before uploading the new file
-    setUploadedDataRows([])
-
-    // Post the form data to the upload endpoint
-    try {
-      const response = await axios.post('/api/uploadFile', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
-      if (response.data && response.data.data) {
-        // After parsing, call the Firebase function
-        const userInfo: MagicUserMetadata = JSON.parse(
-          localStorage.getItem('magicUserInfo') || '{}'
-        ) as MagicUserMetadata
-        const uploadFileFunction = httpsCallable(functions, 'uploadFile')
-        try {
-          const token = await auth.currentUser?.getIdToken(true)
-          const response = await uploadFileFunction({ authToken: token })
-          const success = (response.data as Response).success
-
-          if (success) {
-            console.log('File uploaded successfully')
-            if (analytics) {
-              // Log the event to firebase
-              logEvent(analytics, `fileUpload: successful for user ${userInfo}`)
-            }
-          }
-        } catch (error) {
-          console.error(
-            'Error while calling firebase function for uploadFile:',
-            error
-          )
-          if (analytics) {
-            // Log the event to firebase
-            logEvent(
-              analytics,
-              `fileUpload: failure for user ${userInfo}: ${error}`
-            )
-          }
-        }
-        setUploadedDataRows(response.data.data)
+    const response = await axios.post('/api/uploadFile', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
       }
-    } catch (error) {
-      console.error('Error uploading the file:', error)
-      if (analytics) {
-        // Log the event to firebase
-        logEvent(
-          analytics,
-          `fileUpload: failure while uploading the file: ${error}`
-        )
-      }
+    })
+    if (response.data && response.data.data) {
+      const data = response.data.data as UploadedDataDetail[]
+      setUploadedDataRows(data)
+      // Update the backend database with the upload stats
+      await uploadFileFirebase(data.length)
     }
+
     setIsProcessing((prevState) => ({
       ...prevState,
       upload: false

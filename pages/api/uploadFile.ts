@@ -76,6 +76,7 @@ export default async function uploadFile(
           const uploadedDataDetails: UploadedDataDetail[] = results.data.map(
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (row: any) => {
+              console.log('row: ', JSON.stringify(row, null, 4))
               const orderData = {
                 name: row['Product Name'],
                 asin: row['ASIN'],
