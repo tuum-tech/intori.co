@@ -1,6 +1,7 @@
 import BiDataCard from '@/components/common/BiDataCard'
 import Button from '@/components/common/Button'
 import DataTable from '@/components/common/DataTable'
+import LoadingSpinner from '@/components/common/LoadingSpinner'
 import { CredentialDetail } from '@/components/credentials/CredTypes'
 import SideNavigationMenu from '@/components/side-navigation/SideNavigationMenu'
 import TopNavigationMenu from '@/components/top-navigation/TopNavigationMenu'
@@ -25,6 +26,10 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 
 const Credentials: NextPage = () => {
   const [selectedItems, setSelectedItems] = useState([] as CredentialDetail[])
+  const [isProcessing, setIsProcessing] = useState({
+    generateCreds: false,
+    delete: false
+  })
   const {
     state: { credentialRows, veramoState },
     dispatch
@@ -37,6 +42,11 @@ const Credentials: NextPage = () => {
   }, [credentialRows])
 
   useEffect(() => {
+    setIsProcessing((prevState) => ({
+      ...prevState,
+      generateCreds: true
+    }))
+
     const storedSelectedItems = sessionStorage.getItem('selectedItems')
     if (storedSelectedItems) {
       try {
@@ -63,85 +73,86 @@ const Credentials: NextPage = () => {
         )
       }
     }
+    setIsProcessing((prevState) => ({
+      ...prevState,
+      generateCreds: false
+    }))
   }, [dispatch])
 
   // Logic to generate credentials for each selected item...
   const generateCredentials = async (newCredentials: UploadedDataDetail[]) => {
-    const promises = newCredentials.map(
-      async (order: UploadedDataDetail) => {
-        // Check if there's an existing credential for this order
-        const existingCredential = credentialRows.find((cred) => {
-          return (
-            JSON.stringify(cred.uploadedDataDetail.orderData) ===
-            JSON.stringify(order.orderData)
-          )
-        })
+    const promises = newCredentials.map(async (order: UploadedDataDetail) => {
+      // Check if there's an existing credential for this order
+      const existingCredential = credentialRows.find((cred) => {
+        return (
+          JSON.stringify(cred.uploadedDataDetail.orderData) ===
+          JSON.stringify(order.orderData)
+        )
+      })
 
-        // If a credential already exists, return null
-        if (existingCredential) {
-          return null
-        }
-
-        const credentialRow = { uploadedDataDetail: order } as CredentialDetail
-        // Logic to generate verifiable credentials...
-        try {
-          const vcRequestParams: CreateVCRequestParams = {
-            vcKey: 'Order',
-            vcValue: {
-              productName: credentialRow.uploadedDataDetail.orderData.name,
-              store: credentialRow.uploadedDataDetail.orderData.store,
-              category: 'TODO',
-              description: getProductDescription(
-                credentialRow.uploadedDataDetail.orderData.asin
-              ),
-              orderDate:
-                credentialRow.uploadedDataDetail.orderData.purchasedDate,
-              amount: credentialRow.uploadedDataDetail.orderData.amount
-            },
-            credTypes: ['OrderCredential']
-          }
-          const saved: CreateVCResponseResult = (await createVC(
-            veramoState,
-            vcRequestParams
-          )) as CreateVCResponseResult
-          if (saved) {
-            console.log('Created a VC: ', saved)
-
-            credentialRow.vCred = saved
-
-            credentialRow.vCredMetadata = {
-              productValueRange:
-                credentialRow.uploadedDataDetail.orderData.productValueRange,
-              ageOfOrder: credentialRow.uploadedDataDetail.orderData.ageOfOrder,
-              vcValue: credentialRow.uploadedDataDetail.orderData.worth,
-              vcHash: credentialRow.uploadedDataDetail.id,
-              vcData: {
-                order: {
-                  store: saved.data.credentialSubject['Order'].store,
-                  category: saved.data.credentialSubject['Order'].category
-                },
-                credentialType: ensureStringArray(saved.data.type),
-                issuedTo: ensureString(saved.data.credentialSubject.id),
-                issuedBy: getIdFromIssuer(saved.data.issuer),
-                issuedDate: saved.data.issuanceDate,
-                expiryDate: ensureString(saved.data.expirationDate)
-              },
-              vcMetadata: {
-                id: saved.metadata.id,
-                store: ensureStringArray(saved.metadata.store)
-              }
-            } as VCMetadata
-          }
-          // Dispatch the action to add a new credential row
-          dispatch({ type: 'ADD_CREDENTIAL_ROW', payload: credentialRow })
-          await createVCFirebase([credentialRow.vCredMetadata])
-        } catch (error) {
-          console.error(`Error while creating a VC: ${error}`)
-        }
-
-        return credentialRow
+      // If a credential already exists, return null
+      if (existingCredential) {
+        return null
       }
-    )
+
+      const credentialRow = { uploadedDataDetail: order } as CredentialDetail
+      // Logic to generate verifiable credentials...
+      try {
+        const vcRequestParams: CreateVCRequestParams = {
+          vcKey: 'Order',
+          vcValue: {
+            productName: credentialRow.uploadedDataDetail.orderData.name,
+            store: credentialRow.uploadedDataDetail.orderData.store,
+            category: 'TODO',
+            description: getProductDescription(
+              credentialRow.uploadedDataDetail.orderData.asin
+            ),
+            orderDate: credentialRow.uploadedDataDetail.orderData.purchasedDate,
+            amount: credentialRow.uploadedDataDetail.orderData.amount
+          },
+          credTypes: ['OrderCredential']
+        }
+        const saved: CreateVCResponseResult = (await createVC(
+          veramoState,
+          vcRequestParams
+        )) as CreateVCResponseResult
+        if (saved) {
+          console.log('Created a VC: ', saved)
+
+          credentialRow.vCred = saved
+
+          credentialRow.vCredMetadata = {
+            productValueRange:
+              credentialRow.uploadedDataDetail.orderData.productValueRange,
+            ageOfOrder: credentialRow.uploadedDataDetail.orderData.ageOfOrder,
+            vcValue: credentialRow.uploadedDataDetail.orderData.worth,
+            vcHash: credentialRow.uploadedDataDetail.id,
+            vcData: {
+              order: {
+                store: saved.data.credentialSubject['Order'].store,
+                category: saved.data.credentialSubject['Order'].category
+              },
+              credentialType: ensureStringArray(saved.data.type),
+              issuedTo: ensureString(saved.data.credentialSubject.id),
+              issuedBy: getIdFromIssuer(saved.data.issuer),
+              issuedDate: saved.data.issuanceDate,
+              expiryDate: ensureString(saved.data.expirationDate)
+            },
+            vcMetadata: {
+              id: saved.metadata.id,
+              store: ensureStringArray(saved.metadata.store)
+            }
+          } as VCMetadata
+        }
+        // Dispatch the action to add a new credential row
+        dispatch({ type: 'ADD_CREDENTIAL_ROW', payload: credentialRow })
+        await createVCFirebase([credentialRow.vCredMetadata])
+      } catch (error) {
+        console.error(`Error while creating a VC: ${error}`)
+      }
+
+      return credentialRow
+    })
 
     await Promise.allSettled(promises)
   }
@@ -155,6 +166,10 @@ const Credentials: NextPage = () => {
   }
 
   const handleDelete = () => {
+    setIsProcessing((prevState) => ({
+      ...prevState,
+      delete: true
+    }))
     const idsToRemove = new Set(
       selectedItems.map((item) => item.uploadedDataDetail.id)
     )
@@ -163,6 +178,22 @@ const Credentials: NextPage = () => {
     )
     dispatch({ type: 'SET_CREDENTIAL_ROWS', payload: newSelectedItems })
     setSelectedItems([]) // Clear the selected items
+    setIsProcessing((prevState) => ({
+      ...prevState,
+      delete: false
+    }))
+  }
+
+  if (isProcessing.generateCreds) {
+    return (
+      <LoadingSpinner loadingText='Generating credentials from your data...' />
+    )
+  }
+
+  if (isProcessing.delete) {
+    return (
+      <LoadingSpinner loadingText='Deleting your selected credentials...' />
+    )
   }
 
   return (
