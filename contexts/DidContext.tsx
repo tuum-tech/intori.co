@@ -1,6 +1,6 @@
 import { CredentialDetail } from '@/components/credentials/CredTypes'
 import { UploadedDataDetail } from '@/components/upload/UploadedTypes'
-import { AccountInfo, VeramoState } from '@/lib/veramo/interfaces'
+import { AccountInfo, IdentityData, VeramoState } from '@/lib/veramo/interfaces'
 import {
   Dispatch,
   ReactNode,
@@ -20,7 +20,7 @@ interface DidState {
   credentialRows: CredentialDetail[]
   veramoState: {
     currentAccount: AccountInfo
-    identityData: any
+    identityData: Record<string, IdentityData>
   }
 }
 
@@ -41,7 +41,7 @@ const defaultDidState: DidState = {
   credentialRows: [] as CredentialDetail[],
   veramoState: {
     currentAccount: {} as AccountInfo,
-    identityData: {}
+    identityData: {} as Record<string, IdentityData>
   } as VeramoState
 }
 
