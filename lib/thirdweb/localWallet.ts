@@ -65,7 +65,7 @@ export async function importWalletUsingPrivateKey(
   const wallet: WalletEthers = new ethers.Wallet(privateKey)
   return {
     privateKey,
-    publicKey: wallet.signingKey.publicKey,
+    publicKey: wallet.publicKey,
     address: wallet.address,
     localWallet
   } as Wallet
