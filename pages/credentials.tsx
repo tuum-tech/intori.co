@@ -206,7 +206,6 @@ const Credentials: NextPage = () => {
             <BiDataCard
               title='Total Credential Value'
               value={`$${totalCredentialValue.toFixed(2)}`}
-              percentageChange='+0.00%'
             />
             <BiDataCard
               title='Total Credentials'
