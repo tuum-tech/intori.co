@@ -6,7 +6,6 @@ import CheckboxAction from './CheckboxAction'
 import { OrderData } from './UploadedTypes'
 
 interface UploadedDataRowProps {
-  id: string
   orderData: OrderData
   onSelect: (isSelected: boolean) => void
   isChecked: boolean
@@ -14,7 +13,6 @@ interface UploadedDataRowProps {
 }
 
 const UploadedDataRow: NextPage<UploadedDataRowProps> = ({
-  id,
   orderData,
   onSelect,
   isChecked,

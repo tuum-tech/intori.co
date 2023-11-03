@@ -84,7 +84,7 @@ export class IntoriKeyStore extends AbstractKeyStore {
 
     const accountState = this.state.identityData[account];
     const safeKeys = Object.values(accountState.localKeyStore).map((key) => {
-      const { privateKeyHex, ...safeKey } = key;
+      const { ...safeKey } = key;
       return safeKey;
     });
     return safeKeys;
@@ -333,6 +333,7 @@ export class IntoriVCStore extends AbstractDataStore {
             data: vc,
           };
         })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .filter((item: any) => {
           return (
             item.metadata.id === (filter.filter as string) &&
@@ -353,6 +354,7 @@ export class IntoriVCStore extends AbstractDataStore {
             data: vc,
           };
         })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .filter((item: any) => {
           return (
             item.data.type?.includes(filter.filter as string) &&
@@ -373,6 +375,7 @@ export class IntoriVCStore extends AbstractDataStore {
             data: vc,
           };
         })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .filter((item: any) => {
           return item.data.credentialSubject.id?.split(":")[4] === account;
         });
@@ -390,6 +393,7 @@ export class IntoriVCStore extends AbstractDataStore {
             data: vc,
           };
         })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .filter((item: any) => {
           return item.data.credentialSubject.id?.split(":")[4] === account;
         });
@@ -437,6 +441,7 @@ export class IntoriVCStore extends AbstractDataStore {
     return true;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async clearVCs(_args: IFilterArgs): Promise<boolean> {
     const account = this.state.currentAccount.evmAddress;
     if (!account) {

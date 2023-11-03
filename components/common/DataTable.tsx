@@ -9,6 +9,7 @@ type DataTableProps = {
   title: string
   titleContainers?: JSX.Element[]
   isCredentialType?: boolean
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   rows?: any[]
   isSelectable?: boolean
   onSelectionChange?: (selectedRows: { [key: string]: boolean }) => void
@@ -132,7 +133,6 @@ const DataTable: NextPage<DataTableProps> = ({
           ) : hasId && hasOrderData ? (
             <UploadedDataRow
               key={row.id}
-              id={row.id}
               orderData={row.orderData}
               isSelectable={isSelectable}
               onSelect={(isSelected) => handleRowSelect(isSelected, row.id)}

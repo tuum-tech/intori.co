@@ -1,4 +1,4 @@
-import type { IIdentifier, MinimalImportableKey } from "@veramo/core";
+import type { MinimalImportableKey } from "@veramo/core";
 import type { Wallet } from "../thirdweb/localWallet";
 import type { AccountInfo, VeramoState } from "./interfaces";
 import { getVeramoAgent } from "./setup";
@@ -33,9 +33,9 @@ export async function veramoImportAccount(
 ): Promise<VeramoState> {
   const chainId = CHAIN_ID; // Only dealing with ETH Mainnet for now
 
-  let privateKey = wallet.privateKey;
-  let publicKey = wallet.publicKey;
-  let address = wallet.address.toLowerCase();
+  const privateKey = wallet.privateKey;
+  const publicKey = wallet.publicKey;
+  const address = wallet.address.toLowerCase();
 
   const method = state.currentAccount.didMethod;
 
@@ -65,15 +65,14 @@ export async function veramoImportAccount(
     `Importing using did=${did}, provider=${method}, controllerKeyId=${controllerKeyId}...`,
   );
 
-  let identifier: IIdentifier;
   // Get identifier if it exists
   try {
-    identifier = await agent.didManagerGet({
+    await agent.didManagerGet({
       did,
     });
   } catch (error) {
     try {
-      identifier = await agent.didManagerImport({
+      await agent.didManagerImport({
         did,
         provider: method,
         controllerKeyId,

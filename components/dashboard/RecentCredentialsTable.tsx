@@ -5,6 +5,7 @@ import RecentCredentialRow from './RecentCredentialRow'
 import ViewAllButton from './ViewAllButton'
 
 type RecentCredentialsTableProps = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   rows?: any[]
   isSelectable?: boolean
   onSelectionChange?: (selectedRows: { [key: string]: boolean }) => void
