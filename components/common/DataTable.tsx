@@ -5,6 +5,10 @@ import CredRow from '../credentials/CredRow'
 import CheckboxAction from '../upload/CheckboxAction'
 import UploadedDataRow from '../upload/UploadedDataRow'
 
+type SelectedRows = {
+  [key: string]: boolean // or any other type that `newAllSelected` is
+}
+
 type DataTableProps = {
   title: string
   titleContainers?: JSX.Element[]
@@ -40,10 +44,10 @@ const DataTable: NextPage<DataTableProps> = ({
     const newAllSelected = !allSelected
     setAllSelected(newAllSelected)
 
-    const newSelectedRows = {}
+    const newSelectedRows: SelectedRows = {}
     // If we are selecting all, set the state for each row to true, otherwise to false.
     rows.forEach((row) => {
-      if (isCredentialType) {
+      if (row.uploadedDataDetail && isCredentialType) {
         newSelectedRows[row.uploadedDataDetail.id] = newAllSelected
       } else {
         newSelectedRows[row.id] = newAllSelected
