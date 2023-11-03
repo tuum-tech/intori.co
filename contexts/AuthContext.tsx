@@ -22,8 +22,7 @@ type AuthProviderProps = {
 export const AuthContext = createContext({
   isLoggedIn: false,
   loading: true,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  loginWithEmail: async (email: string): Promise<boolean> => {
+  loginWithEmail: async (_email: string): Promise<boolean> => {
     throw new Error('loginWithEmail function not implemented')
   },
   logout: async () => {}

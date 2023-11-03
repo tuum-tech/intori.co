@@ -75,7 +75,6 @@ export class MemoryDataStore extends AbstractDataStore {
     return []
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async clearVCs(_args: IFilterArgs): Promise<boolean> {
     this.data = {}
     return true
