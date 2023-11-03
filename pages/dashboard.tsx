@@ -9,16 +9,16 @@ import {
   getTotalUsersFirebase
 } from '@/lib/firebase/functions/getTotalUsers'
 import { calculateTotalVCUSDValue } from '@/utils/credValue'
-import type { GetServerSideProps, NextPage } from 'next'
+import type { NextPage } from 'next'
 import { useEffect, useMemo, useState } from 'react'
 import SideNavigationMenu from '../components/side-navigation/SideNavigationMenu'
 
-type Props = {
-  initialAppStat: AppStat | null
-}
-
-const Dashboard: NextPage<Props> = ({ initialAppStat }) => {
-  const [appStat, setAppStat] = useState<AppStat | null>(initialAppStat)
+const Dashboard: NextPage = () => {
+  const [appStat, setAppStat] = useState({
+    totalUsers: 0,
+    totalUploadedFiles: 0,
+    totalVCsCreated: 0
+  } as AppStat)
 
   const {
     state: { credentialRows }
@@ -30,16 +30,8 @@ const Dashboard: NextPage<Props> = ({ initialAppStat }) => {
   }, [credentialRows])
 
   useEffect(() => {
-    if (!appStat) {
-      // If for some reason the initial props didn't load, we can fetch them on client side as a fallback
-      getTotalUsersFirebase().then(setAppStat).catch(console.error)
-    }
+    getTotalUsersFirebase().then(setAppStat).catch(console.error)
   }, [appStat])
-
-  // Ensure that appStat is defined before trying to access its properties
-  if (!appStat) {
-    return <div>Loading...</div> // Render a loading state or a placeholder
-  }
 
   return (
     <div className='relative bg-black-0 w-full h-screen overflow-y-auto flex flex-row items-start justify-start'>
@@ -96,24 +88,6 @@ const Dashboard: NextPage<Props> = ({ initialAppStat }) => {
       </div>
     </div>
   )
-}
-
-export const getServerSideProps: GetServerSideProps = async () => {
-  try {
-    const initialAppStat = await getTotalUsersFirebase()
-    return { props: { initialAppStat } }
-  } catch (error) {
-    // Handle the error appropriately
-    return {
-      props: {
-        initialAppStat: {
-          totalUsers: 0,
-          totalUploadedFiles: 0,
-          totalVCsCreated: 0
-        }
-      }
-    }
-  }
 }
 
 export default Dashboard
