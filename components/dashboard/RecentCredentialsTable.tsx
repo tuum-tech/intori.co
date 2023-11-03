@@ -4,6 +4,10 @@ import CheckboxAction from '../upload/CheckboxAction'
 import RecentCredentialRow from './RecentCredentialRow'
 import ViewAllButton from './ViewAllButton'
 
+type SelectedRows = {
+  [key: string]: boolean // or any other type that `newAllSelected` is
+}
+
 type RecentCredentialsTableProps = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   rows?: any[]
@@ -33,7 +37,7 @@ const RecentCredentialsTable: NextPage<RecentCredentialsTableProps> = ({
     const newAllSelected = !allSelected
     setAllSelected(newAllSelected)
 
-    const newSelectedRows = {}
+    const newSelectedRows: SelectedRows = {}
     rows.forEach(
       (row) => (newSelectedRows[row.uploadedDataDetail.id] = newAllSelected)
     )
