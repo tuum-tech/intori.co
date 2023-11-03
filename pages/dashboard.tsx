@@ -1,4 +1,5 @@
 import BiDataCard from '@/components/common/BiDataCard'
+import UniDataCard from '@/components/common/UniDataCard'
 import RecentCredentialsTable from '@/components/dashboard/RecentCredentialsTable'
 import RequestAmazonHistory from '@/components/dashboard/RequestAmazonHistory'
 import UserActivity from '@/components/dashboard/UserActivity'
@@ -49,12 +50,6 @@ const Dashboard: NextPage = () => {
           <div className='self-stretch flex flex-row items-start justify-start gap-[24px] text-left text-lg text-white-1 font-kumbh-sans md:flex-col'>
             <div className='flex-1 flex flex-col items-start justify-start gap-[24px] text-left text-lg text-white-1 font-kumbh-sans md:flex-[unset] md:self-stretch'>
               <RequestAmazonHistory />
-              {/* <UniDataCard
-                title='Earnings'
-                titleContainers={[<DropdownFilter key='dropdown-filter' />]}
-                value='$0.00'
-                percentageChange='+0.00%'
-              /> */}
               <div className='self-stretch flex flex-row flex-wrap items-start justify-start gap-[28px] text-left text-lg text-white-1 font-kumbh-sans'>
                 <BiDataCard
                   title='Total users'
@@ -69,14 +64,22 @@ const Dashboard: NextPage = () => {
               </div>
               <div className='self-stretch flex flex-row flex-wrap items-start justify-start gap-[28px] text-left text-lg text-white-1 font-kumbh-sans'>
                 <BiDataCard
-                  title='My Portfolio'
-                  value={`$${totalCredentialValue.toFixed(2)}`}
+                  title='Total Files Processed'
+                  value={appStat.totalUploadedFiles.toString()}
+                  percentageChange='+0.00%'
                 />
                 <BiDataCard
-                  title='My Credentials'
-                  value={`${credentialRows.length}`}
+                  title='Total Orders Processed'
+                  value={appStat.totalOrdersProcessed.toString()}
+                  percentageChange='+0.00%'
                 />
               </div>
+              <UniDataCard
+                title='Portfolio'
+                // titleContainers={[<DropdownFilter key='dropdown-filter' />]}
+                value={`$${totalCredentialValue.toFixed(2)}`}
+                percentageChange={`${credentialRows.length} credentials`}
+              />
               <RecentCredentialsTable rows={credentialRows} />
             </div>
             <div className='self-stretch w-[380px] flex flex-col items-start justify-start text-left text-sm text-white-0 font-kumbh-sans md:self-stretch md:w-auto Small_Tablet:self-stretch Small_Tablet:w-auto'>
