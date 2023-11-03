@@ -22,7 +22,7 @@ type AuthProviderProps = {
 export const AuthContext = createContext({
   isLoggedIn: false,
   loading: true,
-  loginWithEmail: async (email: string): Promise<boolean> => {
+  loginWithEmail: async (): Promise<boolean> => {
     throw new Error('loginWithEmail function not implemented')
   },
   logout: async () => {}

@@ -113,19 +113,9 @@ export class IntoriPrivateKeyStore extends AbstractPrivateKeyStore {
     }
 
     const accountState = this.state.identityData[account]
-    if (
-      !accountState ||
-      !accountState.localPrivateKeyStore ||
-      !(alias in accountState.localPrivateKeyStore)
-    ) {
-      throw new Error(
-        `IntoriPrivateKeyStore - not_found: Account state or localPrivateKeyStore not found for account=${account}`
-      )
-    }
-
     const key = accountState.localPrivateKeyStore[alias]
     if (!key) {
-      throw new Error(
+      throw Error(
         `IntoriPrivateKeyStore - not_found: PrivateKey not found for alias=${alias}`
       )
     }
@@ -141,14 +131,8 @@ export class IntoriPrivateKeyStore extends AbstractPrivateKeyStore {
     }
 
     const accountState = this.state.identityData[account]
-    if (
-      !accountState ||
-      !accountState.localPrivateKeyStore ||
-      !(alias in accountState.localPrivateKeyStore)
-    ) {
-      throw new Error(
-        `IntoriPrivateKeyStore - not_found: Account state or localPrivateKeyStore not found for account=${account}`
-      )
+    if (!accountState.localPrivateKeyStore[alias]) {
+      throw Error('IntoriPrivateKeyStore - Key not found')
     }
 
     delete this.state.identityData[account].localPrivateKeyStore[alias]
@@ -165,16 +149,6 @@ export class IntoriPrivateKeyStore extends AbstractPrivateKeyStore {
 
     const alias = args.alias || uuidv4()
     const accountState = this.state.identityData[account]
-    if (
-      !accountState ||
-      !accountState.localPrivateKeyStore ||
-      !(alias in accountState.localPrivateKeyStore)
-    ) {
-      throw new Error(
-        `IntoriPrivateKeyStore - not_found: Account state or localPrivateKeyStore not found for account=${account}`
-      )
-    }
-
     const existingEntry = accountState.localPrivateKeyStore[alias]
     if (existingEntry && existingEntry.privateKeyHex !== args.privateKeyHex) {
       console.error(
@@ -201,11 +175,6 @@ export class IntoriPrivateKeyStore extends AbstractPrivateKeyStore {
     }
 
     const accountState = this.state.identityData[account]
-    if (!accountState || !accountState.localPrivateKeyStore) {
-      throw new Error(
-        `IntoriPrivateKeyStore - not_found: Account state or localPrivateKeyStore not found for account=${account}`
-      )
-    }
     return [...Object.values(accountState.localPrivateKeyStore)]
   }
 }
