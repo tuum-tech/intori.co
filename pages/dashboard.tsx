@@ -18,6 +18,7 @@ const Dashboard: NextPage = () => {
   const [appStat, setAppStat] = useState({
     totalUsers: 0,
     totalUploadedFiles: 0,
+    totalOrdersProcessed: 0,
     totalVCsCreated: 0
   } as AppStat)
 
