@@ -1,6 +1,6 @@
+import { UserInfo } from '@/lib/magic/user'
 import { logEvent } from 'firebase/analytics'
 import { httpsCallable } from 'firebase/functions'
-import type { MagicUserMetadata } from 'magic-sdk'
 import { analytics, auth, functions } from '../../../utils/firebase'
 
 export enum ProductValueRange {
@@ -24,8 +24,9 @@ export type VCMetadata = {
   vcHash: string
   vcData: {
     order: {
-      store: string
       category: string
+      ratings: number
+      store: string
     }
     credentialType: string[]
     issuedTo: string
@@ -48,10 +49,11 @@ export async function getVCsFirebase(
   self: boolean = true,
   startAfterDoc?: string
 ): Promise<VCMetadata[]> {
+  let vcMetadataArray = [] as VCMetadata[]
   // After parsing, call the Firebase function
-  const userInfo: MagicUserMetadata = JSON.parse(
-    localStorage.getItem('magicUserInfo') || '{}'
-  ) as MagicUserMetadata
+  const userInfo: UserInfo = JSON.parse(
+    localStorage.getItem('userInfo') || '{}'
+  )
   const getVCsFunction = httpsCallable(functions, 'getVCs')
   try {
     const token = await auth.currentUser?.getIdToken(true)
@@ -71,14 +73,14 @@ export async function getVCsFirebase(
       if (analytics) {
         logEvent(analytics, `getVCs: successful for user ${userInfo}`)
       }
+      vcMetadataArray = result.vcs
     }
-    return result.vcs
   } catch (error) {
     console.error(`Error retrieving my VCs: ${error}`)
     // Log the event to firebase
     if (analytics) {
       logEvent(analytics, `getMyVCs: failure for user ${userInfo}: ${error}`)
     }
-    return []
   }
+  return vcMetadataArray
 }

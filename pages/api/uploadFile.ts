@@ -1,10 +1,5 @@
-import {
-  OrderData,
-  UploadedDataDetail
-} from '@/components/upload/UploadedTypes'
-import { AgeOfOrder, ProductValueRange } from '@/lib/firebase/functions/getVCs'
-import { calculateAgeInMonths, generateUniqueId } from '@/utils/credNormalizer'
-import { calculateVCUSDValue } from '@/utils/credValue'
+import { UploadedDataDetail } from '@/components/upload/UploadedTypes'
+import { normalizeOrderData } from '@/utils/credNormalizer'
 import { File, IncomingForm } from 'formidable'
 import fs from 'fs'
 import type { NextApiRequest, NextApiResponse } from 'next'
@@ -52,7 +47,7 @@ export default async function uploadFile(
       }
 
       Papa.parse(data, {
-        complete: (results) => {
+        complete: async (results) => {
           console.log('Numer of items in file:', results.data.length)
           if (results.errors.length) {
             console.error('Errors while parsing:', results.errors)
@@ -73,61 +68,22 @@ export default async function uploadFile(
             })
           }
 
-          const uploadedDataDetails: UploadedDataDetail[] = results.data.map(
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (row: any) => {
-              console.log('row: ', JSON.stringify(row, null, 4))
-              const orderData = {
-                name: row['Product Name'],
-                asin: row['ASIN'],
-                description: `Sample description for ASIN: ${row['ASIN']}`,
-                store: row['Website'],
-                purchasedDate: row['Order Date'],
-                amount: `${row['Total Owed']} ${row['Currency']}`
-              } as OrderData
+          try {
+            const uploadedDataDetailsPromises =
+              results.data.map(normalizeOrderData)
+            const uploadedDataDetails: UploadedDataDetail[] = await Promise.all(
+              uploadedDataDetailsPromises
+            )
 
-              // Create a unique ID
-              const uniqueId = generateUniqueId(orderData)
-
-              // Now, we can add the uploadedDate
-              orderData.uploadedDate = new Date().toISOString()
-
-              // Calculate the produce price range
-              orderData.productValueRange = ProductValueRange.Invalid
-              if (row['Currency'] === 'USD') {
-                orderData.productValueRange = isNaN(row['Total Owed'])
-                  ? ProductValueRange.Invalid
-                  : row['Total Owed'] > 100
-                  ? ProductValueRange.GreaterThanHundred
-                  : row['Total Owed'] > 50
-                  ? ProductValueRange.BetweenFiftyAndHundred
-                  : ProductValueRange.LessThanFifty
-              }
-              const ageInMonths = calculateAgeInMonths(row['Order Date'])
-              orderData.ageOfOrder =
-                ageInMonths === -1
-                  ? AgeOfOrder.Invalid
-                  : ageInMonths > 12
-                  ? AgeOfOrder.GreaterThanOneYear
-                  : ageInMonths > 6
-                  ? AgeOfOrder.BetweenSixAndTwelveMonths
-                  : AgeOfOrder.LessThanSixMonths
-
-              orderData.worth = calculateVCUSDValue(
-                orderData.ageOfOrder,
-                orderData.productValueRange
-              )
-              return {
-                id: uniqueId,
-                orderData
-              } as UploadedDataDetail
-            }
-          )
-
-          // Send back the parsed data
-          return res
-            .status(200)
-            .json({ success: true, data: uploadedDataDetails })
+            // Send back the parsed data
+            res.status(200).json({ success: true, data: uploadedDataDetails })
+          } catch (error) {
+            res.status(400).json({
+              success: false,
+              message: 'Error processing uploaded data.',
+              error
+            })
+          }
         },
         header: true,
         skipEmptyLines: true

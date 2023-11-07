@@ -84,7 +84,7 @@ const DataTable: NextPage<DataTableProps> = ({
         </div>
         <div className='w-[400px] flex flex-row items-center justify-between Small_Tablet:flex'>
           <div className='relative font-semibold inline-block w-[90px] shrink-0'>
-            Credential Value
+            Estimated Credential Value
           </div>
           <div className='relative font-semibold inline-block w-[90px] shrink-0'>
             Transaction Amount

@@ -61,7 +61,7 @@ const CredRow: NextPage<CredRowProps> = ({
                 )}
               </div>
               <div className='self-stretch relative text-white-1'>
-                {credentialDetail.uploadedDataDetail.orderData.description}
+                {credentialDetail.uploadedDataDetail.orderData.name}
               </div>
             </div>
           </div>

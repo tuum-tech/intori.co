@@ -1,7 +1,7 @@
+import { UserInfo } from '@/lib/magic/user'
 import { analytics, auth, functions } from '@/utils/firebase'
 import { logEvent } from 'firebase/analytics'
 import { httpsCallable } from 'firebase/functions'
-import { MagicUserMetadata } from 'magic-sdk'
 
 type Response = {
   success: boolean
@@ -12,9 +12,9 @@ export async function uploadFileFirebase(
 ): Promise<void> {
   try {
     // After parsing, call the Firebase function
-    const userInfo: MagicUserMetadata = JSON.parse(
-      localStorage.getItem('magicUserInfo') || '{}'
-    ) as MagicUserMetadata
+    const userInfo: UserInfo = JSON.parse(
+      localStorage.getItem('userInfo') || '{}'
+    )
     const uploadFileFunction = httpsCallable(functions, 'uploadFile')
     try {
       const token = await auth.currentUser?.getIdToken(true)
