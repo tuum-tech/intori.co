@@ -1,6 +1,6 @@
 import LoadingSpinner from '@/components/common/LoadingSpinner'
 import { useDid } from '@/contexts/DidContext'
-import { loadOrCreateWallet } from '@/lib/thirdweb/localWallet'
+import { Wallet, loadOrCreateWallet } from '@/lib/thirdweb/localWallet'
 import { loadVeramoState } from '@/lib/veramo/loadVeramoState'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
@@ -23,9 +23,9 @@ const SigninDefaultScreen = () => {
   const handleSignIn = async () => {
     setIsProcessing(true)
 
-    const success = await loginWithEmail(email)
+    const wallet: Wallet = await loadOrCreateWallet()
+    const success = await loginWithEmail(email, wallet)
     if (success) {
-      const wallet = await loadOrCreateWallet()
       const newVeramoState = await loadVeramoState(veramoState, wallet)
 
       // Dispatch the action to update veramoState

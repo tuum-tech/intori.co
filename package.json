@@ -20,6 +20,7 @@
     "@veramo/key-manager": "5.1.2",
     "@veramo/kms-local": "5.1.2",
     "axios": "^1.6.0",
+    "cheerio": "^1.0.0-rc.12",
     "crypto": "^1.0.1",
     "did-jwt-vc": "^3.2.13",
     "ethers": "5.7.2",
@@ -38,6 +39,7 @@
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
+    "@types/cheerio": "^0.22.33",
     "@types/firebase": "^3.2.1",
     "@types/formidable": "^3.4.4",
     "@types/jsonpath": "^0.2.2",

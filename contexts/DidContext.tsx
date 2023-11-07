@@ -1,5 +1,6 @@
 import { CredentialDetail } from '@/components/credentials/CredTypes'
 import { UploadedDataDetail } from '@/components/upload/UploadedTypes'
+import { VCMetadata, getVCsFirebase } from '@/lib/firebase/functions/getVCs'
 import { AccountInfo, IdentityData, VeramoState } from '@/lib/veramo/interfaces'
 import {
   Dispatch,

@@ -7,6 +7,7 @@ import SideNavigationMenu from '@/components/side-navigation/SideNavigationMenu'
 import TopNavigationMenu from '@/components/top-navigation/TopNavigationMenu'
 import { UploadedDataDetail } from '@/components/upload/UploadedTypes'
 import { useDid } from '@/contexts/DidContext'
+import { useRequireAuth } from '@/hooks/useRequireAuth'
 import { createVCFirebase } from '@/lib/firebase/functions/createVC'
 import { VCMetadata } from '@/lib/firebase/functions/getVCs'
 import { createVC } from '@/lib/veramo/createVC'
@@ -17,8 +18,7 @@ import {
 import {
   ensureString,
   ensureStringArray,
-  getIdFromIssuer,
-  getProductDescription
+  getIdFromIssuer
 } from '@/utils/credNormalizer'
 import { calculateTotalVCUSDValue } from '@/utils/credValue'
 import type { NextPage } from 'next'
@@ -50,11 +50,11 @@ const Credentials: NextPage = () => {
     const storedSelectedItems = sessionStorage.getItem('selectedItems')
     if (storedSelectedItems) {
       try {
-        const selectedItems = JSON.parse(storedSelectedItems)
         const existingOrderIds = new Set(
           credentialRows.map((cred) => cred.uploadedDataDetail.id)
         )
 
+        const selectedItems = JSON.parse(storedSelectedItems)
         const newCredentials = selectedItems.filter(
           (item: UploadedDataDetail) => !existingOrderIds.has(item.id)
         )
@@ -102,11 +102,12 @@ const Credentials: NextPage = () => {
           vcKey: 'Order',
           vcValue: {
             productName: credentialRow.uploadedDataDetail.orderData.name,
+            asin: credentialRow.uploadedDataDetail.orderData.asin,
+            description: credentialRow.uploadedDataDetail.orderData.description,
+            category: credentialRow.uploadedDataDetail.orderData.category,
+            brandName: credentialRow.uploadedDataDetail.orderData.brandName,
+            ratings: credentialRow.uploadedDataDetail.orderData.ratings,
             store: credentialRow.uploadedDataDetail.orderData.store,
-            category: 'TODO',
-            description: getProductDescription(
-              credentialRow.uploadedDataDetail.orderData.asin
-            ),
             orderDate: credentialRow.uploadedDataDetail.orderData.purchasedDate,
             amount: credentialRow.uploadedDataDetail.orderData.amount
           },
@@ -129,8 +130,9 @@ const Credentials: NextPage = () => {
             vcHash: credentialRow.uploadedDataDetail.id,
             vcData: {
               order: {
-                store: saved.data.credentialSubject['Order'].store,
-                category: saved.data.credentialSubject['Order'].category
+                category: saved.data.credentialSubject['Order'].category,
+                ratings: saved.data.credentialSubject['Order'].ratings,
+                store: saved.data.credentialSubject['Order'].store
               },
               credentialType: ensureStringArray(saved.data.type),
               issuedTo: ensureString(saved.data.credentialSubject.id),
@@ -204,11 +206,11 @@ const Credentials: NextPage = () => {
           <TopNavigationMenu />
           <div className='self-stretch flex flex-row flex-wrap items-start justify-start gap-[28px] text-left text-lg text-white-1 font-kumbh-sans'>
             <BiDataCard
-              title='Total Credential Value'
+              title='Estimated Credential Value'
               value={`$${totalCredentialValue.toFixed(2)}`}
             />
             <BiDataCard
-              title='Total Credentials'
+              title='Local Credentials'
               value={`${credentialRows.length}`}
             />
           </div>

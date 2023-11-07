@@ -4,6 +4,10 @@ export type OrderData = {
   name: string
   asin: string
   description: string
+  category: string
+  brandName: string
+  imageURL: string
+  ratings: number
   store: string
   purchasedDate: string
   uploadedDate: string

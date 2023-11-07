@@ -6,22 +6,28 @@ import UserActivity from '@/components/dashboard/UserActivity'
 import TopNavigationMenu from '@/components/top-navigation/TopNavigationMenu'
 import { useDid } from '@/contexts/DidContext'
 import {
-  AppStat,
-  getTotalUsersFirebase
-} from '@/lib/firebase/functions/getTotalUsers'
+  TotalStats,
+  getUserStatsFirebase
+} from '@/lib/firebase/functions/getUserStats'
 import { calculateTotalVCUSDValue } from '@/utils/credValue'
 import type { NextPage } from 'next'
 import { useEffect, useMemo, useState } from 'react'
 import SideNavigationMenu from '../components/side-navigation/SideNavigationMenu'
 
 const Dashboard: NextPage = () => {
-  const [appStat, setAppStat] = useState({
-    totalUsers: 0,
-    totalUploadedFiles: 0,
-    totalOrdersProcessed: 0,
-    totalVCsCreated: 0
-  } as AppStat)
-
+  const [totalStats, setTotalStats] = useState<TotalStats>({
+    users: 0,
+    userStats: {
+      uploadedFiles: 0,
+      ordersProcessed: 0,
+      vcsCreated: 0
+    },
+    appStats: {
+      uploadedFiles: 0,
+      ordersProcessed: 0,
+      vcsCreated: 0
+    }
+  })
   const {
     state: { credentialRows }
   } = useDid()
@@ -32,7 +38,7 @@ const Dashboard: NextPage = () => {
   }, [credentialRows])
 
   useEffect(() => {
-    getTotalUsersFirebase().then(setAppStat).catch(console.error)
+    getUserStatsFirebase().then(setTotalStats).catch(console.error)
   }, [])
 
   return (
@@ -54,24 +60,24 @@ const Dashboard: NextPage = () => {
               <div className='self-stretch flex flex-row flex-wrap items-start justify-start gap-[28px] text-left text-lg text-white-1 font-kumbh-sans'>
                 <BiDataCard
                   title='Total users'
-                  value={appStat.totalUsers.toString()}
+                  value={totalStats.users}
                   percentageChange='+0.00%'
                 />
                 <BiDataCard
                   title='Total Credentials'
-                  value={appStat.totalVCsCreated.toString()}
+                  value={totalStats.appStats.vcsCreated}
                   percentageChange='+0.00%'
                 />
               </div>
               <div className='self-stretch flex flex-row flex-wrap items-start justify-start gap-[28px] text-left text-lg text-white-1 font-kumbh-sans'>
                 <BiDataCard
                   title='Total Files Processed'
-                  value={appStat.totalUploadedFiles.toString()}
+                  value={totalStats.appStats.uploadedFiles}
                   percentageChange='+0.00%'
                 />
                 <BiDataCard
                   title='Total Orders Processed'
-                  value={appStat.totalOrdersProcessed.toString()}
+                  value={totalStats.appStats.ordersProcessed}
                   percentageChange='+0.00%'
                 />
               </div>

@@ -1,11 +1,25 @@
-import { AuthProvider } from '@/contexts/AuthContext'
+import { AuthProvider, useAuth } from '@/contexts/AuthContext'
 import { DidProvider } from '@/contexts/DidContext'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
-import { Fragment } from 'react'
+import { useRouter } from 'next/router'
+import { Fragment, useEffect } from 'react'
 import './global.css'
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const { isLoggedIn, loading } = useAuth()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (!loading) {
+      if (!isLoggedIn && router.pathname !== '/') {
+        router.push('/')
+      } else if (isLoggedIn && router.pathname === '/') {
+        router.push('/dashboard')
+      }
+    }
+  }, [isLoggedIn, loading, router])
+
   return (
     <Fragment>
       <Head>

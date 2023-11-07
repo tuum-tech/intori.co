@@ -1,8 +1,12 @@
+import LoadingSpinner from '@/components/common/LoadingSpinner'
+import { UserInfo } from '@/lib/magic/user'
+import { Wallet } from '@/lib/thirdweb/localWallet'
 import { analytics, auth, functions } from '@/utils/firebase'
 import { logEvent } from 'firebase/analytics'
 import { signInWithCustomToken, signOut } from 'firebase/auth'
 import { httpsCallable } from 'firebase/functions'
 import { Magic, type MagicUserMetadata } from 'magic-sdk'
+import { useRouter } from 'next/router'
 import {
   ReactNode,
   createContext,
@@ -22,7 +26,7 @@ type AuthProviderProps = {
 export const AuthContext = createContext({
   isLoggedIn: false,
   loading: true,
-  loginWithEmail: async (_email: string): Promise<boolean> => {
+  loginWithEmail: async (_email: string, _wallet: Wallet): Promise<boolean> => {
     throw new Error('loginWithEmail function not implemented')
   },
   logout: async () => {}
@@ -34,6 +38,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [loading, setLoading] = useState(true)
   const [magic, setMagic] = useState<Magic | null>(null) // State to store the Magic instance
+  const [isProcessing, setIsProcessing] = useState(false)
+  const router = useRouter()
 
   useEffect(() => {
     // Only instantiate Magic on the client side
@@ -46,14 +52,26 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
+      setIsProcessing(true)
       setIsLoggedIn(!!user)
       setLoading(false)
+
+      // Handle redirection here within the auth state changed callback
+      if (!loading) {
+        if (!user && router.pathname !== '/') {
+          router.push('/')
+        } else if (user && router.pathname === '/') {
+          router.push('/dashboard')
+        }
+      }
+      setIsProcessing(false)
     })
+    return () => {
+      unsubscribe()
+    }
+  }, [router, loading])
 
-    return () => unsubscribe()
-  }, [])
-
-  const loginWithEmail = async (email: string) => {
+  const loginWithEmail = async (email: string, wallet: Wallet) => {
     try {
       if (magic) {
         await magic.auth.loginWithEmailOTP({ email })
@@ -61,7 +79,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         throw new Error('Magic is not initialized')
       }
 
-      const userInfo: MagicUserMetadata = await magic.user.getInfo()
+      const magicUserMetadata = await magic.user.getInfo()
+      const userInfo = {
+        email: magicUserMetadata.email,
+        wallet: {
+          local: wallet.address,
+          magic: magicUserMetadata.publicAddress
+        }
+      } as UserInfo
       console.log('User Login: ', JSON.stringify(userInfo))
 
       const createCustomTokenFunction = httpsCallable(functions, 'login')
@@ -78,7 +103,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       } else {
         // Handle the case where `analytics` is undefined
       }
-      localStorage.setItem('magicUserInfo', JSON.stringify(userInfo))
+      localStorage.setItem('userInfo', JSON.stringify(userInfo))
       return true
     } catch (error) {
       console.log(`Error while logging in with Email: ${error}`)
@@ -130,11 +155,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         logEvent(analytics, 'logout', userInfo)
       }
 
-      localStorage.removeItem('magicUserInfo')
+      localStorage.removeItem('userInfo')
     } catch (error) {
       console.log(`Error while logging out: ${error}`)
       throw new Error(`Error while logging out: ${error}`)
     }
+  }
+
+  if (loading || isProcessing) {
+    return <LoadingSpinner loadingText='Loading...' />
   }
 
   return (

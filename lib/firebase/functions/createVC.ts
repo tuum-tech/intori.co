@@ -1,7 +1,7 @@
+import { UserInfo } from '@/lib/magic/user'
 import { analytics, auth, functions } from '@/utils/firebase'
 import { logEvent } from 'firebase/analytics'
 import { httpsCallable } from 'firebase/functions'
-import { MagicUserMetadata } from 'magic-sdk'
 import { VCMetadata } from './getVCs'
 
 type Response = {
@@ -13,9 +13,9 @@ export async function createVCFirebase(vCredMetadataArray: VCMetadata[]) {
   // After creating a VC in the frontend, call the Firebase function
   const createVCFunction = httpsCallable(functions, 'createVC')
 
-  const userInfo: MagicUserMetadata = JSON.parse(
-    localStorage.getItem('magicUserInfo') || '{}'
-  ) as MagicUserMetadata
+  const userInfo: UserInfo = JSON.parse(
+    localStorage.getItem('userInfo') || '{}'
+  )
   try {
     const token = await auth.currentUser?.getIdToken(true)
     const response = await createVCFunction({
