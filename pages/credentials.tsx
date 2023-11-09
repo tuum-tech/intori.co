@@ -8,7 +8,7 @@ import TopNavigationMenu from '@/components/top-navigation/TopNavigationMenu'
 import { UploadedDataDetail } from '@/components/upload/UploadedTypes'
 import { useDid } from '@/contexts/DidContext'
 import { createVCFirebase } from '@/lib/firebase/functions/createVC'
-import { VCMetadata } from '@/lib/firebase/functions/getVCs'
+import { VCMetadata, getVCsFirebase } from '@/lib/firebase/functions/getVCs'
 import { createVC } from '@/lib/veramo/createVC'
 import {
   CreateVCRequestParams,
@@ -41,41 +41,51 @@ const Credentials: NextPage = () => {
   }, [credentialRows])
 
   useEffect(() => {
-    setIsProcessing((prevState) => ({
-      ...prevState,
-      generateCreds: true
-    }))
+    const fetchAndFilterCredentials = async () => {
+      setIsProcessing((prevState) => ({
+        ...prevState,
+        generateCreds: true
+      }))
 
-    const storedSelectedItems = sessionStorage.getItem('selectedItems')
-    if (storedSelectedItems) {
-      try {
-        const existingOrderIds = new Set(
-          credentialRows.map((cred) => cred.uploadedDataDetail.id)
-        )
+      // Retrieve existing credentials from the database
+      const existingCredsMetadata = await getVCsFirebase()
 
-        const selectedItems = JSON.parse(storedSelectedItems)
-        const newCredentials = selectedItems.filter(
-          (item: UploadedDataDetail) => !existingOrderIds.has(item.id)
-        )
+      // Create a set of existing ids for quick lookup
+      const existingOrderIds = new Set(
+        existingCredsMetadata.map((vcMetadata) => vcMetadata.vcHash)
+      )
 
-        if (newCredentials.length > 0 && !isGeneratingCredentials.current) {
-          isGeneratingCredentials.current = true
-          generateCredentials(newCredentials).finally(() => {
+      // Retrieve the selected items from sessionStorage
+      const storedSelectedItems = sessionStorage.getItem('selectedItems')
+      if (storedSelectedItems) {
+        try {
+          const selectedItems = JSON.parse(storedSelectedItems)
+          const newCredentials = selectedItems.filter(
+            (item: UploadedDataDetail) => !existingOrderIds.has(item.id)
+          )
+
+          // Now generate credentials for new items that don't have a matching hash in the database
+          if (newCredentials.length > 0 && !isGeneratingCredentials.current) {
+            isGeneratingCredentials.current = true
+            await generateCredentials(newCredentials)
             isGeneratingCredentials.current = false
-          })
+          }
+
           sessionStorage.removeItem('selectedItems')
+        } catch (error) {
+          console.error(
+            'Error parsing selected items from sessionStorage:',
+            error
+          )
         }
-      } catch (error) {
-        console.error(
-          'Error parsing selected items from sessionStorage:',
-          error
-        )
       }
+      setIsProcessing((prevState) => ({
+        ...prevState,
+        generateCreds: false
+      }))
     }
-    setIsProcessing((prevState) => ({
-      ...prevState,
-      generateCreds: false
-    }))
+
+    fetchAndFilterCredentials()
   }, [dispatch])
 
   // Logic to generate credentials for each selected item...

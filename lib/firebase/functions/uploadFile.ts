@@ -13,7 +13,7 @@ export async function uploadFileFirebase(
   try {
     // After parsing, call the Firebase function
     const userInfo: UserInfo = JSON.parse(
-      localStorage.getItem('userInfo') || '{}'
+      localStorage.getItem('userInfo') ?? '{}'
     )
     const uploadFileFunction = httpsCallable(functions, 'uploadFile')
     try {
