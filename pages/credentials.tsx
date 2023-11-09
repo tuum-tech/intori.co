@@ -93,7 +93,7 @@ const Credentials: NextPage = () => {
     const batchedCredentials: VCMetadata[][] = []
     let currentBatch: VCMetadata[] = []
 
-    const batchSize = 100
+    const batchSize = 200
 
     const promises = newCredentials.map(async (order: UploadedDataDetail) => {
       // Check if there's an existing credential for this order
