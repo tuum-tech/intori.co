@@ -14,7 +14,7 @@ export async function createVCFirebase(vCredMetadataArray: VCMetadata[]) {
   const createVCFunction = httpsCallable(functions, 'createVC')
 
   const userInfo: UserInfo = JSON.parse(
-    localStorage.getItem('userInfo') || '{}'
+    localStorage.getItem('userInfo') ?? '{}'
   )
   try {
     const token = await auth.currentUser?.getIdToken(true)

@@ -8,6 +8,7 @@ import UploadDataButton from '@/components/upload/UploadDataButton'
 import { UploadedDataDetail } from '@/components/upload/UploadedTypes'
 import { uploadFileFirebase } from '@/lib/firebase/functions/uploadFile'
 import axios from 'axios'
+import _ from 'lodash'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
@@ -43,16 +44,37 @@ const Upload: NextPage = () => {
     const formData = new FormData()
     formData.append('file', file)
 
-    const response = await axios.post('/api/uploadFile', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
+    try {
+      const response = await axios.post('/api/uploadFile', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+
+      if (response.data && response.data.data) {
+        const newData = response.data.data as UploadedDataDetail[]
+
+        // Get the existing IDs to avoid adding duplicates
+        const existingIds = new Set(uploadedDataRows.map((item) => item.id))
+
+        // Combine old and new data, then filter out duplicates based on unique ID
+        const combinedData = [...uploadedDataRows, ...newData]
+        const uniqueData = _.uniqBy(combinedData, 'id').filter(
+          (item) => !existingIds.has(item.id)
+        )
+
+        // Update the state with the unique data only
+        setUploadedDataRows(uniqueData)
+
+        // Update the backend database with the upload stats
+        // Here, you should only count the new unique items that were not already in the state
+        const newUniqueItemCount = uniqueData.length - uploadedDataRows.length
+        if (newUniqueItemCount > 0) {
+          await uploadFileFirebase(newUniqueItemCount)
+        }
       }
-    })
-    if (response.data && response.data.data) {
-      const data = response.data.data as UploadedDataDetail[]
-      setUploadedDataRows(data)
-      // Update the backend database with the upload stats
-      await uploadFileFirebase(data.length)
+    } catch (error) {
+      console.error('Error uploading file:', error)
     }
 
     setIsProcessing((prevState) => ({

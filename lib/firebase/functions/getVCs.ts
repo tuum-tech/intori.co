@@ -52,7 +52,7 @@ export async function getVCsFirebase(
   let vcMetadataArray = [] as VCMetadata[]
   // After parsing, call the Firebase function
   const userInfo: UserInfo = JSON.parse(
-    localStorage.getItem('userInfo') || '{}'
+    localStorage.getItem('userInfo') ?? '{}'
   )
   const getVCsFunction = httpsCallable(functions, 'getVCs')
   try {
@@ -60,7 +60,7 @@ export async function getVCsFirebase(
     const params = {
       authToken: token,
       uid: '',
-      startAfterDoc: startAfterDoc || null
+      startAfterDoc: startAfterDoc ?? null
     }
     if (self) {
       params.uid = auth.currentUser?.uid as string

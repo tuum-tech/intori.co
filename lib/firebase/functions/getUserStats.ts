@@ -39,7 +39,7 @@ export async function getUserStatsFirebase(): Promise<TotalStats> {
     }
   }
   const userInfo: UserInfo = JSON.parse(
-    localStorage.getItem('userInfo') || '{}'
+    localStorage.getItem('userInfo') ?? '{}'
   )
   const getUserStatsFunction = httpsCallable(functions, 'getUserStats')
   try {
