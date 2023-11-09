@@ -90,6 +90,11 @@ const Credentials: NextPage = () => {
 
   // Logic to generate credentials for each selected item...
   const generateCredentials = async (newCredentials: UploadedDataDetail[]) => {
+    const batchedCredentials: VCMetadata[][] = []
+    let currentBatch: VCMetadata[] = []
+
+    const batchSize = 100
+
     const promises = newCredentials.map(async (order: UploadedDataDetail) => {
       // Check if there's an existing credential for this order
       const existingCredential = credentialRows.find((cred) => {
@@ -157,15 +162,33 @@ const Credentials: NextPage = () => {
         }
         // Dispatch the action to add a new credential row
         dispatch({ type: 'ADD_CREDENTIAL_ROW', payload: credentialRow })
-        await createVCFirebase([credentialRow.vCredMetadata])
       } catch (error) {
         console.error(`Error while creating a VC: ${error}`)
+        return null
       }
 
-      return credentialRow
+      currentBatch.push(credentialRow.vCredMetadata)
+      if (currentBatch.length >= batchSize) {
+        batchedCredentials.push(currentBatch)
+        currentBatch = []
+      }
     })
 
     await Promise.allSettled(promises)
+
+    // Push the last batch if it has any items
+    if (currentBatch.length > 0) {
+      batchedCredentials.push(currentBatch)
+    }
+
+    // Now we have an array of batches to be sent to Firebase
+    for (const batch of batchedCredentials) {
+      try {
+        await createVCFirebase(batch)
+      } catch (error) {
+        console.error(`Error while uploading VCMetadata to firebase: ${error}`)
+      }
+    }
   }
 
   const handleSelectionChange = (selectedRows: { [key: string]: boolean }) => {
