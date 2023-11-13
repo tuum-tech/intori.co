@@ -19,7 +19,7 @@ const BottomNav: NextPage = () => {
   }
 
   if (isProcessing) {
-    return <LoadingSpinner loadingText='Signing you out...' />
+    return <LoadingSpinner loadingText='Logging you out...' />
   }
 
   return (
