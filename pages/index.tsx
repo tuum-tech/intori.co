@@ -37,7 +37,7 @@ const SigninDefaultScreen = () => {
   }
 
   if (loading || isProcessing) {
-    return <LoadingSpinner loadingText='Signing you in...' />
+    return <LoadingSpinner loadingText='Logging you in...' />
   }
 
   return (
