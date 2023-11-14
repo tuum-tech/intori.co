@@ -58,10 +58,11 @@ export async function normalizeOrderData(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   row: any
 ): Promise<UploadedDataDetail> {
-  const productInfo: ProductInfo = await getProductInfoFromASIN(row['ASIN'])
+  const asin = row['ASIN']
+  const productInfo: ProductInfo = await getProductInfoFromASIN(asin)
   const orderData = {
     name: row['Product Name'] ?? '',
-    asin: row['ASIN'] ?? '',
+    asin: asin ?? '',
     description: productInfo.productDescription ?? '',
     category: productInfo.category ?? '',
     brandName: productInfo.brandName ?? '',

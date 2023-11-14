@@ -1,4 +1,4 @@
-import { UserInfo } from '@/lib/magic/user'
+import { CredentialDetail } from '@/components/credentials/CredTypes'
 import { logEvent } from 'firebase/analytics'
 import { httpsCallable } from 'firebase/functions'
 import { analytics, auth, functions } from '../../../utils/firebase'
@@ -21,7 +21,6 @@ export type VCMetadata = {
   productValueRange: ProductValueRange
   ageOfOrder: AgeOfOrder
   vcValue: number
-  vcHash: string
   vcData: {
     order: {
       category: string
@@ -36,51 +35,78 @@ export type VCMetadata = {
   }
   vcMetadata: {
     id: string
+    vcHash: string
     store: string[]
   }
 }
 
 export type Response = {
   success: boolean
-  vcs: VCMetadata[]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  vcs: any[]
 }
 
-export async function getVCsFirebase(
-  self: boolean = true,
-  startAfterDoc?: string
-): Promise<VCMetadata[]> {
-  let vcMetadataArray = [] as VCMetadata[]
-  // After parsing, call the Firebase function
-  const userInfo: UserInfo = JSON.parse(
-    localStorage.getItem('userInfo') ?? '{}'
-  )
+async function fetchAllVCsRecursive(
+  options: {
+    self: boolean
+    query: { [key: string]: string }
+    itemsPerPage: number
+    fetchEverything: boolean
+    startAfterDoc?: string | null
+  },
+  accumulatedVCs: CredentialDetail[] = []
+): Promise<CredentialDetail[]> {
+  const token = await auth.currentUser?.getIdToken(true)
+  const params = {
+    authToken: token,
+    query: options.query ?? {},
+    itemsPerPage: options.itemsPerPage ?? 5,
+    startAfterDoc: options.startAfterDoc
+  }
+
+  if (options.self) {
+    params.query['uid'] = auth.currentUser?.uid as string
+  }
+
   const getVCsFunction = httpsCallable(functions, 'getVCs')
-  try {
-    const token = await auth.currentUser?.getIdToken(true)
-    const params = {
-      authToken: token,
-      uid: '',
-      startAfterDoc: startAfterDoc ?? null
-    }
-    if (self) {
-      params.uid = auth.currentUser?.uid as string
-    }
-    const response = await getVCsFunction(params)
-    const result = response.data as Response
-    if (result.success) {
-      console.log('Retrieved my VCs successfully')
-      // Log the event to firebase
-      if (analytics) {
-        logEvent(analytics, `getVCs: successful for user ${userInfo}`)
-      }
-      vcMetadataArray = result.vcs
-    }
-  } catch (error) {
-    console.error(`Error retrieving my VCs: ${error}`)
+
+  const response = await getVCsFunction(params)
+  const result = response.data as Response
+
+  if (!result.success) {
+    console.error('Failed to fetch VCs')
     // Log the event to firebase
     if (analytics) {
-      logEvent(analytics, `getMyVCs: failure for user ${userInfo}: ${error}`)
+      logEvent(
+        analytics,
+        `getVCsFirebase: failure for user: ${auth.currentUser?.uid}: Failed to fetch VCs`
+      )
     }
+
+    throw new Error('Failed to fetch VCs')
   }
-  return vcMetadataArray
+
+  const newVCs = result.vcs
+  const newAccumulatedVCs = accumulatedVCs.concat(newVCs)
+
+  if (!options.fetchEverything || newVCs.length === 0) {
+    // No more documents to fetch
+    return newAccumulatedVCs
+  }
+
+  // Use the last document ID as the starting point for the next fetch
+  const lastDocId = newVCs[newVCs.length - 1].id
+  return fetchAllVCsRecursive(
+    { ...options, startAfterDoc: lastDocId },
+    newAccumulatedVCs
+  )
+}
+
+export async function getVCsFirebase(options: {
+  self: boolean
+  query: { [key: string]: string }
+  itemsPerPage: number
+  fetchEverything: boolean
+}): Promise<CredentialDetail[]> {
+  return fetchAllVCsRecursive(options)
 }

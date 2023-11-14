@@ -21,7 +21,7 @@ export function calculateVCUSDValue(
 export function calculateTotalVCUSDValue(credentialRows: CredentialDetail[]) {
   return credentialRows.reduce((total, credential) => {
     // Use the `vcValue` property from the `vCredMetadata`
-    return total + (credential.vCredMetadata.vcValue || 0)
+    return total + (credential.vCred.metadata.vcValue || 0)
   }, 0)
 }
 

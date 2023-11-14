@@ -55,7 +55,7 @@ const RecentCredentialRow: NextPage<RecentCredentialRowProps> = ({
           <div onClick={handleRowClick} className='cursor-pointer'>
             <div className='flex-1 overflow-hidden flex flex-col items-start justify-center gap-[5px]'>
               <div className='relative font-semibold'>
-                {credentialDetail.vCredMetadata.vcData.credentialType.join(
+                {credentialDetail.vCred.metadata.vcData.credentialType.join(
                   ', '
                 )}{' '}
               </div>
@@ -68,7 +68,7 @@ const RecentCredentialRow: NextPage<RecentCredentialRowProps> = ({
       </div>
       <div className='w-[200px] flex flex-row items-center justify-between'>
         <div className='relative inline-block w-[98px] shrink-0'>
-          ${credentialDetail.vCredMetadata.vcValue}
+          ${credentialDetail.vCred.metadata.vcValue}
         </div>
         <div className='relative inline-block w-[98px] shrink-0'>
           {credentialDetail.uploadedDataDetail.orderData.amount}

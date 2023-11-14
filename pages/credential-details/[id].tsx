@@ -2,6 +2,7 @@ import BackButton from '@/components/common/BackButton'
 import DateFormatter from '@/components/common/DateFormatter'
 import { CredentialDetail } from '@/components/credentials/CredTypes'
 import TopNavigationMenu from '@/components/top-navigation/TopNavigationMenu'
+import { useDid } from '@/contexts/DidContext'
 import {
   mapAgeOfOrderToString,
   mapProductValueRangeToString
@@ -12,6 +13,11 @@ import { useEffect, useState } from 'react'
 import SideNavigationMenu from '../../components/side-navigation/SideNavigationMenu'
 
 const CredentialDetails: NextPage = ({}) => {
+  const {
+    state: { credentialRows },
+    fetchCredentials
+  } = useDid()
+
   const router = useRouter()
   const { id, backToUrl } = router.query
 
@@ -19,8 +25,15 @@ const CredentialDetails: NextPage = ({}) => {
     useState<CredentialDetail | null>(null)
 
   useEffect(() => {
-    const storedData = localStorage.getItem('credentials')
-    const credentialRows = storedData ? JSON.parse(storedData) : []
+    if (typeof id === 'string') {
+      fetchCredentials({
+        query: { 'vCred.metadata.vcMetadata.vcHash': id },
+        itemsPerPage: 1
+      })
+    }
+  }, [id, fetchCredentials])
+
+  useEffect(() => {
     const selectedCredential = credentialRows.find(
       (row: CredentialDetail) => String(row.uploadedDataDetail.id) === id
     )
@@ -32,7 +45,7 @@ const CredentialDetails: NextPage = ({}) => {
       // If no matching credential found or invalid id, redirect to /credentials.tsx
       router.push('/credentials')
     }
-  }, [id, router])
+  }, [credentialRows, id, router])
 
   return (
     <div className='relative bg-black-0 w-full h-screen overflow-y-auto flex flex-row items-start justify-start'>
@@ -60,7 +73,7 @@ const CredentialDetails: NextPage = ({}) => {
                   <div className='flex-1 flex flex-col items-start justify-start'>
                     <div className='self-stretch relative leading-[150%]'>
                       {mapProductValueRangeToString(
-                        credentialDetail.vCredMetadata.productValueRange
+                        credentialDetail.vCred.metadata.productValueRange
                       )}
                     </div>
                   </div>
@@ -74,7 +87,7 @@ const CredentialDetails: NextPage = ({}) => {
                   <div className='flex-1 flex flex-col items-start justify-start'>
                     <div className='self-stretch relative leading-[150%]'>
                       {mapAgeOfOrderToString(
-                        credentialDetail.vCredMetadata.ageOfOrder
+                        credentialDetail.vCred.metadata.ageOfOrder
                       )}
                     </div>
                   </div>
@@ -87,7 +100,7 @@ const CredentialDetails: NextPage = ({}) => {
                 <div className='self-stretch flex flex-row items-center justify-between text-sm text-grey-2'>
                   <div className='flex-1 flex flex-col items-start justify-start'>
                     <div className='self-stretch relative leading-[150%]'>
-                      ${credentialDetail.vCredMetadata.vcValue}
+                      ${credentialDetail.vCred.metadata.vcValue}
                     </div>
                   </div>
                 </div>
@@ -99,7 +112,7 @@ const CredentialDetails: NextPage = ({}) => {
                 <div className='self-stretch flex flex-row items-center justify-between text-sm text-grey-2'>
                   <div className='flex-1 flex flex-col items-start justify-start'>
                     <div className='self-stretch relative leading-[150%]'>
-                      {credentialDetail.vCredMetadata.vcData.order.category ||
+                      {credentialDetail.vCred.metadata.vcData.order.category ||
                         'Not defined'}
                     </div>
                   </div>
@@ -112,7 +125,7 @@ const CredentialDetails: NextPage = ({}) => {
                 <div className='self-stretch flex flex-row items-center justify-between text-sm text-grey-2'>
                   <div className='flex-1 flex flex-col items-start justify-start'>
                     <div className='self-stretch relative leading-[150%]'>
-                      {credentialDetail.vCredMetadata.vcData.order.ratings}
+                      {credentialDetail.vCred.metadata.vcData.order.ratings}
                     </div>
                   </div>
                 </div>
@@ -124,7 +137,7 @@ const CredentialDetails: NextPage = ({}) => {
                 <div className='self-stretch flex flex-row items-center justify-between text-sm text-grey-2'>
                   <div className='flex-1 flex flex-col items-start justify-start'>
                     <div className='self-stretch relative leading-[150%]'>
-                      {credentialDetail.vCredMetadata.vcData.credentialType.join(
+                      {credentialDetail.vCred.metadata.vcData.credentialType.join(
                         ', '
                       )}
                     </div>
@@ -138,7 +151,7 @@ const CredentialDetails: NextPage = ({}) => {
                 <div className='self-stretch flex flex-row items-center justify-between text-sm text-grey-2'>
                   <div className='flex-1 flex flex-col items-start justify-start'>
                     <div className='self-stretch relative leading-[150%]'>
-                      {credentialDetail.vCredMetadata.vcData.issuedTo}
+                      {credentialDetail.vCred.metadata.vcData.issuedTo}
                     </div>
                   </div>
                 </div>
@@ -150,7 +163,7 @@ const CredentialDetails: NextPage = ({}) => {
                 <div className='self-stretch flex flex-row items-center justify-between text-sm text-grey-2'>
                   <div className='flex-1 flex flex-col items-start justify-start'>
                     <div className='self-stretch relative leading-[150%]'>
-                      {credentialDetail.vCredMetadata.vcData.issuedBy}
+                      {credentialDetail.vCred.metadata.vcData.issuedBy}
                     </div>
                   </div>
                 </div>
@@ -164,7 +177,7 @@ const CredentialDetails: NextPage = ({}) => {
                     <div className='self-stretch relative leading-[150%]'>
                       <DateFormatter
                         dateStr={
-                          credentialDetail.vCredMetadata.vcData.issuedDate
+                          credentialDetail.vCred.metadata.vcData.issuedDate
                         }
                       />
                     </div>
@@ -180,7 +193,7 @@ const CredentialDetails: NextPage = ({}) => {
                     <div className='self-stretch relative leading-[150%]'>
                       <DateFormatter
                         dateStr={
-                          credentialDetail.vCredMetadata.vcData.expiryDate
+                          credentialDetail.vCred.metadata.vcData.expiryDate
                         }
                       />
                     </div>
@@ -194,11 +207,11 @@ const CredentialDetails: NextPage = ({}) => {
                 <div className='self-stretch flex flex-row items-center justify-between text-sm text-grey-2'>
                   <div className='flex-1 flex flex-col items-start justify-start'>
                     <div className='self-stretch relative leading-[150%]'>
-                      {credentialDetail.vCredMetadata.vcMetadata.store.includes(
+                      {credentialDetail.vCred.metadata.vcMetadata.store.includes(
                         'intori'
                       )
                         ? 'Local Browser'
-                        : credentialDetail.vCredMetadata.vcMetadata.store.join(
+                        : credentialDetail.vCred.metadata.vcMetadata.store.join(
                             ', '
                           )}
                     </div>

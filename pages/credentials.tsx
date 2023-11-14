@@ -8,7 +8,11 @@ import TopNavigationMenu from '@/components/top-navigation/TopNavigationMenu'
 import { UploadedDataDetail } from '@/components/upload/UploadedTypes'
 import { useDid } from '@/contexts/DidContext'
 import { createVCFirebase } from '@/lib/firebase/functions/createVC'
-import { VCMetadata, getVCsFirebase } from '@/lib/firebase/functions/getVCs'
+import {
+  TotalStats,
+  getUserStatsFirebase
+} from '@/lib/firebase/functions/getUserStats'
+import { VCMetadata } from '@/lib/firebase/functions/getVCs'
 import { createVC } from '@/lib/veramo/createVC'
 import {
   CreateVCRequestParams,
@@ -24,6 +28,20 @@ import type { NextPage } from 'next'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 const Credentials: NextPage = () => {
+  const [totalStats, setTotalStats] = useState<TotalStats>({
+    totalUsers: 0,
+    userStats: {
+      uploadedFiles: 0,
+      ordersProcessed: 0,
+      vcsCreated: 0
+    },
+    appStats: {
+      uploadedFiles: 0,
+      ordersProcessed: 0,
+      vcsCreated: 0
+    }
+  })
+
   const [selectedItems, setSelectedItems] = useState([] as CredentialDetail[])
   const [isProcessing, setIsProcessing] = useState({
     generateCreds: false,
@@ -31,14 +49,21 @@ const Credentials: NextPage = () => {
   })
   const {
     state: { credentialRows, veramoState },
-    dispatch
+    fetchCredentials
   } = useDid()
   const isGeneratingCredentials = useRef(false)
 
-  // Calculate the total value of all credentials
   const totalCredentialValue = useMemo(() => {
     return calculateTotalVCUSDValue(credentialRows)
   }, [credentialRows])
+
+  useEffect(() => {
+    getUserStatsFirebase().then(setTotalStats).catch(console.error)
+  }, [credentialRows])
+
+  useEffect(() => {
+    fetchCredentials({ self: true, itemsPerPage: 50, fetchEverything: true })
+  }, [fetchCredentials])
 
   useEffect(() => {
     const fetchAndFilterCredentials = async () => {
@@ -47,24 +72,23 @@ const Credentials: NextPage = () => {
         generateCreds: true
       }))
 
-      // Retrieve existing credentials from the database
-      const existingCredsMetadata = await getVCsFirebase()
-
-      // Create a set of existing ids for quick lookup
-      const existingOrderIds = new Set(
-        existingCredsMetadata.map((vcMetadata) => vcMetadata.vcHash)
-      )
-
       // Retrieve the selected items from sessionStorage
-      const storedSelectedItems = sessionStorage.getItem('selectedItems')
-      if (storedSelectedItems) {
+      const storedSelectedUploadedData = sessionStorage.getItem('selectedItems')
+      if (storedSelectedUploadedData) {
         try {
-          const selectedItems = JSON.parse(storedSelectedItems)
-          const newCredentials = selectedItems.filter(
+          // Create a set of existing ids for quick lookup
+          const existingOrderIds = new Set(
+            credentialRows.map((cred) => cred.vCred.metadata.vcMetadata.vcHash)
+          )
+
+          const selectedUploadedData = JSON.parse(
+            storedSelectedUploadedData
+          ) as UploadedDataDetail[]
+          const newCredentials = selectedUploadedData.filter(
             (item: UploadedDataDetail) => !existingOrderIds.has(item.id)
           )
 
-          // Now generate credentials for new items that don't have a matching hash in the database
+          // Now generate credentials for the selected items
           if (newCredentials.length > 0 && !isGeneratingCredentials.current) {
             isGeneratingCredentials.current = true
             await generateCredentials(newCredentials)
@@ -86,109 +110,105 @@ const Credentials: NextPage = () => {
     }
 
     fetchAndFilterCredentials()
-  }, [dispatch])
+  }, [credentialRows])
 
   // Logic to generate credentials for each selected item...
-  const generateCredentials = async (newCredentials: UploadedDataDetail[]) => {
-    const batchedCredentials: VCMetadata[][] = []
-    let currentBatch: VCMetadata[] = []
+  const generateCredentials = async (
+    selectedUploadedData: UploadedDataDetail[]
+  ) => {
+    const batchedVcs: CredentialDetail[][] = []
+    let currentBatchVcs: CredentialDetail[] = []
 
     const batchSize = 200
 
-    const promises = newCredentials.map(async (order: UploadedDataDetail) => {
-      // Check if there's an existing credential for this order
-      const existingCredential = credentialRows.find((cred) => {
-        return (
-          JSON.stringify(cred.uploadedDataDetail.orderData) ===
-          JSON.stringify(order.orderData)
-        )
-      })
-
-      // If a credential already exists, return null
-      if (existingCredential) {
-        return null
-      }
-
-      const credentialRow = { uploadedDataDetail: order } as CredentialDetail
-      // Logic to generate verifiable credentials...
-      try {
-        const vcRequestParams: CreateVCRequestParams = {
-          vcKey: 'Order',
-          vcValue: {
-            productName: credentialRow.uploadedDataDetail.orderData.name,
-            asin: credentialRow.uploadedDataDetail.orderData.asin,
-            description: credentialRow.uploadedDataDetail.orderData.description,
-            category: credentialRow.uploadedDataDetail.orderData.category,
-            brandName: credentialRow.uploadedDataDetail.orderData.brandName,
-            ratings: credentialRow.uploadedDataDetail.orderData.ratings,
-            store: credentialRow.uploadedDataDetail.orderData.store,
-            orderDate: credentialRow.uploadedDataDetail.orderData.purchasedDate,
-            amount: credentialRow.uploadedDataDetail.orderData.amount
-          },
-          credTypes: ['OrderCredential']
-        }
-        const saved: CreateVCResponseResult = (await createVC(
-          veramoState,
-          vcRequestParams
-        )) as CreateVCResponseResult
-        if (saved) {
-          console.log('Created a VC: ', saved)
-
-          credentialRow.vCred = saved
-
-          credentialRow.vCredMetadata = {
-            productValueRange:
-              credentialRow.uploadedDataDetail.orderData.productValueRange,
-            ageOfOrder: credentialRow.uploadedDataDetail.orderData.ageOfOrder,
-            vcValue: credentialRow.uploadedDataDetail.orderData.worth,
-            vcHash: credentialRow.uploadedDataDetail.id,
-            vcData: {
-              order: {
-                category: saved.data.credentialSubject['Order'].category,
-                ratings: saved.data.credentialSubject['Order'].ratings,
-                store: saved.data.credentialSubject['Order'].store
-              },
-              credentialType: ensureStringArray(saved.data.type),
-              issuedTo: ensureString(saved.data.credentialSubject.id),
-              issuedBy: getIdFromIssuer(saved.data.issuer),
-              issuedDate: saved.data.issuanceDate,
-              expiryDate: ensureString(saved.data.expirationDate)
+    const promises = selectedUploadedData.map(
+      async (order: UploadedDataDetail) => {
+        const credentialRow = { uploadedDataDetail: order } as CredentialDetail
+        // Logic to generate verifiable credentials...
+        try {
+          const vcRequestParams: CreateVCRequestParams = {
+            vcKey: 'Order',
+            vcValue: {
+              productName: credentialRow.uploadedDataDetail.orderData.name,
+              asin: credentialRow.uploadedDataDetail.orderData.asin,
+              description:
+                credentialRow.uploadedDataDetail.orderData.description,
+              category: credentialRow.uploadedDataDetail.orderData.category,
+              brandName: credentialRow.uploadedDataDetail.orderData.brandName,
+              ratings: credentialRow.uploadedDataDetail.orderData.ratings,
+              store: credentialRow.uploadedDataDetail.orderData.store,
+              orderDate:
+                credentialRow.uploadedDataDetail.orderData.purchasedDate,
+              amount: credentialRow.uploadedDataDetail.orderData.amount
             },
-            vcMetadata: {
-              id: saved.metadata.id,
-              store: ensureStringArray(saved.metadata.store)
-            }
-          } as VCMetadata
-        }
-        // Dispatch the action to add a new credential row
-        dispatch({ type: 'ADD_CREDENTIAL_ROW', payload: credentialRow })
-      } catch (error) {
-        console.error(`Error while creating a VC: ${error}`)
-        return null
-      }
+            credTypes: ['OrderCredential']
+          }
+          const saved: CreateVCResponseResult = (await createVC(
+            veramoState,
+            vcRequestParams
+          )) as CreateVCResponseResult
+          if (saved) {
+            console.log('Created a VC: ', saved)
 
-      currentBatch.push(credentialRow.vCredMetadata)
-      if (currentBatch.length >= batchSize) {
-        batchedCredentials.push(currentBatch)
-        currentBatch = []
+            const vcMetadata = {
+              productValueRange:
+                credentialRow.uploadedDataDetail.orderData.productValueRange,
+              ageOfOrder: credentialRow.uploadedDataDetail.orderData.ageOfOrder,
+              vcValue: credentialRow.uploadedDataDetail.orderData.worth,
+              vcData: {
+                order: {
+                  category: saved.data.credentialSubject['Order'].category,
+                  ratings: saved.data.credentialSubject['Order'].ratings,
+                  store: saved.data.credentialSubject['Order'].store
+                },
+                credentialType: ensureStringArray(saved.data.type),
+                issuedTo: ensureString(saved.data.credentialSubject.id),
+                issuedBy: getIdFromIssuer(saved.data.issuer),
+                issuedDate: saved.data.issuanceDate,
+                expiryDate: ensureString(saved.data.expirationDate)
+              },
+              vcMetadata: {
+                id: saved.metadata.id,
+                vcHash: credentialRow.uploadedDataDetail.id,
+                store: ensureStringArray(saved.metadata.store)
+              }
+            } as VCMetadata
+
+            credentialRow.vCred = {
+              data: saved.data,
+              metadata: vcMetadata
+            }
+          }
+        } catch (error) {
+          console.error(`Error while creating a VC: ${error}`)
+          return null
+        }
+
+        currentBatchVcs.push(credentialRow)
+        if (currentBatchVcs.length >= batchSize) {
+          batchedVcs.push(currentBatchVcs)
+          currentBatchVcs = []
+        }
       }
-    })
+    )
 
     await Promise.allSettled(promises)
 
     // Push the last batch if it has any items
-    if (currentBatch.length > 0) {
-      batchedCredentials.push(currentBatch)
+    if (currentBatchVcs.length > 0) {
+      batchedVcs.push(currentBatchVcs)
     }
 
     // Now we have an array of batches to be sent to Firebase
-    for (const batch of batchedCredentials) {
+    for (let i = 0; i < batchedVcs.length; i++) {
       try {
-        await createVCFirebase(batch)
+        const vcBatch = batchedVcs[i]
+        await createVCFirebase(vcBatch)
       } catch (error) {
-        console.error(`Error while uploading VCMetadata to firebase: ${error}`)
+        console.error(`Error while uploading VCs to firebase: ${error}`)
       }
     }
+    await fetchCredentials()
   }
 
   const handleSelectionChange = (selectedRows: { [key: string]: boolean }) => {
@@ -199,18 +219,19 @@ const Credentials: NextPage = () => {
     setSelectedItems(newSelectedItems)
   }
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     setIsProcessing((prevState) => ({
       ...prevState,
       delete: true
     }))
-    const idsToRemove = new Set(
+    // TODO: Handle removal of VC from the database
+    /* const idsToRemove = new Set(
       selectedItems.map((item) => item.uploadedDataDetail.id)
     )
     const newSelectedItems = credentialRows.filter(
       (item) => !idsToRemove.has(item.uploadedDataDetail.id)
-    )
-    dispatch({ type: 'SET_CREDENTIAL_ROWS', payload: newSelectedItems })
+    ) */
+    await fetchCredentials()
     setSelectedItems([]) // Clear the selected items
     setIsProcessing((prevState) => ({
       ...prevState,
@@ -243,7 +264,7 @@ const Credentials: NextPage = () => {
             />
             <BiDataCard
               title='Local Credentials'
-              value={`${credentialRows.length}`}
+              value={`${totalStats.userStats.vcsCreated}`}
             />
           </div>
           <DataTable
