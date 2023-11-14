@@ -208,7 +208,11 @@ const Credentials: NextPage = () => {
         console.error(`Error while uploading VCs to firebase: ${error}`)
       }
     }
-    await fetchCredentials()
+    await fetchCredentials({
+      self: true,
+      itemsPerPage: 50,
+      fetchEverything: true
+    })
   }
 
   const handleSelectionChange = (selectedRows: { [key: string]: boolean }) => {
@@ -231,7 +235,11 @@ const Credentials: NextPage = () => {
     const newSelectedItems = credentialRows.filter(
       (item) => !idsToRemove.has(item.uploadedDataDetail.id)
     ) */
-    await fetchCredentials()
+    await fetchCredentials({
+      self: true,
+      itemsPerPage: 50,
+      fetchEverything: true
+    })
     setSelectedItems([]) // Clear the selected items
     setIsProcessing((prevState) => ({
       ...prevState,
