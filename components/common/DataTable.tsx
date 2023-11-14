@@ -106,9 +106,7 @@ const DataTable: NextPage<DataTableProps> = ({
 
           // Check if the row has the necessary properties
           const hasVCredMetadata =
-            'vCredMetadata' in row &&
-            !_.isNull(row.vCredMetadata) &&
-            !_.isEmpty(row.vCredMetadata)
+            'vCred' in row && !_.isNull(row.vCred) && !_.isEmpty(row.vCred)
           const hasUploadedDataDetail =
             'uploadedDataDetail' in row &&
             !_.isNull(row.uploadedDataDetail) &&

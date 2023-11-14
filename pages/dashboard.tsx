@@ -16,7 +16,7 @@ import SideNavigationMenu from '../components/side-navigation/SideNavigationMenu
 
 const Dashboard: NextPage = () => {
   const [totalStats, setTotalStats] = useState<TotalStats>({
-    users: 0,
+    totalUsers: 0,
     userStats: {
       uploadedFiles: 0,
       ordersProcessed: 0,
@@ -28,18 +28,23 @@ const Dashboard: NextPage = () => {
       vcsCreated: 0
     }
   })
+
   const {
-    state: { credentialRows }
+    state: { credentialRows },
+    fetchCredentials
   } = useDid()
 
-  // Calculate the total value of all credentials
   const totalCredentialValue = useMemo(() => {
     return calculateTotalVCUSDValue(credentialRows)
   }, [credentialRows])
 
   useEffect(() => {
     getUserStatsFirebase().then(setTotalStats).catch(console.error)
-  }, [])
+  }, [credentialRows])
+
+  useEffect(() => {
+    fetchCredentials({ self: true, itemsPerPage: 5 })
+  }, [fetchCredentials])
 
   return (
     <div className='relative bg-black-0 w-full h-screen overflow-y-auto flex flex-row items-start justify-start'>
@@ -60,7 +65,7 @@ const Dashboard: NextPage = () => {
               <div className='self-stretch flex flex-row flex-wrap items-start justify-start gap-[28px] text-left text-lg text-white-1 font-kumbh-sans'>
                 <BiDataCard
                   title='Total users'
-                  value={totalStats.users}
+                  value={totalStats.totalUsers}
                   percentageChange='+0.00%'
                 />
                 <BiDataCard
@@ -85,7 +90,7 @@ const Dashboard: NextPage = () => {
                 title='Portfolio'
                 // titleContainers={[<DropdownFilter key='dropdown-filter' />]}
                 value={`$${totalCredentialValue.toFixed(2)}`}
-                percentageChange={`${credentialRows.length} credentials`}
+                percentageChange={`${totalStats.userStats.vcsCreated} credentials`}
               />
               <RecentCredentialsTable rows={credentialRows} />
             </div>

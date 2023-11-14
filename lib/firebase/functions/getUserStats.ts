@@ -7,9 +7,8 @@ import { logEvent } from 'firebase/analytics'
 type Response = {
   success: string
   totalUsers: number
-  totalUploadedFiles: number
-  totalOrdersProcessed: number
-  totalVCsCreated: number
+  userStats: Stats
+  appStats: Stats
 }
 
 export type Stats = {
@@ -19,14 +18,14 @@ export type Stats = {
 }
 
 export type TotalStats = {
-  users: number
+  totalUsers: number
   userStats: Stats
   appStats: Stats
 }
 
 export async function getUserStatsFirebase(): Promise<TotalStats> {
   const appStat: TotalStats = {
-    users: 0,
+    totalUsers: 0,
     userStats: {
       uploadedFiles: 0,
       ordersProcessed: 0,
@@ -56,10 +55,9 @@ export async function getUserStatsFirebase(): Promise<TotalStats> {
         logEvent(analytics, `getUserStats: successful for user ${userInfo}`)
       }
 
-      appStat.users = result.totalUsers
-      appStat.appStats.uploadedFiles = result.totalUploadedFiles
-      appStat.appStats.ordersProcessed = result.totalOrdersProcessed
-      appStat.appStats.vcsCreated = result.totalVCsCreated
+      appStat.totalUsers = result.totalUsers
+      appStat.userStats = result.userStats
+      appStat.appStats = result.appStats
     }
   } catch (error) {
     console.log(`Error while trying to get user stats: ${error}`)

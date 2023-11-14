@@ -56,7 +56,7 @@ const CredRow: NextPage<CredRowProps> = ({
           <div onClick={handleRowClick} className='cursor-pointer'>
             <div className='flex-1 overflow-hidden flex flex-col items-start justify-center gap-[5px]'>
               <div className='relative font-semibold'>
-                {credentialDetail.vCredMetadata.vcData.credentialType.join(
+                {credentialDetail.vCred.metadata.vcData.credentialType.join(
                   ', '
                 )}
               </div>
@@ -69,19 +69,19 @@ const CredRow: NextPage<CredRowProps> = ({
       </div>
       <div className='w-[400px] flex flex-row items-center justify-between'>
         <div className='relative inline-block w-[98px] shrink-0'>
-          ${credentialDetail.vCredMetadata.vcValue}
+          ${credentialDetail.vCred.metadata.vcValue}
         </div>
         <div className='relative inline-block w-[98px] shrink-0'>
           {credentialDetail.uploadedDataDetail.orderData.amount}
         </div>
         <div className='relative inline-block w-[98px] shrink-0'>
           <DateFormatter
-            dateStr={credentialDetail.vCredMetadata.vcData.issuedDate}
+            dateStr={credentialDetail.vCred.metadata.vcData.issuedDate}
           />
         </div>
         <div className='relative inline-block w-[98px] shrink-0'>
           <DateFormatter
-            dateStr={credentialDetail.vCredMetadata.vcData.expiryDate}
+            dateStr={credentialDetail.vCred.metadata.vcData.expiryDate}
           />
         </div>
         <MoreDotsIconActionContainer moreDotsIconActionContainBoxSizing='border-box' />
