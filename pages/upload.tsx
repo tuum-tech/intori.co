@@ -7,6 +7,7 @@ import TopNavigationMenu from '@/components/top-navigation/TopNavigationMenu'
 import UploadDataButton from '@/components/upload/UploadDataButton'
 import { UploadedDataDetail } from '@/components/upload/UploadedTypes'
 import { uploadFileFirebase } from '@/lib/firebase/functions/uploadFile'
+import { calculateTotalVCUSDValue } from '@/utils/credValue'
 import axios from 'axios'
 import _ from 'lodash'
 import type { NextPage } from 'next'
@@ -28,9 +29,7 @@ const Upload: NextPage = () => {
 
   // Calculate the total value of all the selected items
   const totalSelectedValue = useMemo(() => {
-    return selectedItems.reduce((total, selectedItem) => {
-      return total + (selectedItem.orderData.worth || 0)
-    }, 0)
+    return calculateTotalVCUSDValue(selectedItems)
   }, [selectedItems])
 
   // Handler function for file selection

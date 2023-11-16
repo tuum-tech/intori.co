@@ -1,17 +1,17 @@
 import BiDataCard from '@/components/common/BiDataCard'
 import UniDataCard from '@/components/common/UniDataCard'
+import { CredentialDetail } from '@/components/credentials/CredTypes'
 import RecentCredentialsTable from '@/components/dashboard/RecentCredentialsTable'
 import RequestAmazonHistory from '@/components/dashboard/RequestAmazonHistory'
 import UserActivity from '@/components/dashboard/UserActivity'
 import TopNavigationMenu from '@/components/top-navigation/TopNavigationMenu'
-import { useDid } from '@/contexts/DidContext'
 import {
   TotalStats,
   getUserStatsFirebase
 } from '@/lib/firebase/functions/getUserStats'
-import { calculateTotalVCUSDValue } from '@/utils/credValue'
+import { getVCsFirebase } from '@/lib/firebase/functions/getVCs'
 import type { NextPage } from 'next'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import SideNavigationMenu from '../components/side-navigation/SideNavigationMenu'
 
 const Dashboard: NextPage = () => {
@@ -20,31 +20,45 @@ const Dashboard: NextPage = () => {
     userStats: {
       uploadedFiles: 0,
       ordersProcessed: 0,
-      vcsCreated: 0
+      vcsCreated: 0,
+      vcsValue: 0
     },
     appStats: {
       uploadedFiles: 0,
       ordersProcessed: 0,
-      vcsCreated: 0
+      vcsCreated: 0,
+      vcsValue: 0
     }
   })
 
-  const {
-    state: { credentialRows },
-    fetchCredentials
-  } = useDid()
-
-  const totalCredentialValue = useMemo(() => {
-    return calculateTotalVCUSDValue(credentialRows)
-  }, [credentialRows])
+  const [credentialRows, setCredentialRows] = useState([] as CredentialDetail[])
+  const isCredentialsFetched = useRef(false)
 
   useEffect(() => {
     getUserStatsFirebase().then(setTotalStats).catch(console.error)
   }, [credentialRows])
 
   useEffect(() => {
-    fetchCredentials({ self: true, itemsPerPage: 5 })
-  }, [fetchCredentials])
+    const fetchCredentials = async () => {
+      const itemsPerPage = 5
+      const vcs = await getVCsFirebase({
+        self: true,
+        query: {},
+        itemsPerPage,
+        startAfterDoc: null,
+        fetchEverything: false
+      })
+      if (vcs.length > 0) {
+        setCredentialRows((prevState) => [...prevState, ...vcs])
+      }
+    }
+
+    if (!isCredentialsFetched.current) {
+      fetchCredentials()
+      isCredentialsFetched.current = true
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div className='relative bg-black-0 w-full h-screen overflow-y-auto flex flex-row items-start justify-start'>
@@ -89,7 +103,7 @@ const Dashboard: NextPage = () => {
               <UniDataCard
                 title='Portfolio'
                 // titleContainers={[<DropdownFilter key='dropdown-filter' />]}
-                value={`$${totalCredentialValue.toFixed(2)}`}
+                value={`$${totalStats.userStats.vcsValue.toFixed(2)}`}
                 percentageChange={`${totalStats.userStats.vcsCreated} credentials`}
               />
               <RecentCredentialsTable rows={credentialRows} />

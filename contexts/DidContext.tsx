@@ -8,7 +8,8 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useReducer
+  useReducer,
+  useState
 } from 'react'
 
 type DidProviderProps = {
@@ -18,6 +19,7 @@ type DidProviderProps = {
 // Define the shape of your state
 interface DidState {
   credentialRows: CredentialDetail[]
+  moreCredsToFetch: boolean
   veramoState: {
     currentAccount: AccountInfo
     identityData: Record<string, IdentityData>
@@ -28,6 +30,7 @@ interface DidState {
 type DidAction =
   | { type: 'SET_VERAMO_STATE'; payload: DidState['veramoState'] }
   | { type: 'SET_CREDENTIAL_ROWS'; payload: CredentialDetail[] }
+  | { type: 'SET_MORECREDSTOFETCH'; payload: boolean }
 
 interface DidContextType {
   state: DidState
@@ -42,6 +45,7 @@ interface DidContextType {
 
 const defaultDidState: DidState = {
   credentialRows: [] as CredentialDetail[],
+  moreCredsToFetch: false,
   veramoState: {
     currentAccount: {} as AccountInfo,
     identityData: {} as Record<string, IdentityData>
@@ -55,6 +59,8 @@ function didReducer(state: DidState, action: DidAction): DidState {
       return { ...state, veramoState: action.payload }
     case 'SET_CREDENTIAL_ROWS':
       return { ...state, credentialRows: action.payload }
+    case 'SET_MORECREDSTOFETCH':
+      return { ...state, moreCredsToFetch: action.payload }
     default:
       return state
   }
@@ -88,6 +94,7 @@ export const DidProvider = ({ children }: DidProviderProps) => {
       }
     }
   )
+  const [lastDocId, setLastDocId] = useState<string | null>(null)
 
   const fetchCredentials = useCallback(
     async (options: {
@@ -100,11 +107,29 @@ export const DidProvider = ({ children }: DidProviderProps) => {
         self: options.self ?? false,
         query: options.query ?? {},
         itemsPerPage: options.itemsPerPage ?? 5,
+        startAfterDoc: lastDocId,
         fetchEverything: options.fetchEverything ?? false
       })
-      dispatch({ type: 'SET_CREDENTIAL_ROWS', payload: fetchedCredentials })
+      console.log('fetchedCredentials: ', fetchedCredentials.length)
+      console.log('lastDocId: ', lastDocId)
+      dispatch({
+        type: 'SET_MORECREDSTOFETCH',
+        payload: fetchedCredentials.length === options.itemsPerPage
+      })
+      if (fetchedCredentials.length > 0) {
+        dispatch({
+          type: 'SET_CREDENTIAL_ROWS',
+          payload: [...state.credentialRows, ...fetchedCredentials]
+        })
+        setLastDocId(
+          fetchedCredentials[fetchedCredentials.length - 1].vCred.metadata
+            .vcMetadata.id
+        )
+      } else {
+        setLastDocId(null)
+      }
     },
-    [dispatch]
+    [dispatch, state.credentialRows, lastDocId]
   )
 
   // Store state changes in localStorage

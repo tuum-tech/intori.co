@@ -15,6 +15,7 @@ export type Stats = {
   uploadedFiles: number
   ordersProcessed: number
   vcsCreated: number
+  vcsValue: number
 }
 
 export type TotalStats = {
@@ -29,12 +30,14 @@ export async function getUserStatsFirebase(): Promise<TotalStats> {
     userStats: {
       uploadedFiles: 0,
       ordersProcessed: 0,
-      vcsCreated: 0
+      vcsCreated: 0,
+      vcsValue: 0
     },
     appStats: {
       uploadedFiles: 0,
       ordersProcessed: 0,
-      vcsCreated: 0
+      vcsCreated: 0,
+      vcsValue: 0
     }
   }
   const userInfo: UserInfo = JSON.parse(

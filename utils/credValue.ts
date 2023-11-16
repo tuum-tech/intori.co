@@ -1,4 +1,4 @@
-import { CredentialDetail } from '@/components/credentials/CredTypes'
+import { UploadedDataDetail } from '@/components/upload/UploadedTypes'
 import { AgeOfOrder, ProductValueRange } from '@/lib/firebase/functions/getVCs'
 
 export function calculateVCUSDValue(
@@ -18,10 +18,9 @@ export function calculateVCUSDValue(
   return vcValue
 }
 
-export function calculateTotalVCUSDValue(credentialRows: CredentialDetail[]) {
-  return credentialRows.reduce((total, credential) => {
-    // Use the `vcValue` property from the `vCredMetadata`
-    return total + (credential.vCred.metadata.vcValue || 0)
+export function calculateTotalVCUSDValue(orderData: UploadedDataDetail[]) {
+  return orderData.reduce((total, order) => {
+    return total + (order.orderData.worth || 0)
   }, 0)
 }
 

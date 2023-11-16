@@ -12,7 +12,7 @@ import {
   TotalStats,
   getUserStatsFirebase
 } from '@/lib/firebase/functions/getUserStats'
-import { VCMetadata } from '@/lib/firebase/functions/getVCs'
+import { VCMetadata, getVCsFirebase } from '@/lib/firebase/functions/getVCs'
 import { createVC } from '@/lib/veramo/createVC'
 import {
   CreateVCRequestParams,
@@ -23,9 +23,8 @@ import {
   ensureStringArray,
   getIdFromIssuer
 } from '@/utils/credNormalizer'
-import { calculateTotalVCUSDValue } from '@/utils/credValue'
 import type { NextPage } from 'next'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const Credentials: NextPage = () => {
   const [totalStats, setTotalStats] = useState<TotalStats>({
@@ -33,45 +32,73 @@ const Credentials: NextPage = () => {
     userStats: {
       uploadedFiles: 0,
       ordersProcessed: 0,
-      vcsCreated: 0
+      vcsCreated: 0,
+      vcsValue: 0
     },
     appStats: {
       uploadedFiles: 0,
       ordersProcessed: 0,
-      vcsCreated: 0
+      vcsCreated: 0,
+      vcsValue: 0
     }
   })
 
+  const [credentialRows, setCredentialRows] = useState([] as CredentialDetail[])
   const [selectedItems, setSelectedItems] = useState([] as CredentialDetail[])
+  const [lastDocId, setLastDocId] = useState<string | null>(null)
+  const [moreCredsToFetch, setMoreCredsToFetch] = useState(false)
   const [isProcessing, setIsProcessing] = useState({
     generateCreds: false,
     delete: false
   })
   const {
-    state: { credentialRows, veramoState },
-    fetchCredentials
+    state: { veramoState }
   } = useDid()
   const isGeneratingCredentials = useRef(false)
-
-  const totalCredentialValue = useMemo(() => {
-    return calculateTotalVCUSDValue(credentialRows)
-  }, [credentialRows])
+  const isCredentialsFetched = useRef(false)
 
   useEffect(() => {
     getUserStatsFirebase().then(setTotalStats).catch(console.error)
   }, [credentialRows])
 
-  useEffect(() => {
-    fetchCredentials({ self: true, itemsPerPage: 50, fetchEverything: true })
-  }, [fetchCredentials])
+  const fetchCredentials = async () => {
+    const itemsPerPage = 50
+    const vcs = await getVCsFirebase({
+      self: true,
+      query: {},
+      itemsPerPage,
+      startAfterDoc: lastDocId,
+      fetchEverything: false
+    })
+    if (vcs.length > 0) {
+      setCredentialRows((prevState) => [...prevState, ...vcs])
+      setLastDocId(vcs[vcs.length - 1].vCred.metadata.vcMetadata.id)
+      setMoreCredsToFetch(vcs.length === itemsPerPage)
+    } else {
+      setLastDocId(null)
+      setMoreCredsToFetch(false)
+    }
+  }
 
   useEffect(() => {
-    const fetchAndFilterCredentials = async () => {
-      setIsProcessing((prevState) => ({
-        ...prevState,
-        generateCreds: true
-      }))
+    if (!isCredentialsFetched.current) {
+      fetchCredentials()
+      isCredentialsFetched.current = true
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
+  // Handler for the "Load More" button
+  const handleLoadMore = async () => {
+    await fetchCredentials()
+  }
+
+  useEffect(() => {
+    setIsProcessing((prevState) => ({
+      ...prevState,
+      generateCreds: true
+    }))
+    const convertSelectedItemsToCredentials = async () => {
       // Retrieve the selected items from sessionStorage
       const storedSelectedUploadedData = sessionStorage.getItem('selectedItems')
       if (storedSelectedUploadedData) {
@@ -103,13 +130,14 @@ const Credentials: NextPage = () => {
           )
         }
       }
-      setIsProcessing((prevState) => ({
-        ...prevState,
-        generateCreds: false
-      }))
     }
 
-    fetchAndFilterCredentials()
+    convertSelectedItemsToCredentials()
+    setIsProcessing((prevState) => ({
+      ...prevState,
+      generateCreds: false
+    }))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [credentialRows])
 
   // Logic to generate credentials for each selected item...
@@ -208,11 +236,7 @@ const Credentials: NextPage = () => {
         console.error(`Error while uploading VCs to firebase: ${error}`)
       }
     }
-    await fetchCredentials({
-      self: true,
-      itemsPerPage: 50,
-      fetchEverything: true
-    })
+    // await fetchCredentials()
   }
 
   const handleSelectionChange = (selectedRows: { [key: string]: boolean }) => {
@@ -235,11 +259,7 @@ const Credentials: NextPage = () => {
     const newSelectedItems = credentialRows.filter(
       (item) => !idsToRemove.has(item.uploadedDataDetail.id)
     ) */
-    await fetchCredentials({
-      self: true,
-      itemsPerPage: 50,
-      fetchEverything: true
-    })
+    // await fetchCredentials()
     setSelectedItems([]) // Clear the selected items
     setIsProcessing((prevState) => ({
       ...prevState,
@@ -268,11 +288,15 @@ const Credentials: NextPage = () => {
           <div className='self-stretch flex flex-row flex-wrap items-start justify-start gap-[28px] text-left text-lg text-white-1 font-kumbh-sans'>
             <BiDataCard
               title='Estimated Credential Value'
-              value={`$${totalCredentialValue.toFixed(2)}`}
+              value={`$${totalStats.userStats.vcsValue.toFixed(2)}`}
             />
             <BiDataCard
-              title='Local Credentials'
+              title='My Credentials'
               value={`${totalStats.userStats.vcsCreated}`}
+            />
+            <BiDataCard
+              title='Credentials Selected'
+              value={`${selectedItems.length}/${totalStats.userStats.vcsCreated}`}
             />
           </div>
           <DataTable
@@ -282,6 +306,10 @@ const Credentials: NextPage = () => {
             isSelectable={true}
             onSelectionChange={handleSelectionChange}
           />
+          {/* Conditionally render the Load More button */}
+          {moreCredsToFetch && (
+            <Button title='Load More' onClick={handleLoadMore} />
+          )}
           {/* Conditionally render the Delete button */}
           {selectedItems.length > 0 && (
             <Button
