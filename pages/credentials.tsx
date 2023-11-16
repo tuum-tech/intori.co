@@ -8,6 +8,7 @@ import TopNavigationMenu from '@/components/top-navigation/TopNavigationMenu'
 import { UploadedDataDetail } from '@/components/upload/UploadedTypes'
 import { useDid } from '@/contexts/DidContext'
 import { createVCFirebase } from '@/lib/firebase/functions/createVC'
+import { deleteVCFirebase } from '@/lib/firebase/functions/deleteVC'
 import {
   TotalStats,
   getUserStatsFirebase
@@ -58,7 +59,10 @@ const Credentials: NextPage = () => {
   const isCredentialsFetched = useRef(false)
 
   useEffect(() => {
-    getUserStatsFirebase().then(setTotalStats).catch(console.error)
+    const refreshStats = async () => {
+      setTotalStats(await getUserStatsFirebase())
+    }
+    refreshStats()
   }, [credentialRows])
 
   const fetchCredentials = async () => {
@@ -236,7 +240,7 @@ const Credentials: NextPage = () => {
         console.error(`Error while uploading VCs to firebase: ${error}`)
       }
     }
-    // await fetchCredentials()
+    await fetchCredentials()
   }
 
   const handleSelectionChange = (selectedRows: { [key: string]: boolean }) => {
@@ -252,15 +256,17 @@ const Credentials: NextPage = () => {
       ...prevState,
       delete: true
     }))
-    // TODO: Handle removal of VC from the database
-    /* const idsToRemove = new Set(
-      selectedItems.map((item) => item.uploadedDataDetail.id)
+    const idsToRemove = new Set(
+      selectedItems.map((item) => item.vCred.metadata.vcMetadata.id)
     )
     const newSelectedItems = credentialRows.filter(
-      (item) => !idsToRemove.has(item.uploadedDataDetail.id)
-    ) */
-    // await fetchCredentials()
+      (item) => !idsToRemove.has(item.vCred.metadata.vcMetadata.id)
+    )
+    await deleteVCFirebase(Array.from(idsToRemove))
+
+    setCredentialRows(newSelectedItems)
     setSelectedItems([]) // Clear the selected items
+
     setIsProcessing((prevState) => ({
       ...prevState,
       delete: false
