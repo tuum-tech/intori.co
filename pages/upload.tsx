@@ -6,6 +6,7 @@ import SideNavigationMenu from '@/components/side-navigation/SideNavigationMenu'
 import TopNavigationMenu from '@/components/top-navigation/TopNavigationMenu'
 import UploadDataButton from '@/components/upload/UploadDataButton'
 import { UploadedDataDetail } from '@/components/upload/UploadedTypes'
+import { useDid } from '@/contexts/DidContext'
 import { uploadFileFirebase } from '@/lib/firebase/functions/uploadFile'
 import { calculateTotalVCUSDValue } from '@/utils/credValue'
 import axios from 'axios'
@@ -24,6 +25,8 @@ const Upload: NextPage = () => {
     upload: false,
     continue: false
   })
+
+  const { dispatch } = useDid()
 
   const router = useRouter()
 
@@ -100,11 +103,13 @@ const Upload: NextPage = () => {
     if (selectedItems.length > 0) {
       sessionStorage.setItem('selectedItems', JSON.stringify(selectedItems))
     }
+    // Clear the uploadedDataRows and selectedItems state
+    setUploadedDataRows([])
+    setSelectedItems([])
+
+    // Update the context state to indicate that credential generation is in progress
+    dispatch({ type: 'SET_GENERATING_CREDENTIALS', payload: true })
     router.push('/credentials')
-    setIsProcessing((prevState) => ({
-      ...prevState,
-      continue: false
-    }))
   }
 
   if (isProcessing.upload) {

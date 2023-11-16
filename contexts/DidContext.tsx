@@ -1,15 +1,11 @@
-import { CredentialDetail } from '@/components/credentials/CredTypes'
-import { getVCsFirebase } from '@/lib/firebase/functions/getVCs'
 import { AccountInfo, IdentityData, VeramoState } from '@/lib/veramo/interfaces'
 import {
   Dispatch,
   ReactNode,
   createContext,
-  useCallback,
   useContext,
   useEffect,
-  useReducer,
-  useState
+  useReducer
 } from 'react'
 
 type DidProviderProps = {
@@ -18,38 +14,29 @@ type DidProviderProps = {
 
 // Define the shape of your state
 interface DidState {
-  credentialRows: CredentialDetail[]
-  moreCredsToFetch: boolean
   veramoState: {
     currentAccount: AccountInfo
     identityData: Record<string, IdentityData>
   }
+  isGeneratingCredentials: boolean
 }
 
 // Define the shape of your actions
 type DidAction =
   | { type: 'SET_VERAMO_STATE'; payload: DidState['veramoState'] }
-  | { type: 'SET_CREDENTIAL_ROWS'; payload: CredentialDetail[] }
-  | { type: 'SET_MORECREDSTOFETCH'; payload: boolean }
+  | { type: 'SET_GENERATING_CREDENTIALS'; payload: boolean }
 
 interface DidContextType {
   state: DidState
   dispatch: Dispatch<DidAction>
-  fetchCredentials: (options: {
-    self?: boolean
-    query?: { [key: string]: string }
-    itemsPerPage?: number
-    fetchEverything?: boolean
-  }) => Promise<void>
 }
 
 const defaultDidState: DidState = {
-  credentialRows: [] as CredentialDetail[],
-  moreCredsToFetch: false,
   veramoState: {
     currentAccount: {} as AccountInfo,
     identityData: {} as Record<string, IdentityData>
-  } as VeramoState
+  } as VeramoState,
+  isGeneratingCredentials: false
 }
 
 // Define the reducer function
@@ -57,10 +44,8 @@ function didReducer(state: DidState, action: DidAction): DidState {
   switch (action.type) {
     case 'SET_VERAMO_STATE':
       return { ...state, veramoState: action.payload }
-    case 'SET_CREDENTIAL_ROWS':
-      return { ...state, credentialRows: action.payload }
-    case 'SET_MORECREDSTOFETCH':
-      return { ...state, moreCredsToFetch: action.payload }
+    case 'SET_GENERATING_CREDENTIALS':
+      return { ...state, isGeneratingCredentials: action.payload }
     default:
       return state
   }
@@ -68,13 +53,7 @@ function didReducer(state: DidState, action: DidAction): DidState {
 
 const DidContext = createContext<DidContextType>({
   state: defaultDidState,
-  dispatch: () => undefined,
-  fetchCredentials: (_options: {
-    self?: boolean
-    query?: { [key: string]: string }
-    itemsPerPage?: number
-    fetchEverything?: boolean
-  }) => Promise.resolve()
+  dispatch: () => undefined
 })
 
 export const useDid = (): DidContextType => useContext(DidContext)
@@ -94,52 +73,15 @@ export const DidProvider = ({ children }: DidProviderProps) => {
       }
     }
   )
-  const [lastDocId, setLastDocId] = useState<string | null>(null)
-
-  const fetchCredentials = useCallback(
-    async (options: {
-      self?: boolean
-      query?: { [key: string]: string }
-      itemsPerPage?: number
-      fetchEverything?: boolean
-    }) => {
-      const fetchedCredentials = await getVCsFirebase({
-        self: options.self ?? false,
-        query: options.query ?? {},
-        itemsPerPage: options.itemsPerPage ?? 5,
-        startAfterDoc: lastDocId,
-        fetchEverything: options.fetchEverything ?? false
-      })
-      console.log('fetchedCredentials: ', fetchedCredentials.length)
-      console.log('lastDocId: ', lastDocId)
-      dispatch({
-        type: 'SET_MORECREDSTOFETCH',
-        payload: fetchedCredentials.length === options.itemsPerPage
-      })
-      if (fetchedCredentials.length > 0) {
-        dispatch({
-          type: 'SET_CREDENTIAL_ROWS',
-          payload: [...state.credentialRows, ...fetchedCredentials]
-        })
-        setLastDocId(
-          fetchedCredentials[fetchedCredentials.length - 1].vCred.metadata
-            .vcMetadata.id
-        )
-      } else {
-        setLastDocId(null)
-      }
-    },
-    [dispatch, state.credentialRows, lastDocId]
-  )
 
   // Store state changes in localStorage
   useEffect(() => {
     localStorage.setItem('veramoState', JSON.stringify(state.veramoState))
   }, [state.veramoState])
 
-  // Expose state, dispatch, and fetchCredentials in the context value
+  // Expose state, dispatch in the context value
   return (
-    <DidContext.Provider value={{ state, dispatch, fetchCredentials }}>
+    <DidContext.Provider value={{ state, dispatch }}>
       {children}
     </DidContext.Provider>
   )
