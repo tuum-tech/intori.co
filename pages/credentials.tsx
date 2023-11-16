@@ -48,9 +48,7 @@ const Credentials: NextPage = () => {
   const [selectedItems, setSelectedItems] = useState([] as CredentialDetail[])
   const [lastDocId, setLastDocId] = useState<string | null>(null)
   const [moreCredsToFetch, setMoreCredsToFetch] = useState(false)
-  const [isProcessing, setIsProcessing] = useState({
-    delete: false
-  })
+  const [isProcessingDelete, setIsProcessingDelete] = useState(false)
   const {
     state: { veramoState, isGeneratingCredentials },
     dispatch
@@ -85,33 +83,16 @@ const Credentials: NextPage = () => {
   }
 
   useEffect(() => {
-    setIsProcessing((prevState) => ({
-      ...prevState,
-      generateCreds: true
-    }))
-
     const fetchAndProcessCredentials = async () => {
       if (!isCredentialsFetched.current) {
         isCredentialsFetched.current = true
         await fetchCredentials() // Wait for fetchCredentials to complete
         isCredentialsFetched.current = false
       }
-
-      setIsProcessing((prevState) => ({
-        ...prevState,
-        generateCreds: false
-      }))
     }
 
     fetchAndProcessCredentials()
 
-    return () => {
-      // Reset credentialRows when the component unmounts or before navigating away
-      setCredentialRows([])
-      setLastDocId(null)
-      setMoreCredsToFetch(false)
-      dispatch({ type: 'SET_GENERATING_CREDENTIALS', payload: false })
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -269,10 +250,7 @@ const Credentials: NextPage = () => {
   }
 
   const handleDelete = async () => {
-    setIsProcessing((prevState) => ({
-      ...prevState,
-      delete: true
-    }))
+    setIsProcessingDelete(true)
     const idsToRemove = new Set(
       selectedItems.map((item) => item.vCred.metadata.vcMetadata.id)
     )
@@ -284,10 +262,7 @@ const Credentials: NextPage = () => {
     setCredentialRows(newSelectedItems)
     setSelectedItems([]) // Clear the selected items
 
-    setIsProcessing((prevState) => ({
-      ...prevState,
-      delete: false
-    }))
+    setIsProcessingDelete(false)
   }
 
   if (isGeneratingCredentials) {
@@ -296,7 +271,7 @@ const Credentials: NextPage = () => {
     )
   }
 
-  if (isProcessing.delete) {
+  if (isProcessingDelete) {
     return (
       <LoadingSpinner loadingText='Deleting your selected credentials...' />
     )

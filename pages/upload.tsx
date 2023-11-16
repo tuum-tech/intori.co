@@ -21,10 +21,7 @@ const Upload: NextPage = () => {
     [] as UploadedDataDetail[]
   )
   const [selectedItems, setSelectedItems] = useState([] as UploadedDataDetail[])
-  const [isProcessing, setIsProcessing] = useState({
-    upload: false,
-    continue: false
-  })
+  const [isProcessing, setIsProcessing] = useState(false)
 
   const { dispatch } = useDid()
 
@@ -37,10 +34,7 @@ const Upload: NextPage = () => {
 
   // Handler function for file selection
   const handleFileSelect = async (file: File) => {
-    setIsProcessing((prevState) => ({
-      ...prevState,
-      upload: true
-    }))
+    setIsProcessing(true)
 
     // Use FormData to store file for sending
     const formData = new FormData()
@@ -79,10 +73,7 @@ const Upload: NextPage = () => {
       console.error('Error uploading file:', error)
     }
 
-    setIsProcessing((prevState) => ({
-      ...prevState,
-      upload: false
-    }))
+    setIsProcessing(false)
   }
 
   const handleSelectionChange = (selectedRows: { [key: string]: boolean }) => {
@@ -95,10 +86,6 @@ const Upload: NextPage = () => {
 
   // Navigate to the /credentials page
   const handleContinue = () => {
-    setIsProcessing((prevState) => ({
-      ...prevState,
-      continue: true
-    }))
     // Save the selected items to sessionStorage before navigating
     if (selectedItems.length > 0) {
       sessionStorage.setItem('selectedItems', JSON.stringify(selectedItems))
@@ -112,14 +99,8 @@ const Upload: NextPage = () => {
     router.push('/credentials')
   }
 
-  if (isProcessing.upload) {
+  if (isProcessing) {
     return <LoadingSpinner loadingText='Uploading your file...' />
-  }
-
-  if (isProcessing.continue) {
-    return (
-      <LoadingSpinner loadingText='Generating credentials from your data...' />
-    )
   }
 
   return (
