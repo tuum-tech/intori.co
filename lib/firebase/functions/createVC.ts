@@ -7,6 +7,7 @@ import { httpsCallable } from 'firebase/functions'
 type Response = {
   success: boolean
   docIds: string[]
+  duplicateVCsHash: string[]
 }
 
 export async function createVCFirebase(credentialRows: CredentialDetail[]) {
@@ -32,6 +33,19 @@ export async function createVCFirebase(credentialRows: CredentialDetail[]) {
           `createVC: successful for user ${userInfo} with IDs: ${data.docIds}`
         )
       }
+      if (data.duplicateVCsHash.length > 0) {
+        console.error(
+          `Some of the VCs you generated were duplicates so they were not saved: ${data.duplicateVCsHash.length}`
+        )
+        if (analytics) {
+          logEvent(
+            analytics,
+            `createVC: failure for user ${userInfo} with error: Some of the VCs you generated were duplicates so they were not saved: ${data.duplicateVCsHash.length}`
+          )
+        }
+      }
+    } else {
+      console.error('Error creating VC in the backend. Please try again')
     }
   } catch (error) {
     console.error('Error creating VC in the backend:', error)
