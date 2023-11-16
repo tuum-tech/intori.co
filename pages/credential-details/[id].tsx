@@ -2,7 +2,7 @@ import BackButton from '@/components/common/BackButton'
 import DateFormatter from '@/components/common/DateFormatter'
 import { CredentialDetail } from '@/components/credentials/CredTypes'
 import TopNavigationMenu from '@/components/top-navigation/TopNavigationMenu'
-import { useDid } from '@/contexts/DidContext'
+import { getVCsFirebase } from '@/lib/firebase/functions/getVCs'
 import {
   mapAgeOfOrderToString,
   mapProductValueRangeToString
@@ -13,11 +13,6 @@ import { useEffect, useState } from 'react'
 import SideNavigationMenu from '../../components/side-navigation/SideNavigationMenu'
 
 const CredentialDetails: NextPage = ({}) => {
-  const {
-    state: { credentialRows },
-    fetchCredentials
-  } = useDid()
-
   const router = useRouter()
   const { id, backToUrl } = router.query
 
@@ -25,27 +20,28 @@ const CredentialDetails: NextPage = ({}) => {
     useState<CredentialDetail | null>(null)
 
   useEffect(() => {
-    if (typeof id === 'string') {
-      fetchCredentials({
-        query: { 'vCred.metadata.vcMetadata.vcHash': id },
-        itemsPerPage: 1
+    const fetchCredentials = async (query: { [key: string]: string }) => {
+      const itemsPerPage = 1
+      const vcs = await getVCsFirebase({
+        self: true,
+        query,
+        itemsPerPage,
+        startAfterDoc: null,
+        fetchEverything: false
       })
+      if (vcs.length > 0) {
+        setCredentialDetail(vcs[0])
+      }
     }
-  }, [id, fetchCredentials])
 
-  useEffect(() => {
-    const selectedCredential = credentialRows.find(
-      (row: CredentialDetail) => String(row.uploadedDataDetail.id) === id
-    )
-
-    if (selectedCredential) {
-      setCredentialDetail(selectedCredential)
+    if (typeof id === 'string') {
+      fetchCredentials({ 'vCred.metadata.vcMetadata.vcHash': id })
     } else {
       console.log('Invalid id: ', id)
       // If no matching credential found or invalid id, redirect to /credentials.tsx
       router.push('/credentials')
     }
-  }, [credentialRows, id, router])
+  }, [id, credentialDetail, router])
 
   return (
     <div className='relative bg-black-0 w-full h-screen overflow-y-auto flex flex-row items-start justify-start'>
