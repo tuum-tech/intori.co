@@ -49,13 +49,13 @@ const Credentials: NextPage = () => {
   const [lastDocId, setLastDocId] = useState<string | null>(null)
   const [moreCredsToFetch, setMoreCredsToFetch] = useState(false)
   const [isProcessing, setIsProcessing] = useState({
-    generateCreds: false,
     delete: false
   })
   const {
-    state: { veramoState }
+    state: { veramoState, isGeneratingCredentials },
+    dispatch
   } = useDid()
-  const isGeneratingCredentials = useRef(false)
+  const isCredsGenerated = useRef(false)
   const isCredentialsFetched = useRef(false)
 
   useEffect(() => {
@@ -85,9 +85,32 @@ const Credentials: NextPage = () => {
   }
 
   useEffect(() => {
-    if (!isCredentialsFetched.current) {
-      fetchCredentials()
-      isCredentialsFetched.current = true
+    setIsProcessing((prevState) => ({
+      ...prevState,
+      generateCreds: true
+    }))
+
+    const fetchAndProcessCredentials = async () => {
+      if (!isCredentialsFetched.current) {
+        isCredentialsFetched.current = true
+        await fetchCredentials() // Wait for fetchCredentials to complete
+        isCredentialsFetched.current = false
+      }
+
+      setIsProcessing((prevState) => ({
+        ...prevState,
+        generateCreds: false
+      }))
+    }
+
+    fetchAndProcessCredentials()
+
+    return () => {
+      // Reset credentialRows when the component unmounts or before navigating away
+      setCredentialRows([])
+      setLastDocId(null)
+      setMoreCredsToFetch(false)
+      dispatch({ type: 'SET_GENERATING_CREDENTIALS', payload: false })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -98,10 +121,6 @@ const Credentials: NextPage = () => {
   }
 
   useEffect(() => {
-    setIsProcessing((prevState) => ({
-      ...prevState,
-      generateCreds: true
-    }))
     const convertSelectedItemsToCredentials = async () => {
       // Retrieve the selected items from sessionStorage
       const storedSelectedUploadedData = sessionStorage.getItem('selectedItems')
@@ -120,10 +139,12 @@ const Credentials: NextPage = () => {
           )
 
           // Now generate credentials for the selected items
-          if (newCredentials.length > 0 && !isGeneratingCredentials.current) {
-            isGeneratingCredentials.current = true
-            await generateCredentials(newCredentials)
-            isGeneratingCredentials.current = false
+          if (newCredentials.length > 0 && !isCredsGenerated.current) {
+            isCredsGenerated.current = true
+            generateCredentials(newCredentials).then(() => {
+              dispatch({ type: 'SET_GENERATING_CREDENTIALS', payload: false })
+            })
+            isCredsGenerated.current = false
           }
 
           sessionStorage.removeItem('selectedItems')
@@ -137,12 +158,8 @@ const Credentials: NextPage = () => {
     }
 
     convertSelectedItemsToCredentials()
-    setIsProcessing((prevState) => ({
-      ...prevState,
-      generateCreds: false
-    }))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [credentialRows])
+  }, [isGeneratingCredentials, credentialRows])
 
   // Logic to generate credentials for each selected item...
   const generateCredentials = async (
@@ -273,7 +290,7 @@ const Credentials: NextPage = () => {
     }))
   }
 
-  if (isProcessing.generateCreds) {
+  if (isGeneratingCredentials) {
     return (
       <LoadingSpinner loadingText='Generating credentials from your data...' />
     )

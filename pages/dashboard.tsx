@@ -35,28 +35,37 @@ const Dashboard: NextPage = () => {
   const isCredentialsFetched = useRef(false)
 
   useEffect(() => {
-    getUserStatsFirebase().then(setTotalStats).catch(console.error)
+    const refreshStats = async () => {
+      setTotalStats(await getUserStatsFirebase())
+    }
+    refreshStats()
   }, [credentialRows])
 
+  const fetchCredentials = async () => {
+    const itemsPerPage = 5
+    const vcs = await getVCsFirebase({
+      self: true,
+      query: {},
+      itemsPerPage,
+      startAfterDoc: null,
+      fetchEverything: false
+    })
+    if (vcs.length > 0) {
+      setCredentialRows((prevState) => [...prevState, ...vcs])
+    }
+  }
+
   useEffect(() => {
-    const fetchCredentials = async () => {
-      const itemsPerPage = 5
-      const vcs = await getVCsFirebase({
-        self: true,
-        query: {},
-        itemsPerPage,
-        startAfterDoc: null,
-        fetchEverything: false
-      })
-      if (vcs.length > 0) {
-        setCredentialRows((prevState) => [...prevState, ...vcs])
+    const fetchAndProcessCredentials = async () => {
+      if (!isCredentialsFetched.current) {
+        isCredentialsFetched.current = true
+        await fetchCredentials() // Wait for fetchCredentials to complete
+        isCredentialsFetched.current = false
       }
     }
 
-    if (!isCredentialsFetched.current) {
-      fetchCredentials()
-      isCredentialsFetched.current = true
-    }
+    fetchAndProcessCredentials()
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
