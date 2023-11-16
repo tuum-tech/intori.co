@@ -42,8 +42,7 @@ export type VCMetadata = {
 
 export type Response = {
   success: boolean
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  vcs: any[]
+  vcs: CredentialDetail[]
 }
 
 async function fetchAllVCsRecursive(
@@ -51,16 +50,16 @@ async function fetchAllVCsRecursive(
     self: boolean
     query: { [key: string]: string }
     itemsPerPage: number
+    startAfterDoc: string | null
     fetchEverything: boolean
-    startAfterDoc?: string | null
   },
   accumulatedVCs: CredentialDetail[] = []
 ): Promise<CredentialDetail[]> {
   const token = await auth.currentUser?.getIdToken(true)
   const params = {
     authToken: token,
-    query: options.query ?? {},
-    itemsPerPage: options.itemsPerPage ?? 5,
+    query: options.query,
+    itemsPerPage: options.itemsPerPage,
     startAfterDoc: options.startAfterDoc
   }
 
@@ -71,7 +70,7 @@ async function fetchAllVCsRecursive(
   const getVCsFunction = httpsCallable(functions, 'getVCs')
 
   const response = await getVCsFunction(params)
-  const result = response.data as Response
+  const result: Response = response.data as Response
 
   if (!result.success) {
     console.error('Failed to fetch VCs')
@@ -86,7 +85,7 @@ async function fetchAllVCsRecursive(
     throw new Error('Failed to fetch VCs')
   }
 
-  const newVCs = result.vcs
+  const newVCs: CredentialDetail[] = result.vcs
   const newAccumulatedVCs = accumulatedVCs.concat(newVCs)
 
   if (!options.fetchEverything || newVCs.length === 0) {
@@ -95,7 +94,8 @@ async function fetchAllVCsRecursive(
   }
 
   // Use the last document ID as the starting point for the next fetch
-  const lastDocId = newVCs[newVCs.length - 1].id
+  const lastDocId: string =
+    newVCs[newVCs.length - 1].vCred.metadata.vcMetadata.id
   return fetchAllVCsRecursive(
     { ...options, startAfterDoc: lastDocId },
     newAccumulatedVCs
@@ -106,6 +106,7 @@ export async function getVCsFirebase(options: {
   self: boolean
   query: { [key: string]: string }
   itemsPerPage: number
+  startAfterDoc: string | null
   fetchEverything: boolean
 }): Promise<CredentialDetail[]> {
   return fetchAllVCsRecursive(options)
