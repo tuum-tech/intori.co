@@ -1,7 +1,7 @@
 import BiDataCard from '@/components/common/BiDataCard'
-import Button from '@/components/common/Button'
 import DataTable from '@/components/common/DataTable'
 import LoadingSpinner from '@/components/common/LoadingSpinner'
+import CredentialsButton from '@/components/credentials/CredentialsButton'
 import SideNavigationMenu from '@/components/side-navigation/SideNavigationMenu'
 import TopNavigationMenu from '@/components/top-navigation/TopNavigationMenu'
 import UploadDataButton from '@/components/upload/UploadDataButton'
@@ -119,25 +119,40 @@ const Upload: NextPage = () => {
               value={`${selectedItems.length}/${uploadedDataRows.length}`}
             />
           </div>
-          <DataTable
-            title='Current data upload'
-            titleContainers={[
-              <UploadDataButton
-                key='upload-data-button'
-                onFileSelect={handleFileSelect}
-              />
-            ]}
-            isCredentialType={false}
-            rows={uploadedDataRows}
-            isSelectable={true}
-            onSelectionChange={handleSelectionChange}
-          />
           {/* Conditionally render the Continue button */}
-          {uploadedDataRows.length > 0 && (
-            <Button
-              title='Continue'
-              onClick={handleContinue}
-              disabled={selectedItems.length === 0} // Button is disabled when no items are selected
+          {uploadedDataRows.length > 0 ? (
+            <DataTable
+              title='Current data upload'
+              titleContainers={[
+                <CredentialsButton
+                  key='create-credentials-button'
+                  title='Create Credentials'
+                  onClick={handleContinue}
+                  disabled={selectedItems.length === 0}
+                />,
+                <UploadDataButton
+                  key='upload-data-button'
+                  onFileSelect={handleFileSelect}
+                />
+              ]}
+              isCredentialType={false}
+              rows={uploadedDataRows}
+              isSelectable={true}
+              onSelectionChange={handleSelectionChange}
+            />
+          ) : (
+            <DataTable
+              title='Current data upload'
+              titleContainers={[
+                <UploadDataButton
+                  key='upload-data-button'
+                  onFileSelect={handleFileSelect}
+                />
+              ]}
+              isCredentialType={false}
+              rows={uploadedDataRows}
+              isSelectable={true}
+              onSelectionChange={handleSelectionChange}
             />
           )}
         </div>
