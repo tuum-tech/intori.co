@@ -59,7 +59,7 @@ const MenuButton: NextPage<MenuButtonProps> = ({
     <div
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className={`rounded-mini flex flex-col items-start justify-start p-4 text-left text-base font-kumbh-sans ${
+      className={`rounded-mini w-48 flex flex-col items-start justify-start p-4 box-border lg:w-auto lg:[align-self:unset] ${
         isHovered
           ? `${buttonBackgroundColor} ${menuNavTextColor}`
           : menuNavTextColor
@@ -67,12 +67,12 @@ const MenuButton: NextPage<MenuButtonProps> = ({
       style={buttonStyle}
     >
       <div
-        className='w-40 h-6 flex flex-row items-center justify-start gap-[16px]'
+        className='h-6 flex flex-row items-center justify-start gap-[16px]'
         style={navInnerContentContainerStyle}
       >
         <img className='relative w-6 h-6' alt='' src={iconSrc} />
         <div
-          className='relative leading-[140%]'
+          className='relative leading-[140%] lg:hidden'
           style={{
             ...menuNavTextStyle,
             fontSize: isHovered ? '1.25rem' : '1rem',

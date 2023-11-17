@@ -34,8 +34,8 @@ const RecentCredentialRow: NextPage<RecentCredentialRowProps> = ({
   }
 
   return (
-    <div className='self-stretch rounded-mini flex flex-row items-start justify-start py-3 px-6 gap-[31px] text-left text-xs text-white-0 font-kumbh-sans'>
-      <div className='self-stretch flex flex-row items-start justify-start'>
+    <div className='self-stretch rounded-mini flex flex-row items-start justify-start py-3 px-6 gap-[31px]'>
+      <div className='self-stretch flex flex-row items-start justify-start Small_Tablet:flex'>
         {isSelectable && (
           <CheckboxAction
             boxSizing='border-box'
@@ -46,7 +46,7 @@ const RecentCredentialRow: NextPage<RecentCredentialRowProps> = ({
       </div>
 
       <div className='flex-1 overflow-hidden flex flex-row items-center justify-start py-0 pr-[7px] pl-0'>
-        <div className='flex-1 overflow-hidden flex flex-row items-center justify-start py-0 pr-[7px] pl-0 box-border gap-[20px] max-w-[500px]'>
+        <div className='flex-1 overflow-hidden flex flex-row items-start justify-start py-0 pr-[7px] pl-0 box-border gap-[20px] max-w-[500px]'>
           <AmazonIconContainer
             amazonIconContainerFlexShrink='0'
             amazonIconContainerWidth='56px'
@@ -60,13 +60,13 @@ const RecentCredentialRow: NextPage<RecentCredentialRowProps> = ({
                 )}{' '}
               </div>
               <div className='self-stretch relative font-medium text-white-1'>
-                {credentialDetail.uploadedDataDetail.orderData.description}
+                {credentialDetail.uploadedDataDetail.orderData.name}
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div className='w-[200px] flex flex-row items-center justify-between'>
+      <div className='w-[200px] flex flex-row items-center justify-between text-white-1 Small_Tablet:flex'>
         <div className='relative inline-block w-[98px] shrink-0'>
           ${credentialDetail.vCred.metadata.vcValue}
         </div>

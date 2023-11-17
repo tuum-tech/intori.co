@@ -206,7 +206,7 @@ const CredentialDetails: NextPage = ({}) => {
                       {credentialDetail.vCred.metadata.vcMetadata.store.includes(
                         'intori'
                       )
-                        ? 'Local Browser'
+                        ? 'Intori Database'
                         : credentialDetail.vCred.metadata.vcMetadata.store.join(
                             ', '
                           )}

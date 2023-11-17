@@ -8,14 +8,14 @@ const RequestAmazonHistory: NextPage = () => {
   }
 
   return (
-    <div className='self-stretch rounded-xl bg-black-1 overflow-hidden flex flex-col items-center justify-start p-10 relative gap-[24px] border-[1px] border-solid border-black-4'>
+    <div className='self-stretch rounded-xl bg-black-1 overflow-hidden flex flex-col items-center justify-start p-10 relative gap-[24px] text-9xl border-[1px] border-solid border-black-4'>
       <img
         className='absolute my-0 mx-[!important] top-[156px] left-[27px] rounded-276xl w-[276px] h-[228px] hidden opacity-[0.2] z-[0]'
         alt=''
-        src='/colorfade.svg'
+        src='/closemenuiconcontainer.svg'
       />
       <div className='self-stretch flex flex-row items-center justify-center z-[1]'>
-        <div className='flex flex-col items-start justify-start gap-[22px] text-left text-9xl text-white-0 font-kumbh-sans flex-1'>
+        <div className='flex-1 flex flex-col items-start justify-start gap-[22px]'>
           <b className='w-full relative leading-[35px] inline-block max-w-[300px]'>
             Request Your Amazon Order History
           </b>

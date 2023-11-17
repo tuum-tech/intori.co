@@ -47,15 +47,22 @@ const Button: NextPage<Props> = ({
   }
 
   return (
-    <div
-      className={`self-stretch rounded-mini bg-primary h-14 flex items-center justify-center text-lg text-black-1 font-kumbh-sans cursor-pointer hover:bg-primary-hover transition duration-300 ease-in-out ${
-        disabled ? 'bg-gray-400 hover:bg-gray-400 cursor-not-allowed' : ''
-      }`}
-      style={activeStyle}
-      onClick={handleClick}
-    >
-      <div className='relative leading-[18px] font-semibold' style={titleStyle}>
-        {title}
+    <div className='self-stretch flex flex-col items-center justify-center text-center text-lg'>
+      <div className='self-stretch flex flex-col items-start justify-start'>
+        <div
+          className={`self-stretch rounded-mini h-14 flex flex-row items-center justify-center py-[9px] px-3.5 box-border text-black bg-primary-cta  hover:bg-gray-400 cursor-pointer rounded-minitransition duration-300 ease-in-out ${
+            disabled ? 'hover:bg-gray-400 cursor-not-allowed' : ''
+          }`}
+          style={activeStyle}
+          onClick={handleClick}
+        >
+          <div
+            className='relative leading-[18px] font-semibold'
+            style={titleStyle}
+          >
+            {title}
+          </div>
+        </div>
       </div>
     </div>
   )
