@@ -46,16 +46,16 @@ const RecentCredentialsTable: NextPage<RecentCredentialsTableProps> = ({
   }
 
   return (
-    <div className='self-stretch rounded-mini bg-black-1 box-border overflow-hidden flex flex-col items-start justify-start p-6 gap-[15px] min-w-[500px] text-left text-xs text-white-0 font-kumbh-sans border-[1px] border-solid border-black-4'>
-      <div className='self-stretch h-14 flex flex-row items-center justify-start py-0 pr-0 pl-6 box-border gap-[20px] text-left text-3xl text-white-0 font-kumbh-sans'>
-        <div className='self-stretch flex-1 flex flex-row items-center justify-start Small_Tablet:flex'>
-          <h1 className='m-0 relative text-inherit font-semibold font-inherit Small_Tablet:flex'>
+              <div className='self-stretch rounded-mini bg-black-1 box-border overflow-hidden flex flex-col items-start justify-start p-6 gap-[15px] min-w-[500px] text-xs border-[1px] border-solid border-black-4'>
+                <div className='self-stretch h-14 flex flex-row items-center justify-start py-0 pr-0 pl-6 box-border gap-[20px] text-3xl'>
+                  <div className='self-stretch flex-1 flex flex-row items-center justify-start Small_Tablet:flex'>
+                    <h1 className='m-0 relative text-inherit font-semibold font-inherit Small_Tablet:flex'>
             Recent credentials
           </h1>
         </div>
         <ViewAllButton gotoPage='/credentials' />
       </div>
-      <div className='self-stretch rounded-mini bg-black-2 h-14 flex flex-row items-center justify-start py-0 px-6 box-border text-left text-xs text-grey-1 font-kumbh-sans'>
+                <div className='self-stretch rounded-mini bg-black-2 h-14 flex flex-row items-center justify-start py-0 px-6 box-border text-grey-1'>
         {isSelectable && (
           <CheckboxAction
             boxSizing='border-box'
@@ -63,10 +63,10 @@ const RecentCredentialsTable: NextPage<RecentCredentialsTableProps> = ({
             handleCheckboxChange={handleSelectAll}
           />
         )}
-        <div className='flex-1 h-6 overflow-hidden flex flex-row items-center justify-start py-0 pr-[7px] pl-0 box-border'>
+                  <div className='flex-1 h-6 overflow-hidden flex flex-row items-center justify-start py-0 pr-[7px] pl-0 box-border'>
           <div className='relative font-semibold'>Credential Type</div>
         </div>
-        <div className='w-[200px] flex flex-row items-center justify-end gap-[30px] Small_Tablet:flex'>
+        <div className='w-[200px] flex flex-row items-center justify-end gap-[24px] Small_Tablet:flex'>
           <div className='relative font-semibold inline-block w-[98px] shrink-0'>
             Credential Value
           </div>

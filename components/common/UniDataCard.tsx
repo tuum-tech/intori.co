@@ -14,10 +14,10 @@ const UniDataCard: NextPage<SingleDataCardProps> = ({
   percentageChange
 }) => {
   return (
-    <div className='self-stretch rounded-mini bg-black-1 box-border h-[200px] flex flex-col items-start justify-start pt-6 pb-12 pr-6 pl-12 gap-[24px] min-w-[300px] text-left text-lg text-white-1 font-kumbh-sans border-[1px] border-solid border-black-4'>
-      <div className='self-stretch rounded-boundvariablesdata2 flex flex-row items-center justify-start'>
-        <div className='flex-1 rounded-boundvariablesdata2 flex flex-row items-center justify-between'>
-          <div className='flex-1 relative leading-[20px] inline-block h-5'>
+    <div className='self-stretch rounded-mini bg-black-1 box-border flex flex-col items-start justify-start py-12 pr-[47px] pl-12 gap-[24px] min-w-[300px] border-[1px] border-solid border-black-4'>
+      <div className='self-stretch rounded-boundvariablesdata2 flex flex-row flex-wrap items-center justify-start'>
+        <div className='flex-1 rounded-boundvariablesdata2 flex flex-col items-start justify-center'>
+          <div className='self-stretch relative leading-[20px] inline-block h-5 shrink-0'>
             {title}
           </div>
           {titleContainers}

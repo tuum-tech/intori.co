@@ -59,16 +59,17 @@ const DataTable: NextPage<DataTableProps> = ({
   }
 
   return (
-    <div className='self-stretch rounded-mini bg-black-1 overflow-hidden flex flex-col items-start justify-start p-6 gap-[15px] text-left text-xs text-white-1 font-kumbh-sans border-[1px] border-solid border-black-4 Small_Tablet:hidden'>
-      <div className='self-stretch h-14 flex flex-row items-center justify-start py-0 pr-0 pl-6 box-border gap-[20px] text-left text-xs text-white-1 font-kumbh-sans'>
-        <div className='self-stretch flex-1 flex flex-row items-center justify-start text-left text-3xl text-white-0 font-kumbh-sans Small_Tablet:flex'>
+    <div className='self-stretch rounded-mini bg-black-1 overflow-hidden flex flex-col items-start justify-start p-6 gap-[15px] border-[1px] border-solid border-black-4 Small_Tablet:hidden'>
+      <div className='self-stretch h-14 flex flex-row items-center justify-start py-0 pr-0 pl-6 box-border gap-[20px]'>
+        <div className='self-stretch flex-1 flex flex-row items-center justify-start text-3xl text-white Small_Tablet:flex'>
           <h1 className='m-0 relative text-inherit font-semibold font-inherit Small_Tablet:flex'>
             {title}
           </h1>
         </div>
         {titleContainers}
       </div>
-      <div className='self-stretch rounded-mini bg-black-2 flex flex-row items-center justify-start py-0 px-6 gap-[31px] text-left text-xs text-grey-1 font-kumbh-sans'>
+
+      <div className='self-stretch rounded-mini bg-black-2 flex flex-row items-center justify-start py-0 px-6 gap-[31px] text-grey-1'>
         {isSelectable && (
           <CheckboxAction
             boxSizing='border-box'
@@ -99,7 +100,7 @@ const DataTable: NextPage<DataTableProps> = ({
         </div>
       </div>
 
-      <div className='self-stretch flex flex-col items-start justify-start gap-[15px] text-center text-xs text-white-0 font-kumbh-sans'>
+      <div className='self-stretch flex flex-col items-start justify-start gap-[15px] text-white'>
         {rows.map((row) => {
           // Check for null or undefined row
           if (!row) return null
