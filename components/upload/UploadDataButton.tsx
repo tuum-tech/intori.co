@@ -23,7 +23,9 @@ const UploadDataButton: NextPage<UploadDataButtonProps> = ({
 
   return (
     <div
-      className='rounded-mini bg-black-3 box-border h-14 flex flex-col items-start justify-center py-2 px-3 text-left text-xs text-white-1 font-kumbh-sans border-[1px] border-solid border-black-4 cursor-pointer'
+      className={
+        'rounded-mini bg-black-3 box-border h-14 flex flex-col items-start justify-center py-2 px-3 text-left text-xs text-white-1 font-kumbh-sans border-[1px] border-solid border-black-4 hover:bg-primary hover:text-black-1 cursor-pointer'
+      }
       onClick={handleClick}
     >
       <div className='self-stretch h-6 flex flex-row items-center justify-start gap-[8px]'>

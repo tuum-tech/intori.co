@@ -6,11 +6,16 @@ import { httpsCallable } from 'firebase/functions'
 
 type Response = {
   success: boolean
-  docIds: string[]
+  newDocIds: string[]
+  newVCsHash: string[]
   duplicateVCsHash: string[]
 }
 
-export async function createVCFirebase(credentialRows: CredentialDetail[]) {
+export async function createVCFirebase(
+  credentialRows: CredentialDetail[]
+): Promise<Response> {
+  let result: Response = {} as Response
+
   // After creating a VC in the frontend, call the Firebase function
   const createVCFunction = httpsCallable(functions, 'createVC')
 
@@ -26,11 +31,16 @@ export async function createVCFirebase(credentialRows: CredentialDetail[]) {
     const data = response.data as Response
     if (data.success) {
       console.log('Created VCs successfully')
+      result = data
       // Log the event to firebase
       if (analytics) {
         logEvent(
           analytics,
-          `createVC: successful for user ${userInfo} with IDs: ${data.docIds}`
+          `createVC: successful for user ${userInfo} with VC Hashes: ${JSON.stringify(
+            data.newVCsHash,
+            null,
+            4
+          )}`
         )
       }
       if (data.duplicateVCsHash.length > 0) {
@@ -40,21 +50,34 @@ export async function createVCFirebase(credentialRows: CredentialDetail[]) {
         if (analytics) {
           logEvent(
             analytics,
-            `createVC: failure for user ${userInfo} with error: Some of the VCs you generated were duplicates so they were not saved: ${data.duplicateVCsHash.length}`
+            `createVC: failure for user ${userInfo} with error: Some of the VCs you generated were duplicates so they were not saved: ${JSON.stringify(
+              data.duplicateVCsHash,
+              null,
+              4
+            )}`
           )
         }
       }
     } else {
-      console.error('Error creating VC in the backend. Please try again')
+      const errMessage = 'Error creating VC in the backend. Please try again'
+      console.error(errMessage)
+      if (analytics) {
+        logEvent(
+          analytics,
+          `createVC: failure for user ${userInfo} with error: ${errMessage}`
+        )
+      }
+      throw new Error(errMessage)
     }
   } catch (error) {
-    console.error('Error creating VC in the backend:', error)
+    const errMessage = `Error creating VC in the backend: ${error}`
+    console.error(errMessage)
     if (analytics) {
       logEvent(
         analytics,
-        `createVC: failure for user ${userInfo} with error: ${error}`
+        `createVC: failure for user ${userInfo} with error: ${errMessage}`
       )
     }
-    throw error // If it's another error, re-throw it
   }
+  return result
 }

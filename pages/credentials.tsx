@@ -3,6 +3,7 @@ import Button from '@/components/common/Button'
 import DataTable from '@/components/common/DataTable'
 import LoadingSpinner from '@/components/common/LoadingSpinner'
 import { CredentialDetail } from '@/components/credentials/CredTypes'
+import CredentialsButton from '@/components/credentials/CredentialsButton'
 import SideNavigationMenu from '@/components/side-navigation/SideNavigationMenu'
 import TopNavigationMenu from '@/components/top-navigation/TopNavigationMenu'
 import { UploadedDataDetail } from '@/components/upload/UploadedTypes'
@@ -83,6 +84,7 @@ const Credentials: NextPage = () => {
   }
 
   useEffect(() => {
+    setCredentialRows([])
     const fetchAndProcessCredentials = async () => {
       if (!isCredentialsFetched.current) {
         isCredentialsFetched.current = true
@@ -148,8 +150,9 @@ const Credentials: NextPage = () => {
   ) => {
     const batchedVcs: CredentialDetail[][] = []
     let currentBatchVcs: CredentialDetail[] = []
+    const newVCsAdded: CredentialDetail[] = []
 
-    const batchSize = 200
+    const batchSize = 300
 
     const promises = selectedUploadedData.map(
       async (order: UploadedDataDetail) => {
@@ -232,13 +235,38 @@ const Credentials: NextPage = () => {
     // Now we have an array of batches to be sent to Firebase
     for (let i = 0; i < batchedVcs.length; i++) {
       try {
-        const vcBatch = batchedVcs[i]
-        await createVCFirebase(vcBatch)
+        const vcBatch: CredentialDetail[] = batchedVcs[i]
+        const result = await createVCFirebase(vcBatch)
+        // Filter vcBatch to include only those items where vcHash is in newVCsHash
+        const filteredVCBatch: CredentialDetail[] = vcBatch
+          .filter((vcItem) =>
+            result.newVCsHash.includes(vcItem.vCred.metadata.vcMetadata.vcHash)
+          )
+          .map((vcItem) => {
+            const hashIndex = result.newVCsHash.indexOf(
+              vcItem.vCred.metadata.vcMetadata.vcHash
+            )
+            return {
+              ...vcItem,
+              vCred: {
+                ...vcItem.vCred,
+                metadata: {
+                  ...vcItem.vCred.metadata,
+                  vcMetadata: {
+                    ...vcItem.vCred.metadata.vcMetadata,
+                    id: result.newDocIds[hashIndex]
+                  }
+                }
+              }
+            }
+          })
+        newVCsAdded.push(...filteredVCBatch)
       } catch (error) {
         console.error(`Error while uploading VCs to firebase: ${error}`)
       }
     }
-    await fetchCredentials()
+
+    setCredentialRows((prevState) => [...prevState, ...newVCsAdded])
   }
 
   const handleSelectionChange = (selectedRows: { [key: string]: boolean }) => {
@@ -254,12 +282,17 @@ const Credentials: NextPage = () => {
     const idsToRemove = new Set(
       selectedItems.map((item) => item.vCred.metadata.vcMetadata.id)
     )
-    const newSelectedItems = credentialRows.filter(
-      (item) => !idsToRemove.has(item.vCred.metadata.vcMetadata.id)
-    )
-    await deleteVCFirebase(Array.from(idsToRemove))
 
-    setCredentialRows(newSelectedItems)
+    const deletedVCsHash: string[] = await deleteVCFirebase(
+      Array.from(idsToRemove)
+    )
+    // Exclude vcs from credentialRows that are in deletedVCsHash
+    const filteredNewVCs: CredentialDetail[] = credentialRows.filter(
+      (vcItem) =>
+        !deletedVCsHash.includes(vcItem.vCred.metadata.vcMetadata.vcHash)
+    )
+
+    setCredentialRows(filteredNewVCs)
     setSelectedItems([]) // Clear the selected items
 
     setIsProcessingDelete(false)
@@ -297,24 +330,34 @@ const Credentials: NextPage = () => {
               value={`${selectedItems.length}/${totalStats.userStats.vcsCreated}`}
             />
           </div>
-          <DataTable
-            title='Your credentials'
-            isCredentialType={true}
-            rows={credentialRows}
-            isSelectable={true}
-            onSelectionChange={handleSelectionChange}
-          />
+          {selectedItems.length > 0 ? (
+            <DataTable
+              title='Your credentials'
+              titleContainers={[
+                <CredentialsButton
+                  key='delete-credentials-button'
+                  title='Delete Credentials'
+                  onClick={handleDelete}
+                  disabled={selectedItems.length === 0} // Button is disabled when no items are selected
+                />
+              ]}
+              isCredentialType={true}
+              rows={credentialRows}
+              isSelectable={true}
+              onSelectionChange={handleSelectionChange}
+            />
+          ) : (
+            <DataTable
+              title='Your credentials'
+              isCredentialType={true}
+              rows={credentialRows}
+              isSelectable={true}
+              onSelectionChange={handleSelectionChange}
+            />
+          )}
           {/* Conditionally render the Load More button */}
           {moreCredsToFetch && (
             <Button title='Load More' onClick={handleLoadMore} />
-          )}
-          {/* Conditionally render the Delete button */}
-          {selectedItems.length > 0 && (
-            <Button
-              title='Delete'
-              onClick={handleDelete}
-              disabled={selectedItems.length === 0} // Button is disabled when no items are selected
-            />
           )}
         </div>
       </div>
