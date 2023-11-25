@@ -34,5 +34,6 @@ yarn-error.log*
 *.tsbuildinfo
 
 # custom
+.env
 .env.development
 .env.production
