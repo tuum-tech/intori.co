@@ -1,4 +1,3 @@
-import { UserInfo } from '@/lib/magic/user'
 import { analytics, auth, functions } from '@/utils/firebase'
 import { logEvent } from 'firebase/analytics'
 import { httpsCallable } from 'firebase/functions'
@@ -12,7 +11,7 @@ export async function uploadFileFirebase(
 ): Promise<void> {
   try {
     // After parsing, call the Firebase function
-    const userInfo: UserInfo = JSON.parse(
+    const userInfo: unknown = JSON.parse(
       localStorage.getItem('userInfo') ?? '{}'
     )
     const uploadFileFunction = httpsCallable(functions, 'uploadFile')

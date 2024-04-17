@@ -1,13 +1,13 @@
-import { AuthProvider, useAuth } from '@/contexts/AuthContext'
-import { DidProvider } from '@/contexts/DidContext'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { Fragment, useEffect } from 'react'
+import { Fragment, useEffect, useMemo } from 'react'
 import './global.css'
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const { isLoggedIn, loading } = useAuth()
+  // TODO: NextAuth hook with Farcaster auth integration will determine
+  const isLoggedIn = useMemo(() => false, [])
+  const loading = useMemo(() => false, [])
   const router = useRouter()
 
   useEffect(() => {
@@ -29,11 +29,8 @@ function MyApp({ Component, pageProps }: AppProps) {
           content='minimum-scale=1, initial-scale=1, width=device-width'
         />
       </Head>
-      <AuthProvider>
-        <DidProvider>
-          <Component {...pageProps} />
-        </DidProvider>
-      </AuthProvider>
+      { /* TODO: Add NextAuth provider here */ }
+      <Component {...pageProps} />
     </Fragment>
   )
 }
