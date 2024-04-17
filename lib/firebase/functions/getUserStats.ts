@@ -1,7 +1,6 @@
 import { httpsCallable } from 'firebase/functions'
 import { analytics, auth, functions } from '../../../utils/firebase'
 
-import { UserInfo } from '@/lib/magic/user'
 import { logEvent } from 'firebase/analytics'
 
 type Response = {
@@ -40,7 +39,7 @@ export async function getUserStatsFirebase(): Promise<TotalStats> {
       vcsValue: 0
     }
   }
-  const userInfo: UserInfo = JSON.parse(
+  const userInfo: unknown = JSON.parse(
     localStorage.getItem('userInfo') ?? '{}'
   )
   const getUserStatsFunction = httpsCallable(functions, 'getUserStats')

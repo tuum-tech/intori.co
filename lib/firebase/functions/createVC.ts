@@ -1,5 +1,4 @@
 import { CredentialDetail } from '@/components/credentials/CredTypes'
-import { UserInfo } from '@/lib/magic/user'
 import { analytics, auth, functions } from '@/utils/firebase'
 import { logEvent } from 'firebase/analytics'
 import { httpsCallable } from 'firebase/functions'
@@ -19,7 +18,7 @@ export async function createVCFirebase(
   // After creating a VC in the frontend, call the Firebase function
   const createVCFunction = httpsCallable(functions, 'createVC')
 
-  const userInfo: UserInfo = JSON.parse(
+  const userInfo = JSON.parse(
     localStorage.getItem('userInfo') ?? '{}'
   )
   try {
