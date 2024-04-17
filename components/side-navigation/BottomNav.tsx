@@ -1,4 +1,3 @@
-import { useAuth } from '@/contexts/AuthContext'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
@@ -6,8 +5,12 @@ import LoadingSpinner from '../common/LoadingSpinner'
 import LogoutButton from './LogoutButton'
 
 const BottomNav: NextPage = () => {
-  const { logout } = useAuth()
   const [isProcessing, setIsProcessing] = useState(false)
+
+  // TODO: Remove farcaster session. NextAuth would handle.
+  const logout = async () => {
+      console.log('logging out...')
+  }
 
   const router = useRouter()
 
