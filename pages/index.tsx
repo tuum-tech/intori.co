@@ -1,42 +1,23 @@
 import LoadingSpinner from '@/components/common/LoadingSpinner'
-import { useDid } from '@/contexts/DidContext'
-import { Wallet, loadOrCreateWallet } from '@/lib/thirdweb/localWallet'
-import { loadVeramoState } from '@/lib/veramo/loadVeramoState'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import Button from '../components/common/Button'
 import EmailInput from '../components/signin/EmailInput'
 import SigninHeader from '../components/signin/SigninHeader'
-import { useAuth } from '../contexts/AuthContext' // Import the useAuth hook
 
 const SigninDefaultScreen = () => {
   const [email, setEmail] = useState('')
-  const { loginWithEmail, loading } = useAuth() // Destructure loginWithEmail and loading from the useAuth hook
-  const {
-    state: { veramoState },
-    dispatch
-  } = useDid() // Destructure state and dispatch from the useDid hook
   const [isProcessing, setIsProcessing] = useState(false)
 
   const router = useRouter()
 
+  // TODO: NextAuth will handle login which will have Farcaster auth kit integrated
   const handleSignIn = async () => {
-    setIsProcessing(true)
-
-    const wallet: Wallet = await loadOrCreateWallet()
-    const success = await loginWithEmail(email, wallet)
-    if (success) {
-      const newVeramoState = await loadVeramoState(veramoState, wallet)
-
-      // Dispatch the action to update veramoState
-      dispatch({ type: 'SET_VERAMO_STATE', payload: newVeramoState })
+      setIsProcessing(true)
       router.push('/upload')
-    } else {
-      setIsProcessing(false)
-    }
   }
 
-  if (loading || isProcessing) {
+  if (isProcessing) {
     return <LoadingSpinner loadingText='Logging you in...' />
   }
 
