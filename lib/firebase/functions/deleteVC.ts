@@ -1,4 +1,3 @@
-import { UserInfo } from '@/lib/magic/user'
 import { analytics, auth, functions } from '@/utils/firebase'
 import { logEvent } from 'firebase/analytics'
 import { httpsCallable } from 'firebase/functions'
@@ -13,7 +12,7 @@ export async function deleteVCFirebase(docIds: string[]): Promise<string[]> {
   // After creating a VC in the frontend, call the Firebase function
   const deleteVCFunction = httpsCallable(functions, 'deleteVC')
 
-  const userInfo: UserInfo = JSON.parse(
+  const userInfo: unknown = JSON.parse(
     localStorage.getItem('userInfo') ?? '{}'
   )
   try {
