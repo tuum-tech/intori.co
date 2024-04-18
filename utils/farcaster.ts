@@ -22,5 +22,7 @@ export const authKitConfig: AuthKitConfig = {
   // RPC URL from a provider like Alchemy or Infura.
   rpcUrl: "https://mainnet.optimism.io",
   domain: domainFromNextUrl(),
-  siweUri: process.env.NEXTAUTH_URL || 'http://localhost:3000'
+
+  // extra slash at end is important.
+  siweUri: (process.env.NEXTAUTH_URL || 'http://localhost:3000') + '/'
 }
