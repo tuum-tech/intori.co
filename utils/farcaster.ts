@@ -13,8 +13,19 @@ declare interface AuthKitConfig {
 }
 
 export const domainFromNextUrl = () => {
-  const url = process.env.NEXT_PUBLIC_AUTH_URL || 'http://localhost:3000'
-  return new URL(url).host
+  if (process.env.NEXTAUTH_URL) {
+    return new URL(process.env.NEXTAUTH_URL).host
+  }
+
+  return window.location.host
+}
+
+export const getAppUri = () => {
+  if (process.env.NEXTAUTH_URL) {
+    return new URL(process.env.NEXTAUTH_URL).href
+  }
+
+  return window.location.href
 }
 
 export const authKitConfig: AuthKitConfig = {
@@ -24,5 +35,5 @@ export const authKitConfig: AuthKitConfig = {
   domain: domainFromNextUrl(),
 
   // extra slash at end is important.
-  siweUri: (process.env.NEXT_PUBLIC_AUTH_URL || 'http://localhost:3000') + '/'
+  siweUri: getAppUri()
 }
