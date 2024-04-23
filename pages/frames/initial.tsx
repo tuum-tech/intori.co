@@ -12,7 +12,7 @@ type Props = {
 export const getServerSideProps = (async (context) => {
   const currentStep = parseInt(context.query.step as string, 10) || 0
   const imageUrl = process.env.NEXTAUTH_URL + '/assets/img-step-1.png'
-  const postUrl = `${process.env.NEXTAUTH_URL}/frames/initial?id=${Date.now()}&step=${currentStep + 1}`
+  const postUrl = `${process.env.NEXTAUTH_URL}/api/frames/submit?step=${currentStep}`
 
   return {
     props: {
