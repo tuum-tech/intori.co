@@ -32,7 +32,7 @@ const submitFrame = async (
   })
   console.log('body:', req.body)
 
-  const frameSequenceName = req.headers.referer?.split('/').pop()
+  const frameSequenceName = req.body.untrustedData.url.split('/').pop().split('?')[0]
   const currentStepOfSequence = parseInt(req.query.step as string, 10) || 0
 
   console.log({ frameSequenceName, currentStepOfSequence })
