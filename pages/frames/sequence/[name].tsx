@@ -55,18 +55,20 @@ export default function Page({
         {
           inputs.map((button, index) => (
             <React.Fragment key={button.content}>
-              <meta name={`fc:frame:button:${index}`} content={button.content} />
-              { button.action === 'link' && (
-                <>
+              <meta name={`fc:frame:button:${index + 1}`} content={button.content} />
+
+              { button.action && (
                   <meta
-                    name={`fc:frame:button:${index}:action`}
-                    content="link"
+                    name={`fc:frame:button:${index + 1}:action`}
+                    content={button.action}
                   />
+              )}
+
+              { button.target && (
                   <meta
-                    name={`fc:frame:button:${index}:target`}
+                    name={`fc:frame:button:${index + 1}:target`}
                     content={button.target}
                   />
-                </>
               )}
             </React.Fragment>
           ))
