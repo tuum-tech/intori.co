@@ -130,5 +130,109 @@ export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
         ]
       }
     ]
+  },
+  personalValues: {
+      name: 'Intori',
+      steps: [
+        {
+            title: 'Intori',
+            inputs: [
+              {
+                type: 'button',
+                content: 'Go!'
+              },
+              {
+                type: 'button',
+                content: 'Learn More',
+                action: 'link',
+                target: 'https://www.intori.co/'
+              }
+            ]
+        },
+        {
+            title: 'Personal Values & Goals',
+            inputs: [
+              {
+                type: 'button',
+                content: 'Life Balance'
+              },
+              {
+                type: 'button',
+                content: '$$ Stability'
+              },
+              {
+                type: 'button',
+                content: 'Growth'
+              },
+              {
+                type: 'button',
+                content: 'Next'
+              },
+            ]
+        },
+        {
+            title: 'Personal Values & Goals',
+            inputs: [
+              {
+                type: 'button',
+                content: 'Positive Impact'
+              },
+              {
+                type: 'button',
+                content: 'Innovation'
+              },
+              {
+                type: 'button',
+                content: 'Collaboration'
+              },
+              {
+                type: 'button',
+                content: 'Other'
+              },
+            ]
+        },
+        {
+            title: 'Education & Certifications',
+            inputs: [
+              {
+                type: 'button',
+                content: 'High School'
+              },
+              {
+                type: 'button',
+                content: 'Associate\'s'
+              },
+              {
+                type: 'button',
+                content: 'Bachelor\'s'
+              },
+              {
+                type: 'button',
+                content: 'Next'
+              },
+            ]
+        },
+        {
+            title: 'Education & Certifications',
+            inputs: [
+              {
+                type: 'button',
+                content: 'Master\'s'
+              },
+              {
+                type: 'button',
+                content: 'Doctorate'
+              },
+              {
+                type: 'button',
+                content: 'Certification'
+              },
+              {
+                type: 'button',
+                content: 'Other'
+              }
+            ]
+        }
+      ]
   }
 }
