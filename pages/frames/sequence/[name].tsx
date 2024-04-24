@@ -57,11 +57,11 @@ export default function Page({
             return introductionStep
         }
 
-        if (currentStep === intoriFrameForm.steps.length) {
-            return finalStep
+        if (intoriFrameForm.steps[currentStep - 1]) {
+          return intoriFrameForm.steps[currentStep - 1]
         }
 
-        return intoriFrameForm.steps[currentStep - 1]
+        return finalStep
     }, [currentStep, intoriFrameForm])
 
   return (
