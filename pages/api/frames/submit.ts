@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { frameSubmissionHelpers } from '../../../utils/frames/frameSubmissionHelpers'
 
 // example farcaster frame submit
 // console.log({
@@ -26,18 +27,23 @@ const submitFrame = async (
     return res.status(405).end()
   }
 
-  console.log({
-    origin: req.headers.origin,
-    referer: req.headers.referer,
-  })
-  console.log('body:', req.body)
+  const {
+    frameSequenceName,
+    currentStepOfSequence,
+    buttonClicked
+  } = frameSubmissionHelpers(req)
 
-  const frameSequenceName = req.body.untrustedData.url.split('/').pop().split('?')[0]
-  const currentStepOfSequence = parseInt(req.query.step as string, 10) || 0
+  let nextStep = currentStepOfSequence + 1
 
-  console.log({ frameSequenceName, currentStepOfSequence })
+  if (
+    frameSequenceName === 'initial' &&
+    (currentStepOfSequence === 1 || currentStepOfSequence === 3) &&
+    buttonClicked === 'More'
+  ) {
+    nextStep = currentStepOfSequence + 2
+  }
 
-  return res.redirect(`/frames/initial?step=${currentStepOfSequence + 1}`)
+  return res.redirect(`/frames/${frameSequenceName}?step=${nextStep}`)
 }
 
 export default submitFrame
