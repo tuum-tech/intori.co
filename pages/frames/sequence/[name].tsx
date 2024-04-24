@@ -11,7 +11,7 @@ type Props = {
 }
  
 export const getServerSideProps = (async (context) => {
-  console.log('name: ', context.params.name)
+  console.log('name: ', context?.params?.name)
   if (!context?.params?.name) {
     return {
       notFound: true
