@@ -43,7 +43,10 @@ const submitFrame = async (
     nextStep = currentStepOfSequence + 2
   }
 
-  return res.redirect(`/frames/${frameSequenceName}?step=${nextStep}`)
+  res.redirect(
+    307,
+    `/frames/sequence/${frameSequenceName}?step=${nextStep}`
+  )
 }
 
 export default submitFrame

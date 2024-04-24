@@ -28,6 +28,7 @@ export const getServerSideProps = (async (context) => {
 
   const currentStep = parseInt(context.query.step as string, 10) || 0
   const postUrl = `${process.env.NEXTAUTH_URL}/api/frames/submit?step=${currentStep}`
+
   const imageUrl = `${process.env.NEXTAUTH_URL}/assets/frames/${intoriSequence.name}/${currentStep + 1}.png`
 
   return {
@@ -77,9 +78,12 @@ export default function Page({
         }
       </FarcasterFrameHead>
 
-      <div className="text-center">
-        <p>Sorry, this form is only accessible on Farcaster clients.</p>
-      </div>
+      <form method="POST" action={postUrl}>
+        <div className="text-center">
+          <p>Sorry, this form is only accessible on Farcaster clients.</p>
+        </div>
+        <button type="submit">Submit</button>
+      </form>
     </PageWrapper>
   )
 }
