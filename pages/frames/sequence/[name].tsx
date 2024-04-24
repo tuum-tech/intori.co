@@ -28,7 +28,7 @@ export const getServerSideProps = (async (context) => {
 
   const currentStep = parseInt(context.query.step as string, 10) || 0
   const postUrl = `${process.env.NEXTAUTH_URL}/api/frames/submit?step=${currentStep}`
-  const imageUrl = `${process.env.NEXTAUTH_URL}/assets/frames/${intoriSequence.name}/${currentStep}.png`
+  const imageUrl = `${process.env.NEXTAUTH_URL}/assets/frames/${intoriSequence.name}/${currentStep + 1}.png`
 
   return {
     props: {
