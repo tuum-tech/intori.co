@@ -71,10 +71,6 @@ export default function Page({
             </React.Fragment>
           ))
         }
-        <meta name="fc:frame:button:1" content="Go!" />
-        <meta name="fc:frame:button:2" content="Learn More" />
-        <meta name="fc:frame:button:2:action" content="link" />
-        <meta name="fc:frame:button:2:target" content="https://www.intori.co/" />
       </FarcasterFrameHead>
 
       <div className="text-center">
