@@ -1,8 +1,13 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
 import { FarcasterFrameHead } from '../../../components/farcaster-frames/FarcasterFrameHead'
 import { PageWrapper } from '../../../components/farcaster-frames/PageWrapper'
-import { intoriFrameForms, IntoriFrameFormType } from '../../../utils/frames/intoriFrameForms'
+import {
+    intoriFrameForms,
+    IntoriFrameFormType,
+    introductionStep,
+    finalStep
+} from '../../../utils/frames/intoriFrameForms'
  
 type Props = {
   currentStep: number
@@ -47,16 +52,25 @@ export default function Page({
   intoriFrameForm,
   imageUrl
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const title = intoriFrameForm.steps[currentStep].title
-  const inputs = intoriFrameForm.steps[currentStep].inputs
+    const thisStep = useMemo(() => {
+        if (!currentStep) {
+            return introductionStep
+        }
+
+        if (currentStep === intoriFrameForm.steps.length) {
+            return finalStep
+        }
+
+        return intoriFrameForm.steps[currentStep - 1]
+    }, [currentStep, intoriFrameForm])
 
   return (
-    <PageWrapper title={title}>
+    <PageWrapper title={thisStep.title}>
       <FarcasterFrameHead title="Intori" imgUrl={imageUrl}>
         <meta name="fc:frame:post_url" content={postUrl} />
 
         {
-          inputs.map((button, index) => (
+          thisStep.inputs.map((button, index) => (
             <React.Fragment key={button.content}>
               <meta name={`fc:frame:button:${index + 1}`} content={button.content} />
 
