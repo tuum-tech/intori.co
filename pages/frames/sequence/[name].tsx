@@ -11,7 +11,6 @@ type Props = {
 }
  
 export const getServerSideProps = (async (context) => {
-  console.log('name: ', context?.params?.name)
   if (!context?.params?.name) {
     return {
       notFound: true
@@ -44,7 +43,7 @@ export default function Page({
   intoriFrameForm
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const title = intoriFrameForm.steps[currentStep].title
-  const imageUrl = intoriFrameForm.steps[currentStep].imageUrl
+  const imageUrl = `/assets/frames/${intoriFrameForm.name}/${currentStep}.png`
   const inputs = intoriFrameForm.steps[currentStep].inputs
 
   return (
