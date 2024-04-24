@@ -1,6 +1,5 @@
 export type IntoriFrameStepType = {
   title: string
-  imageUrl: string
   inputs: {
     type: 'button'
     content: string
@@ -20,7 +19,6 @@ export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
     steps: [
       {
         title: 'Intori',
-        imageUrl: '',
         inputs: [
           {
             type: 'button',
@@ -36,7 +34,6 @@ export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
       },
       {
         title: 'Professional Experience',
-        imageUrl: '',
         inputs: [
           {
             type: 'button',
@@ -58,7 +55,6 @@ export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
       },
       {
         title: 'Professional Experience',
-        imageUrl: '',
         inputs: [
           {
             type: 'button',
@@ -80,7 +76,6 @@ export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
       },
       {
         title: 'Skills and Endorsements',
-        imageUrl: '',
         inputs: [
           {
             type: 'button',
@@ -102,7 +97,6 @@ export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
       },
       {
         title: 'Skills and Endorsements',
-        imageUrl: '',
         inputs: [
           {
             type: 'button',
@@ -124,7 +118,6 @@ export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
       },
       {
         title: 'Congrats – your profile is growing!',
-        imageUrl: '',
         inputs: [
           {
             type: 'button',
