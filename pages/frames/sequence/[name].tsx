@@ -8,6 +8,7 @@ type Props = {
   currentStep: number
   postUrl: string
   intoriFrameForm: IntoriFrameFormType
+  imageUrl: string
 }
  
 export const getServerSideProps = (async (context) => {
@@ -27,12 +28,14 @@ export const getServerSideProps = (async (context) => {
 
   const currentStep = parseInt(context.query.step as string, 10) || 0
   const postUrl = `${process.env.NEXTAUTH_URL}/api/frames/submit?step=${currentStep}`
+  const imageUrl = `${process.env.NEXTAUTH_URL}/assets/frames/${intoriSequence.name}/${currentStep}.png`
 
   return {
     props: {
       currentStep: currentStep,
       postUrl,
-      intoriFrameForm: intoriSequence
+      intoriFrameForm: intoriSequence,
+      imageUrl
     }
   }
 }) satisfies GetServerSideProps<Props>
@@ -40,10 +43,10 @@ export const getServerSideProps = (async (context) => {
 export default function Page({
   currentStep,
   postUrl,
-  intoriFrameForm
+  intoriFrameForm,
+  imageUrl
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const title = intoriFrameForm.steps[currentStep].title
-  const imageUrl = `/assets/frames/${intoriFrameForm.name}/${currentStep}.png`
   const inputs = intoriFrameForm.steps[currentStep].inputs
 
   return (
