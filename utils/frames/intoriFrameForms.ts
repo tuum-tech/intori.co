@@ -132,7 +132,7 @@ export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
     ]
   },
   personalValues: {
-      name: 'Intori',
+      name: 'personalValues',
       steps: [
         {
             title: 'Intori',
