@@ -43,7 +43,7 @@ const submitFrame = async (
     nextStep = currentStepOfSequence + 2
   }
   if (
-    frameSequenceName === 'initial' &&
+    frameSequenceName === 'personalValues' &&
     (currentStepOfSequence === 1 || currentStepOfSequence === 3) &&
     buttonClicked === 'Next'
   ) {

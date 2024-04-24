@@ -1,5 +1,9 @@
 import type { NextApiRequest } from 'next'
-import { intoriFrameForms } from './intoriFrameForms'
+import {
+  intoriFrameForms,
+  introductionStep,
+  finalStep
+} from './intoriFrameForms'
 
 export const frameSubmissionHelpers = (req: NextApiRequest) => {
   const frameSequenceName = req.body.untrustedData.url.split('/').pop().split('?')[0] as string
@@ -12,7 +16,28 @@ export const frameSubmissionHelpers = (req: NextApiRequest) => {
   }
 
   const getButtonLabels = () => {
-    return intoriFrameForms[frameSequenceName].steps[currentStepOfSequence].inputs.map(input => input.content)
+    if (!currentStepOfSequence) {
+      return (
+        introductionStep
+        .inputs
+        .map(input => input.content)
+      )
+    }
+
+    if (currentStepOfSequence === intoriFrameForms[frameSequenceName].steps.length) {
+      return (
+        finalStep
+        .inputs
+        .map(input => input.content)
+      )
+    }
+
+    return (
+      intoriFrameForms[frameSequenceName]
+      .steps[currentStepOfSequence]
+      .inputs
+      .map(input => input.content)
+    )
   }
 
   return {
