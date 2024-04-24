@@ -42,6 +42,13 @@ const submitFrame = async (
   ) {
     nextStep = currentStepOfSequence + 2
   }
+  if (
+    frameSequenceName === 'initial' &&
+    (currentStepOfSequence === 1 || currentStepOfSequence === 3) &&
+    buttonClicked === 'Next'
+  ) {
+    nextStep = currentStepOfSequence + 2
+  }
 
   res.redirect(
     307,

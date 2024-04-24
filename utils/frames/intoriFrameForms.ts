@@ -13,25 +13,40 @@ export type IntoriFrameFormType = {
   steps: IntoriFrameStepType[]
 }
 
+export const introductionStep: IntoriFrameStepType = {
+    title: 'Intori',
+    inputs: [
+      {
+        type: 'button',
+        content: 'Go!'
+      },
+      {
+        type: 'button',
+        content: 'Learn More',
+        action: 'link',
+        target: 'https://www.intori.co/'
+      }
+    ]
+}
+
+export const finalStep: IntoriFrameStepType = {
+    title: 'Congrats – your profile is growing!',
+    inputs: [
+      {
+        type: 'button',
+        content: 'View Profile'
+      },
+      {
+        type: 'button',
+        content: 'Share'
+      }
+    ]
+}
+
 export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
   initial: {
     name: 'initial',
     steps: [
-      {
-        title: 'Intori',
-        inputs: [
-          {
-            type: 'button',
-            content: 'Go!'
-          },
-          {
-            type: 'button',
-            content: 'Learn More',
-            action: 'link',
-            target: 'https://www.intori.co/'
-          }
-        ]
-      },
       {
         title: 'Professional Experience',
         inputs: [
@@ -115,40 +130,12 @@ export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
             content: 'Other'
           },
         ]
-      },
-      {
-        title: 'Congrats – your profile is growing!',
-        inputs: [
-          {
-            type: 'button',
-            content: 'View Profile'
-          },
-          {
-            type: 'button',
-            content: 'Share'
-          }
-        ]
       }
     ]
   },
   personalValues: {
       name: 'personalValues',
       steps: [
-        {
-            title: 'Intori',
-            inputs: [
-              {
-                type: 'button',
-                content: 'Go!'
-              },
-              {
-                type: 'button',
-                content: 'Learn More',
-                action: 'link',
-                target: 'https://www.intori.co/'
-              }
-            ]
-        },
         {
             title: 'Personal Values & Goals',
             inputs: [
