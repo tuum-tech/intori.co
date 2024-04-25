@@ -38,7 +38,7 @@ const submitFrame = async (
   if (
     frameSequenceName === 'initial' &&
     (currentStepOfSequence === 1 || currentStepOfSequence === 3) &&
-    buttonClicked === 'More'
+    buttonClicked !== 'More'
   ) {
     nextStep = currentStepOfSequence + 2
   }
@@ -46,7 +46,15 @@ const submitFrame = async (
   if (
     frameSequenceName === 'personalValues' &&
     (currentStepOfSequence === 1 || currentStepOfSequence === 3) &&
-    buttonClicked === 'Next'
+    buttonClicked !== 'Next'
+  ) {
+    nextStep = currentStepOfSequence + 2
+  }
+
+  if (
+    frameSequenceName === 'lifeStyle' &&
+    (currentStepOfSequence === 1 || currentStepOfSequence === 3) &&
+    buttonClicked !== 'More'
   ) {
     nextStep = currentStepOfSequence + 2
   }
