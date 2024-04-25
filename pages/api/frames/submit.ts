@@ -35,6 +35,11 @@ const submitFrame = async (
 
   let nextStep = currentStepOfSequence + 1
 
+  console.log({
+    frameSequenceName,
+    currentStepOfSequence,
+    buttonClicked
+  })
   if (
     frameSequenceName === 'initial' &&
     (currentStepOfSequence === 1 || currentStepOfSequence === 3) &&
