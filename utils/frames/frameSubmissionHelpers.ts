@@ -24,7 +24,9 @@ export const frameSubmissionHelpers = (req: NextApiRequest) => {
       )
     }
 
-    if (currentStepOfSequence === intoriFrameForms[frameSequenceName].steps.length) {
+    if (
+      currentStepOfSequence === intoriFrameForms[frameSequenceName].steps.length
+    ) {
       return (
         finalStep
         .inputs
@@ -34,7 +36,7 @@ export const frameSubmissionHelpers = (req: NextApiRequest) => {
 
     return (
       intoriFrameForms[frameSequenceName]
-      .steps[currentStepOfSequence]
+      .steps[currentStepOfSequence - 1]
       .inputs
       .map(input => input.content)
     )
