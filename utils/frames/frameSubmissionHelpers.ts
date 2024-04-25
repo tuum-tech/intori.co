@@ -46,6 +46,6 @@ export const frameSubmissionHelpers = (req: NextApiRequest) => {
     frameSequenceName,
     currentStepOfSequence,
     buttonLabels: getButtonLabels(),
-    buttonClicked: getButtonLabels()[buttonIndex]
+    buttonClicked: getButtonLabels()[buttonIndex - 1]
   }
 }
