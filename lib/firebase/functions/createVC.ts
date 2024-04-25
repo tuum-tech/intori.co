@@ -1,7 +1,9 @@
-import { CredentialDetail } from '@/components/credentials/CredTypes'
+// import { CredentialDetail } from '@/components/credentials/CredTypes'
 import { analytics, auth, functions } from '@/utils/firebase'
 import { logEvent } from 'firebase/analytics'
 import { httpsCallable } from 'firebase/functions'
+
+type CredentialDetail = unknown
 
 type Response = {
   success: boolean
