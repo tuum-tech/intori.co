@@ -221,5 +221,94 @@ export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
             ]
         }
       ]
+  },
+  lifeStyle: {
+    name: 'lifeStyle',
+    steps: [
+      {
+        title: 'Lifestyle and Wellness',
+        inputs: [
+          {
+            type: 'button',
+            content: 'Gym'
+          },
+          {
+            type: 'button',
+            content: 'Running'
+          },
+          {
+            type: 'button',
+            content: 'Yoga'
+          },
+          {
+            type: 'button',
+            content: 'More'
+          },
+        ]
+      },
+      {
+        title: 'Lifestyle and Wellness',
+        inputs: [
+          {
+            type: 'button',
+            content: 'Sports'
+          },
+          {
+            type: 'button',
+            content: 'Home Workout'
+          },
+          {
+            type: 'button',
+            content: 'Outside'
+          },
+          {
+            type: 'button',
+            content: 'None'
+          },
+        ]
+      },
+      {
+        title: 'Lifestyle and Wellness',
+        inputs: [
+          {
+            type: 'button',
+            content: 'Early Bird'
+          },
+          {
+            type: 'button',
+            content: 'Night Owl'
+          },
+          {
+            type: 'button',
+            content: 'Insomniac'
+          },
+          {
+            type: 'button',
+            content: 'More'
+          },
+        ]
+      },
+      {
+        title: 'Lifestyle and Wellness',
+        inputs: [
+          {
+            type: 'button',
+            content: 'Heavy Sleep'
+          },
+          {
+            type: 'button',
+            content: 'Variable'
+          },
+          {
+            type: 'button',
+            content: 'Regular Naps'
+          },
+          {
+            type: 'button',
+            content: 'Other'
+          }
+        ]
+      }
+    ]
   }
 }
