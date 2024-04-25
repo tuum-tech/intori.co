@@ -30,7 +30,8 @@ const submitFrame = async (
   const {
     frameSequenceName,
     currentStepOfSequence,
-    buttonClicked
+    buttonClicked,
+    buttonLabels
   } = frameSubmissionHelpers(req)
 
   let nextStep = currentStepOfSequence + 1
@@ -38,7 +39,8 @@ const submitFrame = async (
   console.log({
     frameSequenceName,
     currentStepOfSequence,
-    buttonClicked
+    buttonClicked,
+    buttonLabels
   })
   if (
     frameSequenceName === 'initial' &&
