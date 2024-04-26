@@ -5,7 +5,6 @@ import { useEffect, useMemo } from "react";
 
 import BiDataCard from "@/components/common/BiDataCard";
 import UniDataCard from "@/components/common/UniDataCard";
-import RecentCredentialsTable from "@/components/dashboard/RecentCredentialsTable";
 import UserActivity from "@/components/dashboard/UserActivity";
 import { AppLayout } from "@/layouts/App"
 
@@ -64,7 +63,6 @@ const Dashboard: NextPage = () => {
           value="1234.00"
           percentageChange={`2 credentials`}
         />
-        <RecentCredentialsTable rows={[]} />
       </div>
 
       <div className="self-stretch w-[380px] flex flex-col items-start justify-start text-left text-sm text-white-0 font-kumbh-sans md:self-stretch md:w-auto Small_Tablet:self-stretch Small_Tablet:w-auto">
