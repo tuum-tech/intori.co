@@ -1,7 +1,6 @@
 import BiDataCard from "@/components/common/BiDataCard";
 import UniDataCard from "@/components/common/UniDataCard";
 import { CredentialDetail } from "@/components/credentials/CredTypes";
-import RecentCredentialsTable from "@/components/dashboard/RecentCredentialsTable";
 import RequestAmazonHistory from "@/components/dashboard/RequestAmazonHistory";
 import UserActivity from "@/components/dashboard/UserActivity";
 import TopNavigationMenu from "@/components/top-navigation/TopNavigationMenu";
@@ -117,7 +116,6 @@ const Dashboard: NextPage = () => {
                 value={`$${totalStats.userStats.vcsValue.toFixed(2)}`}
                 percentageChange={`${totalStats.userStats.vcsCreated} credentials`}
               />
-              <RecentCredentialsTable rows={credentialRows} />
             </div>
             <div className="self-stretch w-[380px] flex flex-col items-start justify-start text-left text-sm text-white-0 font-kumbh-sans md:self-stretch md:w-auto Small_Tablet:self-stretch Small_Tablet:w-auto">
               <UserActivity />
