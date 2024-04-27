@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { frameSubmissionHelpers } from '../../../utils/frames/frameSubmissionHelpers'
 import { createUserAnswer } from '../../../models/userAnswers'
-import { getUserAnswerForQuestion } from '../../../models/userAnswers'
 
 // example farcaster frame submit
 // console.log({
@@ -31,7 +30,6 @@ const submitFrame = async (
 
   const {
     frameSequenceName,
-    frameSequenceObject,
     currentStepOfSequence,
     buttonClicked,
     fid,
