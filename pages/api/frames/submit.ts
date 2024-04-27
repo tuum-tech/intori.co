@@ -1,5 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { frameSubmissionHelpers } from '../../../utils/frames/frameSubmissionHelpers'
+import { createUserAnswer } from '../../../models/userAnswers'
+import { getUserAnswerForQuestion } from '../../../models/userAnswers'
 
 // example farcaster frame submit
 // console.log({
@@ -29,19 +31,15 @@ const submitFrame = async (
 
   const {
     frameSequenceName,
+    frameSequenceObject,
     currentStepOfSequence,
     buttonClicked,
-    buttonLabels
+    fid,
+    currentStepObject
   } = frameSubmissionHelpers(req)
 
   let nextStep = currentStepOfSequence + 1
 
-  console.log({
-    frameSequenceName,
-    currentStepOfSequence,
-    buttonClicked,
-    buttonLabels
-  })
   if (
     frameSequenceName === 'initial' &&
     (currentStepOfSequence === 1 || currentStepOfSequence === 3) &&
@@ -65,6 +63,20 @@ const submitFrame = async (
   ) {
     nextStep = currentStepOfSequence + 2
   }
+
+  if (currentStepObject.question) {
+    await createUserAnswer({
+      fid,
+      sequence: frameSequenceName,
+      question: currentStepObject.question,
+      answer: buttonClicked
+    })
+  }
+
+  // TODO:
+  // check what next question is
+  // check if user already submitted
+  // if user already submitted, go to further next question
 
   res.redirect(
     307,
