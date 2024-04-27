@@ -2971,13 +2971,6 @@
   dependencies:
     "@types/bn.js" "*"
 
-"@types/firebase@^3.2.1":
-  version "3.2.1"
-  resolved "https://registry.npmjs.org/@types/firebase/-/firebase-3.2.1.tgz"
-  integrity sha512-G8XgHMu2jHlElfc2xVNaYP50F0qrqeTCjgeG1v5b4SRwWG4XKC4fCuEdVZuZaMRmVygcnbRZBAo9O7RsDvmkGQ==
-  dependencies:
-    firebase "*"
-
 "@types/formidable@^3.4.4":
   version "3.4.4"
   resolved "https://registry.npmjs.org/@types/formidable/-/formidable-3.4.4.tgz"
@@ -6263,7 +6256,7 @@ find-up@^5.0.0, find-up@~5.0.0:
     locate-path "^6.0.0"
     path-exists "^4.0.0"
 
-firebase@*, firebase@^10.5.2:
+firebase@^10.5.2:
   version "10.5.2"
   resolved "https://registry.npmjs.org/firebase/-/firebase-10.5.2.tgz"
   integrity sha512-LLCig21TBYdByMbGJt5YmUzzk2HpsFCsIUTvOteQjW9BUh40IrSP2+dZi9IvT8RlztM3zcH+TNZ0jOsOaa7GMQ==
