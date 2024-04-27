@@ -1,5 +1,6 @@
 export type IntoriFrameStepType = {
   title: string
+  question?: string
   inputs: {
     type: 'button'
     content: string
@@ -49,6 +50,7 @@ export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
     steps: [
       {
         title: 'Professional Experience',
+        question: 'How would you describe your current professional status?',
         inputs: [
           {
             type: 'button',
@@ -70,6 +72,7 @@ export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
       },
       {
         title: 'Professional Experience',
+        question: 'How would you describe your current professional status?',
         inputs: [
           {
             type: 'button',
@@ -91,6 +94,7 @@ export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
       },
       {
         title: 'Skills and Endorsements',
+        question: 'Which of the following skills best align with your expertise?',
         inputs: [
           {
             type: 'button',
@@ -112,6 +116,7 @@ export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
       },
       {
         title: 'Skills and Endorsements',
+        question: 'Which of the following skills best align with your expertise?',
         inputs: [
           {
             type: 'button',
@@ -138,6 +143,7 @@ export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
       steps: [
         {
             title: 'Personal Values & Goals',
+            question: 'Which of the following values are most important to you in your professional life?',
             inputs: [
               {
                 type: 'button',
@@ -159,6 +165,7 @@ export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
         },
         {
             title: 'Personal Values & Goals',
+            question: 'Which of the following values are most important to you in your professional life?',
             inputs: [
               {
                 type: 'button',
@@ -180,6 +187,7 @@ export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
         },
         {
             title: 'Education & Certifications',
+            question: 'What is your highest level of education?',
             inputs: [
               {
                 type: 'button',
@@ -201,6 +209,7 @@ export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
         },
         {
             title: 'Education & Certifications',
+            question: 'What is your highest level of education?',
             inputs: [
               {
                 type: 'button',
@@ -227,6 +236,7 @@ export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
     steps: [
       {
         title: 'Lifestyle and Wellness',
+        question: 'Which of the following are your exercise preferences?',
         inputs: [
           {
             type: 'button',
@@ -248,6 +258,7 @@ export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
       },
       {
         title: 'Lifestyle and Wellness',
+        question: 'Which of the following are your exercise preferences?',
         inputs: [
           {
             type: 'button',
@@ -269,6 +280,7 @@ export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
       },
       {
         title: 'Lifestyle and Wellness',
+        question: 'What are your sleep habits?',
         inputs: [
           {
             type: 'button',
@@ -290,6 +302,7 @@ export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
       },
       {
         title: 'Lifestyle and Wellness',
+        question: 'What are your sleep habits?',
         inputs: [
           {
             type: 'button',
