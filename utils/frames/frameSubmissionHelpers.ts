@@ -15,38 +15,35 @@ export const frameSubmissionHelpers = (req: NextApiRequest) => {
     throw new Error(`Frame sequence name ${frameSequenceName} is not a valid frame sequence name.`)
   }
 
-  const getButtonLabels = () => {
+  const getCurrentStep = () => {
     if (!currentStepOfSequence) {
-      return (
-        introductionStep
-        .inputs
-        .map(input => input.content)
-      )
+      return introductionStep
     }
 
     if (
       currentStepOfSequence === intoriFrameForms[frameSequenceName].steps.length
     ) {
+      return finalStep
+    }
+
+    return intoriFrameForms[frameSequenceName].steps[currentStepOfSequence - 1]
+  }
+
+  const getButtonLabels = () => {
       return (
-        finalStep
+        getCurrentStep()
         .inputs
         .map(input => input.content)
       )
-    }
-
-    return (
-      intoriFrameForms[frameSequenceName]
-      .steps[currentStepOfSequence - 1]
-      .inputs
-      .map(input => input.content)
-    )
   }
 
   return {
     fid,
     buttonIndex,
     frameSequenceName,
+    frameSequenceObject: intoriFrameForms[frameSequenceName],
     currentStepOfSequence,
+    currentStepObject: getCurrentStep(),
     buttonLabels: getButtonLabels(),
     buttonClicked: getButtonLabels()[buttonIndex - 1]
   }
