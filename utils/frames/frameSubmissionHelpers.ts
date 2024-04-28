@@ -21,7 +21,7 @@ export const frameSubmissionHelpers = (req: NextApiRequest) => {
     }
 
     if (
-      currentStepOfSequence === intoriFrameForms[frameSequenceName].steps.length
+      currentStepOfSequence === intoriFrameForms[frameSequenceName].steps.length + 1
     ) {
       return finalStep
     }
