@@ -123,6 +123,6 @@ export const findLongestStreak = async (fid: number): Promise<number> => {
     return Math.abs(longestStreak)
   } catch (error) {
     console.error('Error finding longest streak:', error)
-    return -1 // Return -1 to indicate error
+    return 1
   }
 }
