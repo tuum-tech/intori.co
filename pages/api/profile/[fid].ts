@@ -1,7 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import Jimp from 'jimp'
 import * as path from 'path'
-import { getUserProfilePictureFromFid } from '../utils/farcasterServer'
+import {
+  getUserProfilePictureFromFid
+} from '../utils/farcasterServer'
+import {
+  countUserAnswers,
+  findLongestStreak
+} from '../../../models/userAnswers'
 
 async function createCircularImage(url: string, baseImage: Jimp): Promise<Jimp> {
   try {
@@ -30,8 +36,6 @@ const getProfileFramePictureImage = async (
     return res.status(405).end()
   }
 
-  console.log('path:',path.join(__dirname, '..', '..', '..', '..', '..', 'frame_template.png'))
-
   const baseImage = await Jimp.read(
     path.join(__dirname, '..', '..', '..', '..', '..', 'frame_template.png')
   )
@@ -41,10 +45,15 @@ const getProfileFramePictureImage = async (
   const profilePictureUrl = await getUserProfilePictureFromFid(fid)
   const baseImageWithProfilePic = await createCircularImage(profilePictureUrl, baseImage)
 
+  const questionsAnswered = await countUserAnswers(fid)
+  const pointsEarned = questionsAnswered * 2
+  const currentStreakDays = await findLongestStreak(fid)
+  const streakText = currentStreakDays === 1 ? '1 day' : `${currentStreakDays} days`
+
   const font = await Jimp.loadFont(Jimp.FONT_SANS_64_WHITE)
-  baseImageWithProfilePic.print(font, 1226/2, 457/2, '1') // number questions answered
-  baseImageWithProfilePic.print(font, 1226/2, 601/2, '2') // number points earned
-  baseImageWithProfilePic.print(font, 1226/2, 744/2, '3 days') // current streak in days
+  baseImageWithProfilePic.print(font, 1226/2, 457/2, questionsAnswered.toString())
+  baseImageWithProfilePic.print(font, 1226/2, 601/2, pointsEarned.toString())
+  baseImageWithProfilePic.print(font, 1226/2, 744/2, streakText)
 
   const buffer = await baseImageWithProfilePic.getBufferAsync(Jimp.MIME_PNG)
 
