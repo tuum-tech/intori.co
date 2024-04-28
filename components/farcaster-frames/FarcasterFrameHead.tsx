@@ -4,7 +4,7 @@ import Head from 'next/head'
 type Props = {
   title: string
   imgUrl: string
-  children: React.ReactNode
+  children?: React.ReactNode
 }
 
 export const FarcasterFrameHead: React.FC<Props> = ({
