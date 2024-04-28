@@ -80,6 +80,7 @@ const submitFrame = async (
   const isLastStep = nextStep === frameSequenceObject.steps.length
 
   if (isLastStep && buttonClicked === 'View Profile') {
+    console.log(`redirec to /frames/profile/${fid}`)
     return res.redirect(307, `/frames/profile/${fid}`)
   
   }
