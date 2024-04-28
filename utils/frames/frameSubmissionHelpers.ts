@@ -30,6 +30,12 @@ export const frameSubmissionHelpers = (req: NextApiRequest) => {
   }
 
   const getButtonLabels = () => {
+    console.log({ 
+      currentStepOfSequence,
+      currentStep: getCurrentStep(),
+      stepsLength: intoriFrameForms[frameSequenceName].steps.length
+    })
+
     if (!getCurrentStep()) {
       return []
     }
