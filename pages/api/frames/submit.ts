@@ -77,11 +77,10 @@ const submitFrame = async (
   // check if user already submitted
   // if user already submitted, go to further next question
 
-  const isLastStep = currentStepOfSequence === frameSequenceObject.steps.length + 1
+  const nextStepIsLast = nextStep === frameSequenceObject.steps.length + 1
 
-  if (isLastStep && buttonClicked === 'View Profile') {
+  if (nextStepIsLast) {
     return res.redirect(307, `/frames/profile/${fid}`)
-  
   }
 
   res.redirect(
