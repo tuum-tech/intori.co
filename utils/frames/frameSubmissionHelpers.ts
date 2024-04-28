@@ -30,11 +30,15 @@ export const frameSubmissionHelpers = (req: NextApiRequest) => {
   }
 
   const getButtonLabels = () => {
-      return (
-        getCurrentStep()
-        .inputs
-        .map(input => input.content)
-      )
+    if (!getCurrentStep()) {
+      return []
+    }
+
+    return (
+      getCurrentStep()
+      .inputs
+      .map(input => input.content)
+    )
   }
 
   return {
