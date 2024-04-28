@@ -8,12 +8,12 @@ async function createCircularImage(url: string, baseImage: Jimp): Promise<Jimp> 
     const urlImage = await Jimp.read(url)
     const maskImage = await Jimp.read(path.join(__dirname, '..', '..', '..', '..', '..', 'frame_template_mask.png'))
 
-    maskImage.resize(170, 170)
-    urlImage.resize(170, 170)
+    maskImage.resize(170/2, 170/2)
+    urlImage.resize(170/2, 170/2)
 
     urlImage.mask(maskImage, 0, 0)
 
-    baseImage.composite(urlImage, 880, 267)
+    baseImage.composite(urlImage, 880/2, 267/2)
 
     return baseImage
   } catch (error) {
@@ -42,9 +42,9 @@ const getProfileFramePictureImage = async (
   const baseImageWithProfilePic = await createCircularImage(profilePictureUrl, baseImage)
 
   const font = await Jimp.loadFont(Jimp.FONT_SANS_64_WHITE)
-  baseImageWithProfilePic.print(font, 1226, 457, '1') // number questions answered
-  baseImageWithProfilePic.print(font, 1226, 601, '2') // number points earned
-  baseImageWithProfilePic.print(font, 1226, 744, '3 days') // current streak in days
+  baseImageWithProfilePic.print(font, 1226/2, 457/2, '1') // number questions answered
+  baseImageWithProfilePic.print(font, 1226/2, 601/2, '2') // number points earned
+  baseImageWithProfilePic.print(font, 1226/2, 744/2, '3 days') // current streak in days
 
   const buffer = await baseImageWithProfilePic.getBufferAsync(Jimp.MIME_PNG)
 
