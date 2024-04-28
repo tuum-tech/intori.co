@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import Jimp from 'jimp'
 import * as path from 'path'
-import { getUserProfilePictureFromFid } from '../../../utils/farcaster'
+import { getUserProfilePictureFromFid } from '../utils/farcasterServer'
 
 async function createCircularImage(url: string, baseImage: Jimp): Promise<Jimp> {
   try {
