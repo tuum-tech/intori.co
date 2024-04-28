@@ -30,6 +30,8 @@ const getProfileFramePictureImage = async (
     return res.status(405).end()
   }
 
+  console.log('path:',path.join(__dirname, '..', '..', '..', '..', '..', 'frame_template.png'))
+
   const baseImage = await Jimp.read(
     path.join(__dirname, '..', '..', '..', '..', '..', 'frame_template.png')
   )
