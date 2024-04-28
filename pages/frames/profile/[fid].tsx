@@ -16,7 +16,7 @@ export const getServerSideProps = (async (context) => {
     }
   }
 
-  const imageUrl = `${process.env.NEXTAUTH_URL}/api/profile/${fid}`
+  const imageUrl = `${process.env.NEXTAUTH_URL}/api/profile/${fid}?t=${Date.now()}`
 
   return {
     props: {

@@ -86,7 +86,7 @@ const submitFrame = async (
 
   res.redirect(
     307,
-    `/frames/sequence/${frameSequenceName}?step=${nextStep}`
+    `/frames/sequence/${frameSequenceName}?step=${nextStep}&t=${Date.now()}`
   )
 }
 
