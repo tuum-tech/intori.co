@@ -21,7 +21,7 @@ export const frameSubmissionHelpers = (req: NextApiRequest) => {
     }
 
     if (
-      currentStepOfSequence === intoriFrameForms[frameSequenceName].steps.length
+      currentStepOfSequence === intoriFrameForms[frameSequenceName].steps.length + 1
     ) {
       return finalStep
     }
@@ -30,11 +30,21 @@ export const frameSubmissionHelpers = (req: NextApiRequest) => {
   }
 
   const getButtonLabels = () => {
-      return (
-        getCurrentStep()
-        .inputs
-        .map(input => input.content)
-      )
+    console.log({ 
+      currentStepOfSequence,
+      currentStep: getCurrentStep(),
+      stepsLength: intoriFrameForms[frameSequenceName].steps.length
+    })
+
+    if (!getCurrentStep()) {
+      return []
+    }
+
+    return (
+      getCurrentStep()
+      .inputs
+      .map(input => input.content)
+    )
   }
 
   return {

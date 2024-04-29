@@ -1,3 +1,4 @@
+
 //          Type	Required	Description	                Default
 // relay	  string	No	Farcaster Auth relay server URL	    https://relay.farcaster.xyz
 // domain	  string	Yes	Domain of your application.	        None
