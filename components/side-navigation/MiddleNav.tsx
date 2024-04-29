@@ -27,63 +27,6 @@ const MiddleNav: NextPage = () => {
           }
         />
       </Link>
-
-      <Link
-        href='/credentials'
-        className='no-underline outline-none visited:text-current'
-      >
-        <MenuButton
-          iconSrc='/credentialsiconcontainer1.svg'
-          labelText='Credentials'
-          buttonWidth='192px'
-          buttonBackgroundColor={
-            pathname === '/credentials' ? COLORS['black-3'] : 'unset'
-          }
-          buttonBorder='unset'
-          navInnerContentContainerWidth='unset'
-          menuNavTextColor={
-            pathname === '/credentials' ? COLORS['white-0'] : COLORS['white-1']
-          }
-        />
-      </Link>
-
-      <Link
-        href='/upload'
-        className='no-underline outline-none visited:text-current'
-      >
-        <MenuButton
-          iconSrc='/uploadiconcontainer4.svg'
-          labelText='Upload'
-          buttonWidth='192px'
-          buttonBackgroundColor={
-            pathname === '/upload' ? COLORS['black-3'] : 'unset'
-          }
-          buttonBorder='unset'
-          navInnerContentContainerWidth='unset'
-          menuNavTextColor={
-            pathname === '/upload' ? COLORS['white-0'] : COLORS['white-1']
-          }
-        />
-      </Link>
-
-      <Link
-        href='/settings'
-        className='no-underline outline-none visited:text-current'
-      >
-        <MenuButton
-          iconSrc='/settingsiconcontainer.svg'
-          labelText='Settings'
-          buttonWidth='192px'
-          buttonBackgroundColor={
-            pathname === '/settings' ? COLORS['black-3'] : 'unset'
-          }
-          buttonBorder='unset'
-          navInnerContentContainerWidth='unset'
-          menuNavTextColor={
-            pathname === '/settings' ? COLORS['white-0'] : COLORS['white-1']
-          }
-        />
-      </Link>
     </div>
   )
 }
