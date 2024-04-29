@@ -10,12 +10,15 @@ import {
 
 import { db } from '../utils/firestore'
 
-type UserAnswerType = {
+export type UserAnswerType = {
   fid: number
   sequence: string
   question: string
   answer: string
-  date: Date
+  date: {
+    seconds: number
+    nanoseconds: number
+  } | null
 }
 
 type CreateUserAnswerType = {
