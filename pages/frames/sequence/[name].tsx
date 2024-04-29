@@ -96,7 +96,6 @@ export default function Page({
         <div className="text-center">
           <p>Sorry, this form is only accessible on Farcaster clients.</p>
         </div>
-        <button type="submit">Submit</button>
       </form>
     </PageWrapper>
   )

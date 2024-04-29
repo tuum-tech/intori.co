@@ -19,8 +19,10 @@ const SigninDefaultScreen = () => {
     const [error, setError] = useState(false)
 
     useEffect(() => {
-        console.log({ session })
-    }, [session])
+        if (session.status === "authenticated") {
+          router.push('/dashboard')
+        }
+    }, [session, router])
 
     // A nonce ensures that each authentication request is unique.
     // It prevents attackers from capturing a valid authentication request and replaying
