@@ -1,5 +1,7 @@
 import type { AppProps } from 'next/app'
-import { SessionProvider } from "next-auth/react";
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { SessionProvider } from "next-auth/react"
 import Head from 'next/head'
 import { Fragment } from 'react'
 import './global.css'
@@ -15,6 +17,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
         />
       </Head>
       <SessionProvider session={session}>
+        <ToastContainer position="top-right" />
         <Component {...pageProps} />
       </SessionProvider>
     </Fragment>

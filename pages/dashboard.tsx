@@ -1,14 +1,51 @@
-import type { NextPage } from "next";
+import type { NextPage, InferGetServerSidePropsType, GetServerSideProps } from "next";
+import Image from 'next/image'
 import { useRouter } from "next/router"
-import { useSession } from "next-auth/react"
-import { useEffect, useMemo } from "react";
+import { toast } from 'react-toastify'
+import { useSession, getSession, signOut } from "next-auth/react"
+import { useEffect, useMemo, useState } from "react";
 
 import BiDataCard from "@/components/common/BiDataCard";
-import UniDataCard from "@/components/common/UniDataCard";
-import UserActivity from "@/components/dashboard/UserActivity";
 import { AppLayout } from "@/layouts/App"
+import { UserAnswerType, getUserAnswersByFid } from '../models/userAnswers'
+import Input from '../components/common/Input'
+import Button from '../components/common/Button'
 
-const Dashboard: NextPage = () => {
+type Props = {
+  answers: UserAnswerType[]
+  profileFrameUrl: string
+}
+
+export const getServerSideProps = (async (context) => {
+  const session = await getSession(context)
+
+  if (!session?.user?.fid) {
+    return {
+      notFound: true
+    }
+  }
+
+  const answers = await getUserAnswersByFid(
+    parseInt(session.user.fid, 10)
+  )
+
+  const profileFrameUrl = `${process.env.NEXTAUTH_URL}/frames/profile/${session.user.fid}`
+
+  return {
+    props: {
+      profileFrameUrl,
+      answers: answers.map((answer) => {
+        return {
+          ...answer,
+          date: answer.date?.seconds || null
+        }
+      })
+    }
+  }
+}) satisfies GetServerSideProps<Props>
+
+const Dashboard: NextPage<Props> = ({ profileFrameUrl, answers }) => {
+  const [copyButtonText, setCopyButtonText] = useState('Copy Frame Link')
   const session = useSession()
   const router = useRouter()
 
@@ -20,6 +57,22 @@ const Dashboard: NextPage = () => {
 
   const loading = useMemo(() => session.status === 'loading', [session])
 
+  const copyUrlToClipboard = () => {
+    navigator.clipboard.writeText(profileFrameUrl)
+    toast.success('Profile frame link copied to clipboard 😎')
+    setCopyButtonText('Copied!')
+    setTimeout(() => {
+      setCopyButtonText('Copy Frame Link')
+    }, 2000)
+  }
+
+  const logout = async (e: React.MouseEvent) => {
+    e.preventDefault()
+
+    await signOut()
+    window.location.pathname = '/'
+  }
+
   if (loading || !session?.data?.user) {
     return (
       <AppLayout title="Launching...">
@@ -29,44 +82,45 @@ const Dashboard: NextPage = () => {
   }
 
   return (
-    <AppLayout title={`Welcome ${session.data.user.name}!`}>
-      <p>
-        FID: {session.data.user.fid}
-      </p>
-      <div className="flex-1 flex flex-col items-start justify-start gap-[24px] md:flex-[unset] md:self-stretch">
-        <div className="self-stretch flex flex-row flex-wrap items-start justify-start gap-[28px] text-left text-lg text-white-1 font-kumbh-sans">
-          <BiDataCard
-            title="Total users"
-            value="Test"
-            // percentageChange='+0.00%'
-          />
-          <BiDataCard
-            title="Total Credentials"
-            value="1000"
-            // percentageChange='+0.00%'
-          />
-        </div>
-        <div className="self-stretch flex flex-row flex-wrap items-start justify-start gap-[28px] text-left text-lg text-white-1 font-kumbh-sans">
-          <BiDataCard
-            title="Total Files Processed"
-            value="1234"
-            // percentageChange="+0.00%"
-          />
-          <BiDataCard
-            title="Total Orders Processed"
-            value="1234"
-            // percentageChange="+0.00%"
-          />
-        </div>
-        <UniDataCard
-          title="Portfolio"
-          value="1234.00"
-          percentageChange={`2 credentials`}
-        />
+    <AppLayout title="Your Profile">
+      <div className="text-center mb-4">
+        <button className="text-white underline bg-transparent text-base" onClick={logout}>
+          Log Out
+        </button>
       </div>
-
-      <div className="self-stretch w-[380px] flex flex-col items-start justify-start text-left text-sm text-white-0 font-kumbh-sans md:self-stretch md:w-auto Small_Tablet:self-stretch Small_Tablet:w-auto">
-        <UserActivity />
+      <div className="text-center text-white mb-4">
+          <Image
+            className="rounded-full"
+            alt='Intori'
+            src={session.data.user.image ?? '/intorilogomark.svg'}
+            width={170}
+            height={170}
+          />
+        <h2 className="mb-0">@{session.data.user.name}</h2>
+        <p className="mt-1">
+          #{session.data.user.fid}
+        </p>
+      </div>
+      <div className="w-80 mx-auto mb-8 flex flex-col flex-wrap gap-[18px] justify-center">
+        <Input
+          label="Your Profile Frame Link"
+          value={profileFrameUrl}
+          onChange={console.log}
+          placeholder="Test"
+        />
+        <Button title={copyButtonText} onClick={copyUrlToClipboard} />
+      </div>
+      <div className="w-50 mx-auto flex flex-row flex-wrap gap-[18px] justify-center">
+        {
+          answers.map((answer) => (
+            <div className="basis-1/3" key={answer.question}>
+              <BiDataCard
+                title={answer.sequence + ' - ' + answer.question}
+                value={answer.answer}
+              />
+            </div>
+          ))
+        }
       </div>
     </AppLayout>
   )
