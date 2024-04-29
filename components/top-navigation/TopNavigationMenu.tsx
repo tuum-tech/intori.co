@@ -1,5 +1,4 @@
 import type { NextPage } from 'next'
-import Notification from './Notification'
 import ProfileAvatar from './ProfileAvatar'
 
 const TopNavigationMenu: NextPage = () => {
