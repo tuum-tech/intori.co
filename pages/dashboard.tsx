@@ -1,4 +1,4 @@
-import type { NextPage, InferGetServerSidePropsType, GetServerSideProps } from "next";
+import type { NextPage, GetServerSideProps } from "next";
 import Image from 'next/image'
 import { useRouter } from "next/router"
 import { toast } from 'react-toastify'
@@ -34,11 +34,16 @@ export const getServerSideProps = (async (context) => {
   return {
     props: {
       profileFrameUrl,
-      answers: answers.map((answer) => {
-        return {
-          ...answer,
-          date: answer.date?.seconds || null
-        }
+      answers: answers
+        .filter(answer => answer.date)
+        .map((answer) => {
+          return {
+            ...answer,
+            date: {
+              seconds: answer.date.seconds,
+              nanoseconds: answer.date.nanoseconds
+            }
+          }
       })
     }
   }

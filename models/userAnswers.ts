@@ -18,7 +18,7 @@ export type UserAnswerType = {
   date: {
     seconds: number
     nanoseconds: number
-  } | null
+  }
 }
 
 type CreateUserAnswerType = {
@@ -110,7 +110,12 @@ export const findLongestStreak = async (fid: number): Promise<number> => {
 
     snapshot.forEach(doc => {
       const userAnswer = doc.data() as UserAnswerType
-      const currentDate = new Date(userAnswer.date)
+
+      if (!userAnswer.date) {
+        return
+      }
+
+      const currentDate = new Date(userAnswer.date?.seconds)
 
       if (previousDate && isConsecutiveDays(currentDate, previousDate)) {
         currentStreak++
