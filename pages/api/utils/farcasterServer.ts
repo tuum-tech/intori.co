@@ -2,7 +2,8 @@
 import {
   getSSLHubRpcClient,
   UserDataType,
-} from "@farcaster/hub-nodejs";
+  Message
+} from "@farcaster/hub-nodejs"
 
 export const getUserProfilePictureFromFid = async (
   fid: number
@@ -12,7 +13,7 @@ export const getUserProfilePictureFromFid = async (
     return ''
   }
 
-  const client = getSSLHubRpcClient(process.env.HUB_URL);
+  const client = getSSLHubRpcClient(process.env.HUB_URL)
 
   const result = await client.getUserData({
     fid,
@@ -30,4 +31,31 @@ export const getUserProfilePictureFromFid = async (
   })
 
   return profileImageUrl
+}
+
+export const validateFarcasterPacketMessage = async (
+  reqBody: {
+    trustedData: {
+      messageBytes: string
+    }
+  }
+): Promise<boolean> => {
+  if (!process.env.HUB_URL) {
+    console.error('No HUB_URL provided.')
+    return false
+  }
+
+  if (!reqBody?.trustedData?.messageBytes) {
+    return false
+  }
+
+  const client = getSSLHubRpcClient(process.env.HUB_URL)
+  const frameMessage = Message.decode(
+    Buffer.from(
+      reqBody?.trustedData?.messageBytes || '', 'hex'
+    )
+  )
+  const result = await client.validateMessage(frameMessage)
+
+  return result.isOk()
 }

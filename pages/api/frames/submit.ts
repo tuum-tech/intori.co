@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { frameSubmissionHelpers } from '../../../utils/frames/frameSubmissionHelpers'
+import { validateFarcasterPacketMessage } from '../utils/farcasterServer'
 import { createUserAnswer } from '../../../models/userAnswers'
 
 // example farcaster frame submit
@@ -26,6 +27,12 @@ const submitFrame = async (
 ) => {
   if (req.method !== 'POST') {
     return res.status(405).end()
+  }
+
+  const validFarcasterPacket = await validateFarcasterPacketMessage(req.body)
+
+  if (!validFarcasterPacket) {
+    return res.status(400).end()
   }
 
   const {
