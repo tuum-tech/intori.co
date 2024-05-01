@@ -20,7 +20,7 @@ const SigninDefaultScreen = () => {
 
     useEffect(() => {
         if (session.status === "authenticated") {
-          router.push('/dashboard')
+          window.location.href = "/dashboard"
         }
     }, [session, router])
 
@@ -49,7 +49,7 @@ const SigninDefaultScreen = () => {
                 redirect: false,
             })
 
-            router.push('/dashboard')
+          window.location.href = "/dashboard"
         },
         [signIn, router]
     )
