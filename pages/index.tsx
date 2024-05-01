@@ -24,6 +24,10 @@ const SigninDefaultScreen = () => {
         }
     }, [session, router])
 
+    console.log({
+        domain: authKitConfig.domain
+    })
+
     // A nonce ensures that each authentication request is unique.
     // It prevents attackers from capturing a valid authentication request and replaying
     // it to gain unauthorized access, because replaying the request with the same nonce

@@ -1,4 +1,5 @@
 import NextAuth from "next-auth"
+import util from 'util'
 import CredentialsProvider from "next-auth/providers/credentials"
 import { createAppClient, viemConnector } from "@farcaster/auth-client"
 import { NextApiRequest, NextApiResponse } from "next"
@@ -43,8 +44,9 @@ export default (req: NextApiRequest, res: NextApiResponse) =>
             ethereum: viemConnector(),
           })
 
-          if (!process.env.NEXTAUTH_URL) {
-          }
+          console.log({
+              domain: new URL(process.env.NEXTAUTH_URL || 'NEXTAUTH_URL must be set.').host
+          })
 
           const verifyResponse = await appClient.verifySignInMessage({
             message: credentials?.message as string,
@@ -52,10 +54,11 @@ export default (req: NextApiRequest, res: NextApiResponse) =>
             domain: new URL(process.env.NEXTAUTH_URL || 'NEXTAUTH_URL must be set.').host,
             nonce: csrfToken,
           })
-          const { success, fid } = verifyResponse
+          const { success, fid, error } = verifyResponse
 
           if (!success) {
             console.error('Failed to verify sign in with Farcaster. Check domain in nextauth config and in utils/farcaster.ts')
+            console.error('Farcaster error:', util.inspect(error, false, null, true))
             return null
           }
 
