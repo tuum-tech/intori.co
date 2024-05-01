@@ -20,6 +20,7 @@ export const getServerSideProps = (async (context) => {
   const session = await getSession(context)
 
   if (!session?.user?.fid) {
+    console.log('/dashboard 404 because not logged in', session?.user)
     return {
       notFound: true
     }
