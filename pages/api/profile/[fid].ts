@@ -4,10 +4,10 @@ import * as path from 'path'
 import {
   getUserProfilePictureFromFid
 } from '../utils/farcasterServer'
-import {
-  countUserAnswers,
-  findLongestStreak
-} from '../../../models/userAnswers'
+// import {
+//   countUserAnswers,
+//   findLongestStreak
+// } from '../../../models/userAnswers'
 
 async function createCircularImage(url: string, baseImage: Jimp): Promise<Jimp> {
   try {
@@ -48,13 +48,20 @@ const getProfileFramePictureImage = async (
   const profilePictureUrl = await getUserProfilePictureFromFid(fid)
   const baseImageWithProfilePic = await createCircularImage(profilePictureUrl, baseImage)
 
-  const questionsAnswered = await countUserAnswers(fid)
+  // const questionsAnswered = await countUserAnswers(fid)
+  const questionsAnswered = 38
   const pointsEarned = questionsAnswered * 2
-  const currentStreakDays = await findLongestStreak(fid)
+  // const currentStreakDays = await findLongestStreak(fid)
+  const currentStreakDays = 1
   const streakText = currentStreakDays === 1 ? '1 day' : `${currentStreakDays} days`
 
+  console.log({
+    'fnt exists': path.resolve(process.cwd(), 'public/fonts/open-sans/open-sans-32-white/open-sans-32-white.fnt'),
+    'png exists': path.resolve(process.cwd(), 'public/fonts/open-sans/open-sans-32-white/open-sans-32-white.png')
+  })
+
   const font = await Jimp.loadFont(
-    path.join(process.cwd(), 'public/fonts/open-sans/open-sans-32-white/open-sans-32-white.fnt')
+    path.join(process.cwd(), 'public/fonts/open-sans/open-sans-32-white/open-sans-32-white.fnt'),
   )
   baseImageWithProfilePic.print(font, 1226/2, 457/2, questionsAnswered.toString())
   baseImageWithProfilePic.print(font, 1226/2, 601/2, pointsEarned.toString())
