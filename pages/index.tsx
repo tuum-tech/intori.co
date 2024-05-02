@@ -20,9 +20,13 @@ const SigninDefaultScreen = () => {
 
     useEffect(() => {
         if (session.status === "authenticated") {
-          router.push('/dashboard')
+          window.location.href = "/dashboard"
         }
     }, [session, router])
+
+    console.log({
+        domain: authKitConfig.domain
+    })
 
     // A nonce ensures that each authentication request is unique.
     // It prevents attackers from capturing a valid authentication request and replaying
@@ -45,7 +49,7 @@ const SigninDefaultScreen = () => {
                 redirect: false,
             })
 
-            router.push('/dashboard')
+          window.location.href = "/dashboard"
         },
         [signIn, router]
     )
