@@ -53,7 +53,14 @@ const getProfileFramePictureImage = async (
   const currentStreakDays = await findLongestStreak(fid)
   const streakText = currentStreakDays === 1 ? '1 day' : `${currentStreakDays} days`
 
-  const font = await Jimp.loadFont(Jimp.FONT_SANS_32_WHITE)
+  console.log({
+    'fnt exists': path.resolve(process.cwd(), 'public/fonts/open-sans/open-sans-32-white/open-sans-32-white.fnt'),
+    'png exists': path.resolve(process.cwd(), 'public/fonts/open-sans/open-sans-32-white/open-sans-32-white.png')
+  })
+
+  const font = await Jimp.loadFont(
+    path.join(process.cwd(), 'public/fonts/open-sans/open-sans-32-white/open-sans-32-white.fnt'),
+  )
   baseImageWithProfilePic.print(font, 1226/2, 457/2, questionsAnswered.toString())
   baseImageWithProfilePic.print(font, 1226/2, 601/2, pointsEarned.toString())
   baseImageWithProfilePic.print(font, 1226/2, 744/2, streakText)
