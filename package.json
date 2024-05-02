@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "cp -R node_modules/@jimp/plugin-print/fonts ./public/fonts"
   },
   "dependencies": {
     "@farcaster/auth-kit": "^0.2.1",
