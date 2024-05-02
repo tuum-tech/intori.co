@@ -12,7 +12,10 @@ import {
 async function createCircularImage(url: string, baseImage: Jimp): Promise<Jimp> {
   try {
     const urlImage = await Jimp.read(url)
-    const maskImage = await Jimp.read(path.join(__dirname, '..', '..', '..', '..', '..', 'frame_template_mask.png'))
+
+    const maskImage = await Jimp.read(
+      path.join(process.cwd(), 'public/frame_template_mask.png')
+    )
 
     maskImage.resize(170/2, 170/2)
     urlImage.resize(170/2, 170/2)
@@ -37,7 +40,7 @@ const getProfileFramePictureImage = async (
   }
 
   const baseImage = await Jimp.read(
-    path.join(__dirname, '..', '..', '..', '..', '..', 'frame_template.png')
+      path.join(process.cwd(), 'public/frame_template.png')
   )
 
   const fid = parseInt(req.query.fid as string, 10)
