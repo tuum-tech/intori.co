@@ -1,13 +1,3 @@
-import {
-  addDoc,
-  getDocs,
-  getDoc,
-  collection,
-  query,
-  where,
-  orderBy
-} from 'firebase/firestore'
-
 import { db } from '../pages/api/utils/firestore'
 
 export type UserAnswerType = {
@@ -28,22 +18,18 @@ type CreateUserAnswerType = {
   answer: string
 }
 
-const userAnswersCollection = collection(db, 'userAnswers')
+const userAnswersCollection = db.collection('userAnswers')
 
 export const createUserAnswer = (newUserAnswer: CreateUserAnswerType) => {
-  return addDoc(
-    userAnswersCollection,
-    {
-      ...newUserAnswer,
-      date: new Date()
-    }
-  )
+  return userAnswersCollection.add({
+    ...newUserAnswer,
+    date: new Date()
+  })
 }
 
 export const getUserAnswersByFid = async (fid: number) => {
-  const q = query(userAnswersCollection, where("fid", "==", fid))
-  const querySnapshot = await getDocs(q)
   const userAnswers: UserAnswerType[] = []
+  const querySnapshot = await userAnswersCollection.where('fid', '==', fid).get()
 
   querySnapshot.forEach((doc) => {
     userAnswers.push(doc.data() as UserAnswerType)
@@ -55,16 +41,13 @@ export const getUserAnswerForQuestion = async (
   fid: number,
   question: string
 ): Promise<UserAnswerType | null> => {
-  const q = query(
-    userAnswersCollection, 
-    where("fid", "==", fid),
-    where("question", "==", question)
-  )
-
-  const querySnapshot = await getDocs(q)
+  const querySnapshot = await userAnswersCollection
+  .where('fid', '==', fid)
+  .where('question', '==', question)
+  .get()
 
   for (let i = 0; i < querySnapshot.docs.length; i++) {
-    if (querySnapshot.docs[i].exists()) {
+    if (querySnapshot.docs[i].exists) {
       return querySnapshot.docs[i].data() as UserAnswerType
     }
   }
@@ -74,11 +57,8 @@ export const getUserAnswerForQuestion = async (
 
 export const countUserAnswers = async (fid: number): Promise<number> => {
   try {
-    // Query userAnswers collection where fid equals the provided value
-    const q = query(userAnswersCollection, where('fid', '==', fid))
-    const snapshot = await getDocs(q)
+    const snapshot = await userAnswersCollection.where('fid', '==', fid).get()
 
-    // Return the count of documents in the snapshot
     return snapshot.size
   } catch (error) {
     console.error('Error counting userAnswers:', error)
@@ -96,13 +76,7 @@ const isConsecutiveDays = (date1: Date, date2: Date): boolean => {
 
 export const findLongestStreak = async (fid: number): Promise<number> => {
   try {
-    const findQuery = query(
-      userAnswersCollection,
-      where('fid', '==', fid),
-      orderBy('date')
-    )
-
-    const snapshot = await getDocs(findQuery)
+    const snapshot = await userAnswersCollection.where('fid', '==', fid).orderBy('date').get()
 
     let currentStreak = 0
     let longestStreak = 0
