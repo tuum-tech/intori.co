@@ -4,6 +4,9 @@ import { useRouter } from "next/router"
 import { toast } from 'react-toastify'
 import { useSession, getSession, signOut } from "next-auth/react"
 import { useEffect, useMemo, useState } from "react";
+import {
+  authenticateRequestAnonymously
+} from '../utils/firebase'
 
 import BiDataCard from "@/components/common/BiDataCard";
 import { AppLayout } from "@/layouts/App"
@@ -25,6 +28,8 @@ export const getServerSideProps = (async (context) => {
       notFound: true
     }
   }
+
+  await authenticateRequestAnonymously()
 
   const answers = await getUserAnswersByFid(
     parseInt(session.user.fid, 10)
