@@ -6,7 +6,7 @@ import { useSession, getSession, signOut } from "next-auth/react"
 import { useEffect, useMemo, useState } from "react";
 import {
   authenticateRequestAnonymously
-} from '../utils/firebase'
+} from './api/utils/firebase'
 
 import BiDataCard from "@/components/common/BiDataCard";
 import { AppLayout } from "@/layouts/App"

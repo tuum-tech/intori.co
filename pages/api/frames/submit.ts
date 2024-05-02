@@ -4,7 +4,7 @@ import { validateFarcasterPacketMessage } from '../utils/farcasterServer'
 import { createUserAnswer } from '../../../models/userAnswers'
 import {
   authenticateRequestAnonymously
-} from '../../../utils/firebase'
+} from '../utils/firebase'
 
 // example farcaster frame submit
 // console.log({
