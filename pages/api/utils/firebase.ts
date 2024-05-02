@@ -17,14 +17,22 @@ const firebaseConfig = {
 
 export const firebaseApp = initializeApp(firebaseConfig)
 
+const setupAppCheck = () => {
+  if (typeof window === 'undefined') {
+    return
+  }
+
+  return initializeAppCheck(firebaseApp, {
+    provider: new ReCaptchaEnterpriseProvider(
+      process.env.NEXT_PUBLIC_FIREBASE_RECAPTCHA_SITE_KEY!
+    ),
+    isTokenAutoRefreshEnabled: true // Set to true to allow auto-refresh.
+  })
+}
+
+export const appCheck = setupAppCheck()
+
 export const authenticateRequestAnonymously = async () => {
   const auth = getAuth()
   await signInAnonymously(auth)
 }
-
-export const appCheck = initializeAppCheck(firebaseApp, {
-  provider: new ReCaptchaEnterpriseProvider(
-    process.env.NEXT_PUBLIC_FIREBASE_RECAPTCHA_SITE_KEY!
-  ),
-  isTokenAutoRefreshEnabled: true // Set to true to allow auto-refresh.
-})

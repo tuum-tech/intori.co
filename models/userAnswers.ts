@@ -8,7 +8,7 @@ import {
   orderBy
 } from 'firebase/firestore'
 
-import { db } from '../utils/firestore'
+import { db } from '../pages/api/utils/firestore'
 
 export type UserAnswerType = {
   fid: number
