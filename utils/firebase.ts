@@ -1,4 +1,8 @@
 import { initializeApp } from 'firebase/app'
+import {
+  ReCaptchaEnterpriseProvider,
+  initializeAppCheck
+} from 'firebase/app-check'
 import { getAuth, signInAnonymously } from "firebase/auth";
 
 const firebaseConfig = {
@@ -17,3 +21,10 @@ export const authenticateRequestAnonymously = async () => {
   const auth = getAuth()
   await signInAnonymously(auth)
 }
+
+export const appCheck = initializeAppCheck(firebaseApp, {
+  provider: new ReCaptchaEnterpriseProvider(
+    process.env.NEXT_PUBLIC_FIREBASE_RECAPTCHA_SITE_KEY!
+  ),
+  isTokenAutoRefreshEnabled: true // Set to true to allow auto-refresh.
+})
