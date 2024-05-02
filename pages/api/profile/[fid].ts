@@ -4,10 +4,10 @@ import * as path from 'path'
 import {
   getUserProfilePictureFromFid
 } from '../utils/farcasterServer'
-// import {
-//   countUserAnswers,
-//   findLongestStreak
-// } from '../../../models/userAnswers'
+import {
+  countUserAnswers,
+  findLongestStreak
+} from '../../../models/userAnswers'
 
 async function createCircularImage(url: string, baseImage: Jimp): Promise<Jimp> {
   try {
@@ -48,11 +48,9 @@ const getProfileFramePictureImage = async (
   const profilePictureUrl = await getUserProfilePictureFromFid(fid)
   const baseImageWithProfilePic = await createCircularImage(profilePictureUrl, baseImage)
 
-  // const questionsAnswered = await countUserAnswers(fid)
-  const questionsAnswered = 38
+  const questionsAnswered = await countUserAnswers(fid)
   const pointsEarned = questionsAnswered * 2
-  // const currentStreakDays = await findLongestStreak(fid)
-  const currentStreakDays = 1
+  const currentStreakDays = await findLongestStreak(fid)
   const streakText = currentStreakDays === 1 ? '1 day' : `${currentStreakDays} days`
 
   console.log({
