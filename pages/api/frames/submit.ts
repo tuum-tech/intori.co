@@ -2,6 +2,9 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { frameSubmissionHelpers } from '../../../utils/frames/frameSubmissionHelpers'
 import { validateFarcasterPacketMessage } from '../utils/farcasterServer'
 import { createUserAnswer } from '../../../models/userAnswers'
+import {
+  authenticateRequestAnonymously
+} from '../../../utils/firebase'
 
 // example farcaster frame submit
 // console.log({
@@ -43,6 +46,8 @@ const submitFrame = async (
     fid,
     currentStepObject
   } = frameSubmissionHelpers(req)
+
+  await authenticateRequestAnonymously()
 
   let nextStep = currentStepOfSequence + 1
 
