@@ -6,6 +6,7 @@ import {
   loadKumbSans21,
   loadKumbSans32
 } from './fonts'
+import { camelCaseToTitleCase } from '../textHelpers'
 
 let kumbhSans32: Font
 let kumbhSans21: Font
@@ -73,7 +74,7 @@ export const generateQuestionnaireStepImages = async () => {
     )
 
     const firstFrame = await generateQuestionnaireStepImage(
-      sequence.name,
+    camelCaseToTitleCase(sequence.name),
       'Interactive Profile Building Experience'
     )
 
@@ -86,7 +87,7 @@ export const generateQuestionnaireStepImages = async () => {
       }
 
       const stepImage = await generateQuestionnaireStepImage(
-        step.title,
+       camelCaseToTitleCase(step.title),
         step.question
       )
 
