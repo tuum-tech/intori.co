@@ -1,4 +1,8 @@
 export const camelCaseToTitleCase = (input: string): string => {
+    if (!input) {
+      return ''
+    }
+
     const spaced = input.replace(/([A-Z])/g, ' $1').trim();
 
     const words = spaced.split(' ').map(word => {
