@@ -18,7 +18,7 @@ const firebaseAdminConfig = {
 export let firebaseAdmin: admin.app.App
 
 const initiateAdmin = async () => {
-  if (firebaseAdmin) {
+  if (firebaseAdmin || typeof window !== "undefined") {
     return
   }
 
