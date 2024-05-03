@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router'
+import { Triangle } from 'react-loader-spinner'
 import { useSession, signIn, signOut, getCsrfToken } from "next-auth/react"
-import { useCallback, useState, useEffect } from 'react'
+import { useCallback, useState, useEffect, useMemo } from 'react'
 import {
   SignInButton,
   AuthKitProvider,
@@ -18,15 +19,15 @@ const SigninDefaultScreen = () => {
     const session = useSession()
     const [error, setError] = useState(false)
 
+    const initializing = useMemo(() => {
+      return !session.status || session.status === "loading"
+    }, [session])
+
     useEffect(() => {
         if (session.status === "authenticated") {
           window.location.href = "/dashboard"
         }
     }, [session, router])
-
-    console.log({
-        domain: authKitConfig.domain
-    })
 
     // A nonce ensures that each authentication request is unique.
     // It prevents attackers from capturing a valid authentication request and replaying
@@ -34,13 +35,16 @@ const SigninDefaultScreen = () => {
     // would immediately be flagged as invalid by the system.
     const getNonce = useCallback(async () => {
         const nonce = await getCsrfToken()
-        if (!nonce) throw new Error("Unable to generate nonce")
+
+        if (!nonce) {
+          throw new Error("Unable to generate nonce")
+        }
+
         return nonce
     }, [])
 
     const handleSuccess = useCallback(
         async (res: StatusAPIResponse) => {
-            console.log({ res })
             await signIn("credentials", {
                 message: res.message,
                 signature: res.signature,
@@ -53,6 +57,23 @@ const SigninDefaultScreen = () => {
         },
         [signIn, router]
     )
+
+  if (initializing) {
+    return (
+      <div className='relative bg-black-0 w-full h-screen flex flex-col items-center justify-center text-center text-11xl text-white font-kumbh-sans sm:pl-0 sm:pr-0 sm:box-border'>
+        <Triangle
+          visible={true}
+          height="80"
+          width="80"
+          color="#E3FD8F"
+          ariaLabel="triangle-loading"
+          wrapperStyle={{}}
+          wrapperClass=""
+        />
+          <h4>Preparing the run way...</h4>
+      </div>
+    )
+  }
 
   return (
       <AuthKitProvider config={authKitConfig}>

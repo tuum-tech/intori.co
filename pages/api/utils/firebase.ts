@@ -15,9 +15,17 @@ const firebaseAdminConfig = {
   clientX509CertUrl: process.env.FIREBASE_CLIENT_X509_CERT_URL
 };
 
-export const firebaseAdmin = admin.initializeApp({
-  credential: admin.credential.cert(firebaseAdminConfig)
-})
+export let firebaseAdmin: admin.app.App
+
+const initiateAdmin = async () => {
+  if (firebaseAdmin) {
+    return
+  }
+
+  firebaseAdmin = admin.initializeApp({
+    credential: admin.credential.cert(firebaseAdminConfig)
+  })
+}
 
 // const firebaseConfig = {
 //   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -34,3 +42,5 @@ export const authenticateRequestAnonymously = async () => {
 
   await signInAnonymously(auth)
 }
+
+initiateAdmin()
