@@ -10,19 +10,13 @@ import { AppLayout } from "@/layouts/App"
 import { UserAnswerType, getUserAnswersByFid } from '../models/userAnswers'
 import Input from '../components/common/Input'
 import Button from '../components/common/Button'
+import { camelCaseToTitleCase } from '../utils/textHelpers'
 
 type Props = {
   answers: UserAnswerType[]
   profileFrameUrl: string
 }
 
-function camelCaseToTitleCase(input: string): string {
-    // Step 1: Insert a space before all caps in the string, except for the first character
-    const spaced = input.replace(/([A-Z])/g, ' $1').trim();
-
-    // Step 2: Capitalize the first letter and make sure the rest of the string is properly cased
-    return spaced.charAt(0).toUpperCase() + spaced.slice(1).toLowerCase();
-}
 
 export const getServerSideProps = (async (context) => {
   const session = await getSession(context)
