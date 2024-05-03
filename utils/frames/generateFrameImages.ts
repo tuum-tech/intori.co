@@ -2,25 +2,14 @@ import Jimp from 'jimp'
 import { Font } from '@jimp/plugin-print'
 import * as path from 'path'
 import { intoriFrameForms } from './intoriFrameForms'
+import {
+  loadKumbSans21,
+  loadKumbSans32
+} from './fonts'
 
 let kumbhSans32: Font
 let kumbhSans21: Font
 
-const loadKumbSans32 = async () => {
-  const pathToFont = path.join(
-    process.cwd(),
-    'public/assets/frames/kumbh_sans_32.fnt'
-  )
-  return await Jimp.loadFont(pathToFont)
-}
-
-const loadKumbSans21 = async () => {
-  const pathToFont = path.join(
-    process.cwd(),
-    'public/assets/frames/kumbh_sans_21.fnt'
-  )
-  return await Jimp.loadFont(pathToFont)
-}
 
 const loadFonts = async () => {
   kumbhSans32 = await loadKumbSans32()

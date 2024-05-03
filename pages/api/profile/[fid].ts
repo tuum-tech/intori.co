@@ -8,6 +8,7 @@ import {
   countUserAnswers,
   findLongestStreak
 } from '../../../models/userAnswers'
+import { loadKumbSans32 } from '../../../utils/frames/fonts'
 
 async function createCircularImage(url: string, baseImage: Jimp): Promise<Jimp> {
   try {
@@ -17,12 +18,12 @@ async function createCircularImage(url: string, baseImage: Jimp): Promise<Jimp> 
       path.join(process.cwd(), 'public/frame_template_mask.png')
     )
 
-    maskImage.resize(170/2, 170/2)
-    urlImage.resize(170/2, 170/2)
+    maskImage.resize(85, 85)
+    urlImage.resize(85, 85)
 
     urlImage.mask(maskImage, 0, 0)
 
-    baseImage.composite(urlImage, 880/2, 267/2)
+    baseImage.composite(urlImage, 440, 133.5)
 
     return baseImage
   } catch (error) {
@@ -53,17 +54,10 @@ const getProfileFramePictureImage = async (
   const currentStreakDays = await findLongestStreak(fid)
   const streakText = currentStreakDays === 1 ? '1 day' : `${currentStreakDays} days`
 
-  console.log({
-    'fnt exists': path.resolve(process.cwd(), 'public/fonts/open-sans/open-sans-32-white/open-sans-32-white.fnt'),
-    'png exists': path.resolve(process.cwd(), 'public/fonts/open-sans/open-sans-32-white/open-sans-32-white.png')
-  })
-
-  const font = await Jimp.loadFont(
-    path.join(process.cwd(), 'public/fonts/open-sans/open-sans-32-white/open-sans-32-white.fnt'),
-  )
-  baseImageWithProfilePic.print(font, 1226/2, 457/2, questionsAnswered.toString())
-  baseImageWithProfilePic.print(font, 1226/2, 601/2, pointsEarned.toString())
-  baseImageWithProfilePic.print(font, 1226/2, 744/2, streakText)
+  const font = await loadKumbSans32()
+  baseImageWithProfilePic.print(font, 613, 228.5, questionsAnswered.toString())
+  baseImageWithProfilePic.print(font, 613, 300.5, pointsEarned.toString())
+  baseImageWithProfilePic.print(font, 613, 372, streakText)
 
   const buffer = await baseImageWithProfilePic.getBufferAsync(Jimp.MIME_PNG)
 
