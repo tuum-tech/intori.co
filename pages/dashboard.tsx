@@ -16,6 +16,14 @@ type Props = {
   profileFrameUrl: string
 }
 
+function camelCaseToTitleCase(input: string): string {
+    // Step 1: Insert a space before all caps in the string, except for the first character
+    const spaced = input.replace(/([A-Z])/g, ' $1').trim();
+
+    // Step 2: Capitalize the first letter and make sure the rest of the string is properly cased
+    return spaced.charAt(0).toUpperCase() + spaced.slice(1).toLowerCase();
+}
+
 export const getServerSideProps = (async (context) => {
   const session = await getSession(context)
 
@@ -90,7 +98,7 @@ const Dashboard: NextPage<Props> = ({ profileFrameUrl, answers }) => {
   return (
     <AppLayout title="Your Profile">
       <div className="text-center mb-4">
-        <button className="text-white underline bg-transparent text-base" onClick={logout}>
+        <button className="text-white underline bg-transparent text-base cursor-pointer" onClick={logout}>
           Log Out
         </button>
       </div>
@@ -116,12 +124,12 @@ const Dashboard: NextPage<Props> = ({ profileFrameUrl, answers }) => {
         />
         <Button title={copyButtonText} onClick={copyUrlToClipboard} />
       </div>
-      <div className="w-50 mx-auto flex flex-row flex-wrap gap-[18px] justify-center">
+      <div className="w-100 mx-auto flex flex-row flex-wrap gap-[18px] justify-center pb-8">
         {
           answers.map((answer) => (
-            <div className="basis-1/3" key={answer.question}>
+            <div className="basis-1/3 md:basis-11/12" key={answer.question}>
               <BiDataCard
-                title={answer.sequence + ' - ' + answer.question}
+                title={camelCaseToTitleCase(answer.sequence) + ' - ' + answer.question}
                 value={answer.answer}
               />
             </div>
