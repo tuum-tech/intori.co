@@ -46,7 +46,7 @@ export const finalStep: IntoriFrameStepType = {
 
 export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
   initial: {
-    name: 'initial',
+    name: 'Professional Experience',
     steps: [
       {
         title: 'Professional Experience',
