@@ -323,5 +323,142 @@ export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
         ]
       }
     ]
+  },
+  foodAndDrink: {
+    name: 'foodAndDrink',
+    steps: [
+      {
+        title: 'Food and Drink',
+        question: 'Which of the following are your preferred type of cuisine?',
+        inputs: [
+          {
+            type: 'button',
+            content: 'Italian'
+          },
+          {
+            type: 'button',
+            content: 'Mexican'
+          },
+          {
+            type: 'button',
+            content: 'Chinese'
+          },
+          {
+            type: 'button',
+            content: 'More'
+          },
+        ]
+      },
+      {
+        title: 'Food and Drink',
+        question: 'Which of the following are your preferred type of cuisine?',
+        inputs: [
+          {
+            type: 'button',
+            content: '< Back'
+          },
+          {
+            type: 'button',
+            content: 'Indian'
+          },
+          {
+            type: 'button',
+            content: 'Japanese'
+          },
+          {
+            type: 'button',
+            content: 'More'
+          },
+        ]
+      },
+      {
+        title: 'Food and Drink',
+        question: 'Which of the following are your preferred type of cuisine?',
+        inputs: [
+          {
+            type: 'button',
+            content: '< Back'
+          },
+          {
+            type: 'button',
+            content: 'French'
+          },
+          {
+            type: 'button',
+            content: 'American'
+          },
+          {
+            type: 'button',
+            content: 'Other'
+          },
+        ]
+      },
+      {
+        title: 'Food and Drink',
+        question: 'Which of the following are your favorite type of snack?',
+        inputs: [
+          {
+            type: 'button',
+            content: '< Back'
+          },
+          {
+            type: 'button',
+            content: 'Sweet'
+          },
+          {
+            type: 'button',
+            content: 'Salty'
+          },
+          {
+            type: 'button',
+            content: 'More'
+          },
+        ]
+      },
+      {
+        title: 'Food and Drink',
+        question: 'Which of the following are your favorite type of snack?',
+        inputs: [
+          {
+            type: 'button',
+            content: '< Back'
+          },
+          {
+            type: 'button',
+            content: 'Healthy'
+          },
+          {
+            type: 'button',
+            content: 'Indulgent'
+          },
+          {
+            type: 'button',
+            content: 'More'
+          },
+        ]
+      },
+      {
+        title: 'Food and Drink',
+        question: 'Which of the following are your favorite type of snack?',
+        inputs: [
+          {
+            type: 'button',
+            content: '< Back'
+          },
+          {
+            type: 'button',
+            content: 'Spicy'
+          },
+          {
+            type: 'button',
+            content: 'Savory'
+          },
+          {
+            type: 'button',
+            content: 'None'
+          },
+        ]
+      },
+    ]
   }
 }
