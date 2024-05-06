@@ -70,6 +70,15 @@ const submitFrame = async (
     nextStep = currentStepOfSequence + 2
   }
 
+  if (buttonClicked === '< Back') {
+    nextStep = currentStepOfSequence - 1
+
+    return res.redirect(
+      307,
+      `/frames/sequence/${frameSequenceName}?step=${nextStep}&t=${Date.now()}`
+    )
+  }
+
   if (currentStepObject.question) {
     await createUserAnswer({
       fid,
