@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "npx tsx ./utils/frames/generateFrameImages.ts",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -30,6 +31,7 @@
     "react-loader-spinner": "^6.1.6",
     "react-router-dom": "^6.17.0",
     "react-toastify": "^10.0.5",
+    "tsx": "^4.9.3",
     "uuid": "^9.0.1",
     "viem": "^2.9.20",
     "web-did-resolver": "^2.0.27"
