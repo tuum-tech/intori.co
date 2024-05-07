@@ -12,6 +12,7 @@ export const loadKumbSans32 = async () => {
     process.cwd(),
     'public/assets/frames/kumbh_sans_32.fnt'
   )
+  console.log('resulting path for 32:', pathToFont)
   return await Jimp.loadFont(pathToFont)
 }
 
@@ -20,5 +21,6 @@ export const loadKumbSans21 = async () => {
     process.cwd(),
     'public/assets/frames/kumbh_sans_21.fnt'
   )
+  console.log('resulting path for 21 :', pathToFont)
   return await Jimp.loadFont(pathToFont)
 }
