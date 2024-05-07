@@ -113,6 +113,14 @@ const submitFrame = async (
   }
 
   if (
+    frameSequenceName === 'musicGenre' &&
+    currentStepOfSequence !== 0 &&
+    buttonClicked !== 'More'
+  ) {
+    nextStep = lastStep
+  }
+
+  if (
     currentStepObject.question &&
     ['More', 'Next', ].includes(buttonClicked)
   ) {
