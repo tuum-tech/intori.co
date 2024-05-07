@@ -45,6 +45,7 @@ const submitFrame = async (
   } = frameSubmissionHelpers(req)
 
   let nextStep = currentStepOfSequence + 1
+  const lastStep = frameSequenceObject.steps.length + 1
 
   if (
     frameSequenceName === 'initial' &&
@@ -100,7 +101,15 @@ const submitFrame = async (
     [4,5,6].includes(currentStepOfSequence) &&
     buttonClicked !== 'More'
   ) {
-    nextStep = frameSequenceObject.steps.length + 1
+    nextStep = lastStep
+  }
+
+  if (
+    frameSequenceName === 'movieGenre' &&
+    currentStepOfSequence !== 0 &&
+    buttonClicked !== 'More'
+  ) {
+    nextStep = lastStep
   }
 
   if (currentStepObject.question) {
@@ -117,7 +126,7 @@ const submitFrame = async (
   // check if user already submitted
   // if user already submitted, go to further next question
 
-  const nextStepIsLast = nextStep === frameSequenceObject.steps.length + 1
+  const nextStepIsLast = nextStep === lastStep
 
   if (nextStepIsLast) {
     return res.redirect(307, `/frames/profile/${fid}`)
