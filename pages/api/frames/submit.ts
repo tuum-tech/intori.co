@@ -70,6 +70,39 @@ const submitFrame = async (
     nextStep = currentStepOfSequence + 2
   }
 
+  if (buttonClicked === '< Back') {
+    nextStep = currentStepOfSequence - 1
+
+    return res.redirect(
+      307,
+      `/frames/sequence/${frameSequenceName}?step=${nextStep}&t=${Date.now()}`
+    )
+  }
+
+  if (
+    frameSequenceName === 'foodAndDrink' &&
+    [1,2,3].includes(currentStepOfSequence) &&
+    buttonClicked !== 'More'
+  ) {
+    nextStep = 4
+  }
+
+  if (
+    frameSequenceName === 'foodAndDrink' &&
+    [1,2,3].includes(currentStepOfSequence) &&
+    buttonClicked !== 'More'
+  ) {
+    nextStep = 4
+  }
+
+  if (
+    frameSequenceName === 'foodAndDrink' &&
+    [4,5,6].includes(currentStepOfSequence) &&
+    buttonClicked !== 'More'
+  ) {
+    nextStep = frameSequenceObject.steps.length + 1
+  }
+
   if (currentStepObject.question) {
     await createUserAnswer({
       fid,
