@@ -531,5 +531,76 @@ export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
         ]
       },
     ]
+  },
+  musicGenre: {
+    name: 'musicGenre',
+    steps: [
+      {
+        title: 'Music Genre',
+        question: 'Which of the following is your music preference?',
+        inputs: [
+          {
+            type: 'button',
+            content: 'Pop'
+          },
+          {
+            type: 'button',
+            content: 'Rock'
+          },
+          {
+            type: 'button',
+            content: 'Classical'
+          },
+          {
+            type: 'button',
+            content: 'More'
+          },
+        ]
+      },
+      {
+        title: 'Music Genre',
+        question: 'Which of the following is your music preference?',
+        inputs: [
+          {
+            type: 'button',
+            content: '< Back'
+          },
+          {
+            type: 'button',
+            content: 'Jazz'
+          },
+          {
+            type: 'button',
+            content: 'Electronic'
+          },
+          {
+            type: 'button',
+            content: 'More'
+          },
+        ]
+      },
+      {
+        title: 'Music Genre',
+        question: 'Which of the following is your music preference?',
+        inputs: [
+          {
+            type: 'button',
+            content: '< Back'
+          },
+          {
+            type: 'button',
+            content: 'Hip-Hop'
+          },
+          {
+            type: 'button',
+            content: 'Country'
+          },
+          {
+            type: 'button',
+            content: 'Other'
+          },
+        ]
+      },
+    ]
   }
 }
