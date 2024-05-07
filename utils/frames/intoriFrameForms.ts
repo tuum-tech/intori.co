@@ -460,5 +460,76 @@ export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
         ]
       },
     ]
+  },
+  movieGenre: {
+    name: 'movieGenre',
+    steps: [
+      {
+        title: 'Movie Genre',
+        question: 'Which of the following is your favorite movie genre?',
+        inputs: [
+          {
+            type: 'button',
+            content: 'Action'
+          },
+          {
+            type: 'button',
+            content: 'Romance'
+          },
+          {
+            type: 'button',
+            content: 'Comedy'
+          },
+          {
+            type: 'button',
+            content: 'More'
+          },
+        ]
+      },
+      {
+        title: 'Movie Genre',
+        question: 'Which of the following is your favorite movie genre?',
+        inputs: [
+          {
+            type: 'button',
+            content: '< Back'
+          },
+          {
+            type: 'button',
+            content: 'Horror'
+          },
+          {
+            type: 'button',
+            content: 'Fantasy'
+          },
+          {
+            type: 'button',
+            content: 'More'
+          },
+        ]
+      },
+      {
+        title: 'Movie Genre',
+        question: 'Which of the following is your favorite movie genre?',
+        inputs: [
+          {
+            type: 'button',
+            content: '< Back'
+          },
+          {
+            type: 'button',
+            content: 'Documentaries'
+          },
+          {
+            type: 'button',
+            content: 'Sci-Fi'
+          },
+          {
+            type: 'button',
+            content: 'Other'
+          },
+        ]
+      },
+    ]
   }
 }
