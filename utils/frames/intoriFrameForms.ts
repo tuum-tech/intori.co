@@ -46,7 +46,7 @@ export const finalStep: IntoriFrameStepType = {
 
 export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
   initial: {
-    name: 'initial',
+    name: 'Professional Experience',
     steps: [
       {
         title: 'Professional Experience',
@@ -93,7 +93,7 @@ export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
         ]
       },
       {
-        title: 'Skills and Endorsements',
+        title: 'Skills & Endorsements',
         question: 'Which of the following skills best align with your expertise?',
         inputs: [
           {
@@ -115,7 +115,7 @@ export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
         ]
       },
       {
-        title: 'Skills and Endorsements',
+        title: 'Skills & Endorsements',
         question: 'Which of the following skills best align with your expertise?',
         inputs: [
           {
@@ -235,7 +235,7 @@ export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
     name: 'lifeStyle',
     steps: [
       {
-        title: 'Lifestyle and Wellness',
+        title: 'Lifestyle & Wellness',
         question: 'Which of the following are your exercise preferences?',
         inputs: [
           {
@@ -257,7 +257,7 @@ export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
         ]
       },
       {
-        title: 'Lifestyle and Wellness',
+        title: 'Lifestyle & Wellness',
         question: 'Which of the following are your exercise preferences?',
         inputs: [
           {
@@ -279,7 +279,7 @@ export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
         ]
       },
       {
-        title: 'Lifestyle and Wellness',
+        title: 'Lifestyle & Wellness',
         question: 'What are your sleep habits?',
         inputs: [
           {
@@ -301,7 +301,7 @@ export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
         ]
       },
       {
-        title: 'Lifestyle and Wellness',
+        title: 'Lifestyle & Wellness',
         question: 'What are your sleep habits?',
         inputs: [
           {
