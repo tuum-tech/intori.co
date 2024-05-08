@@ -75,7 +75,7 @@ export const generateQuestionnaireStepImages = async () => {
 
     const firstFrame = await generateQuestionnaireStepImage(
     camelCaseToTitleCase(sequence.name),
-      'Interactive Profile Building Experience'
+      'Daily suggested follows and channels for you'
     )
 
     firstFrame.writeAsync(path.join(framePathPrefix, '/1.png'))
