@@ -82,14 +82,14 @@ export const findLongestStreak = async (fid: number): Promise<number> => {
     let longestStreak = 0
     let previousDate: Date | null = null
 
-    snapshot.forEach(doc => {
-      const userAnswer = doc.data() as UserAnswerType
+    for (let i = 0; i < snapshot.docs.length; i++) {
+      const userAnswer = snapshot.docs[i].data() as UserAnswerType
 
       if (!userAnswer.date) {
-        return
+        continue
       }
 
-      const currentDate = new Date(userAnswer.date?.seconds)
+      const currentDate = new Date(userAnswer.date.seconds)
 
       if (previousDate && isConsecutiveDays(currentDate, previousDate)) {
         currentStreak++
@@ -100,7 +100,7 @@ export const findLongestStreak = async (fid: number): Promise<number> => {
       longestStreak = Math.max(longestStreak, currentStreak)
 
       previousDate = currentDate
-    })
+    }
 
     return Math.abs(longestStreak)
   } catch (error) {
