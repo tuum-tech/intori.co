@@ -6,7 +6,7 @@ import {
 } from '../utils/farcasterServer'
 import {
   countUserAnswers,
-  findLongestStreak
+  findCurrentStreak
 } from '../../../models/userAnswers'
 import { loadKumbSans32 } from '../../../utils/frames/fonts'
 
@@ -51,7 +51,7 @@ const getProfileFramePictureImage = async (
 
   const questionsAnswered = await countUserAnswers(fid)
   const pointsEarned = questionsAnswered * 2
-  const currentStreakDays = await findLongestStreak(fid)
+  const currentStreakDays = await findCurrentStreak(fid)
   const streakText = currentStreakDays === 1 ? '1 day' : `${currentStreakDays} days`
 
   const font = await loadKumbSans32()
