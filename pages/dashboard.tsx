@@ -7,13 +7,13 @@ import { useEffect, useMemo, useState } from "react";
 
 import BiDataCard from "@/components/common/BiDataCard";
 import { AppLayout } from "@/layouts/App"
-import { UserAnswerType, getUserAnswersByFid } from '../models/userAnswers'
+import { UserAnswerPageType, getUserAnswersByFid } from '../models/userAnswers'
 import Input from '../components/common/Input'
 import Button from '../components/common/Button'
 import { camelCaseToTitleCase } from '../utils/textHelpers'
 
 type Props = {
-  answers: UserAnswerType[]
+  answers: UserAnswerPageType[]
   profileFrameUrl: string
 }
 
