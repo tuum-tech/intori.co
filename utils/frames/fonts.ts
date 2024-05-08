@@ -8,11 +8,25 @@ export const loadKumbSans32 = async () => {
     '__filename': __filename
   })
 
+
   const pathToFont = path.join(
     process.cwd(),
     'public/assets/frames/kumbh_sans_32.fnt'
   )
-  console.log('resulting path for 32:', pathToFont)
+
+  const pathToPng = path.join(
+    process.cwd(),
+    'public/assets/frames/kumbh_sans_32.png'
+  )
+
+  const fntExists = path.resolve(pathToFont)
+  const pngExists = path.resolve(pathToPng)
+
+  console.log({
+    fntExists,
+    pngExists
+  })
+
   return await Jimp.loadFont(pathToFont)
 }
 
