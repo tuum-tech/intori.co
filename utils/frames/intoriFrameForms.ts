@@ -1,12 +1,14 @@
-export type IntoriFrameStepType = {
-  title: string
-  question?: string
-  inputs: {
+export type IntoriFrameStepInputType = {
     type: 'button'
     content: string
     action?: 'link'
     target?: string
-  }[]
+}
+
+export type IntoriFrameStepType = {
+  title: string
+  question?: string
+  inputs: IntoriFrameStepInputType[]
 }
 
 export type IntoriFrameFormType = {
@@ -35,12 +37,24 @@ export const finalStep: IntoriFrameStepType = {
     inputs: [
       {
         type: 'button',
-        content: 'View Profile'
+        content: 'Suggested Follows'
       },
       {
         type: 'button',
-        content: 'Share'
-      }
+        content: 'Suggested Channel'
+      },
+      {
+        type: 'button',
+        action: 'link',
+        target: process.env.NEXTAUTH_URL + '/frames/sequence/',
+        content: 'Share Frame'
+      },
+      {
+        type: 'button',
+        action: 'link',
+        target: 'https://www.intori.co/',
+        content: 'View intori.co'
+      },
     ]
 }
 
