@@ -122,7 +122,7 @@ const submitFrame = async (
 
   if (
     currentStepObject.question &&
-    ['More', 'Next', ].includes(buttonClicked)
+    !['More', 'Next'].includes(buttonClicked)
   ) {
     await createUserAnswer({
       fid,

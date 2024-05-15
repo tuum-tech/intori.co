@@ -38,7 +38,7 @@ export const getServerSideProps = (async (context) => {
   }
 
   const currentStep = parseInt(context.query.step as string, 10) || 0
-  const isLastStep = currentStep === intoriSequence.steps.length
+  const isLastStep = !intoriSequence.steps[currentStep - 1]
 
   const postUrl = `${process.env.NEXTAUTH_URL}/api/frames/submit?step=${currentStep}`
 
