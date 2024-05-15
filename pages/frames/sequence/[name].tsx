@@ -38,9 +38,23 @@ export const getServerSideProps = (async (context) => {
   }
 
   const currentStep = parseInt(context.query.step as string, 10) || 0
+  const isLastStep = currentStep === intoriSequence.steps.length
+
   const postUrl = `${process.env.NEXTAUTH_URL}/api/frames/submit?step=${currentStep}`
 
-  const imageUrl = `${process.env.NEXTAUTH_URL}/assets/frames/${intoriSequence.name}/${currentStep + 1}.png`
+  let imageUrl = `${process.env.NEXTAUTH_URL}/assets/frames/${intoriSequence.name}/${currentStep + 1}.png`
+
+  if (isLastStep) {
+    const fid = parseInt(context.query.fid as string, 10) || 0
+
+    if (!fid) {
+      return {
+        notFound: true
+      }
+    }
+
+    imageUrl = `${process.env.NEXTAUTH_URL}/api/profile/${fid}?t=${Date.now()}`
+  }
 
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/${intoriSequence.name}`
 

@@ -5,6 +5,24 @@ import {
   Message
 } from "@farcaster/hub-nodejs"
 
+export type FarcasterPacket = {
+  untrustedData: {
+    fid: number,
+    url: string,
+    messageHash: string,
+    timestamp: number,
+    network: number,
+    buttonIndex: number,
+    castId: {
+        fid: number,
+        hash: string
+    }
+  },
+  trustedData: {
+    messageBytes: string
+  }
+}
+
 export const getUserProfilePictureFromFid = async (
   fid: number
 ): Promise<string> => {
@@ -34,11 +52,7 @@ export const getUserProfilePictureFromFid = async (
 }
 
 export const validateFarcasterPacketMessage = async (
-  reqBody: {
-    trustedData: {
-      messageBytes: string
-    }
-  }
+  reqBody: FarcasterPacket
 ): Promise<boolean> => {
   if (!process.env.HUB_URL) {
     console.error('No HUB_URL provided.')
@@ -46,6 +60,10 @@ export const validateFarcasterPacketMessage = async (
   }
 
   if (!reqBody?.trustedData?.messageBytes) {
+    return false
+  }
+
+  if (!reqBody.untrustedData?.fid) {
     return false
   }
 
