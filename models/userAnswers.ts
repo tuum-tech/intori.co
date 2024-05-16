@@ -1,6 +1,11 @@
 import { subDays } from 'date-fns'
 import { Timestamp } from 'firebase/firestore'
 import { db } from '../pages/api/utils/firestore'
+import {
+    getChannelsThatUserFollows,
+    fetchUserDetailsByFids,
+    FarcasterUserType
+} from '../utils/neynarApi'
 
 export type UserAnswerType = {
   fid: number
@@ -115,5 +120,71 @@ export const findCurrentStreak = async (fid: number): Promise<number> => {
   } catch (error) {
     console.error('Error finding current streak:', error)
     return 0
+  }
+}
+
+export const getSuggestedUsers = async (fid: number): Promise<FarcasterUserType[]> => {
+  const userAnswers = await getUserAnswersByFid(fid)
+  const suggestedUserFids: number[] = []
+
+  for (let i = 0; i < userAnswers.length; i++) {
+    const userAnswer = userAnswers[i]
+    const querySnapshot = await userAnswersCollection
+      .where('question', '==', userAnswer.question)
+      .where('answer', '==', userAnswer.answer)
+      .get()
+
+    for (let j = 0; j < querySnapshot.docs.length; j++) {
+      const suggestedUserAnswer = querySnapshot.docs[j].data() as UserAnswerType
+
+      if (
+        suggestedUserAnswer.fid !== fid &&
+        !suggestedUserFids.includes(suggestedUserAnswer.fid)
+      ) {
+        suggestedUserFids.push(suggestedUserAnswer.fid)
+      }
+    }
+  }
+
+  const fids = suggestedUserFids.slice(0, 3)
+  return fetchUserDetailsByFids(fids)
+}
+
+export const getSuggestedUserFidsAndChannels = async (fid: number) => {
+  const suggestedUsers = await getSuggestedUsers(fid)
+
+  const allChannels = []
+  const suggestedChannels = []
+  const channelCounts: Record<string, number> = {}
+
+  for (let i = 0; i < suggestedUsers.length; i++) {
+    const user = suggestedUsers[i]
+    const channels = await getChannelsThatUserFollows(user.fid, 3)
+
+    for (let j = 0; j < channels.length; j++) {
+      const channelId = channels[j].id
+
+      if (!channelCounts[channelId]) {
+        channelCounts[channelId] = 1
+      } else {
+        channelCounts[channelId]++
+      }
+
+      allChannels.push(channels[j])
+    }
+  }
+
+  const sortedChannelCounts = Object.entries(channelCounts).sort((a, b) => b[1] - a[1])
+
+  for (let i = 0; i < sortedChannelCounts.length; i++) {
+    const channelId = sortedChannelCounts[i][0]
+    const channel = allChannels.find((c) => c.id === channelId)
+
+    suggestedChannels.push(channel)
+  }
+
+  return {
+    suggestedUsers,
+    suggestedChannels
   }
 }
