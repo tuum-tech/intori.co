@@ -1,11 +1,15 @@
 import admin from 'firebase-admin'
 import { getAuth, signInAnonymously } from "firebase/auth";
 
-export let firebaseAdmin: admin.app.App
+let firebaseAdmin: admin.app.App | undefined
 
 const initiateAdmin = async () => {
-  if (firebaseAdmin || typeof window !== "undefined") {
-    return
+  if (typeof window !== "undefined") {
+    return undefined
+  }
+
+  if (firebaseAdmin) {
+    return firebaseAdmin
   }
 
   const firebaseAdminConfig = {
@@ -25,8 +29,10 @@ const initiateAdmin = async () => {
     firebaseAdmin = admin.initializeApp({
       credential: admin.credential.cert(firebaseAdminConfig)
     }, 'admin')
+
+    return firebaseAdmin
   } catch (err) {
-    console.log(err)
+    return admin.app()
   }
 }
 
@@ -46,6 +52,4 @@ export const authenticateRequestAnonymously = async () => {
   await signInAnonymously(auth)
 }
 
-if (typeof window === "undefined") {
-  initiateAdmin()
-}
+export { initiateAdmin }
