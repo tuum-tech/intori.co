@@ -3,8 +3,6 @@ import admin from 'firebase-admin'
 let firebaseAdmin: admin.app.App | undefined
 
 const initiateAdmin = () => {
-  console.log('initing admin', firebaseAdmin, admin.apps.length, typeof window)
-
   if (typeof window !== "undefined") {
     return undefined
   }
