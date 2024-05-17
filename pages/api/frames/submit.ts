@@ -2,7 +2,6 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { frameSubmissionHelpers } from '../../../utils/frames/frameSubmissionHelpers'
 import { validateFarcasterPacketMessage } from '../utils/farcasterServer'
 import { createUserAnswer } from '../../../models/userAnswers'
-import { seedFakeAnswers } from '../../../fake/seed-fake-answers'
 
 // example farcaster frame submit
 // console.log({
@@ -35,9 +34,6 @@ const submitFrame = async (
   if (!validFarcasterPacket) {
     return res.status(400).end()
   }
-
-  // TEMPORARY
-  await seedFakeAnswers()
 
   const {
     frameSequenceName,

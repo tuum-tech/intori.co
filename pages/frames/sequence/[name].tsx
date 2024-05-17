@@ -49,8 +49,6 @@ export const getServerSideProps = (async (context) => {
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/sequence/${intoriSequence.name}`
   const postUrl = `${process.env.NEXTAUTH_URL}/api/frames/submit?step=${currentStep}`
 
-  console.log({ isLastStep })
-
   if (isLastStep) {
     const fid = parseInt(context.query.fid as string, 10) || 0
 
