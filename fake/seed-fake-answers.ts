@@ -1,7 +1,7 @@
 import { intoriFrameForms } from '../utils/frames/intoriFrameForms'
 import { createUserAnswer, CreateUserAnswerType } from '../models/userAnswers'
 
-const TOTAL = 100
+const TOTAL = 10
 
 export const seedFakeAnswers = async () => {
   for (let i = 0; i < TOTAL; i++) {
