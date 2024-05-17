@@ -66,6 +66,11 @@ export const getServerSideProps = (async (context) => {
       suggestedUsers
     } = await getSuggestedUsersAndChannels(fid)
 
+    console.log({
+      suggestedUsers,
+      suggestedChannels
+    })
+
     return {
       props: {
         currentStep: currentStep,
