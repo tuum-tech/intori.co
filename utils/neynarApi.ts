@@ -35,7 +35,11 @@ export const getChannelsThatUserFollows = async (
 export const fetchUserDetailsByFids = async (fids: number[]): Promise<FarcasterUserType[]> => {
   const { users } = await neynar.fetchBulkUsers(fids)
 
-  return users.map((user) => ({
+  const invalidUsernameRegex = /^!\d+$/;
+
+  return users.filter((user) => {
+    return !invalidUsernameRegex.test(user.username)
+  }).map((user) => ({
     username: user.username,
     fid: user.fid,
     image: user.pfp_url,
