@@ -30,7 +30,7 @@ export default function Page({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <PageWrapper title="Profile">
-      <FarcasterFrameHead title="Profile" imgUrl={imageUrl}>
+      <FarcasterFrameHead title="Profile" imgUrl={imageUrl} description="Your data, connected.">
           <meta name='fc:frame:button:1' content="Learn More" />
           <meta name='fc:frame:button:1:action' content="link" />
           <meta name='fc:frame:button:1:target' content="https://www.intori.co/" />
