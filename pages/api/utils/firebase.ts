@@ -1,15 +1,19 @@
 import admin from 'firebase-admin'
-import { getAuth, signInAnonymously } from "firebase/auth";
+import { getAuth, signInAnonymously } from "firebase/auth"
 
 let firebaseAdmin: admin.app.App | undefined
 
-const initiateAdmin = async () => {
+const initiateAdmin = () => {
   if (typeof window !== "undefined") {
     return undefined
   }
 
   if (firebaseAdmin) {
     return firebaseAdmin
+  }
+
+  if (admin.app()) {
+    return admin.app()
   }
 
   const firebaseAdminConfig = {
@@ -23,7 +27,7 @@ const initiateAdmin = async () => {
     tokenUri: process.env.FIREBASE_TOKEN_URI,
     authProviderX509CertUrl: process.env.FIREBASE_AUTH_PROVIDER_X509_CERT_URL,
     clientX509CertUrl: process.env.FIREBASE_CLIENT_X509_CERT_URL
-  };
+  }
 
   try {
     firebaseAdmin = admin.initializeApp({
