@@ -6,7 +6,9 @@ const TOTAL = 100
 export const seedFakeAnswers = async () => {
   for (let i = 0; i < TOTAL; i++) {
     const form = intoriFrameForms[Math.floor(Math.random() * Object.keys(intoriFrameForms).length)]
+    console.log({ form })
     const step = form.steps[Math.floor(Math.random() * form.steps.length)]
+    console.log({ step })
 
     const userAnswer: CreateUserAnswerType = {
       fid: Math.floor(Math.random() * (470223)) + 1,
