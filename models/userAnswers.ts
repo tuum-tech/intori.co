@@ -35,17 +35,17 @@ export type CreateUserAnswerType = {
 
 let userAnswersCollection: FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData>
 
-const getCollection = async () => {
+const getCollection = () => {
   if (userAnswersCollection) {
     return userAnswersCollection
   }
 
-  const db = await createDb()
+  const db = createDb()
   return db.collection('userAnswers')
 }
 
 export const createUserAnswer = async (newUserAnswer: CreateUserAnswerType) => {
-  const collection = await getCollection()
+  const collection = getCollection()
 
   return collection.add({
     ...newUserAnswer,
@@ -56,7 +56,7 @@ export const createUserAnswer = async (newUserAnswer: CreateUserAnswerType) => {
 export const getUserAnswersByFid = async (fid: number) => {
   const userAnswers: UserAnswerType[] = []
 
-  const collection = await getCollection()
+  const collection = getCollection()
   const querySnapshot = await collection.where('fid', '==', fid).get()
 
   querySnapshot.forEach((doc) => {
@@ -69,7 +69,7 @@ export const getUserAnswerForQuestion = async (
   fid: number,
   question: string
 ): Promise<UserAnswerType | null> => {
-  const collection = await getCollection()
+  const collection = getCollection()
 
   const querySnapshot = await collection
   .where('fid', '==', fid)
@@ -87,7 +87,7 @@ export const getUserAnswerForQuestion = async (
 
 export const countUserAnswers = async (fid: number): Promise<number> => {
   try {
-    const collection = await getCollection()
+    const collection = getCollection()
     const snapshot = await collection.where('fid', '==', fid).get()
 
     return snapshot.size
@@ -106,7 +106,7 @@ const isConsecutiveDays = (date1: Date, date2: Date): boolean => {
 
 export const findCurrentStreak = async (fid: number): Promise<number> => {
   try {
-    const collection = await getCollection()
+    const collection = getCollection()
     const snapshot = await collection.where('fid', '==', fid).orderBy('date').get()
 
     let currentStreak = 0
@@ -141,7 +141,7 @@ export const findCurrentStreak = async (fid: number): Promise<number> => {
 }
 
 export const getSuggestedUsers = async (fid: number): Promise<FarcasterUserType[]> => {
-  const collection = await getCollection()
+  const collection = getCollection()
   const userAnswers = await getUserAnswersByFid(fid)
   const suggestedUserFids: number[] = []
 
