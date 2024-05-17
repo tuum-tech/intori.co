@@ -1,8 +1,6 @@
 import admin from 'firebase-admin'
 import { getAuth, signInAnonymously } from "firebase/auth";
 
-
-
 export let firebaseAdmin: admin.app.App
 
 const initiateAdmin = async () => {
@@ -23,9 +21,13 @@ const initiateAdmin = async () => {
     clientX509CertUrl: process.env.FIREBASE_CLIENT_X509_CERT_URL
   };
 
-  firebaseAdmin = admin.initializeApp({
-    credential: admin.credential.cert(firebaseAdminConfig)
-  })
+  try {
+    firebaseAdmin = admin.initializeApp({
+      credential: admin.credential.cert(firebaseAdminConfig)
+    }, 'admin')
+  } catch (err) {
+    console.log(err)
+  }
 }
 
 // const firebaseConfig = {
