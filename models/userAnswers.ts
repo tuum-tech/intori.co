@@ -146,10 +146,14 @@ export const getSuggestedUsers = async (fid: number): Promise<FarcasterUserType[
   const suggestedUserFids: number[] = []
 
   for (let i = 0; i < userAnswers.length; i++) {
+    if (suggestedUserFids.length >= 3) {
+      break
+    }
     const userAnswer = userAnswers[i]
     const querySnapshot = await collection
       .where('question', '==', userAnswer.question)
       .where('answer', '==', userAnswer.answer)
+      .limit(5)
       .get()
 
     for (let j = 0; j < querySnapshot.docs.length; j++) {

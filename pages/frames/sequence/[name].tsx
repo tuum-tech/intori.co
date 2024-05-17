@@ -120,7 +120,6 @@ export default function Page({
         return finalStep
       }
 
-
       // the suggested user
       finalStep.inputs[0].action = 'link'
       finalStep.inputs[0].target = `https://warpcast.com/${suggestedUser.username}`
