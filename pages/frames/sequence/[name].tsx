@@ -14,7 +14,7 @@ import { camelCaseToTitleCase } from '../../../utils/textHelpers'
 import Input from '../../../components/common/Input'
 import Button from '../../../components/common/Button'
 import {
-  getSuggestedUserFidsAndChannels,
+  getSuggestedUsersAndChannels,
 } from '../../../models/userAnswers'
 import { FarcasterChannelType, FarcasterUserType } from '../../../utils/neynarApi'
  
@@ -64,7 +64,7 @@ export const getServerSideProps = (async (context) => {
     const {
       suggestedChannels,
       suggestedUsers
-    } = await getSuggestedUserFidsAndChannels(fid)
+    } = await getSuggestedUsersAndChannels(fid)
 
     return {
       props: {
