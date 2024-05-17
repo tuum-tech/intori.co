@@ -26,7 +26,7 @@ export type UserAnswerPageType = {
   }
 }
 
-type CreateUserAnswerType = {
+export type CreateUserAnswerType = {
   fid: number
   sequence: string
   question: string
@@ -150,7 +150,7 @@ export const getSuggestedUsers = async (fid: number): Promise<FarcasterUserType[
   return fetchUserDetailsByFids(fids)
 }
 
-export const getSuggestedUserFidsAndChannels = async (fid: number) => {
+export const getSuggestedUsersAndChannels = async (fid: number) => {
   const suggestedUsers = await getSuggestedUsers(fid)
 
   const allChannels = []
