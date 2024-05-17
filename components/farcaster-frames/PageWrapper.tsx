@@ -2,12 +2,11 @@ import React from 'react'
 
 type Props = {
   children: React.ReactNode
-  title: string
+  title?: string
 }
 
 export const PageWrapper: React.FC<Props> = ({
-  children,
-  title
+  children
 }) => {
     return (
       <main className='relative bg-black-0 w-full h-screen overflow-y-auto text-base text-white font-kumbh-sans pt-4'>
@@ -18,7 +17,6 @@ export const PageWrapper: React.FC<Props> = ({
             src='/intorilogomark.svg'
           />
           <h1>Intori</h1>
-          <h2>{title}</h2>
         </div>
         <div className='w-50 m-auto'>
           { children }
