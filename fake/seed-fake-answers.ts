@@ -1,6 +1,3 @@
-import dotenv from 'dotenv'
-dotenv.config({ path: '.env.local' })
-
 import { intoriFrameForms } from '../utils/frames/intoriFrameForms'
 import { createUserAnswer, CreateUserAnswerType } from '../models/userAnswers'
 
