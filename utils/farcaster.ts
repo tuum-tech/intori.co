@@ -1,3 +1,4 @@
+import axios from 'axios'
 
 //          Type	Required	Description	                Default
 // relay	  string	No	Farcaster Auth relay server URL	    https://relay.farcaster.xyz
