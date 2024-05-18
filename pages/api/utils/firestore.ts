@@ -1,4 +1,7 @@
-import { firebaseAdmin } from './firebase'
+import { initiateAdmin } from './firebase'
 import { getFirestore } from 'firebase-admin/firestore'
 
-export const db = getFirestore(firebaseAdmin)
+export const createDb = () => {
+  const admin = initiateAdmin()
+  return getFirestore(admin!)
+}

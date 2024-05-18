@@ -1,6 +1,11 @@
 import { subDays } from 'date-fns'
 import { Timestamp } from 'firebase/firestore'
-import { db } from '../pages/api/utils/firestore'
+import { createDb } from '../pages/api/utils/firestore'
+import {
+    getChannelsThatUserFollows,
+    fetchUserDetailsByFids,
+    FarcasterUserType
+} from '../utils/neynarApi'
 
 export type UserAnswerType = {
   fid: number
@@ -21,17 +26,28 @@ export type UserAnswerPageType = {
   }
 }
 
-type CreateUserAnswerType = {
+export type CreateUserAnswerType = {
   fid: number
   sequence: string
   question: string
   answer: string
 }
 
-const userAnswersCollection = db.collection('userAnswers')
+let userAnswersCollection: FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData>
 
-export const createUserAnswer = (newUserAnswer: CreateUserAnswerType) => {
-  return userAnswersCollection.add({
+const getCollection = () => {
+  if (userAnswersCollection) {
+    return userAnswersCollection
+  }
+
+  const db = createDb()
+  return db.collection('userAnswers')
+}
+
+export const createUserAnswer = async (newUserAnswer: CreateUserAnswerType) => {
+  const collection = getCollection()
+
+  return collection.add({
     ...newUserAnswer,
     date: new Date()
   })
@@ -39,7 +55,9 @@ export const createUserAnswer = (newUserAnswer: CreateUserAnswerType) => {
 
 export const getUserAnswersByFid = async (fid: number) => {
   const userAnswers: UserAnswerType[] = []
-  const querySnapshot = await userAnswersCollection.where('fid', '==', fid).get()
+
+  const collection = getCollection()
+  const querySnapshot = await collection.where('fid', '==', fid).get()
 
   querySnapshot.forEach((doc) => {
     userAnswers.push(doc.data() as UserAnswerType)
@@ -51,7 +69,9 @@ export const getUserAnswerForQuestion = async (
   fid: number,
   question: string
 ): Promise<UserAnswerType | null> => {
-  const querySnapshot = await userAnswersCollection
+  const collection = getCollection()
+
+  const querySnapshot = await collection
   .where('fid', '==', fid)
   .where('question', '==', question)
   .get()
@@ -67,7 +87,8 @@ export const getUserAnswerForQuestion = async (
 
 export const countUserAnswers = async (fid: number): Promise<number> => {
   try {
-    const snapshot = await userAnswersCollection.where('fid', '==', fid).get()
+    const collection = getCollection()
+    const snapshot = await collection.where('fid', '==', fid).get()
 
     return snapshot.size
   } catch (error) {
@@ -85,7 +106,8 @@ const isConsecutiveDays = (date1: Date, date2: Date): boolean => {
 
 export const findCurrentStreak = async (fid: number): Promise<number> => {
   try {
-    const snapshot = await userAnswersCollection.where('fid', '==', fid).orderBy('date').get()
+    const collection = getCollection()
+    const snapshot = await collection.where('fid', '==', fid).orderBy('date').get()
 
     let currentStreak = 0
     let previousDate: Date | null = null
@@ -115,5 +137,76 @@ export const findCurrentStreak = async (fid: number): Promise<number> => {
   } catch (error) {
     console.error('Error finding current streak:', error)
     return 0
+  }
+}
+
+export const getSuggestedUsers = async (fid: number): Promise<FarcasterUserType[]> => {
+  const collection = getCollection()
+  const userAnswers = await getUserAnswersByFid(fid)
+  const suggestedUserFids: number[] = []
+
+  for (let i = 0; i < userAnswers.length; i++) {
+    if (suggestedUserFids.length >= 3) {
+      break
+    }
+    const userAnswer = userAnswers[i]
+    const querySnapshot = await collection
+      .where('question', '==', userAnswer.question)
+      .where('answer', '==', userAnswer.answer)
+      .limit(5)
+      .get()
+
+    for (let j = 0; j < querySnapshot.docs.length; j++) {
+      const suggestedUserAnswer = querySnapshot.docs[j].data() as UserAnswerType
+
+      if (
+        suggestedUserAnswer.fid !== fid &&
+        !suggestedUserFids.includes(suggestedUserAnswer.fid)
+      ) {
+        suggestedUserFids.push(suggestedUserAnswer.fid)
+      }
+    }
+  }
+
+  const fids = suggestedUserFids.slice(0, 3)
+  return fetchUserDetailsByFids(fids)
+}
+
+export const getSuggestedUsersAndChannels = async (fid: number) => {
+  const suggestedUsers = await getSuggestedUsers(fid)
+
+  const allChannels = []
+  const suggestedChannels = []
+  const channelCounts: Record<string, number> = {}
+
+  for (let i = 0; i < suggestedUsers.length; i++) {
+    const user = suggestedUsers[i]
+    const channels = await getChannelsThatUserFollows(user.fid, 3)
+
+    for (let j = 0; j < channels.length; j++) {
+      const channelId = channels[j].id
+
+      if (!channelCounts[channelId]) {
+        channelCounts[channelId] = 1
+      } else {
+        channelCounts[channelId]++
+      }
+
+      allChannels.push(channels[j])
+    }
+  }
+
+  const sortedChannelCounts = Object.entries(channelCounts).sort((a, b) => b[1] - a[1])
+
+  for (let i = 0; i < sortedChannelCounts.length; i++) {
+    const channelId = sortedChannelCounts[i][0]
+    const channel = allChannels.find((c) => c.id === channelId)
+
+    suggestedChannels.push(channel)
+  }
+
+  return {
+    suggestedUsers,
+    suggestedChannels
   }
 }

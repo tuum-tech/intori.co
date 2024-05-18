@@ -13,6 +13,10 @@ import {
 import { camelCaseToTitleCase } from '../../../utils/textHelpers'
 import Input from '../../../components/common/Input'
 import Button from '../../../components/common/Button'
+import {
+  getSuggestedUsersAndChannels,
+} from '../../../models/userAnswers'
+import { FarcasterChannelType, FarcasterUserType } from '../../../utils/neynarApi'
  
 type Props = {
   currentStep: number
@@ -20,6 +24,8 @@ type Props = {
   intoriFrameForm: IntoriFrameFormType
   imageUrl: string
   frameUrl: string
+  suggestedChannel?: FarcasterChannelType
+  suggestedUser?: FarcasterUserType
 }
  
 export const getServerSideProps = (async (context) => {
@@ -40,9 +46,8 @@ export const getServerSideProps = (async (context) => {
   const currentStep = parseInt(context.query.step as string, 10) || 0
   const isLastStep = currentStep ? !intoriSequence.steps[currentStep - 1] : false
 
+  const frameUrl = `${process.env.NEXTAUTH_URL}/frames/sequence/${intoriSequence.name}`
   const postUrl = `${process.env.NEXTAUTH_URL}/api/frames/submit?step=${currentStep}`
-
-  let imageUrl = `${process.env.NEXTAUTH_URL}/assets/frames/${intoriSequence.name}/${currentStep + 1}.png`
 
   if (isLastStep) {
     const fid = parseInt(context.query.fid as string, 10) || 0
@@ -53,10 +58,32 @@ export const getServerSideProps = (async (context) => {
       }
     }
 
-    imageUrl = `${process.env.NEXTAUTH_URL}/api/profile/${fid}?t=${Date.now()}`
+    const imageUrl = `${process.env.NEXTAUTH_URL}/api/profile/${fid}?t=${Date.now()}`
+
+    const {
+      suggestedChannels,
+      suggestedUsers
+    } = await getSuggestedUsersAndChannels(fid)
+
+    console.log({
+      suggestedUsers,
+      suggestedChannels
+    })
+
+    return {
+      props: {
+        currentStep: currentStep,
+        postUrl,
+        intoriFrameForm: intoriSequence,
+        imageUrl,
+        frameUrl,
+        suggestedChannel: suggestedChannels[Math.floor(Math.random() * suggestedChannels.length)],
+        suggestedUser: suggestedUsers[Math.floor(Math.random() * suggestedUsers.length)]
+      }
+    }
   }
 
-  const frameUrl = `${process.env.NEXTAUTH_URL}/frames/sequence/${intoriSequence.name}`
+  const imageUrl = `${process.env.NEXTAUTH_URL}/assets/frames/${intoriSequence.name}/${currentStep + 1}.png`
 
   return {
     props: {
@@ -74,7 +101,9 @@ export default function Page({
   postUrl,
   intoriFrameForm,
   imageUrl,
-  frameUrl
+  frameUrl,
+  suggestedChannel,
+  suggestedUser
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [copyButtonText, setCopyButtonText] = useState('Copy Frame Link')
 
@@ -87,8 +116,22 @@ export default function Page({
         return intoriFrameForm.steps[currentStep - 1]
       }
 
+      if (!suggestedChannel || !suggestedUser) {
+        return finalStep
+      }
+
+      // the suggested user
+      finalStep.inputs[0].action = 'link'
+      finalStep.inputs[0].target = `https://warpcast.com/${suggestedUser.username}`
+      finalStep.inputs[0].content = `@${suggestedUser.username}`
+
+      // the suggested channel
+      finalStep.inputs[1].action = 'link'
+      finalStep.inputs[1].target = suggestedChannel.url
+      finalStep.inputs[1].content = `/${suggestedChannel.name}`
+
       return finalStep
-  }, [currentStep, intoriFrameForm])
+  }, [currentStep, intoriFrameForm, suggestedChannel, suggestedUser])
 
   const getTarget = useCallback((input: IntoriFrameStepInputType) => {
     if (input.content === 'Share Frame') {
