@@ -140,13 +140,18 @@ export const findCurrentStreak = async (fid: number): Promise<number> => {
   }
 }
 
-export const getSuggestedUsers = async (fid: number): Promise<FarcasterUserType[]> => {
+export const getSuggestedUsers = async (
+  fid: number,
+  options?: {
+    maxResults: number
+  }
+): Promise<FarcasterUserType[]> => {
   const collection = getCollection()
   const userAnswers = await getUserAnswersByFid(fid)
   const suggestedUserFids: number[] = []
 
   for (let i = 0; i < userAnswers.length; i++) {
-    if (suggestedUserFids.length >= 3) {
+    if (options?.maxResults && suggestedUserFids.length >= options.maxResults) {
       break
     }
     const userAnswer = userAnswers[i]
@@ -168,12 +173,21 @@ export const getSuggestedUsers = async (fid: number): Promise<FarcasterUserType[
     }
   }
 
-  const fids = suggestedUserFids.slice(0, 3)
+  const fids = suggestedUserFids.slice(
+    0,
+    options?.maxResults ?? suggestedUserFids.length
+  )
+
   return fetchUserDetailsByFids(fids)
 }
 
-export const getSuggestedUsersAndChannels = async (fid: number) => {
-  const suggestedUsers = await getSuggestedUsers(fid)
+export const getSuggestedUsersAndChannels = async (
+  fid: number,
+  options?: {
+    maxResults: number
+  }
+) => {
+  const suggestedUsers = await getSuggestedUsers(fid, options)
 
   const allChannels = []
   const suggestedChannels = []
@@ -181,18 +195,18 @@ export const getSuggestedUsersAndChannels = async (fid: number) => {
 
   for (let i = 0; i < suggestedUsers.length; i++) {
     const user = suggestedUsers[i]
-    const channels = await getChannelsThatUserFollows(user.fid, 3)
+    const channels = await getChannelsThatUserFollows(user.fid, options?.maxResults || 25)
 
     for (let j = 0; j < channels.length; j++) {
       const channelId = channels[j].id
 
       if (!channelCounts[channelId]) {
         channelCounts[channelId] = 1
+        allChannels.push(channels[j])
       } else {
         channelCounts[channelId]++
       }
 
-      allChannels.push(channels[j])
     }
   }
 
@@ -200,6 +214,11 @@ export const getSuggestedUsersAndChannels = async (fid: number) => {
 
   for (let i = 0; i < sortedChannelCounts.length; i++) {
     const channelId = sortedChannelCounts[i][0]
+
+    if (sortedChannelCounts[i][1] < 2) {
+      continue
+    }
+
     const channel = allChannels.find((c) => c.id === channelId)
 
     suggestedChannels.push(channel)
