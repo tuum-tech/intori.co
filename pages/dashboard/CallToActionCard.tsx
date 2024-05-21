@@ -25,3 +25,4 @@ export const CallToActionCard: React.FC<Props> = ({
     )
 }
 
+export default CallToActionCard

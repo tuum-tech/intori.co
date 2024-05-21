@@ -12,6 +12,14 @@ type Props = {
 export const AppLayout: React.FC<Props> = ({ children }) => {
   const session = useSession()
 
+  // TODO:
+  // const logout = async (e: React.MouseEvent) => {
+  //   e.preventDefault()
+
+  //   await signOut()
+  //   window.location.pathname = '/'
+  // }
+
   return (
     <div className={styles.appLayout}>
       <header className={styles.header}>
