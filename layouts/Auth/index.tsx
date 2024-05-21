@@ -1,6 +1,7 @@
 import React from 'react'
 import Img from 'next/image'
 import styles from './Auth.module.css'
+import { Footer } from '../../components/Footer'
 
 type Props = {
   children: React.ReactNode
@@ -21,6 +22,7 @@ export const AuthLayout: React.FC<Props> = ({
         <h1>{title}</h1>
         <h2>{subtitle}</h2>
         {children}
+        <Footer />
       </div>
     )
 }

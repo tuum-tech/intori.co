@@ -1,0 +1,66 @@
+.welcomeRow {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 24px;
+}
+.welcomeRow > div {
+  flex-basis: 33.33%;
+}
+.welcomeMessage > h1 {
+  font-weight: 600;
+  font-size: 34px;
+  color: #FFF;
+}
+.welcomeMessage > h2 {
+  color: #C9D3EE;
+  font-weight: 400;
+  font-size: 16px;
+}
+
+.welcomeCard {
+  padding: 55px 24px;
+  background: #272738;
+  border: 1px solid #2A3042;
+  border-radius: 16px;
+}
+.welcomeCard h4,
+.welcomeCard h3 {
+  color: #FFF;
+  font-weight: 500;
+  margin: 0;
+}
+.welcomeCard h4 {
+  font-size: 16px;
+  margin: 24px 0;
+}
+.welcomeCard h3 {
+  font-size: 64px;
+}
+
+.ctaCard {
+  background: #A793F2;
+  border: 1px solid #2A3042;
+  border-radius: 16px;
+  padding: 24px;
+  margin-top: 40px;
+}
+.ctaCard h4 {
+  font-size: 16px;
+  color: #200F45;
+  margin: 0 0 8px 0;
+}
+.ctaCard h3 {
+  white-space: nowrap;
+  margin-right: 8px;
+}
+.ctaCard h3 span {
+  font-weight: 800;
+}
+.ctaCard h3 > div {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+}
+.ctaCard a button {
+  width: 100%;
+}

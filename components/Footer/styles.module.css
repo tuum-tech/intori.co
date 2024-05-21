@@ -1,0 +1,56 @@
+.footer {
+  padding: 300px 40px 40px 40px;
+}
+.footer > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer a,
+.footer p {
+  color: #646E87;
+  text-decoration: none;
+  font-size: 13px;
+  transition: color 0.3s ease;
+}
+
+.footer a:hover {
+  color: #A793F2;
+}
+
+
+.contact {
+  border-bottom: 1px solid #646E87;
+  margin-bottom: 25px;
+  padding-bottom: 25px;
+
+  display: flex;
+  align-items: center;
+}
+
+.contact p,
+.legal p {
+  margin: 0;
+}
+.sm {
+  display: flex;
+  align-items: center;
+}
+.sm div {
+  border-right: 1px solid #646E87;
+  height: 25px;
+  margin-left: 18px;
+}
+.sm > a {
+  margin-left: 18px;
+}
+.sm > a svg path {
+  transition: fill 0.3s ease;
+}
+.sm > a:hover svg path {
+  fill: #A793F2;
+}
+.legal a {
+  margin-right: 18px;
+}
