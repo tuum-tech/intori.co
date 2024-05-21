@@ -20,3 +20,5 @@ export const WelcomeCard: React.FC<Props> = ({
     </div>
   )
 }
+
+export default WelcomeCard

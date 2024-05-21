@@ -1,8 +1,7 @@
 import type { NextPage, GetServerSideProps } from "next";
 import { useRouter } from "next/router"
-import { toast } from 'react-toastify'
-import { useSession, getSession, signOut } from "next-auth/react"
-import { useEffect, useMemo, useState } from "react";
+import { useSession, getSession } from "next-auth/react"
+import { useEffect, useMemo } from "react";
 
 import { AppLayout } from "@/layouts/App"
 import { UserAnswerPageType, getUserAnswersByFid } from '@/models/userAnswers'
@@ -16,8 +15,9 @@ import styles from './Dashboard.module.css'
 type Props = {
   answers: UserAnswerPageType[]
   profileFrameUrl: string
-  suggestedChannels?: FarcasterChannelType[]
-  suggestedUsers?: FarcasterUserType[]
+
+  suggestedChannels: FarcasterChannelType[]
+  suggestedUsers: FarcasterUserType[]
 }
 
 
@@ -43,8 +43,8 @@ export const getServerSideProps = (async (context) => {
 
   return {
     props: {
-      suggestedUsers: suggestedUsers ?? [],
-      suggestedChannels: suggestedChannels ?? [],
+      suggestedUsers: (suggestedUsers ?? []) as FarcasterUserType[],
+      suggestedChannels: (suggestedChannels ?? []) as FarcasterChannelType[],
       profileFrameUrl,
       answers: answers
         .filter(answer => answer.date)
@@ -62,8 +62,7 @@ export const getServerSideProps = (async (context) => {
   }
 }) satisfies GetServerSideProps<Props>
 
-const Dashboard: NextPage<Props> = ({ profileFrameUrl, answers, suggestedUsers, suggestedChannels }) => {
-  const [copyButtonText, setCopyButtonText] = useState('Copy Your Stats Frame Link')
+const Dashboard: NextPage<Props> = ({ answers, suggestedUsers, suggestedChannels }) => {
   const session = useSession()
   const router = useRouter()
 
@@ -75,21 +74,6 @@ const Dashboard: NextPage<Props> = ({ profileFrameUrl, answers, suggestedUsers, 
 
   const loading = useMemo(() => session.status === 'loading', [session])
 
-  const copyUrlToClipboard = () => {
-    navigator.clipboard.writeText(profileFrameUrl)
-    toast.success('Profile frame link copied to clipboard 😎')
-    setCopyButtonText('Copied!')
-    setTimeout(() => {
-      setCopyButtonText('Copy Your Stats Frame Link')
-    }, 2000)
-  }
-
-  const logout = async (e: React.MouseEvent) => {
-    e.preventDefault()
-
-    await signOut()
-    window.location.pathname = '/'
-  }
 
   if (loading || !session?.data?.user) {
     return (
@@ -105,9 +89,6 @@ const Dashboard: NextPage<Props> = ({ profileFrameUrl, answers, suggestedUsers, 
         <div className={styles.welcomeMessage}>
           <h1 className="mb-0">Welcome, {session.data.user.name}</h1>
           <h2>Track & Manage your data history.</h2>
-          { /* <PrimaryButton onClick={copyUrlToClipboard}>
-            {copyButtonText}
-          </PrimaryButton> */ }
           <CallToActionCard title="Suggestions">
             <div><span>{suggestedUsers?.length || 0}</span> Users</div>
             <div><span>{suggestedChannels?.length || 0}</span> Channels</div>
