@@ -1,12 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@300;500;600&display=swap');
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-body {
-  @apply leading-[normal] m-0;
+/* https://github.com/necolas/normalize.css */
+@import 'normalize.css';
+
+* {
+  font-family: "Kumbh Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings: "YOPQ" 300;
+  box-sizing: border-box;
 }
-*,
-::before,
-::after {
-  border-width: 0;
+
+body {
+  background-image: url('/app-bg.png');
+  background-size: cover;
+  background-position: top left;
+  background-repeat: no-repeat;
+  background-color: #000;
 }
