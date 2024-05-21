@@ -1,0 +1,18 @@
+.farcasterButton > div {
+  display: inline-block;
+}
+.farcasterButton button {
+  border-radius: 10px;
+  padding: 12px 50px;
+  border: 1px solid #FFF;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  background: #9664FA;
+  border-color: #9664FA;
+  color: #FFF;
+}
+
+.farcasterButton svg {
+  display: none;
+}
