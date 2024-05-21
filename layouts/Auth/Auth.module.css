@@ -1,0 +1,47 @@
+.logo {
+  position: absolute;
+  top: 20px;
+  left: 120px;
+  text-align: center;
+}
+.authLayout {
+  text-align: center;
+  padding-top: 10vh;
+  position: relative;
+}
+.authLayout h1 {
+  font-size: 60px;
+  color: #FFF;
+  font-weight: 600;
+  margin-bottom: 0;
+}
+.authLayout h1 > span {
+  color: #9664FA;
+  font-weight: 600;
+}
+
+.authLayout h2 {
+  color: #B5ACA2;
+  font-size: 16px;
+  margin: 24px 0;
+}
+
+@media only screen and (max-width: 700px) {
+  .logo {
+    position: relative;
+    top: unset;;
+    left: unset;
+    text-align: center;
+  }
+}
+@media only screen and (max-width: 500px) {
+  .authLayout h1 {
+    font-size: 40px;
+  }
+  .authLayout h2 {
+    font-size: 12px;
+    width: 50%;
+    min-width: 200px;
+    margin: 24px auto;
+  }
+}
