@@ -63,7 +63,7 @@ export const getServerSideProps = (async (context) => {
     const {
       suggestedChannels,
       suggestedUsers
-    } = await getSuggestedUsersAndChannels(fid)
+    } = await getSuggestedUsersAndChannels(fid, { maxResults: 3 })
 
     console.log({
       suggestedUsers,
