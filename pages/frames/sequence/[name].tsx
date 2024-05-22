@@ -12,7 +12,7 @@ import {
 } from '../../../utils/frames/intoriFrameForms'
 import { camelCaseToTitleCase } from '../../../utils/textHelpers'
 import Input from '../../../components/common/Input'
-import Button from '../../../components/common/Button'
+import { PrimaryButton } from '../../../components/common/Button'
 import {
   getSuggestedUsersAndChannels,
 } from '../../../models/userAnswers'
@@ -63,7 +63,7 @@ export const getServerSideProps = (async (context) => {
     const {
       suggestedChannels,
       suggestedUsers
-    } = await getSuggestedUsersAndChannels(fid)
+    } = await getSuggestedUsersAndChannels(fid, { maxResults: 3 })
 
     console.log({
       suggestedUsers,
@@ -196,7 +196,9 @@ export default function Page({
               onChange={console.log}
               placeholder="Frame URL"
             />
-            <Button title={copyButtonText} onClick={copyUrlToClipboard} />
+            <PrimaryButton onClick={copyUrlToClipboard}>
+              {copyButtonText}
+            </PrimaryButton>
           </div>
         </div>
       </form>
