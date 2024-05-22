@@ -4,7 +4,8 @@ import { createDb } from '../pages/api/utils/firestore'
 import {
     getChannelsThatUserFollows,
     fetchUserDetailsByFids,
-    FarcasterUserType
+    FarcasterUserType,
+    FarcasterChannelType
 } from '../utils/neynarApi'
 
 export type UserAnswerType = {
@@ -57,7 +58,10 @@ export const getUserAnswersByFid = async (fid: number) => {
   const userAnswers: UserAnswerType[] = []
 
   const collection = getCollection()
-  const querySnapshot = await collection.where('fid', '==', fid).get()
+  const querySnapshot = await collection
+    .where('fid', '==', fid)
+    // .where('answer', 'not-in', ['More', '< Back', 'Next'])
+    .get()
 
   querySnapshot.forEach((doc) => {
     userAnswers.push(doc.data() as UserAnswerType)
@@ -147,38 +151,46 @@ export const getSuggestedUsers = async (
   }
 ): Promise<FarcasterUserType[]> => {
   const collection = getCollection()
+  console.time('getUserAnswersByFid')
   const userAnswers = await getUserAnswersByFid(fid)
+  console.timeEnd('getUserAnswersByFid')
   const suggestedUserFids: number[] = []
 
-  for (let i = 0; i < userAnswers.length; i++) {
-    if (options?.maxResults && suggestedUserFids.length >= options.maxResults) {
-      break
-    }
-    const userAnswer = userAnswers[i]
-    const querySnapshot = await collection
-      .where('question', '==', userAnswer.question)
-      .where('answer', '==', userAnswer.answer)
-      .limit(5)
-      .get()
 
-    for (let j = 0; j < querySnapshot.docs.length; j++) {
-      const suggestedUserAnswer = querySnapshot.docs[j].data() as UserAnswerType
+  console.time('sameAnswerSameQuestion' + userAnswers.length)
+  await Promise.all(
+    userAnswers.map(async (userAnswer) => {
+      const querySnapshot = await collection
+        .where('question', '==', userAnswer.question)
+        .where('answer', '==', userAnswer.answer)
+        .select('fid')
+        .limit(5)
+        .get()
 
-      if (
-        suggestedUserAnswer.fid !== fid &&
-        !suggestedUserFids.includes(suggestedUserAnswer.fid)
-      ) {
-        suggestedUserFids.push(suggestedUserAnswer.fid)
+      for (let j = 0; j < querySnapshot.docs.length; j++) {
+        const suggestedUserAnswer = querySnapshot.docs[j].data() as UserAnswerType
+
+        if (
+          suggestedUserAnswer.fid !== fid &&
+          !suggestedUserFids.includes(suggestedUserAnswer.fid)
+        ) {
+          suggestedUserFids.push(suggestedUserAnswer.fid)
+        }
       }
-    }
-  }
+    })
+  )
+  console.timeEnd('sameAnswerSameQuestion' + userAnswers.length)
 
   const fids = suggestedUserFids.slice(
     0,
     options?.maxResults ?? suggestedUserFids.length
   )
 
-  return fetchUserDetailsByFids(fids)
+  console.time('fetchUserDetailsByFids')
+  const details = await fetchUserDetailsByFids(fids)
+  console.timeEnd('fetchUserDetailsByFids')
+
+  return details
 }
 
 export const getSuggestedUsersAndChannels = async (
@@ -189,26 +201,30 @@ export const getSuggestedUsersAndChannels = async (
 ) => {
   const suggestedUsers = await getSuggestedUsers(fid, options)
 
-  const allChannels = []
+  const allChannels: FarcasterChannelType[] = []
   const suggestedChannels = []
   const channelCounts: Record<string, number> = {}
 
-  for (let i = 0; i < suggestedUsers.length; i++) {
-    const user = suggestedUsers[i]
-    const channels = await getChannelsThatUserFollows(user.fid, options?.maxResults || 25)
+  console.log('suggestedUsers', suggestedUsers.length)
+  console.time('promise.all')
+  await Promise.all(
+    suggestedUsers.map(async (user) => {
+      const channels = await getChannelsThatUserFollows(user.fid, options?.maxResults || 25)
 
-    for (let j = 0; j < channels.length; j++) {
-      const channelId = channels[j].id
+      for (let j = 0; j < channels.length; j++) {
+        const channelId = channels[j].id
 
-      if (!channelCounts[channelId]) {
-        channelCounts[channelId] = 1
-        allChannels.push(channels[j])
-      } else {
-        channelCounts[channelId]++
+        if (!channelCounts[channelId]) {
+          channelCounts[channelId] = 1
+          allChannels.push(channels[j])
+        } else {
+          channelCounts[channelId]++
+        }
+
       }
-
-    }
-  }
+    })
+  )
+  console.timeEnd('promise.all')
 
   const sortedChannelCounts = Object.entries(channelCounts).sort((a, b) => b[1] - a[1])
 
@@ -229,3 +245,28 @@ export const getSuggestedUsersAndChannels = async (
     suggestedChannels
   }
 }
+
+export const countSuggestedUsersAndChannels = async (
+  fid: number
+) => {
+  const collection = getCollection()
+  const userAnswers = await getUserAnswersByFid(fid)
+
+  let totalSuggestedUsers = 0
+
+  for (let i = 0; i < userAnswers.length; i++) {
+    const userAnswer = userAnswers[i]
+    const querySnapshot = await collection
+      .where('question', '==', userAnswer.question)
+      .where('answer', '==', userAnswer.answer)
+      .limit(5)
+      .get()
+
+      totalSuggestedUsers += querySnapshot.size
+  }
+
+  return {
+    totalSuggestedUsers
+  }
+}
+
