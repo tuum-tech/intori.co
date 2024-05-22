@@ -1,41 +1,26 @@
-import { useRouter } from 'next/router'
-import { Triangle } from 'react-loader-spinner'
-import { useSession } from "next-auth/react"
-import { useEffect, useMemo } from 'react'
+import type { GetServerSideProps } from "next";
+import { getSession } from "next-auth/react"
 import { AuthLayout } from '../layouts/Auth'
 import { SignInWithFarcasterButton } from '../components/signin/SignInWithFarcaster'
 
-const SigninDefaultScreen = () => {
-  const router = useRouter()
-  const session = useSession()
+export const getServerSideProps = (async (context) => {
+  const session = await getSession(context)
 
-  const initializing = useMemo(() => {
-    return !session.status || session.status === "loading"
-  }, [session])
-
-  useEffect(() => {
-    if (session.status === "authenticated") {
-      window.location.href = "/dashboard"
+  if (session?.user?.fid) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/dashboard"
+      }
     }
-  }, [session, router])
-
-  if (initializing) {
-    return (
-      <div className='relative bg-black-0 w-full h-screen flex flex-col items-center justify-center text-center text-11xl text-white font-kumbh-sans sm:pl-0 sm:pr-0 sm:box-border'>
-        <Triangle
-          visible={true}
-          height="80"
-          width="80"
-          color="#E3FD8F"
-          ariaLabel="triangle-loading"
-          wrapperStyle={{}}
-          wrapperClass=""
-        />
-          <h4>Preparing the run way...</h4>
-      </div>
-    )
   }
 
+  return {
+    props: {}
+  }
+}) satisfies GetServerSideProps
+
+const SigninDefaultScreen = () => {
   return (
     <AuthLayout
       title={<>Your <span>data</span>,<br/>connected</>}
