@@ -1,0 +1,27 @@
+.primaryButton,
+.secondaryButton {
+  border-radius: 10px;
+  padding: 12px 50px;
+  border: 1px solid #FFF;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.primaryButton:disabled,
+.secondaryButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.primaryButton {
+  background: #9664FA;
+  border-color: #9664FA;
+  color: #FFF;
+}
+
+.secondaryButton {
+  background: #272738;
+  border-color: #272738;
+  color: #FFF;
+}
