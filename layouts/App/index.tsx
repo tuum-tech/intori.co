@@ -1,9 +1,10 @@
 import React from 'react'
 import Link from 'next/link'
-import { useSession } from "next-auth/react"
+import { useSession, signOut } from "next-auth/react"
 import Image from 'next/image'
 import styles from './AppLayout.module.css'
 import { Footer } from '../../components/Footer'
+import { Dropdown } from '../../components/common/Dropdown'
 
 type Props = {
   children: React.ReactNode
@@ -12,13 +13,12 @@ type Props = {
 export const AppLayout: React.FC<Props> = ({ children }) => {
   const session = useSession()
 
-  // TODO:
-  // const logout = async (e: React.MouseEvent) => {
-  //   e.preventDefault()
+  const logout = async (e: React.MouseEvent) => {
+    e.preventDefault()
 
-  //   await signOut()
-  //   window.location.pathname = '/'
-  // }
+    await signOut()
+    window.location.pathname = '/'
+  }
 
   return (
     <div className={styles.appLayout}>
@@ -31,15 +31,21 @@ export const AppLayout: React.FC<Props> = ({ children }) => {
             </Link>
           </nav>
         </div>
-        <button type="button" className={styles.avatar}>
-          <Image
-            src={session?.data?.user?.image ?? '/intorilogomark.svg'}
-            alt='Intori'
-            width={34}
-            height={34}
-          />
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M13.1508 6H8.7379H4.76413C4.08413 6 3.74413 6.82167 4.2258 7.30334L7.89499 10.9725C8.4829 11.5604 9.43915 11.5604 10.0271 10.9725L11.4225 9.57709L13.6962 7.30334C14.1708 6.82167 13.8308 6 13.1508 6Z" fill="#C9D3EE"/> </svg>
-        </button>
+        <Dropdown
+          items={[
+            { label: 'Log out', onClick: logout }
+          ]}
+        >
+          <span className={styles.avatar}>
+            <Image
+              src={session?.data?.user?.image ?? '/intorilogomark.svg'}
+              alt='Intori'
+              width={34}
+              height={34}
+            />
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M13.1508 6H8.7379H4.76413C4.08413 6 3.74413 6.82167 4.2258 7.30334L7.89499 10.9725C8.4829 11.5604 9.43915 11.5604 10.0271 10.9725L11.4225 9.57709L13.6962 7.30334C14.1708 6.82167 13.8308 6 13.1508 6Z" fill="#C9D3EE"/> </svg>
+          </span>
+        </Dropdown>
       </header>
       <div className={styles.contentContainer}>
         { children }
