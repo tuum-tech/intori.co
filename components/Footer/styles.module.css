@@ -54,3 +54,41 @@
 .legal a {
   margin-right: 18px;
 }
+
+@media only screen and (max-width: 900px) {
+  .footer {
+    padding: 300px 0 40px 0;
+  }
+  .footer > div {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .contact p {
+    margin: 18px 0;
+  }
+  .sm > a:first-child {
+    margin-left: 0;
+  }
+  .legal a {
+    display: block;
+    margin-top: 18px;
+  }
+  .legal p {
+    margin-top: 50px;
+  }
+}
+@media only screen and (max-width: 500px) {
+  .sm {
+    flex-wrap: wrap;
+  }
+  .sm > a:first-child {
+    flex-basis: 100%;
+    margin-bottom: 32px;
+  }
+  .sm > a:nth-child(3) {
+    margin-left: 0;
+  }
+  .sm > div {
+    display: none;
+  }
+}
