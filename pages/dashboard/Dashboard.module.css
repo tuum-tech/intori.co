@@ -65,3 +65,23 @@
 .ctaCard a button {
   width: 100%;
 }
+
+
+@media only screen and (max-width: 1100px) {
+  .welcomeRow {
+    flex-wrap: wrap;
+  }
+
+  .welcomeRow > div:first-child {
+    flex-basis: 100%;
+  }
+
+  .welcomeRow > div {
+    flex-grow: 1;
+  }
+}
+@media only screen and (max-width: 600px) {
+  .welcomeRow > div {
+    flex-basis: 100%;
+  }
+}
