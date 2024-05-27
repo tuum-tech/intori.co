@@ -1,0 +1,22 @@
+.avatar {
+  background-size: cover;
+  border-radius: 50%;
+  width: 75px;
+  height: 75px;
+  display: inline-block;
+}
+.name {
+  font-weight: bold;
+  font-size: 18px;
+}
+.type {
+  color: #A0AAB9;
+}
+.reasons ul {
+  margin: 0;
+  padding: 0;
+}
+.reasons li {
+  list-style: none;
+  font-size: 14px;
+}

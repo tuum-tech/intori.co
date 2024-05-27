@@ -14,9 +14,9 @@ import { camelCaseToTitleCase } from '../../../utils/textHelpers'
 import Input from '../../../components/common/Input'
 import { PrimaryButton } from '../../../components/common/Button'
 import {
+  SuggestionType,
   getSuggestedUsersAndChannels,
 } from '../../../models/userAnswers'
-import { FarcasterChannelType, FarcasterUserType } from '../../../utils/neynarApi'
  
 type Props = {
   currentStep: number
@@ -24,8 +24,8 @@ type Props = {
   intoriFrameForm: IntoriFrameFormType
   imageUrl: string
   frameUrl: string
-  suggestedChannel?: FarcasterChannelType
-  suggestedUser?: FarcasterUserType
+  suggestedChannel?: SuggestionType
+  suggestedUser?: SuggestionType
 }
  
 export const getServerSideProps = (async (context) => {
@@ -60,15 +60,12 @@ export const getServerSideProps = (async (context) => {
 
     const imageUrl = `${process.env.NEXTAUTH_URL}/api/profile/${fid}?t=${Date.now()}`
 
-    const {
-      suggestedChannels,
-      suggestedUsers
-    } = await getSuggestedUsersAndChannels(fid, { maxResults: 3 })
+    const suggestions = await getSuggestedUsersAndChannels(fid, { maxResults: 3 })
+    const users = suggestions.filter((suggestion) => suggestion.user)
+    const channels = suggestions.filter((suggestion) => suggestion.channel)
 
-    console.log({
-      suggestedUsers,
-      suggestedChannels
-    })
+    const suggestedUser = users[Math.floor(Math.random() * users.length)]
+    const suggestedChannel = channels[Math.floor(Math.random() * channels.length)]
 
     return {
       props: {
@@ -77,8 +74,8 @@ export const getServerSideProps = (async (context) => {
         intoriFrameForm: intoriSequence,
         imageUrl,
         frameUrl,
-        suggestedChannel: suggestedChannels[Math.floor(Math.random() * suggestedChannels.length)],
-        suggestedUser: suggestedUsers[Math.floor(Math.random() * suggestedUsers.length)]
+        suggestedChannel,
+        suggestedUser
       }
     }
   }
@@ -116,19 +113,25 @@ export default function Page({
         return intoriFrameForm.steps[currentStep - 1]
       }
 
-      if (!suggestedChannel || !suggestedUser) {
-        return finalStep
+      if (suggestedUser?.user) {
+        finalStep.inputs[0].action = 'link'
+        finalStep.inputs[0].target = `https://warpcast.com/${suggestedUser.user.username}`
+        finalStep.inputs[0].content = `@${suggestedUser.user.username}`
+      } else {
+        finalStep.inputs[0].content = ''
       }
 
-      // the suggested user
-      finalStep.inputs[0].action = 'link'
-      finalStep.inputs[0].target = `https://warpcast.com/${suggestedUser.username}`
-      finalStep.inputs[0].content = `@${suggestedUser.username}`
+      if (suggestedChannel?.channel ){
+        // the suggested channel
+        finalStep.inputs[1].action = 'link'
+        finalStep.inputs[1].target = `https://warpcast.com/~/channel/${suggestedChannel.channel.name}`
+        finalStep.inputs[1].content = `/${suggestedChannel.channel.name}`
+      } else {
+        finalStep.inputs[1].content = ''
+      }
 
-      // the suggested channel
-      finalStep.inputs[1].action = 'link'
-      finalStep.inputs[1].target = suggestedChannel.url
-      finalStep.inputs[1].content = `/${suggestedChannel.name}`
+      // remove empty inputs from finalStep
+      finalStep.inputs = finalStep.inputs.filter((input) => input.content.length > 0)
 
       return finalStep
   }, [currentStep, intoriFrameForm, suggestedChannel, suggestedUser])
