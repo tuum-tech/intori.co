@@ -30,6 +30,9 @@
   align-items: center;
   justify-content: center;
   border-radius: 12px;
+  margin-right: 16px;
+}
+.selected {
   background: #8558E3;
 }
 
