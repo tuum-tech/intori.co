@@ -16,7 +16,7 @@ export const CallToActionCard: React.FC<Props> = ({
       <div className={styles.ctaCard}>
         <h4> {title} </h4>
         <h3> {children} </h3>
-        <Link href="#">
+        <Link href="/suggestions">
           <SecondaryButton>
             Explore Suggestions
           </SecondaryButton>
