@@ -19,28 +19,6 @@
 .suggestionsTable th:first-child {
   width: 100px;
 }
-.suggestionsTable .name {
-  font-weight: bold;
-  font-size: 18px;
-}
-.suggestionsTable .type {
-  color: #A0AAB9;
-}
-.suggestionsTable .reasons ul {
-  margin: 0;
-  padding: 0;
-}
-.suggestionsTable .reasons li {
-  list-style: none;
-  font-size: 14px;
-}
-.avatar {
-  background-size: cover;
-  border-radius: 50%;
-  width: 75px;
-  height: 75px;
-  display: inline-block;
-}
 
 @media only screen and (max-width: 1000px) {
   .suggestionsTable thead {

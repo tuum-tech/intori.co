@@ -34,6 +34,13 @@ export type CreateUserAnswerType = {
   answer: string
 }
 
+export type SuggestionType = {
+  type: 'user' | 'channel'
+  user?: FarcasterUserType
+  channel?: FarcasterChannelType
+  reason: string[]
+} 
+
 let userAnswersCollection: FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData>
 
 const getCollection = () => {
@@ -60,7 +67,7 @@ export const getUserAnswersByFid = async (fid: number) => {
   const collection = getCollection()
   const querySnapshot = await collection
     .where('fid', '==', fid)
-    // .where('answer', 'not-in', ['More', '< Back', 'Next'])
+    .where('answer', 'not-in', ['More', '< Back', 'Next'])
     .get()
 
   querySnapshot.forEach((doc) => {
@@ -149,48 +156,91 @@ export const getSuggestedUsers = async (
   options?: {
     maxResults: number
   }
-): Promise<FarcasterUserType[]> => {
+): Promise<SuggestionType[]> => {
   const collection = getCollection()
+
   console.time('getUserAnswersByFid')
   const userAnswers = await getUserAnswersByFid(fid)
   console.timeEnd('getUserAnswersByFid')
-  const suggestedUserFids: number[] = []
 
+  const suggestedUserFids: {
+    fid: number
+    reason: string[]
+  }[] = []
+
+  const removeDuplicateAnswers = (arr: UserAnswerType[]): UserAnswerType[] => {
+    const uniqueQuestions = new Map<string, boolean>();
+    return arr.filter(item => {
+      if (uniqueQuestions.has(item.question)) {
+        return false;
+      } else {
+        uniqueQuestions.set(item.question, true);
+        return true;
+      }
+    });
+  };
+
+  const uniqueUserAnswers = removeDuplicateAnswers(userAnswers)
 
   console.time('sameAnswerSameQuestion' + userAnswers.length)
   await Promise.all(
-    userAnswers.map(async (userAnswer) => {
+    uniqueUserAnswers.map(async (userAnswer) => {
       const querySnapshot = await collection
         .where('question', '==', userAnswer.question)
         .where('answer', '==', userAnswer.answer)
         .select('fid')
-        .limit(5)
+        .limit(10)
         .get()
 
       for (let j = 0; j < querySnapshot.docs.length; j++) {
         const suggestedUserAnswer = querySnapshot.docs[j].data() as UserAnswerType
 
-        if (
-          suggestedUserAnswer.fid !== fid &&
-          !suggestedUserFids.includes(suggestedUserAnswer.fid)
-        ) {
-          suggestedUserFids.push(suggestedUserAnswer.fid)
+        if (suggestedUserAnswer.fid === fid) {
+          continue
         }
+
+        const alreadySuggested = suggestedUserFids.findIndex((suggestedUser) => suggestedUser.fid === suggestedUserAnswer.fid)
+
+        if (alreadySuggested !== -1) {
+          suggestedUserFids[alreadySuggested].reason.push(`Both answered "${userAnswer.answer}" for "${userAnswer.question}"`)
+          continue
+        }
+
+        suggestedUserFids.push({
+          fid: suggestedUserAnswer.fid,
+          reason: [
+            `You both answered "${userAnswer.answer}" for "${userAnswer.question}"`
+          ]
+        })
       }
     })
   )
-  console.timeEnd('sameAnswerSameQuestion' + userAnswers.length)
+  console.timeEnd('sameAnswerSameQuestion' + uniqueUserAnswers.length)
 
   const fids = suggestedUserFids.slice(
     0,
     options?.maxResults ?? suggestedUserFids.length
-  )
+  ).map((suggestedUser) => suggestedUser.fid)
 
   console.time('fetchUserDetailsByFids')
-  const details = await fetchUserDetailsByFids(fids)
+  const userDetails = await fetchUserDetailsByFids(fids)
   console.timeEnd('fetchUserDetailsByFids')
 
-  return details
+  const suggestedUsers = suggestedUserFids.map((suggestedUser) => {
+    const user = userDetails.find((user) => user.fid === suggestedUser.fid)
+
+    if (!user) {
+      return null
+    }
+
+    return {
+      user: user as FarcasterUserType,
+      type: 'user',
+      reason: suggestedUser.reason
+    }
+  }).filter((suggestedUser) => suggestedUser !== null)
+
+  return suggestedUsers as SuggestionType[]
 }
 
 export const getSuggestedUsersAndChannels = async (
@@ -198,18 +248,25 @@ export const getSuggestedUsersAndChannels = async (
   options?: {
     maxResults: number
   }
-) => {
+): Promise<SuggestionType[]> => {
   const suggestedUsers = await getSuggestedUsers(fid, options)
 
   const allChannels: FarcasterChannelType[] = []
-  const suggestedChannels = []
+  const suggestedChannels: SuggestionType[] = []
   const channelCounts: Record<string, number> = {}
 
   console.log('suggestedUsers', suggestedUsers.length)
   console.time('promise.all')
   await Promise.all(
-    suggestedUsers.map(async (user) => {
-      const channels = await getChannelsThatUserFollows(user.fid, options?.maxResults || 25)
+    suggestedUsers.map(async (suggestion) => {
+      if (!suggestion.user) {
+        return
+      }
+
+      const channels = await getChannelsThatUserFollows(
+        suggestion.user.fid,
+        options?.maxResults || 25
+      )
 
       for (let j = 0; j < channels.length; j++) {
         const channelId = channels[j].id
@@ -237,13 +294,18 @@ export const getSuggestedUsersAndChannels = async (
 
     const channel = allChannels.find((c) => c.id === channelId)
 
-    suggestedChannels.push(channel)
+    if (!channel) {
+      continue
+    }
+
+    suggestedChannels.push({
+      type: 'channel',
+      channel,
+      reason: ['Users that have similar answers to you follow this channel.']
+    })
   }
 
-  return {
-    suggestedUsers,
-    suggestedChannels
-  }
+  return suggestedUsers.concat(suggestedChannels) as SuggestionType[]
 }
 
 export const countSuggestedUsersAndChannels = async (

@@ -8,14 +8,9 @@ import { AppLayout } from "@/layouts/App"
 import { SuggestionType } from '../../models/userAnswers'
 import { Skeleton } from '../../components/common/Skeleton'
 import { Section } from '../../components/common/Section'
-import { PrimaryButton } from '../../components/common/Button'
-import { SuggestionRow } from './SuggestionRow'
+import { SuggestionRow } from '../../components/Suggestions/SuggestionRow'
 
 import styles from './Suggestions.module.css'
-
-type Props = {
-}
-
 
 export const getServerSideProps = (async (context) => {
   const session = await getSession(context)
@@ -32,9 +27,9 @@ export const getServerSideProps = (async (context) => {
   return {
     props: {}
   }
-}) satisfies GetServerSideProps<Props>
+}) satisfies GetServerSideProps
 
-const Suggestions: NextPage<Props> = ({}) => {
+const Suggestions: NextPage = () => {
   const session = useSession()
   const router = useRouter()
 

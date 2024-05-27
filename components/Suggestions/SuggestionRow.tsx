@@ -1,7 +1,7 @@
 import React from 'react'
 import { SuggestionType } from '../../models/userAnswers'
-import styles from './Suggestions.module.css'
 import { PrimaryButton } from '../../components/common/Button'
+import styles from './Suggestions.module.css'
 
 type Props = {
   suggestion: SuggestionType
