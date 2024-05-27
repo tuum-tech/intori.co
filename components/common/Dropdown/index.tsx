@@ -4,7 +4,7 @@ import React, {
     useEffect,
     useRef
 } from 'react'
-import { Link } from 'react-router-dom'
+import Link from 'next/link'
 import styles from './Dropdown.module.css'
 
 type Props = {
@@ -86,7 +86,7 @@ export const Dropdown: React.FC<Props> = ({
                             aria-selected={false}
                         >
                             {!!item.href
-                                ? <Link to={item.href} {...linkAttributes(item)}>{item.label}</Link>
+                                ? <Link href={item.href} {...linkAttributes(item)}>{item.label}</Link>
                                 : <button type="button" onClick={item.onClick}>{item.label}</button>
                             }
                         </li>
