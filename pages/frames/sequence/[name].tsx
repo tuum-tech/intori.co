@@ -113,27 +113,29 @@ export default function Page({
         return intoriFrameForm.steps[currentStep - 1]
       }
 
+      const newFinalStep = { ...finalStep }
+
       if (suggestedUser?.user) {
-        finalStep.inputs[0].action = 'link'
-        finalStep.inputs[0].target = `https://warpcast.com/${suggestedUser.user.username}`
+        newFinalStep.inputs[0].action = 'link'
+        newFinalStep.inputs[0].target = `https://warpcast.com/${suggestedUser.user.username}`
         finalStep.inputs[0].content = `@${suggestedUser.user.username}`
       } else {
-        finalStep.inputs[0].content = ''
+        newFinalStep.inputs[0].content = ''
       }
 
       if (suggestedChannel?.channel ){
         // the suggested channel
-        finalStep.inputs[1].action = 'link'
-        finalStep.inputs[1].target = `https://warpcast.com/~/channel/${suggestedChannel.channel.name}`
-        finalStep.inputs[1].content = `/${suggestedChannel.channel.name}`
+        newFinalStep.inputs[1].action = 'link'
+        newFinalStep.inputs[1].target = `https://warpcast.com/~/channel/${suggestedChannel.channel.name}`
+        newFinalStep.inputs[1].content = `/${suggestedChannel.channel.name}`
       } else {
-        finalStep.inputs[1].content = ''
+        newFinalStep.inputs[1].content = ''
       }
 
       // remove empty inputs from finalStep
-      finalStep.inputs = finalStep.inputs.filter((input) => input.content.length > 0)
+      newFinalStep.inputs = newFinalStep.inputs.filter((input) => input.content.length > 0)
 
-      return finalStep
+      return newFinalStep
   }, [currentStep, intoriFrameForm, suggestedChannel, suggestedUser])
 
   const getTarget = useCallback((input: IntoriFrameStepInputType) => {
