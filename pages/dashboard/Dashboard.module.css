@@ -1,6 +1,7 @@
 .welcomeRow {
   display: flex;
   flex-wrap: nowrap;
+  align-items: flex-end;
   gap: 24px;
 }
 .welcomeRow > div {
@@ -43,7 +44,6 @@
   border: 1px solid #2A3042;
   border-radius: 16px;
   padding: 24px;
-  margin-top: 40px;
 }
 .ctaCard h4 {
   font-size: 16px;
@@ -64,4 +64,24 @@
 }
 .ctaCard a button {
   width: 100%;
+}
+
+
+@media only screen and (max-width: 1100px) {
+  .welcomeRow {
+    flex-wrap: wrap;
+  }
+
+  .welcomeRow > div:first-child {
+    flex-basis: 100%;
+  }
+
+  .welcomeRow > div {
+    flex-grow: 1;
+  }
+}
+@media only screen and (max-width: 600px) {
+  .welcomeRow > div {
+    flex-basis: 100%;
+  }
 }

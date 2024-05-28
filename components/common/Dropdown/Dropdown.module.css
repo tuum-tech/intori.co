@@ -1,0 +1,49 @@
+.dropdownContainer {
+    position: relative;
+    text-align: right;
+}
+.dropdownContainer > button {
+    border: none;
+    background: none;
+    cursor: initial;
+}
+
+.dropdownContainer ul {
+    position: absolute;
+    width: 200px;
+    background: #20202F;
+    border: 1px solid #2A3042;
+    top: calc(100% - 1px);
+    right: 0;
+    box-shadow: 4px 4px 14px 0px rgba(0, 0, 0, 0.4);
+    margin: 0;
+    padding: 0;
+    z-index: 10;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.dropdownContainer ul li {
+    list-style-type: none;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+.dropdownContainer ul li:hover {
+    background: #272738;
+}
+.dropdownContainer ul li button,
+.dropdownContainer ul li a {
+    background: none;
+    border: none;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: #FFF;
+    line-height: 25px;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    text-align: left;
+    display: block;
+    cursor: pointer;
+}
