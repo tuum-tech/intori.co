@@ -3,18 +3,17 @@ import { Font } from '@jimp/plugin-print'
 import * as path from 'path'
 import { intoriFrameForms } from './intoriFrameForms'
 import {
-  loadKumbSans21,
-  loadKumbSans32
+  loadKumbSans30,
+  loadKumbSans50
 } from './fonts'
 import { camelCaseToTitleCase } from '../textHelpers'
 
-let kumbhSans32: Font
-let kumbhSans21: Font
-
+let kumbhSans50: Font
+let kumbhSans30: Font
 
 const loadFonts = async () => {
-  kumbhSans32 = await loadKumbSans32()
-  kumbhSans21 = await loadKumbSans21()
+  kumbhSans50 = await loadKumbSans50()
+  kumbhSans30 = await loadKumbSans30()
 }
 
 const generateQuestionnaireStepImage = async (
@@ -31,8 +30,7 @@ const generateQuestionnaireStepImage = async (
   )
 
   image.print(
-    // TODO: change to 50 px size
-    kumbhSans32,
+    kumbhSans50,
     25,
     236,
     {
@@ -45,8 +43,7 @@ const generateQuestionnaireStepImage = async (
   )
 
   image.print(
-    // change to 30px size
-    kumbhSans21,
+    kumbhSans30,
     25,
     330,
     {
