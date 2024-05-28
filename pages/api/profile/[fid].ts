@@ -48,8 +48,8 @@ const getProfileFramePictureImage = async (
 
   const fid = parseInt(req.query.fid as string, 10)
 
-  const profilePictureUrl = await getUserProfilePictureFromFid(fid)
-  const baseImageWithProfilePic = await createCircularImage(profilePictureUrl, baseImage)
+  // const profilePictureUrl = await getUserProfilePictureFromFid(fid)
+  // const baseImageWithProfilePic = await createCircularImage(profilePictureUrl, baseImage)
 
   const questionsAnswered = await countUserAnswers(fid)
   const pointsEarned = questionsAnswered * 2
@@ -64,7 +64,7 @@ const getProfileFramePictureImage = async (
     y: number,
     text: string
   ) => {
-    baseImageWithProfilePic.print(
+    baseImage.print(
       font,
       x,
       y,
@@ -82,7 +82,7 @@ const getProfileFramePictureImage = async (
   addStatNumber(279, 154, pointsEarned.toString())
   addStatNumber(509, 154, streakText)
 
-  const buffer = await baseImageWithProfilePic.getBufferAsync(Jimp.MIME_PNG)
+  const buffer = await baseImage.getBufferAsync(Jimp.MIME_PNG)
 
   // cache for 1 hour
   res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate')
