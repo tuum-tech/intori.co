@@ -8,7 +8,9 @@ import {
   countUserAnswers,
   findCurrentStreak
 } from '../../../models/userAnswers'
-import { loadKumbSans32 } from '../../../utils/frames/fonts'
+import {
+  loadKumbSans50
+} from '../../../utils/frames/fonts'
 
 async function createCircularImage(url: string, baseImage: Jimp): Promise<Jimp> {
   try {
@@ -41,7 +43,7 @@ const getProfileFramePictureImage = async (
   }
 
   const baseImage = await Jimp.read(
-      path.join(process.cwd(), 'public/frame_template.png')
+      path.join(process.cwd(), 'public/assets/frames/results_frame_template.png')
   )
 
   const fid = parseInt(req.query.fid as string, 10)
@@ -54,10 +56,31 @@ const getProfileFramePictureImage = async (
   const currentStreakDays = await findCurrentStreak(fid)
   const streakText = currentStreakDays === 1 ? '1 day' : `${currentStreakDays} days`
 
-  const font = await loadKumbSans32()
-  baseImageWithProfilePic.print(font, 613, 228.5, questionsAnswered.toString())
-  baseImageWithProfilePic.print(font, 613, 300.5, pointsEarned.toString())
-  baseImageWithProfilePic.print(font, 613, 372, streakText)
+  // adding the number stats
+  const font = await loadKumbSans50()
+
+  const addStatNumber = (
+    x: number,
+    y: number,
+    text: string
+  ) => {
+    baseImageWithProfilePic.print(
+      font,
+      x,
+      y,
+      {
+        text,
+        alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
+        alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
+      },
+      216,
+      102
+    )
+  }
+
+  addStatNumber(46, 154, questionsAnswered.toString())
+  addStatNumber(279, 154, pointsEarned.toString())
+  addStatNumber(509, 154, streakText)
 
   const buffer = await baseImageWithProfilePic.getBufferAsync(Jimp.MIME_PNG)
 
