@@ -1,28 +1,28 @@
 import * as path from 'path'
 import Jimp from 'jimp'
 
-export const loadKumbSans32 = async () => {
-
+export const loadFont = async (fontName: string) => {
   const pathToFont = path.join(
     process.cwd(),
-    'public/assets/frames/kumbh_sans_32.fnt'
+    'public/assets/frames/',
+    fontName
   )
-
-  const pathToPng = path.join(
-    process.cwd(),
-    'public/assets/frames/kumbh_sans_32.png'
-  )
-
-  const fntExists = path.resolve(pathToFont)
-  const pngExists = path.resolve(pathToPng)
 
   return await Jimp.loadFont(pathToFont)
 }
 
+export const loadKumbSans50 = async () => {
+  return await loadFont('kumbh_sans_50.fnt')
+}
+
+export const loadKumbSans32 = async () => {
+  return await loadFont('kumbh_sans_32.fnt')
+}
+
+export const loadKumbSans30 = async () => {
+  return await loadFont('kumbh_sans_30.fnt')
+}
+
 export const loadKumbSans21 = async () => {
-  const pathToFont = path.join(
-    process.cwd(),
-    'public/assets/frames/kumbh_sans_21.fnt'
-  )
-  return await Jimp.loadFont(pathToFont)
+  return await loadFont('kumbh_sans_21.fnt')
 }
