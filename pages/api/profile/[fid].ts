@@ -2,9 +2,6 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import Jimp from 'jimp'
 import * as path from 'path'
 import {
-  getUserProfilePictureFromFid
-} from '../utils/farcasterServer'
-import {
   countUserAnswers,
   findCurrentStreak
 } from '../../../models/userAnswers'
@@ -12,27 +9,29 @@ import {
   loadKumbSans50
 } from '../../../utils/frames/fonts'
 
-async function createCircularImage(url: string, baseImage: Jimp): Promise<Jimp> {
-  try {
-    const urlImage = await Jimp.read(url)
-
-    const maskImage = await Jimp.read(
-      path.join(process.cwd(), 'public/frame_template_mask.png')
-    )
-
-    maskImage.resize(85, 85)
-    urlImage.resize(85, 85)
-
-    urlImage.mask(maskImage, 0, 0)
-
-    baseImage.composite(urlImage, 440, 133.5)
-
-    return baseImage
-  } catch (error) {
-    console.error('Error creating circular image:', error)
-    throw error
-  }
-}
+// Note: This is used to create a circle masked image
+//
+// async function createCircularImage(url: string, baseImage: Jimp): Promise<Jimp> {
+//   try {
+//     const urlImage = await Jimp.read(url)
+// 
+//     const maskImage = await Jimp.read(
+//       path.join(process.cwd(), 'public/frame_template_mask.png')
+//     )
+// 
+//     maskImage.resize(85, 85)
+//     urlImage.resize(85, 85)
+// 
+//     urlImage.mask(maskImage, 0, 0)
+// 
+//     baseImage.composite(urlImage, 440, 133.5)
+// 
+//     return baseImage
+//   } catch (error) {
+//     console.error('Error creating circular image:', error)
+//     throw error
+//   }
+// }
 
 const getProfileFramePictureImage = async (
   req: NextApiRequest,
