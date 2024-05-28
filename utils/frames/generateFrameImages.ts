@@ -25,7 +25,7 @@ const generateQuestionnaireStepImage = async (
   const image = await Jimp.read(
     path.join(
       process.cwd(),
-      'public/assets/frames/step_template.png'
+      'public/assets/frames/step_frame_template.png'
     )
   )
 
