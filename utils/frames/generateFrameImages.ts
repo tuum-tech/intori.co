@@ -3,18 +3,17 @@ import { Font } from '@jimp/plugin-print'
 import * as path from 'path'
 import { intoriFrameForms } from './intoriFrameForms'
 import {
-  loadKumbSans21,
-  loadKumbSans32
+  loadKumbSans30,
+  loadKumbSans50
 } from './fonts'
 import { camelCaseToTitleCase } from '../textHelpers'
 
-let kumbhSans32: Font
-let kumbhSans21: Font
-
+let kumbhSans50: Font
+let kumbhSans30: Font
 
 const loadFonts = async () => {
-  kumbhSans32 = await loadKumbSans32()
-  kumbhSans21 = await loadKumbSans21()
+  kumbhSans50 = await loadKumbSans50()
+  kumbhSans30 = await loadKumbSans30()
 }
 
 const generateQuestionnaireStepImage = async (
@@ -26,34 +25,34 @@ const generateQuestionnaireStepImage = async (
   const image = await Jimp.read(
     path.join(
       process.cwd(),
-      'public/assets/frames/step_template.png'
+      'public/assets/frames/step_frame_template.png'
     )
   )
 
   image.print(
-    kumbhSans32,
-    93,
-    178,
+    kumbhSans50,
+    25,
+    236,
     {
       text: title,
       alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
-    583,
-    40
+    718,
+    62
   )
 
   image.print(
-    kumbhSans21,
-    0,
-    233,
+    kumbhSans30,
+    25,
+    330,
     {
       text: subtitle,
       alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
-    768,
-    26
+    718,
+    37
   )
 
   return image
