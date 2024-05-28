@@ -16,18 +16,12 @@ const getSuggestions = async (
     return res.status(401).end()
   }
 
-  const {
-    suggestedUsers,
-    suggestedChannels
-  } = await getSuggestedUsersAndChannels(parseInt(session.user.fid, 10))
+  const suggestions = await getSuggestedUsersAndChannels(parseInt(session.user.fid, 10))
 
   // cache for 1 hour
   res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate')
 
-  res.status(200).json({
-    suggestedUsers,
-    suggestedChannels
-  })
+  res.status(200).json(suggestions)
 }
 
 export default getSuggestions
