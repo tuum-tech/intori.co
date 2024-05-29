@@ -1,58 +1,41 @@
 import Jimp from 'jimp'
 import { Font } from '@jimp/plugin-print'
 import * as path from 'path'
+import * as fs from 'fs'
 import { intoriFrameForms } from './intoriFrameForms'
 import {
-  loadKumbSans30,
-  loadKumbSans50
+  loadKumbSans30
 } from './fonts'
-import { camelCaseToTitleCase } from '../textHelpers'
 
-let kumbhSans50: Font
 let kumbhSans30: Font
 
 const loadFonts = async () => {
-  kumbhSans50 = await loadKumbSans50()
   kumbhSans30 = await loadKumbSans30()
 }
 
 const generateQuestionnaireStepImage = async (
-  title: string,
-  subtitle: string,
+  question: string
 ): Promise<Jimp> => {
   await loadFonts()
 
   const image = await Jimp.read(
     path.join(
       process.cwd(),
-      'public/assets/frames/step_frame_template.png'
+      'public/assets/templates/question_frame_template.png'
     )
   )
 
   image.print(
-    kumbhSans50,
-    25,
-    236,
-    {
-      text: title,
-      alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
-      alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
-    },
-    718,
-    62
-  )
-
-  image.print(
     kumbhSans30,
-    25,
-    330,
+    103,
+    361,
     {
-      text: subtitle,
+      text: question,
       alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
-    718,
-    37
+    562,
+    74
   )
 
   return image
@@ -60,24 +43,29 @@ const generateQuestionnaireStepImage = async (
 
 export const generateQuestionnaireStepImages = async () => {
   const sequences = Object.keys(intoriFrameForms)
-  const pathPrefix = path.join(
+
+  const finalFramePathPrefix = path.join(
     process.cwd(),
     'public/assets/frames'
   )
+
+  const templatesPathPrefix = path.join(
+    process.cwd(),
+    'public/assets/templates'
+  )
+
   for ( let i = 0; i < sequences.length; i++ ) {
     const sequence = intoriFrameForms[sequences[i]]
 
     const framePathPrefix = path.join(
-      pathPrefix,
+      finalFramePathPrefix,
       sequence.name
     )
 
-    const firstFrame = await generateQuestionnaireStepImage(
-    camelCaseToTitleCase(sequence.name),
-      'Daily suggested follows and channels for you'
+    fs.copyFileSync(
+      path.join(templatesPathPrefix, 'intro_frame_template.png'),
+      path.join(framePathPrefix, '1.png')
     )
-
-    firstFrame.writeAsync(path.join(framePathPrefix, '/1.png'))
 
     for (let stepIndex = 0; stepIndex < sequence.steps.length; stepIndex++) {
       const step = sequence.steps[stepIndex]
@@ -85,10 +73,7 @@ export const generateQuestionnaireStepImages = async () => {
         continue
       }
 
-      const stepImage = await generateQuestionnaireStepImage(
-       camelCaseToTitleCase(step.title),
-        step.question
-      )
+      const stepImage = await generateQuestionnaireStepImage(step.question)
 
       await stepImage.writeAsync(
         path.join(
