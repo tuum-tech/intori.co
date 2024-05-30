@@ -55,7 +55,7 @@ const getProfileFramePictureImage = async (
   baseImage.print(
     font20,
     190,
-    206,
+    200,
     {
       text: 'You earned 4 points, Share for 25 more!',
       alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
@@ -96,6 +96,22 @@ const getProfileFramePictureImage = async (
         alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
       },
       464,
+      95
+    )
+  }
+
+  if (!suggestedUserName && !suggestedChannel) {
+    const text = 'Keep Going! Your next recommendations will be even sharper.'
+    baseImage.print(
+      font26,
+      60,
+      270,
+      {
+        text,
+        alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
+        alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
+      },
+      648,
       95
     )
   }
