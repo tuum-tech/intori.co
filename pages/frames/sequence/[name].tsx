@@ -72,12 +72,12 @@ export const getServerSideProps = (async (context) => {
     ]
 
     if (suggestedUser?.user) {
-      imageUrlParts.push(`?su=${suggestedUser.user.username}`)
+      imageUrlParts.push(`&su=${suggestedUser.user.username}`)
       imageUrlParts.push(`&sur=${suggestedUser.reason}`)
     }
 
     if (suggestedChannel?.channel) {
-      imageUrlParts.push(`?sc=${suggestedChannel.channel.name}`)
+      imageUrlParts.push(`&sc=${suggestedChannel.channel.name}`)
       imageUrlParts.push(`&scr=${suggestedChannel.reason}`)
     }
 
