@@ -39,7 +39,7 @@ const getProfileFramePictureImage = async (
   }
 
   const baseImage = await Jimp.read(
-      path.join(process.cwd(), 'public/assets/frames/results_frame_template.png')
+      path.join(process.cwd(), 'public/assets/templates/results_frame_template.png')
   )
 
   const suggestedUserName = req.query.su as string
