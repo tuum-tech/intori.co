@@ -6,6 +6,7 @@ import Image from 'next/image'
 import styles from './AppLayout.module.css'
 import { Footer } from '../../components/Footer'
 import { Dropdown } from '../../components/common/Dropdown'
+import { PrimaryButton } from '../../components/common/Button'
 
 type Props = {
   children: React.ReactNode
@@ -28,6 +29,26 @@ export const AppLayout: React.FC<Props> = ({ children }) => {
     }
 
     return pathname === href
+  }
+
+  if (session?.status !== 'authenticated') {
+    return (
+      <div className={styles.appLayout}>
+        <header className={styles.header}>
+          <div className={styles.headerLeft}>
+            <Image src="/intorilogomark.svg" alt="Intori" width={26} height={35} />
+          </div>
+          <PrimaryButton>
+            Log In
+          </PrimaryButton>
+        </header>
+        <div className={styles.contentContainer}>
+          { children }
+        </div>
+
+        <Footer />
+      </div>
+    )
   }
 
   return (

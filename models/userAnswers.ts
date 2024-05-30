@@ -32,6 +32,7 @@ export type CreateUserAnswerType = {
   sequence: string
   question: string
   answer: string
+  casterFid: number
 }
 
 export type SuggestionType = {

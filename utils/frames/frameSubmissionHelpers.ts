@@ -10,6 +10,7 @@ export const frameSubmissionHelpers = (req: NextApiRequest) => {
   const currentStepOfSequence = parseInt(req.query.step as string, 10) || 0
   const fid = req.body.untrustedData.fid
   const buttonIndex = req.body.untrustedData.buttonIndex
+  const fidThatCastedFrame = req.body.untrustedData.castId.fid
 
   if (intoriFrameForms[frameSequenceName] === undefined) {
     throw new Error(`Frame sequence name ${frameSequenceName} is not a valid frame sequence name.`)
@@ -48,6 +49,7 @@ export const frameSubmissionHelpers = (req: NextApiRequest) => {
   }
 
   return {
+    fidThatCastedFrame,
     fid,
     buttonIndex,
     frameSequenceName,

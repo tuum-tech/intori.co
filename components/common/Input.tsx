@@ -7,9 +7,18 @@ type Props = {
   placeholder?: string
   value: string
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+  onClick?: React.MouseEventHandler<HTMLInputElement>
+  readOnly?: boolean
 }
 
-const Input: NextPage<Props> = ({ label, placeholder, value, onChange }) => {
+const Input: NextPage<Props> = ({
+  label,
+  placeholder,
+  value,
+  onChange,
+  onClick,
+  readOnly
+}) => {
   return (
     <div className='self-stretch flex flex-col items-start justify-start gap-[10px]'>
       <div className='self-stretch flex flex-row items-start justify-start py-2.5 pr-2.5 pl-0'>
@@ -20,6 +29,8 @@ const Input: NextPage<Props> = ({ label, placeholder, value, onChange }) => {
         value={value}
         onChange={onChange}
         placeholder={placeholder}
+        onClick={onClick}
+        readOnly={readOnly}
       />
     </div>
   )

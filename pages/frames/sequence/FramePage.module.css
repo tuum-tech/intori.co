@@ -1,0 +1,22 @@
+.shareFrameContainer {
+  text-align: center;
+}
+.shareFrameContainer h1 {
+  color: #FFF;
+  font-weight: 600;
+}
+.shareFrameContainer label {
+  color: #FFF;
+}
+
+.inputContainer {
+  color: #FFF;
+}
+
+.inputContainer input {
+  cursor: pointer;
+  padding: 12px 24px;
+  margin: 24px 0;
+  width: 500px;
+  max-width: 80%;
+}
