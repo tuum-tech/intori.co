@@ -6,7 +6,8 @@ import {
   findCurrentStreak
 } from '../../../models/userAnswers'
 import {
-  loadKumbSans50
+  loadKumbSans20,
+  loadKumbSans26
 } from '../../../utils/frames/fonts'
 
 // Note: This is used to create a circle masked image
@@ -46,40 +47,63 @@ const getProfileFramePictureImage = async (
   )
 
   const fid = parseInt(req.query.fid as string, 10)
+  const suggestedUserName = req.query.su as string
+  const suggestedUserReason = req.query.sur as string
 
-  // const profilePictureUrl = await getUserProfilePictureFromFid(fid)
-  // const baseImageWithProfilePic = await createCircularImage(profilePictureUrl, baseImage)
-
-  const questionsAnswered = await countUserAnswers(fid)
-  const pointsEarned = questionsAnswered * 2
-  const currentStreakDays = await findCurrentStreak(fid)
-  const streakText = currentStreakDays === 1 ? '1 day' : `${currentStreakDays} days`
+  const suggestedChannel = req.query.sc as string
+  const suggestedChannelReason = req.query.scr as string
 
   // adding the number stats
-  const font = await loadKumbSans50()
+  const font26 = await loadKumbSans26()
+  const font20 = await loadKumbSans20()
 
-  const addStatNumber = (
-    x: number,
-    y: number,
-    text: string
-  ) => {
+  baseImage.print(
+    font20,
+    190,
+    206,
+    {
+      text: 'You earned 4 points, Share for 25 more!',
+      alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
+      alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
+    },
+    448,
+    32
+  )
+
+  if (suggestedUserName && suggestedUserReason) {
+    const suffix = suggestedUserReason.split('You')[1].trim()
+    const text = `You and @${suggestedUserName} ${suffix}`
     baseImage.print(
-      font,
-      x,
-      y,
+      font26,
+      60,
+      270,
       {
         text,
         alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
         alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
       },
-      216,
-      102
+      648,
+      95
     )
   }
 
-  addStatNumber(46, 154, questionsAnswered.toString())
-  addStatNumber(279, 154, pointsEarned.toString())
-  addStatNumber(509, 154, streakText)
+  if (suggestedChannel && suggestedChannelReason) {
+    const prefix = suggestedChannelReason.split('this channel')[0].trim()
+    const text = `${prefix} /${suggestedChannel}`
+
+    baseImage.print(
+      font26,
+      152,
+      388,
+      {
+        text,
+        alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
+        alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
+      },
+      464,
+      95
+    )
+  }
 
   const buffer = await baseImage.getBufferAsync(Jimp.MIME_PNG)
 
