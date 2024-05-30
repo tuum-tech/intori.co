@@ -58,7 +58,6 @@ export const getServerSideProps = (async (context) => {
       }
     }
 
-    const imageUrl = `${process.env.NEXTAUTH_URL}/api/profile/${fid}?t=${Date.now()}`
 
     const suggestions = await getSuggestedUsersAndChannels(fid, { maxResults: 3 })
     const users = suggestions.filter((suggestion) => suggestion.user)
@@ -66,6 +65,23 @@ export const getServerSideProps = (async (context) => {
 
     const suggestedUser = users[Math.floor(Math.random() * users.length)]
     const suggestedChannel = channels[Math.floor(Math.random() * channels.length)]
+
+    const imageUrlParts = [
+      `${process.env.NEXTAUTH_URL}/api/profile/${fid}`,
+      `?t=${Date.now()}`, // cache buster
+    ]
+
+    if (suggestedUser?.user) {
+      imageUrlParts.push(`&su=${suggestedUser.user.username}`)
+      imageUrlParts.push(`&sur=${suggestedUser.reason}`)
+    }
+
+    if (suggestedChannel?.channel) {
+      imageUrlParts.push(`&sc=${suggestedChannel.channel.name}`)
+      imageUrlParts.push(`&scr=${suggestedChannel.reason}`)
+    }
+
+    const imageUrl = imageUrlParts.join('')
 
     return {
       props: {
