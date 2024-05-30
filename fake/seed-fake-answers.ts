@@ -15,7 +15,8 @@ export const seedFakeAnswers = async () => {
       fid: Math.floor(Math.random() * (470223)) + 1,
       sequence: form.name,
       question: step.question as string,
-      answer: step.inputs[Math.floor(Math.random() * step.inputs.length)].content
+      answer: step.inputs[Math.floor(Math.random() * step.inputs.length)].content,
+      casterFid: Math.floor(Math.random() * (470223)) + 1
     }
 
     await createUserAnswer(userAnswer)
