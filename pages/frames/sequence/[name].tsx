@@ -2,7 +2,8 @@ import React, { useState, useMemo, useCallback } from 'react'
 import { toast } from 'react-toastify'
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
 import { FarcasterFrameHead } from '../../../components/farcaster-frames/FarcasterFrameHead'
-import { PageWrapper } from '../../../components/farcaster-frames/PageWrapper'
+import { AppLayout } from "@/layouts/App"
+import { Section } from '../../../components/common/Section'
 import {
     intoriFrameForms,
     IntoriFrameFormType,
@@ -17,6 +18,7 @@ import {
   SuggestionType,
   getSuggestedUsersAndChannels,
 } from '../../../models/userAnswers'
+import styles from './FramePage.module.css'
  
 type Props = {
   currentStep: number
@@ -172,7 +174,7 @@ export default function Page({
   }
 
   return (
-    <PageWrapper title={thisStep.title}>
+    <>
       <FarcasterFrameHead
         title={thisStep.title}
         imgUrl={imageUrl}
@@ -205,24 +207,29 @@ export default function Page({
           ))
         }
       </FarcasterFrameHead>
+      <AppLayout>
+        <Section>
+          <div className={styles.shareFrameContainer}>
+            <div className="text-center">
+              <h1>{camelCaseToTitleCase(intoriFrameForm.name)}</h1>
 
-      <form method="POST" action={postUrl}>
-        <div className="text-center">
-          <h1>{camelCaseToTitleCase(intoriFrameForm.name)}</h1>
-
-          <div className="w-80 mx-auto mb-8 flex flex-col flex-wrap gap-[18px] justify-center">
-            <Input
-              label="Share this frame with others and gain points!"
-              value={frameUrl}
-              onChange={console.log}
-              placeholder="Frame URL"
-            />
-            <PrimaryButton onClick={copyUrlToClipboard}>
-              {copyButtonText}
-            </PrimaryButton>
+              <div className={styles.inputContainer}>
+                <Input
+                  label="Share this frame with others and gain points!"
+                  value={frameUrl}
+                  onChange={console.log}
+                  placeholder="Frame URL"
+                  onClick={copyUrlToClipboard}
+                  readOnly
+                />
+                <PrimaryButton onClick={copyUrlToClipboard}>
+                  {copyButtonText}
+                </PrimaryButton>
+              </div>
+            </div>
           </div>
-        </div>
-      </form>
-    </PageWrapper>
+        </Section>
+  </AppLayout>
+    </>
   )
 }
