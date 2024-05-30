@@ -41,7 +41,8 @@ const submitFrame = async (
     currentStepOfSequence,
     buttonClicked,
     fid,
-    currentStepObject
+    currentStepObject,
+    fidThatCastedFrame
   } = frameSubmissionHelpers(req)
 
   let nextStep = currentStepOfSequence + 1
@@ -128,7 +129,8 @@ const submitFrame = async (
       fid,
       sequence: frameSequenceName,
       question: currentStepObject.question,
-      answer: buttonClicked
+      answer: buttonClicked,
+      casterFid: fidThatCastedFrame
     })
   }
 
