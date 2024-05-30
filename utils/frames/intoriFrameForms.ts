@@ -21,13 +21,13 @@ export const introductionStep: IntoriFrameStepType = {
     inputs: [
       {
         type: 'button',
-        content: 'Go!'
-      },
-      {
-        type: 'button',
         content: 'Learn More',
         action: 'link',
         target: 'https://www.intori.co/'
+      },
+      {
+        type: 'button',
+        content: 'Go!'
       }
     ]
 }
