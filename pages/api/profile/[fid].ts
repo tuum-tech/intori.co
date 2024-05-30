@@ -2,10 +2,6 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import Jimp from 'jimp'
 import * as path from 'path'
 import {
-  countUserAnswers,
-  findCurrentStreak
-} from '../../../models/userAnswers'
-import {
   loadKumbSans20,
   loadKumbSans26
 } from '../../../utils/frames/fonts'
@@ -46,7 +42,6 @@ const getProfileFramePictureImage = async (
       path.join(process.cwd(), 'public/assets/frames/results_frame_template.png')
   )
 
-  const fid = parseInt(req.query.fid as string, 10)
   const suggestedUserName = req.query.su as string
   const suggestedUserReason = req.query.sur as string
 
