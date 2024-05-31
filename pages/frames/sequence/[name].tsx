@@ -158,11 +158,12 @@ export default function Page({
 
   const getTarget = useCallback((input: IntoriFrameStepInputType) => {
     if (input.content === 'Share Frame') {
-      return frameUrl
+      const urlSafeText = encodeURIComponent(thisStep?.question || 'Check out this frame from Intori!')
+      return `https://warpcast.com/~/compose?text=${urlSafeText}&embeds[]=${frameUrl}`
     }
 
     return input.target
-  }, [frameUrl])
+  }, [frameUrl, thisStep])
 
   const copyUrlToClipboard = () => {
     navigator.clipboard.writeText(frameUrl)
