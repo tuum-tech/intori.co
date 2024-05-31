@@ -69,9 +69,9 @@ const getProfileFramePictureImage = async (
     const suffix = suggestedUserReason.split('You')[1].trim()
     const text = `You and @${suggestedUserName} ${suffix}`
     baseImage.print(
-      font26,
+      font20,
       60,
-      386,
+      270,
       {
         text,
         alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
@@ -87,9 +87,9 @@ const getProfileFramePictureImage = async (
     const text = `${prefix} /${suggestedChannel}`
 
     baseImage.print(
-      font26,
+      font20,
       152,
-      504,
+      360,
       {
         text,
         alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
