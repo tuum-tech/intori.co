@@ -122,10 +122,6 @@ export default function Page({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [copyButtonText, setCopyButtonText] = useState('Copy Frame Link')
 
-  const isLastStep = useMemo(() => {
-      return currentStep ? !intoriFrameForm.steps[currentStep - 1] : false
-  }, [intoriFrameForm, currentStep])
-
   const thisStep = useMemo(() => {
       if (!currentStep) {
           return introductionStep
@@ -183,7 +179,6 @@ export default function Page({
         title={thisStep.title}
         imgUrl={imageUrl}
         description={thisStep.question || 'Your data, connected.'}
-        frameImageAspectRatio={isLastStep ? '1:1' : '1.91:1'}
       >
         <meta name="fc:frame:post_url" content={postUrl} />
 
