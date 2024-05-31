@@ -55,7 +55,7 @@ const getProfileFramePictureImage = async (
   baseImage.print(
     font20,
     190,
-    200,
+    226,
     {
       text: 'You earned 4 points, Share for 25 more!',
       alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
@@ -69,7 +69,7 @@ const getProfileFramePictureImage = async (
     const suffix = suggestedUserReason.split('You')[1].trim()
     const text = `You and @${suggestedUserName} ${suffix}`
     baseImage.print(
-      font26,
+      font20,
       60,
       270,
       {
@@ -87,9 +87,9 @@ const getProfileFramePictureImage = async (
     const text = `${prefix} /${suggestedChannel}`
 
     baseImage.print(
-      font26,
+      font20,
       152,
-      388,
+      360,
       {
         text,
         alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
