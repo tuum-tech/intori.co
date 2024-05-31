@@ -28,7 +28,7 @@ const generateQuestionnaireStepImage = async (
   image.print(
     kumbhSans30,
     103,
-    361,
+    341,
     {
       text: question,
       alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
