@@ -123,7 +123,7 @@ export default function Page({
   const [copyButtonText, setCopyButtonText] = useState('Copy Frame Link')
 
   const isLastStep = useMemo(() => {
-      return intoriFrameForm.steps[currentStep - 1] === undefined
+      return currentStep ? !intoriFrameForm.steps[currentStep - 1] : false
   }, [intoriFrameForm, currentStep])
 
   const thisStep = useMemo(() => {
