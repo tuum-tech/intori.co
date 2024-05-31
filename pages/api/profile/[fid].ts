@@ -55,7 +55,7 @@ const getProfileFramePictureImage = async (
   baseImage.print(
     font20,
     190,
-    240,
+    226,
     {
       text: 'You earned 4 points, Share for 25 more!',
       alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
