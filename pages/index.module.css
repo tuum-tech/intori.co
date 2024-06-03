@@ -1,7 +1,7 @@
 .appImageContainer {
   position: relative;
   height: 80vh;
-  width: 80%;
+  width: 70%;
   margin: 3% auto;
 }
 
@@ -67,6 +67,7 @@
   }
 
   .mobileImage {
+    margin-top: 100px;
     display: block;
   }
 
