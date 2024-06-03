@@ -50,6 +50,9 @@
   font-size: 18px;
   text-align: left;
 }
+.faq details p a {
+  color: #9664FA;
+}
 
 @media only screen and (max-width: 1000px) {
   .faq {
