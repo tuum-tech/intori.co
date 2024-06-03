@@ -16,4 +16,5 @@ body {
   background-position: top left;
   background-repeat: no-repeat;
   background-color: #000;
+  background-attachment: fixed;
 }
