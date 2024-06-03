@@ -1,0 +1,92 @@
+.appImageContainer {
+  position: relative;
+  height: 80vh;
+  width: 70%;
+  margin: 5% auto;
+}
+
+.desktopImage {
+  display: block;
+  object-fit: contain;
+}
+
+.mobileImage {
+  display: none;
+}
+.faq {
+  width: 60%;
+  margin: 100px auto;
+}
+.faq h2 {
+  font-size: 50px;
+  font-weight: 500;
+  color: #FFF;
+  margin: 0;
+  width: 100%;
+}
+.faq h2 span {
+  color: #9664FA;
+  font-weight: 500;
+}
+.faq details {
+  margin-top: 36px;
+}
+.faq details summary {
+  color: #FFF;
+  font-weight: 300;
+  font-size: 22px;
+  text-align: left;
+  cursor: pointer;
+  list-style: none;
+  background: url('/landing-page/accordion-arrow-down.png') no-repeat right;
+  padding-right: 32px;
+}
+.faq details[open] summary {
+  background: url('/landing-page/accordion-arrow-up.png') no-repeat right;
+}
+
+.faq details p {
+  color: #BDB5AB;
+  font-size: 18px;
+  text-align: left;
+}
+.faq details p a {
+  color: #9664FA;
+}
+
+@media only screen and (max-width: 1000px) {
+  .faq {
+    width: 80%;
+  }
+}
+@media only screen and (max-width: 800px) {
+  .appImageContainer {
+    height: 100vh;
+    width: 96%;
+  }
+
+  .desktopImage {
+    display: none;
+  }
+
+  .mobileImage {
+    margin-top: 100px;
+    display: block;
+  }
+
+  .faq {
+    width: 90%;
+  }
+}
+
+@media only screen and (max-width: 700px) {
+  .faq h2 {
+    font-size: 36px;
+  }
+  .faq details summary {
+    font-size: 18px;
+  }
+  .faq details p {
+    font-size: 14px;
+  }
+}
