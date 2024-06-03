@@ -43,10 +43,10 @@ export const SignInWithFarcasterButton: React.FC = () => {
     )
 
     useEffect(() => {
-      const buttonElement = document.querySelector('.fc-authkit-signin-button button');
+      const buttonElement = document.querySelectorAll('.fc-authkit-signin-button button');
 
-      if (buttonElement) {
-        (buttonElement as HTMLButtonElement).innerText = 'Sign in with Farcaster';
+      for (let i = 0; i < buttonElement.length; i++) {
+        (buttonElement[i] as HTMLButtonElement).innerText = 'Sign in with Farcaster';
       }
     }, [])
 
