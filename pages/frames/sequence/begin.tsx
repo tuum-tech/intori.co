@@ -21,8 +21,8 @@ type Props = {
  
 export const getServerSideProps = (async () => {
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/sequence`
-  const postUrl = `${process.env.NEXTAUTH_URL}/api/frames/submit`
-  const imageUrl = `${process.env.NEXTAUTH_URL}/assets/frames/introduction.png`
+  const postUrl  = `${process.env.NEXTAUTH_URL}/api/frames/submit`
+  const imageUrl = `${process.env.NEXTAUTH_URL}/assets/templates/intro_frame_template.png`
 
   return {
     props: {
