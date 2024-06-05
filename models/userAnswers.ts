@@ -10,7 +10,6 @@ import {
 
 export type UserAnswerType = {
   fid: number
-  sequence: string
   question: string
   answer: string
   date: Timestamp
@@ -18,7 +17,6 @@ export type UserAnswerType = {
 
 export type UserAnswerPageType = {
   fid: number
-  sequence: string
   question: string
   answer: string
   date: {
@@ -29,7 +27,6 @@ export type UserAnswerPageType = {
 
 export type CreateUserAnswerType = {
   fid: number
-  sequence: string
   question: string
   answer: string
   casterFid: number
@@ -332,4 +329,3 @@ export const countSuggestedUsersAndChannels = async (
     totalSuggestedUsers
   }
 }
-
