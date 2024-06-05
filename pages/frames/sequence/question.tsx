@@ -49,6 +49,7 @@ export const getServerSideProps = (async (context) => {
     inputs: getFrameInputsBasedOnAnswerOffset(questionIndex, answerOffset)
   }
 
+  console.log('showing this frame: ', frame)
   return {
     props: {
       postUrl,
