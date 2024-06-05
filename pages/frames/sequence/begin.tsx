@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { toast } from 'react-toastify'
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
-import { FrameGenerator } from '../../../components/farcaster-frames/StepGenerator'
+import { FrameGenerator } from '../../../components/farcaster/FrameGenerator'
 import { AppLayout } from "@/layouts/App"
 import { Section } from '../../../components/common/Section'
 import {

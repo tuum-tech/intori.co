@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { toast } from 'react-toastify'
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
-import { FrameGenerator } from '../../../components/farcaster-frames/StepGenerator'
+import { FrameGenerator } from '../../../components/farcaster/FrameGenerator'
 import { AppLayout } from "@/layouts/App"
 import { Section } from '../../../components/common/Section'
 import {
@@ -29,8 +29,9 @@ export const getServerSideProps = (async (context) => {
     }
   }
 
-  const questionIndex = parseInt(context.params.qi as string, 10)
+  const questionIndex = parseInt(context.query.qi as string, 10)
   const answerOffset = parseInt(context.query.ioff as string, 10) || 0
+  const step = parseInt(context.query.step as string, 10) || 0
   const question = intoriQuestions[questionIndex]
 
   if (!question) {
@@ -40,7 +41,7 @@ export const getServerSideProps = (async (context) => {
   }
 
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/sequence`
-  const postUrl = `${process.env.NEXTAUTH_URL}/api/frames/submit`
+  const postUrl = `${process.env.NEXTAUTH_URL}/api/frames/submit?step=${step}`
   const imageUrl = `${process.env.NEXTAUTH_URL}/assets/frames/questions/${questionIndex}.png`
 
   const frame: Partial<IntoriFrameType> = {
