@@ -107,6 +107,15 @@ export const frameSubmissionHelpers = (req: NextApiRequest) => {
     const buttonIndexClicked = req.body.untrustedData.buttonIndexClicked
     const inputs = getFrameInputsBasedOnAnswerOffset(questionIndex, answerOffset)
 
+    console.log({
+      question,
+      buttonIndexClicked,
+      questionIndex,
+      answerOffset,
+      inputs,
+      buttonClicked
+    })
+
     buttonClicked = inputs[buttonIndexClicked].content
 
     if (['< Back', 'More >'].includes(buttonClicked)) {
