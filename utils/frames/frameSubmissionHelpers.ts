@@ -1,62 +1,126 @@
 import type { NextApiRequest } from 'next'
-import {
-  intoriFrameForms,
-  introductionStep,
-  finalStep
-} from './intoriFrameForms'
+import { intoriQuestions, IntoriFrameInputType } from './intoriFrameForms'
 
-export const frameSubmissionHelpers = (req: NextApiRequest) => {
-  const frameSequenceName = req.body.untrustedData.url.split('/').pop().split('?')[0] as string
-  const currentStepOfSequence = parseInt(req.query.step as string, 10) || 0
-  const fid = req.body.untrustedData.fid
-  const buttonIndex = req.body.untrustedData.buttonIndex
-  const fidThatCastedFrame = req.body.untrustedData.castId.fid
+export const frameQuestionUrl = (params: {
+  questionIndex: number,
+  answerOffset?: number
+}): string => {
+  const { questionIndex, answerOffset } = params
 
-  if (intoriFrameForms[frameSequenceName] === undefined) {
-    throw new Error(`Frame sequence name ${frameSequenceName} is not a valid frame sequence name.`)
-  }
+  return `${process.env.NEXTAUTH_URL}/frames/question?qi=${questionIndex}&ioff=${answerOffset ?? 0}`
+}
 
-  const getCurrentStep = () => {
-    if (!currentStepOfSequence) {
-      return introductionStep
+export const getFrameInputsBasedOnAnswerOffset = (
+  questionIndex: number,
+  answerOffset: number
+): IntoriFrameInputType[] => {
+  const question = intoriQuestions[questionIndex]
+  const inputs: IntoriFrameInputType[] = []
+
+  if (!answerOffset) {
+    if (question.answers.length <= 4) {
+      inputs.push(
+        ...question.answers.map((answer) => ({
+          type: 'button',
+          content: answer
+        })) as IntoriFrameInputType[]
+      )
+
+      return inputs
     }
 
-    if (
-      currentStepOfSequence === intoriFrameForms[frameSequenceName].steps.length + 1
-    ) {
-      return finalStep
-    }
+    const firstThreeAnswers = question.answers.slice(0, 3)
 
-    return intoriFrameForms[frameSequenceName].steps[currentStepOfSequence - 1]
-  }
+    inputs.push(
+      ...firstThreeAnswers.map((answer) => ({
+        type: 'button',
+        content: answer
+      })) as IntoriFrameInputType[]
+    )
 
-  const getButtonLabels = () => {
-    console.log({ 
-      currentStepOfSequence,
-      currentStep: getCurrentStep(),
-      stepsLength: intoriFrameForms[frameSequenceName].steps.length
+    inputs.push({
+      type: 'button',
+      content: 'More >',
+      action: 'link',
+      target: frameQuestionUrl({ questionIndex, answerOffset: 4 })
     })
 
-    if (!getCurrentStep()) {
-      return []
-    }
+    return inputs
+  }
 
-    return (
-      getCurrentStep()
-      .inputs
-      .map(input => input.content)
+  const previousOffset = (answerOffset - 4 > 0) ? answerOffset - 4 : 0
+
+  inputs.push({
+    type: 'button',
+    content: '< Back',
+    action: 'link',
+    target: frameQuestionUrl({ questionIndex, answerOffset: previousOffset })
+  })
+
+  const isLastFrameOfAnswers = answerOffset + 3 >= question.answers.length
+
+  if (!isLastFrameOfAnswers) {
+    const nextTwoAnswers = question.answers.slice(answerOffset, answerOffset + 2)
+
+    inputs.push(
+      ...nextTwoAnswers.map((answer) => ({
+        type: 'button',
+        content: answer
+      })) as IntoriFrameInputType[]
     )
+
+    inputs.push({
+      type: 'button',
+      content: 'More >',
+      action: 'link',
+      target: frameQuestionUrl({ questionIndex, answerOffset: answerOffset + 2 })
+    })
+
+    return inputs
+  }
+
+  const lastAnswers = question.answers.slice(answerOffset)
+
+  inputs.push(
+    ...lastAnswers.map((answer) => ({
+      type: 'button',
+      content: answer
+    })) as IntoriFrameInputType[]
+  )
+
+  return inputs
+}
+
+export const frameSubmissionHelpers = (req: NextApiRequest) => {
+  const fid = req.body.untrustedData.fid
+  const fidThatCastedFrame = req.body.untrustedData.castId.fid
+  const step = parseInt(req.query.step?.toString() || '0') ?? 0
+  const questionIndex = parseInt(req.query.qi?.toString() || '0') ?? 0
+  const question = intoriQuestions[questionIndex]
+  const answerOffset = parseInt(req.query.ioff?.toString() || '0') ?? 0
+  const currentSequenceStep = parseInt(req.query.step?.toString() || '0') ?? 0
+  const referrer = req.body.untrustedData.url as string
+
+  let buttonClicked = ''
+
+  if (question) {
+    const buttonIndexClicked = req.body.untrustedData.buttonIndexClicked
+    const inputs = getFrameInputsBasedOnAnswerOffset(questionIndex, answerOffset)
+
+    buttonClicked = inputs[buttonIndexClicked].content
+
+    if (['< Back', 'More >'].includes(buttonClicked)) {
+      buttonClicked = ''
+    }
   }
 
   return {
     fidThatCastedFrame,
     fid,
-    buttonIndex,
-    frameSequenceName,
-    frameSequenceObject: intoriFrameForms[frameSequenceName],
-    currentStepOfSequence,
-    currentStepObject: getCurrentStep(),
-    buttonLabels: getButtonLabels(),
-    buttonClicked: getButtonLabels()[buttonIndex - 1]
+    step,
+    buttonClicked,
+    question,
+    currentSequenceStep,
+    referrer
   }
 }
