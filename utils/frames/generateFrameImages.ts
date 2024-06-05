@@ -1,8 +1,7 @@
 import Jimp from 'jimp'
 import { Font } from '@jimp/plugin-print'
 import * as path from 'path'
-import * as fs from 'fs'
-import { intoriFrameForms } from './intoriFrameForms'
+import { intoriQuestions } from './intoriFrameForms'
 import {
   loadKumbSans30
 } from './fonts'
@@ -42,48 +41,27 @@ const generateQuestionnaireStepImage = async (
 }
 
 export const generateQuestionnaireStepImages = async () => {
-  const sequences = Object.keys(intoriFrameForms)
-
-  const finalFramePathPrefix = path.join(
+  const questionImagePathPrefix = path.join(
     process.cwd(),
-    'public/assets/frames'
+    'public/assets/frames/questions'
   )
 
-  const templatesPathPrefix = path.join(
-    process.cwd(),
-    'public/assets/templates'
-  )
+  for (let i = 0; i < intoriQuestions.length; i++) {
+    const questionIndex = i
 
-  for ( let i = 0; i < sequences.length; i++ ) {
-    const sequence = intoriFrameForms[sequences[i]]
-
-    const framePathPrefix = path.join(
-      finalFramePathPrefix,
-      sequence.name
+    const questionImagePath = path.join(
+      questionImagePathPrefix,
+      questionIndex.toString() + '.png'
     )
 
-    fs.copyFileSync(
-      path.join(templatesPathPrefix, 'intro_frame_template.png'),
-      path.join(framePathPrefix, '1.png')
-    )
+    const { question } = intoriQuestions[questionIndex]
 
-    for (let stepIndex = 0; stepIndex < sequence.steps.length; stepIndex++) {
-      const step = sequence.steps[stepIndex]
-      if (!step.question) {
-        continue
-      }
+    const image = await generateQuestionnaireStepImage(question)
 
-      const stepImage = await generateQuestionnaireStepImage(step.question)
-
-      await stepImage.writeAsync(
-        path.join(
-          framePathPrefix,
-          `${stepIndex + 2}.png`
-        )
-      )
-    }
+    image.write(questionImagePath)
   }
-  console.log('Done generating questionnaire step images.')
+
+  console.log('Done generating question frame images.')
 }
 
 generateQuestionnaireStepImages()
