@@ -2,7 +2,6 @@ import React from 'react'
 import Head from 'next/head'
 
 type Props = {
-  title: string
   imgUrl: string
   description: string
   children?: React.ReactNode
@@ -10,7 +9,6 @@ type Props = {
 }
 
 export const FarcasterFrameHead: React.FC<Props> = ({
-  title,
   imgUrl,
   description,
   children,
@@ -20,10 +18,10 @@ export const FarcasterFrameHead: React.FC<Props> = ({
       <Head>
         <meta charSet="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <title>{title}</title>
+        <title>Intori – Your data, connected.</title>
         <meta name="description" content={description} />
 
-        <meta property="og:title" content={title} />
+        <meta property="og:title" content="Intori – Your data, connected." />
         <meta property="og:image" content={imgUrl} />
 
         <meta property="fc:frame" content="vNext" />
