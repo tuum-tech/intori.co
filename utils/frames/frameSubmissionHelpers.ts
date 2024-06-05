@@ -95,15 +95,16 @@ export const frameSubmissionHelpers = (req: NextApiRequest) => {
   const fid = req.body.untrustedData.fid
   const fidThatCastedFrame = req.body.untrustedData.castId.fid
   const step = parseInt(req.query.step?.toString() || '0') ?? 0
-  const questionIndex = parseInt(req.query.qi?.toString() || '0') ?? 0
-  const question = intoriQuestions[questionIndex]
   const answerOffset = parseInt(req.query.ioff?.toString() || '0') ?? 0
   const currentSequenceStep = parseInt(req.query.step?.toString() || '0') ?? 0
   const referrer = req.body.untrustedData.url as string
 
+  let question = ''
   let buttonClicked = ''
 
-  if (question) {
+  if (req.query.qi) {
+    const questionIndex = parseInt(req.query.qi?.toString() || '0') ?? 0
+    const question = intoriQuestions[questionIndex]
     const buttonIndexClicked = req.body.untrustedData.buttonIndexClicked
     const inputs = getFrameInputsBasedOnAnswerOffset(questionIndex, answerOffset)
 
