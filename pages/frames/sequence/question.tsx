@@ -23,7 +23,7 @@ type Props = {
 }
  
 export const getServerSideProps = (async (context) => {
-  if (!context?.params?.qi) {
+  if (!context?.query?.qi) {
     return {
       notFound: true
     }
