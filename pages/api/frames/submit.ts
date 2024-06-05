@@ -61,11 +61,18 @@ const submitFrame = async (
     let questionIndex = Math.floor(Math.random() * intoriQuestions.length)
     let question = intoriQuestions[questionIndex]
     let alreadyAnswered = await getUserAnswerForQuestion(fid, question.question)
+    let tries = 0;
 
-    while (alreadyAnswered) {
+    while (alreadyAnswered && tries < 5) {
+      tries += 1
       questionIndex = Math.floor(Math.random() * intoriQuestions.length)
       question = intoriQuestions[questionIndex]
       alreadyAnswered = await getUserAnswerForQuestion(fid, question.question)
+      break
+    }
+
+    if (tries === 5) {
+      // TODO: add frame that you answered all questions
     }
 
     return res.redirect(
