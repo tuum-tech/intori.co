@@ -1,8 +1,8 @@
 import React from 'react'
 import Image from 'next/image'
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
-import { FarcasterFrameHead } from '../../../components/farcaster-frames/FarcasterFrameHead'
-import { PageWrapper } from '../../../components/farcaster-frames/PageWrapper'
+import { FarcasterFrameHead } from '../../../components/farcaster/FarcasterFrameHead'
+import { PageWrapper } from '../../../components/farcaster/PageWrapper'
  
 type Props = {
   imageUrl: string
@@ -30,7 +30,7 @@ export default function Page({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <PageWrapper title="Profile">
-      <FarcasterFrameHead title="Profile" imgUrl={imageUrl} description="Your data, connected.">
+      <FarcasterFrameHead imgUrl={imageUrl} description="Your data, connected.">
           <meta name='fc:frame:button:1' content="Learn More" />
           <meta name='fc:frame:button:1:action' content="link" />
           <meta name='fc:frame:button:1:target' content="https://www.intori.co/" />

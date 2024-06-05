@@ -1,7 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { frameSubmissionHelpers } from '../../../utils/frames/frameSubmissionHelpers'
+import {
+  frameSubmissionHelpers
+} from '../../../utils/frames/frameSubmissionHelpers'
 import { validateFarcasterPacketMessage } from '../utils/farcasterServer'
-import { createUserAnswer } from '../../../models/userAnswers'
+import {
+  createUserAnswer,
+  getUserAnswerForQuestion
+} from '../../../models/userAnswers'
+import { intoriQuestions } from '../../../utils/frames/intoriFrameForms'
 
 // example farcaster frame submit
 // console.log({
@@ -32,117 +38,68 @@ const submitFrame = async (
   const validFarcasterPacket = await validateFarcasterPacketMessage(req.body)
 
   if (!validFarcasterPacket) {
+    // TODO: show error frame
     return res.status(400).end()
   }
 
   const {
-    frameSequenceName,
-    frameSequenceObject,
-    currentStepOfSequence,
-    buttonClicked,
     fid,
-    currentStepObject,
-    fidThatCastedFrame
+    buttonClicked,
+    question,
+    fidThatCastedFrame,
+    step,
+    referrer
   } = frameSubmissionHelpers(req)
 
-  let nextStep = currentStepOfSequence + 1
-  const lastStep = frameSequenceObject.steps.length + 1
+  const nextStep = step + 1
 
-  if (
-    frameSequenceName === 'initial' &&
-    (currentStepOfSequence === 1 || currentStepOfSequence === 3) &&
-    buttonClicked !== 'More'
-  ) {
-    nextStep = currentStepOfSequence + 2
+  if (!step && !referrer.endsWith('/frames/sequence/begin')) {
+    return res.status(400).end()
   }
 
-  if (
-    frameSequenceName === 'personalValues' &&
-    (currentStepOfSequence === 1 || currentStepOfSequence === 3) &&
-    buttonClicked !== 'Next'
-  ) {
-    nextStep = currentStepOfSequence + 2
-  }
+  if ([0, 2, 4].includes(step)) {
+    let questionIndex = Math.floor(Math.random() * intoriQuestions.length)
+    let question = intoriQuestions[questionIndex]
+    let alreadyAnswered = await getUserAnswerForQuestion(fid, question.question)
 
-  if (
-    frameSequenceName === 'lifeStyle' &&
-    (currentStepOfSequence === 1 || currentStepOfSequence === 3) &&
-    buttonClicked !== 'More'
-  ) {
-    nextStep = currentStepOfSequence + 2
-  }
-
-  if (buttonClicked === '< Back') {
-    nextStep = currentStepOfSequence - 1
+    while (alreadyAnswered) {
+      questionIndex = Math.floor(Math.random() * intoriQuestions.length)
+      question = intoriQuestions[questionIndex]
+      alreadyAnswered = await getUserAnswerForQuestion(fid, question.question)
+    }
 
     return res.redirect(
       307,
-      `/frames/sequence/${frameSequenceName}?step=${nextStep}&t=${Date.now()}`
+      `/frames/sequence/question?qi=${questionIndex}&step=${nextStep}`
     )
   }
 
-  if (
-    frameSequenceName === 'foodAndDrink' &&
-    [1,2,3].includes(currentStepOfSequence) &&
-    buttonClicked !== 'More'
-  ) {
-    nextStep = 4
-  }
+  // check if user already answered this question
+  if ([1, 3, 5].includes(step) && question && buttonClicked) {
+    const alreadyAnswered = await getUserAnswerForQuestion(fid, question.question)
 
-  if (
-    frameSequenceName === 'foodAndDrink' &&
-    [1,2,3].includes(currentStepOfSequence) &&
-    buttonClicked !== 'More'
-  ) {
-    nextStep = 4
-  }
+    if (alreadyAnswered) {
+      return res.status(400).end()
+    }
 
-  if (
-    frameSequenceName === 'foodAndDrink' &&
-    [4,5,6].includes(currentStepOfSequence) &&
-    buttonClicked !== 'More'
-  ) {
-    nextStep = lastStep
-  }
-
-  if (
-    frameSequenceName === 'movieGenre' &&
-    currentStepOfSequence !== 0 &&
-    buttonClicked !== 'More'
-  ) {
-    nextStep = lastStep
-  }
-
-  if (
-    frameSequenceName === 'musicGenre' &&
-    currentStepOfSequence !== 0 &&
-    buttonClicked !== 'More'
-  ) {
-    nextStep = lastStep
-  }
-
-  if (
-    currentStepObject.question &&
-    !['More', 'Next'].includes(buttonClicked)
-  ) {
     await createUserAnswer({
       fid,
-      sequence: frameSequenceName,
-      question: currentStepObject.question,
+      question: question.question,
       answer: buttonClicked,
       casterFid: fidThatCastedFrame
     })
+
+    const questionIndex = intoriQuestions.findIndex(
+      (q) => q.question === question.question
+    )
+
+    return res.redirect(
+      307,
+      `/frames/sequence/results?step=${nextStep}&qi=${questionIndex}&fid=${fid}`
+    )
   }
 
-  // TODO:
-  // check what next question is
-  // check if user already submitted
-  // if user already submitted, go to further next question
-
-  res.redirect(
-    307,
-    `/frames/sequence/${frameSequenceName}?step=${nextStep}&t=${Date.now()}&fid=${fid}`
-  )
+  return res.status(400).end()
 }
 
 export default submitFrame
