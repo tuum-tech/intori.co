@@ -19,13 +19,7 @@ type Props = {
   frame: IntoriFrameType
 }
  
-export const getServerSideProps = (async (context) => {
-  if (!context?.params?.name) {
-    return {
-      notFound: true
-    }
-  }
-
+export const getServerSideProps = (async () => {
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/sequence`
   const postUrl = `${process.env.NEXTAUTH_URL}/api/frames/submit`
   const imageUrl = `${process.env.NEXTAUTH_URL}/assets/frames/introduction.png`
