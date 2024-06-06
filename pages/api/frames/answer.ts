@@ -16,6 +16,7 @@ const answeredQuestion = async (
   const validFarcasterPacket = await validateFarcasterPacketMessage(req.body)
 
   if (!validFarcasterPacket) {
+    console.log('not valid farcaster packet')
     return res.redirect(
       307,
       `/frames/error`
@@ -30,6 +31,7 @@ const answeredQuestion = async (
   } = frameSubmissionHelpers(req)
 
   if (!question) {
+    console.log('no question given')
     return res.redirect(
       307,
       `/frames/error`
