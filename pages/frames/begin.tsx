@@ -13,7 +13,6 @@ import { PrimaryButton } from '../../components/common/Button'
 import styles from './FramePage.module.css'
  
 type Props = {
-  postUrl: string
   imageUrl: string
   frameUrl: string
   frame: IntoriFrameType
@@ -21,12 +20,10 @@ type Props = {
  
 export const getServerSideProps = (async () => {
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/begin`
-  const postUrl  = `${process.env.NEXTAUTH_URL}/api/frames/submit`
   const imageUrl = `${process.env.NEXTAUTH_URL}/assets/templates/intro_frame_template.png`
 
   return {
     props: {
-      postUrl,
       imageUrl,
       frameUrl,
       frame: introductionStep
@@ -35,7 +32,6 @@ export const getServerSideProps = (async () => {
 }) satisfies GetServerSideProps<Props>
  
 export default function Page({
-  postUrl,
   imageUrl,
   frameUrl,
   frame
@@ -56,7 +52,6 @@ export default function Page({
       <FrameGenerator
         frame={frame}
         imageUrl={imageUrl}
-        postUrl={postUrl}
         frameUrl={frameUrl}
       />
       <AppLayout>
