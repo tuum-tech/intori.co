@@ -73,12 +73,15 @@ export const getFrameInputsBasedOnAnswerOffset = (
   const question = intoriQuestions[questionIndex]
   const inputs: IntoriFrameInputType[] = []
 
+  const submitAnswerPostUrl = `${process.env.NEXTAUTH_URL}/api/frames/answer`
+
   if (!answerOffset) {
     if (question.answers.length <= 4) {
       inputs.push(
         ...question.answers.map((answer) => ({
           type: 'button',
-          content: answer
+          content: answer,
+          postUrl: submitAnswerPostUrl
         })) as IntoriFrameInputType[]
       )
 
@@ -90,7 +93,8 @@ export const getFrameInputsBasedOnAnswerOffset = (
     inputs.push(
       ...firstThreeAnswers.map((answer) => ({
         type: 'button',
-        content: answer
+        content: answer,
+        postUrl: submitAnswerPostUrl
       })) as IntoriFrameInputType[]
     )
 
@@ -121,7 +125,8 @@ export const getFrameInputsBasedOnAnswerOffset = (
     inputs.push(
       ...nextTwoAnswers.map((answer) => ({
         type: 'button',
-        content: answer
+        content: answer,
+        postUrl: submitAnswerPostUrl
       })) as IntoriFrameInputType[]
     )
 
@@ -142,7 +147,8 @@ export const getFrameInputsBasedOnAnswerOffset = (
   inputs.push(
     ...lastAnswers.map((answer) => ({
       type: 'button',
-      content: answer
+      content: answer,
+      postUrl: submitAnswerPostUrl
     })) as IntoriFrameInputType[]
   )
 
