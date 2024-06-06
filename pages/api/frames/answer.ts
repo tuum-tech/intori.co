@@ -3,11 +3,7 @@ import {
   frameSubmissionHelpers
 } from '../../../utils/frames/frameSubmissionHelpers'
 import { validateFarcasterPacketMessage } from '../utils/farcasterServer'
-import {
-  createUserAnswer,
-  getUserAnswerForQuestion
-} from '../../../models/userAnswers'
-import { intoriQuestions } from '../../../utils/frames/intoriFrameForms'
+import { createUserAnswer } from '../../../models/userAnswers'
 
 const answeredQuestion = async (
   req: NextApiRequest,
