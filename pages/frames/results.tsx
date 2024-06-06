@@ -31,7 +31,7 @@ export const getServerSideProps = (async (context) => {
   const fid = parseInt(context.query.fid as string, 10) || 0
 
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/begin`
-  const imageUrl = `${process.env.NEXTAUTH_URL}/api/frames/profile/${fid}`
+  const imageUrl = `${process.env.NEXTAUTH_URL}/api/results/${fid}`
 
   const inputs: IntoriFrameInputType[] = []
 
