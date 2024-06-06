@@ -164,12 +164,21 @@ export const frameSubmissionHelpers = (req: NextApiRequest) => {
   let buttonClicked = ''
   const questionIndex = parseInt(req.query.qi?.toString() || '0') ?? 0
 
+  console.log('queries given: ', req.query)
+
   if (req.query.qi && buttonIndexClicked) {
     question = intoriQuestions[questionIndex]
     const inputs = getFrameInputsBasedOnAnswerOffset(questionIndex, answerOffset)
 
     buttonClicked = inputs[buttonIndexClicked - 1].content
+    console.log({ inputs })
   }
+
+  console.log({
+    question,
+    buttonIndexClicked,
+    buttonClicked,
+  })
 
   return {
     fidThatCastedFrame,
