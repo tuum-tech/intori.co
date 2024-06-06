@@ -9,15 +9,8 @@ type Props = {
   imageUrl: string
 }
  
-export const getServerSideProps = (async (context) => {
-  const fid = context?.params?.fid
-  if (!fid) {
-    return {
-      notFound: true
-    }
-  }
-
-  const imageUrl = `${process.env.NEXTAUTH_URL}/api/profile/${fid}?t=${Date.now()}`
+export const getServerSideProps = (async () => {
+  const imageUrl = `${process.env.NEXTAUTH_URL}/assets/templates/error_frame.png`
 
   return {
     props: {
