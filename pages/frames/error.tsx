@@ -3,7 +3,7 @@ import Image from 'next/image'
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
 import { FrameGenerator } from '../../components/farcaster/FrameGenerator'
 import { PageWrapper } from '../../components/farcaster/PageWrapper'
-import { errorFrame } from' ../../utils/frames/intoriFrameForms'
+import { errorFrame } from '../../utils/frames/intoriFrameForms'
  
 type Props = {
   imageUrl: string
@@ -34,7 +34,6 @@ export default function Page({
       <FrameGenerator
         frame={errorFrame}
         imageUrl={imageUrl}
-        postUrl={`${process.env.NEXTAUTH_URL}/api/profile/${context?.params?.fid}`}
       />
 
       <div className="text-center">

@@ -31,7 +31,8 @@ export const errorFrame: IntoriFrameType = {
     inputs: [
       {
         type: 'button',
-        content: 'Try Again'
+        content: 'Try Again',
+        postUrl: `${process.env.NEXTAUTH_URL}/frames/question`
       }
     ]
 }

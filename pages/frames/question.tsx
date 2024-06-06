@@ -40,7 +40,7 @@ export const getServerSideProps = (async (context) => {
   }
 
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/begin`
-  // const postUrl = `${process.env.NEXTAUTH_URL}/api/frames/answer`
+  const postUrl = `${process.env.NEXTAUTH_URL}/frames/answer`
   const imageUrl = `${process.env.NEXTAUTH_URL}/assets/frames/questions/${questionIndex}.png`
 
   const frame: Partial<IntoriFrameType> = {
@@ -48,7 +48,6 @@ export const getServerSideProps = (async (context) => {
     inputs: getFrameInputsBasedOnAnswerOffset(questionIndex, answerOffset)
   }
 
-  console.log('showing this frame: ', frame)
   return {
     props: {
       postUrl,
@@ -81,8 +80,8 @@ export default function Page({
       <FrameGenerator
         frame={frame}
         imageUrl={imageUrl}
-        postUrl={postUrl}
         frameUrl={frameUrl}
+        postUrl={postUrl}
       />
       <AppLayout>
         <Section>
