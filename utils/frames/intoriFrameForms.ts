@@ -21,7 +21,8 @@ export const introductionStep: IntoriFrameType = {
       },
       {
         type: 'button',
-        content: 'Go!'
+        content: 'Go!',
+        postUrl: `${process.env.NEXTAUTH_URL}/frames/question`
       }
     ]
 }
