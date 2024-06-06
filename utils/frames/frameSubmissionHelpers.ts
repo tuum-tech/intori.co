@@ -67,7 +67,7 @@ const getBackAnswerOffset = (questionIndex: number, answerOffset: number): numbe
 }
 
 const convertAnswersToInputs = (answers: string[], questionIndex: number): IntoriFrameInputType[] => {
-  const submitAnswerPostUrl = `${process.env.NEXTAUTH_URL}/api/frames/answer&qi=${questionIndex}`
+  const submitAnswerPostUrl = `${process.env.NEXTAUTH_URL}/api/frames/answer?qi=${questionIndex}`
 
   return answers.map((answer) => ({
     type: 'button',
