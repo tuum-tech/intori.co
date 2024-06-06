@@ -106,17 +106,16 @@ export const getFrameInputsBasedOnAnswerOffset = (
     return inputs
   }
 
-  const previousOffset = getBackAnswerOffset(questionIndex, answerOffset)
-
   const isLastFrameOfAnswers = answerOffset + 3 >= question.answers.length
 
-  if (!isLastFrameOfAnswers) {
-    inputs.push({
-      type: 'button',
-      content: '< Back',
-      postUrl: frameQuestionUrl({ questionIndex, answerOffset: previousOffset })
-    })
+  const previousOffset = getBackAnswerOffset(questionIndex, answerOffset)
+  inputs.push({
+    type: 'button',
+    content: '< Back',
+    postUrl: frameQuestionUrl({ questionIndex, answerOffset: previousOffset })
+  })
 
+  if (!isLastFrameOfAnswers) {
     const nextTwoAnswers = question.answers.slice(answerOffset, answerOffset + 2)
 
     inputs.push(
