@@ -22,7 +22,7 @@ export const introductionStep: IntoriFrameType = {
       {
         type: 'button',
         content: 'Go!',
-        postUrl: `${process.env.NEXTAUTH_URL}/frames/question`
+        postUrl: `${process.env.NEXTAUTH_URL}/api/frames/question`
       }
     ]
 }
@@ -32,10 +32,14 @@ export const errorFrame: IntoriFrameType = {
       {
         type: 'button',
         content: 'Try Again',
-        postUrl: `${process.env.NEXTAUTH_URL}/frames/question`
+        postUrl: `${process.env.NEXTAUTH_URL}/api/frames/question`
       }
     ]
 }
+
+const urlSafeText = encodeURIComponent('Check out this frame from Intori!')
+const shareFrameUrlSafeText = encodeURIComponent(process.env.NEXTAUTH_URL + '/frames/begin')
+const shareFrameUrl = `https://warpcast.com/~/compose?text=${urlSafeText}&embeds[]=${shareFrameUrlSafeText}`
 
 export const finalStep: IntoriFrameType = {
     inputs: [
@@ -50,7 +54,7 @@ export const finalStep: IntoriFrameType = {
       {
         type: 'button',
         action: 'link',
-        target: process.env.NEXTAUTH_URL + '/frames/sequence/',
+        target: shareFrameUrl,
         content: 'Share Frame'
       },
       {
