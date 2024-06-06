@@ -20,6 +20,7 @@ type Props = {
  
 export const getServerSideProps = (async (context) => {
   if (!context?.query.fid) {
+    console.log('no fid query given')
     return {
       redirect: {
         destination: '/frames/error',
