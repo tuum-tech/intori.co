@@ -66,6 +66,16 @@ const getBackAnswerOffset = (questionIndex: number, answerOffset: number): numbe
   return allAnswerOffsets[currentOffsetIndex - 1]
 }
 
+const convertAnswersToInputs = (answers: string[], questionIndex: number): IntoriFrameInputType[] => {
+  const submitAnswerPostUrl = `${process.env.NEXTAUTH_URL}/api/frames/answer&qi=${questionIndex}`
+
+  return answers.map((answer) => ({
+    type: 'button',
+    content: answer,
+    postUrl: submitAnswerPostUrl
+  })) as IntoriFrameInputType[]
+}
+
 export const getFrameInputsBasedOnAnswerOffset = (
   questionIndex: number,
   answerOffset: number
@@ -73,16 +83,10 @@ export const getFrameInputsBasedOnAnswerOffset = (
   const question = intoriQuestions[questionIndex]
   const inputs: IntoriFrameInputType[] = []
 
-  const submitAnswerPostUrl = `${process.env.NEXTAUTH_URL}/api/frames/answer`
-
   if (!answerOffset) {
     if (question.answers.length <= 4) {
       inputs.push(
-        ...question.answers.map((answer) => ({
-          type: 'button',
-          content: answer,
-          postUrl: submitAnswerPostUrl
-        })) as IntoriFrameInputType[]
+        ...convertAnswersToInputs(question.answers, questionIndex)
       )
 
       return inputs
@@ -91,11 +95,7 @@ export const getFrameInputsBasedOnAnswerOffset = (
     const firstThreeAnswers = question.answers.slice(0, 3)
 
     inputs.push(
-      ...firstThreeAnswers.map((answer) => ({
-        type: 'button',
-        content: answer,
-        postUrl: submitAnswerPostUrl
-      })) as IntoriFrameInputType[]
+      ...convertAnswersToInputs(firstThreeAnswers, questionIndex)
     )
 
     inputs.push({
@@ -123,11 +123,7 @@ export const getFrameInputsBasedOnAnswerOffset = (
     const nextTwoAnswers = question.answers.slice(answerOffset, answerOffset + 2)
 
     inputs.push(
-      ...nextTwoAnswers.map((answer) => ({
-        type: 'button',
-        content: answer,
-        postUrl: submitAnswerPostUrl
-      })) as IntoriFrameInputType[]
+      ...convertAnswersToInputs(nextTwoAnswers, questionIndex)
     )
 
     inputs.push({
@@ -145,11 +141,7 @@ export const getFrameInputsBasedOnAnswerOffset = (
   const lastAnswers = question.answers.slice(answerOffset)
 
   inputs.push(
-    ...lastAnswers.map((answer) => ({
-      type: 'button',
-      content: answer,
-      postUrl: submitAnswerPostUrl
-    })) as IntoriFrameInputType[]
+    ...convertAnswersToInputs(lastAnswers, questionIndex)
   )
 
   return inputs
