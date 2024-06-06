@@ -3,6 +3,7 @@ export type IntoriFrameInputType = {
     content: string
     action?: 'link'
     target?: string
+    postUrl?: string // A 256-byte string that defines a button-specific URL to send the Signature Packet to. If set, this overrides fc:frame:post_url.
 }
 
 export type IntoriFrameType = {
@@ -21,6 +22,15 @@ export const introductionStep: IntoriFrameType = {
       {
         type: 'button',
         content: 'Go!'
+      }
+    ]
+}
+
+export const errorFrame: IntoriFrameType = {
+    inputs: [
+      {
+        type: 'button',
+        content: 'Try Again'
       }
     ]
 }

@@ -1,6 +1,21 @@
 import type { NextApiRequest } from 'next'
 import { intoriQuestions, IntoriFrameInputType } from './intoriFrameForms'
 
+export type FarcasterFrameSubmitBodyType = {
+  untrustedData: {
+    fid: number,
+    url: string, // like referrer url
+    messageHash: string,
+    timestamp: number,
+    network: number,
+    buttonIndex: number,
+    castId: { fid: number, hash: string }
+  },
+  trustedData: {
+    messageBytes: string
+  }
+}
+
 export const frameQuestionUrl = (params: {
   questionIndex: number,
   answerOffset?: number
@@ -41,20 +56,15 @@ export const getFrameInputsBasedOnAnswerOffset = (
     inputs.push({
       type: 'button',
       content: 'More >',
-      action: 'link',
-      target: frameQuestionUrl({ questionIndex, answerOffset: 4 })
+      postUrl: frameQuestionUrl({ questionIndex, answerOffset: answerOffset + 3 })
     })
 
     return inputs
   }
 
-  const previousOffset = (answerOffset - 4 > 0) ? answerOffset - 4 : 0
-
   inputs.push({
     type: 'button',
-    content: '< Back',
-    action: 'link',
-    target: frameQuestionUrl({ questionIndex, answerOffset: previousOffset })
+    content: '< Back'
   })
 
   const isLastFrameOfAnswers = answerOffset + 3 >= question.answers.length
@@ -72,8 +82,7 @@ export const getFrameInputsBasedOnAnswerOffset = (
     inputs.push({
       type: 'button',
       content: 'More >',
-      action: 'link',
-      target: frameQuestionUrl({ questionIndex, answerOffset: answerOffset + 2 })
+      postUrl: frameQuestionUrl({ questionIndex, answerOffset: answerOffset + 2 })
     })
 
     return inputs
@@ -101,28 +110,14 @@ export const frameSubmissionHelpers = (req: NextApiRequest) => {
 
   let question: typeof intoriQuestions[0] | null = null
   let buttonClicked = ''
+  const questionIndex = parseInt(req.query.qi?.toString() || '0') ?? 0
 
   if (req.query.qi) {
-    const questionIndex = parseInt(req.query.qi?.toString() || '0') ?? 0
-
     question = intoriQuestions[questionIndex]
     const buttonIndexClicked = req.body.untrustedData.buttonIndexClicked
     const inputs = getFrameInputsBasedOnAnswerOffset(questionIndex, answerOffset)
 
-    console.log({
-      question,
-      buttonIndexClicked,
-      questionIndex,
-      answerOffset,
-      inputs,
-      buttonClicked
-    })
-
     buttonClicked = inputs[buttonIndexClicked].content
-
-    if (['< Back', 'More >'].includes(buttonClicked)) {
-      buttonClicked = ''
-    }
   }
 
   return {
@@ -131,7 +126,9 @@ export const frameSubmissionHelpers = (req: NextApiRequest) => {
     step,
     buttonClicked,
     question,
+    questionIndex,
     currentSequenceStep,
-    referrer
+    referrer,
+    answerOffset
   }
 }

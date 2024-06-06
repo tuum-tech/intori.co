@@ -10,8 +10,8 @@ import {
 type Props = {
   frame: IntoriFrameType
   imageUrl: string
-  postUrl: string
-  frameUrl: string
+  postUrl?: string
+  frameUrl?: string
 }
 
 export const FrameGenerator: React.FC<Props> = ({
@@ -21,7 +21,7 @@ export const FrameGenerator: React.FC<Props> = ({
   frameUrl
 }) => {
   const getTarget = useCallback((input: IntoriFrameInputType) => {
-    if (input.content === 'Share Frame') {
+    if (input.content === 'Share Frame' && frameUrl) {
       const urlSafeText = encodeURIComponent(frame?.question || 'Check out this frame from Intori!')
       return `https://warpcast.com/~/compose?text=${urlSafeText}&embeds[]=${frameUrl}`
     }
@@ -34,7 +34,7 @@ export const FrameGenerator: React.FC<Props> = ({
       imgUrl={imageUrl}
       description={frame.question || 'Your data, connected.'}
     >
-      <meta name="fc:frame:post_url" content={postUrl} />
+      { !!postUrl && <meta name="fc:frame:post_url" content={postUrl} /> }
 
       {
         frame.inputs.map((button, index) => (
@@ -57,6 +57,15 @@ export const FrameGenerator: React.FC<Props> = ({
                 content={getTarget(button)}
               />
             )}
+
+            {
+              button.postUrl && (
+                <meta
+                  name={`fc:frame:button:${index + 1}:post_url`}
+                  content={button.postUrl}
+                />
+              )
+            }
           </React.Fragment>
         ))
       }
