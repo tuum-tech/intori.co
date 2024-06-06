@@ -29,6 +29,7 @@ const newQuestion = async (
     const currentQuestionIndex = parseInt(req.query.qi as string, 10)
     const requestedAnswerOffset = parseInt(req.query.ioff as string, 10)
 
+    console.log('returning question: ', `/frames/question?qi=${currentQuestionIndex}&ioff=${requestedAnswerOffset}`)
     return res.redirect(
       307,
       `/frames/question?qi=${currentQuestionIndex}&ioff=${requestedAnswerOffset}`
@@ -52,6 +53,7 @@ const newQuestion = async (
     // TODO: add frame that you answered all questions
   }
 
+  console.log('returning question: ', `/frames/question?qi=${nextQuestionIndex}`)
   return res.redirect(
     307,
     `/frames/question?qi=${nextQuestionIndex}`
