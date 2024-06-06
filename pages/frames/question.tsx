@@ -24,7 +24,6 @@ type Props = {
  
 export const getServerSideProps = (async (context) => {
   if (!context?.query?.qi) {
-    console.log('no query qi')
     return {
       redirect: {
         destination: '/frames/error',
@@ -38,7 +37,6 @@ export const getServerSideProps = (async (context) => {
   const question = intoriQuestions[questionIndex]
 
   if (!question) {
-    console.log('question with question id does not exist')
     return {
       redirect: {
         destination: '/frames/error',
