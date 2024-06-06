@@ -63,7 +63,7 @@ export const getServerSideProps = (async (context) => {
   inputs.push({
       type: 'button',
       content: 'Keep Going >',
-      postUrl: `${process.env.NEXTAUTH_URL}/frames/question`
+      postUrl: `${process.env.NEXTAUTH_URL}/api/frames/question`
   })
 
   const frame: IntoriFrameType = {
