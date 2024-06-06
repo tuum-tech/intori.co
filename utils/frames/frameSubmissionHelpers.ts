@@ -158,27 +158,18 @@ export const frameSubmissionHelpers = (req: NextApiRequest) => {
   const answerOffset = parseInt(req.query.ioff?.toString() || '0') ?? 0
   const currentSequenceStep = parseInt(req.query.step?.toString() || '0') ?? 0
   const referrer = req.body.untrustedData.url as string
-  const buttonIndexClicked = req.body.untrustedData.buttonIndexClicked
+  const buttonIndexClicked = req.body.untrustedData.buttonIndex
 
   let question: typeof intoriQuestions[0] | null = null
   let buttonClicked = ''
   const questionIndex = parseInt(req.query.qi?.toString() || '0') ?? 0
-
-  console.log('queries given: ', req.query)
 
   if (req.query.qi && buttonIndexClicked) {
     question = intoriQuestions[questionIndex]
     const inputs = getFrameInputsBasedOnAnswerOffset(questionIndex, answerOffset)
 
     buttonClicked = inputs[buttonIndexClicked - 1].content
-    console.log({ inputs })
   }
-
-  console.log({
-    question,
-    buttonIndexClicked,
-    buttonClicked,
-  })
 
   return {
     fidThatCastedFrame,
