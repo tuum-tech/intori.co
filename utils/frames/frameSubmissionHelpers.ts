@@ -164,7 +164,7 @@ export const frameSubmissionHelpers = (req: NextApiRequest) => {
     const buttonIndexClicked = req.body.untrustedData.buttonIndexClicked
     const inputs = getFrameInputsBasedOnAnswerOffset(questionIndex, answerOffset)
 
-    buttonClicked = inputs[buttonIndexClicked].content
+    buttonClicked = inputs[buttonIndexClicked - 1].content
   }
 
   return {
