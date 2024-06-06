@@ -1,16 +1,15 @@
 import React, { useState } from 'react'
 import { toast } from 'react-toastify'
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
-import { FrameGenerator } from '../../../components/farcaster/FrameGenerator'
+import { FrameGenerator } from '../../components/farcaster/FrameGenerator'
 import { AppLayout } from "@/layouts/App"
-import { Section } from '../../../components/common/Section'
+import { Section } from '../../components/common/Section'
 import {
     IntoriFrameType,
-    intoriQuestions,
-    IntoriFrameInputType
-} from '../../../utils/frames/intoriFrameForms'
-import Input from '../../../components/common/Input'
-import { PrimaryButton } from '../../../components/common/Button'
+    introductionStep
+} from '../../utils/frames/intoriFrameForms'
+import Input from '../../components/common/Input'
+import { PrimaryButton } from '../../components/common/Button'
 import styles from './FramePage.module.css'
  
 type Props = {
@@ -20,68 +19,17 @@ type Props = {
   frame: IntoriFrameType
 }
  
-export const getServerSideProps = (async (context) => {
-  if (!context?.params?.qi) {
-    return {
-      notFound: true
-    }
-  }
-
-  const questionIndex = parseInt(context.query.qi as string, 10)
-  const step = parseInt(context.query.step as string, 10) || 0
-  const fid = parseInt(context.query.fid as string, 10) || 0
-  const question = intoriQuestions[questionIndex]
-
-  if (!question || !step || !fid) {
-    return {
-      notFound: true
-    }
-  }
-
-  const frameUrl = `${process.env.NEXTAUTH_URL}/frames/sequence/begin`
-  const postUrl = `${process.env.NEXTAUTH_URL}/api/frames/submit?step=${step}`
-  const imageUrl = `${process.env.NEXTAUTH_URL}/api/frames/profile/${fid}`
-
-  // if step == 5, show suggested user
-  // suggest a channel
-  // share frame 
-  // view intori.co
-  const inputs: IntoriFrameInputType[] = []
-
-  // get suggested channel
-  inputs.push({
-    type: 'button',
-    action: 'link',
-    target: 'https://warpcast.com/~/channel/farcaster',
-    content: '/farcaster',
-  })
-
-  if (step === 6) {
-    inputs.push({
-      type: 'button',
-      action: 'link',
-      target: 'https://warpcast.com/intori',
-      content: '/intori',
-    })
-  }
-
-  inputs.push({
-      type: 'button',
-      action: 'link',
-      target: frameUrl,
-      content: 'Share Frame'
-  })
-
-  const frame: IntoriFrameType = {
-    inputs
-  }
+export const getServerSideProps = (async () => {
+  const frameUrl = `${process.env.NEXTAUTH_URL}/frames/begin`
+  const postUrl  = `${process.env.NEXTAUTH_URL}/api/frames/submit`
+  const imageUrl = `${process.env.NEXTAUTH_URL}/assets/templates/intro_frame_template.png`
 
   return {
     props: {
       postUrl,
       imageUrl,
       frameUrl,
-      frame
+      frame: introductionStep
     }
   }
 }) satisfies GetServerSideProps<Props>

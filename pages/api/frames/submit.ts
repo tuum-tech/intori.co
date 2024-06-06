@@ -9,24 +9,6 @@ import {
 } from '../../../models/userAnswers'
 import { intoriQuestions } from '../../../utils/frames/intoriFrameForms'
 
-// example farcaster frame submit
-// console.log({
-//     body: {
-//       untrustedData: {
-//         fid: 470223,
-//         url: 'https://intori.tyhacz.com/frame/step-1?r=23123123',
-//         messageHash: '0x8055ff77e3c87a0e9d705a9eb54e4c44676992a2',
-//         timestamp: 1712863849000,
-//         network: 1,
-//         buttonIndex: 1,
-//         castId: { fid: 470223, hash: '0xa2d09624cdd4fe2c5250506d21f606f80a1e9e6c' }
-//       },
-//       trustedData: {
-//         messageBytes: '0a61080d10cfd91c18e9a8a73120018201510a3168747470733a2f2f696e746f72692e74796861637a2e636f6d2f6672616d652f737465702d313f723d323331323331323310011a1a08cfd91c1214a2d09624cdd4fe2c5250506d21f606f80a1e9e6c12148055ff77e3c87a0e9d705a9eb54e4c44676992a218012240890cc3a5641f3ffaf997d857d72d6c0232c916039e711975790a2c8ca6e55a335f4c1326f4c89716a3d1cd8bb42e697cbb3a8f644d74947c3ce9a42d11c7be0b2801322028e64131458f85cd6f4bb0c0a5227ae387ac85c31975c7dc40cd6aa3b2656858'
-//       }
-//     }
-// })
-
 const submitFrame = async (
   req: NextApiRequest,
   res: NextApiResponse
@@ -42,32 +24,35 @@ const submitFrame = async (
     return res.status(400).end()
   }
 
-  const {
-    fid,
-    buttonClicked,
-    question,
-    fidThatCastedFrame,
-    step,
-    referrer
-  } = frameSubmissionHelpers(req)
+  const currentStep = parseInt(req.query.step?.toString() || '0') ?? 0
+  const stepsThatRequireQuestion = [0, 2, 4]
+  const stepsWhereAnswerSubmitted = [1, 3, 5]
 
-  const nextStep = step + 1
-
-  if (!step && !referrer.endsWith('/frames/sequence/begin')) {
-    return res.status(400).end()
+  if (stepsThatRequireQuestion.includes(currentStep)) {
+    return showNewQuestionFrame(req, res)
   }
 
+  if (stepsWhereAnswerSubmitted.includes(currentStep)) {
+    // save answer
+    // show results
+    //  if step === 5 show suggested user
+    return showResultsFrame(req, res)
+  }
+
+  return res.status(400).end()
+
+  // wants a question
   if ([0, 2, 4].includes(step)) {
-    let questionIndex = Math.floor(Math.random() * intoriQuestions.length)
-    let question = intoriQuestions[questionIndex]
-    let alreadyAnswered = await getUserAnswerForQuestion(fid, question.question)
+    let nextQuestionIndex = Math.floor(Math.random() * intoriQuestions.length)
+    let nextQuestion = intoriQuestions[questionIndex]
+    let alreadyAnswered = await getUserAnswerForQuestion(fid, nextQuestion.question)
     let tries = 0;
 
     while (alreadyAnswered && tries < 5) {
       tries += 1
-      questionIndex = Math.floor(Math.random() * intoriQuestions.length)
-      question = intoriQuestions[questionIndex]
-      alreadyAnswered = await getUserAnswerForQuestion(fid, question.question)
+      nextQuestionIndex = Math.floor(Math.random() * intoriQuestions.length)
+      nextQuestion = intoriQuestions[nextQuestionIndex]
+      alreadyAnswered = await getUserAnswerForQuestion(fid, nextQuestion.question)
       break
     }
 
@@ -77,12 +62,27 @@ const submitFrame = async (
 
     return res.redirect(
       307,
-      `/frames/sequence/question?qi=${questionIndex}&step=${nextStep}`
+      `/frames/question?qi=${questionIndex}&step=${nextStep}`
     )
   }
 
-  // check if user already answered this question
+  // just answered a question
   if ([1, 3, 5].includes(step) && question && buttonClicked) {
+    if (buttonClicked === '< Back') {
+      const previousOffset = (answerOffset - 4 > 0) ? answerOffset - 4 : 0
+      return res.redirect(
+        307,
+        `/frames/question?qi=${questionIndex}&step=${step}&ioff=${previousOffset}`
+      )
+    }
+
+    if (buttonClicked === 'More >') {
+      return res.redirect(
+        307,
+        `/frames/question?qi=${questionIndex}&step=${step}&ioff=${answerOffset + 2}`
+      )
+    }
+
     const alreadyAnswered = await getUserAnswerForQuestion(fid, question.question)
 
     if (alreadyAnswered) {
@@ -96,13 +96,9 @@ const submitFrame = async (
       casterFid: fidThatCastedFrame
     })
 
-    const questionIndex = intoriQuestions.findIndex(
-      (q) => q.question === question.question
-    )
-
     return res.redirect(
       307,
-      `/frames/sequence/results?step=${nextStep}&qi=${questionIndex}&fid=${fid}`
+      `/frames/results?step=${nextStep}&qi=${questionIndex}&fid=${fid}`
     )
   }
 

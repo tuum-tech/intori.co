@@ -1,15 +1,18 @@
 import React, { useState } from 'react'
 import { toast } from 'react-toastify'
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
-import { FrameGenerator } from '../../../components/farcaster/FrameGenerator'
+import { FrameGenerator } from '../../components/farcaster/FrameGenerator'
 import { AppLayout } from "@/layouts/App"
-import { Section } from '../../../components/common/Section'
+import { Section } from '../../components/common/Section'
 import {
     IntoriFrameType,
-    introductionStep
-} from '../../../utils/frames/intoriFrameForms'
-import Input from '../../../components/common/Input'
-import { PrimaryButton } from '../../../components/common/Button'
+    intoriQuestions
+} from '../../utils/frames/intoriFrameForms'
+import {
+  getFrameInputsBasedOnAnswerOffset
+} from '../../utils/frames/frameSubmissionHelpers'
+import Input from '../../components/common/Input'
+import { PrimaryButton } from '../../components/common/Button'
 import styles from './FramePage.module.css'
  
 type Props = {
@@ -19,17 +22,39 @@ type Props = {
   frame: IntoriFrameType
 }
  
-export const getServerSideProps = (async () => {
-  const frameUrl = `${process.env.NEXTAUTH_URL}/frames/sequence`
-  const postUrl  = `${process.env.NEXTAUTH_URL}/api/frames/submit`
-  const imageUrl = `${process.env.NEXTAUTH_URL}/assets/templates/intro_frame_template.png`
+export const getServerSideProps = (async (context) => {
+  if (!context?.query?.qi) {
+    return {
+      notFound: true
+    }
+  }
 
+  const questionIndex = parseInt(context.query.qi as string, 10)
+  const answerOffset = parseInt(context.query.ioff as string, 10) || 0
+  const question = intoriQuestions[questionIndex]
+
+  if (!question) {
+    return {
+      notFound: true
+    }
+  }
+
+  const frameUrl = `${process.env.NEXTAUTH_URL}/frames/begin`
+  // const postUrl = `${process.env.NEXTAUTH_URL}/api/frames/answer`
+  const imageUrl = `${process.env.NEXTAUTH_URL}/assets/frames/questions/${questionIndex}.png`
+
+  const frame: Partial<IntoriFrameType> = {
+    question: question.question,
+    inputs: getFrameInputsBasedOnAnswerOffset(questionIndex, answerOffset)
+  }
+
+  console.log('showing this frame: ', frame)
   return {
     props: {
       postUrl,
       imageUrl,
       frameUrl,
-      frame: introductionStep
+      frame: frame as IntoriFrameType
     }
   }
 }) satisfies GetServerSideProps<Props>

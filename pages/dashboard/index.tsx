@@ -16,7 +16,6 @@ import styles from './Dashboard.module.css'
 
 type Props = {
   answers: UserAnswerPageType[]
-  profileFrameUrl: string
 }
 
 
@@ -36,11 +35,8 @@ export const getServerSideProps = (async (context) => {
     parseInt(session.user.fid, 10)
   )
 
-  const profileFrameUrl = `${process.env.NEXTAUTH_URL}/frames/profile/${session.user.fid}`
-
   return {
     props: {
-      profileFrameUrl,
       answers: answers
         .filter(answer => answer.date)
         .filter(answer => !['more', '< back', 'back', 'next'].includes(answer.answer.toLowerCase()))

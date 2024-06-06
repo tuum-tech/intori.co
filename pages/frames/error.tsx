@@ -1,8 +1,9 @@
 import React from 'react'
 import Image from 'next/image'
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
-import { FarcasterFrameHead } from '../../../components/farcaster/FarcasterFrameHead'
-import { PageWrapper } from '../../../components/farcaster/PageWrapper'
+import { FrameGenerator } from '../../components/farcaster/FrameGenerator'
+import { PageWrapper } from '../../components/farcaster/PageWrapper'
+import { errorFrame } from' ../../utils/frames/intoriFrameForms'
  
 type Props = {
   imageUrl: string
@@ -30,11 +31,11 @@ export default function Page({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <PageWrapper title="Profile">
-      <FarcasterFrameHead imgUrl={imageUrl} description="Your data, connected.">
-          <meta name='fc:frame:button:1' content="Learn More" />
-          <meta name='fc:frame:button:1:action' content="link" />
-          <meta name='fc:frame:button:1:target' content="https://www.intori.co/" />
-      </FarcasterFrameHead>
+      <FrameGenerator
+        frame={errorFrame}
+        imageUrl={imageUrl}
+        postUrl={`${process.env.NEXTAUTH_URL}/api/profile/${context?.params?.fid}`}
+      />
 
       <div className="text-center">
         <Image src={imageUrl} alt="Profile" width={191 * 3} height={100 * 3} />
