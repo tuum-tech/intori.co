@@ -29,7 +29,7 @@ export const createFrameSession = async (newFrameSession: CreateFrameSessionType
 
   const doc = await collection.add({
     ...newFrameSession,
-    questionNumber: 1,
+    questionNumber: 0,
     createdAt: new Date()
   })
 
@@ -73,7 +73,7 @@ export const incrementSessionQuestion = async (
 
   const currentDocumentState = doc.data() as FrameSessionType
 
-  if (currentDocumentState.questionNumber === 4) {
+  if (currentDocumentState.questionNumber === 3) {
     return null
   }
 

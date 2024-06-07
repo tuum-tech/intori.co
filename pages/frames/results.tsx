@@ -59,7 +59,7 @@ export const getServerSideProps = (async (context) => {
     content: '/farcaster',
   })
 
-  if (session?.questionNumber === 4) {
+  if (session?.questionNumber === 3) {
     // TODO: get suggested user
     inputs.push({
       type: 'button',
@@ -77,7 +77,7 @@ export const getServerSideProps = (async (context) => {
       content: 'Share Frame'
   })
 
-  if (session.questionNumber < 4) {
+  if (session.questionNumber < 3) {
     inputs.push({
         type: 'button',
         content: 'Keep Going >',
