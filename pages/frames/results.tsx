@@ -59,7 +59,7 @@ export const getServerSideProps = (async (context) => {
     content: '/farcaster',
   })
 
-  if (session?.questionNumber === 3) {
+  if (session?.questionNumber === 4) {
     // TODO: get suggested user
     inputs.push({
       type: 'button',

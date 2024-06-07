@@ -73,7 +73,7 @@ export const incrementSessionQuestion = async (
 
   const currentDocumentState = doc.data() as FrameSessionType
 
-  if (currentDocumentState.questionNumber === 3) {
+  if (currentDocumentState.questionNumber === 4) {
     return null
   }
 
