@@ -57,7 +57,7 @@ const answeredQuestion = async (
       )
     }
 
-    session = await getFrameSessionById(frameSessionId)
+    session = await getFrameSessionById(successful.id)
   }
 
   if (!session) {
