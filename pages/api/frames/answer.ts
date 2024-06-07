@@ -4,7 +4,11 @@ import {
 } from '../../../utils/frames/frameSubmissionHelpers'
 import { validateFarcasterPacketMessage } from '../utils/farcasterServer'
 import { createUserAnswer } from '../../../models/userAnswers'
-import { incrementSessionQuestion } from '../../../models/frameSession'
+import {
+  incrementSessionQuestion,
+  getFrameSessionById,
+  createFrameSession
+} from '../../../models/frameSession'
 import { createFrameErrorUrl, createFrameResultsUrl } from '../../../utils/frames/generatePageUrls'
 
 const answeredQuestion = async (
@@ -37,6 +41,19 @@ const answeredQuestion = async (
       307,
       createFrameErrorUrl()
     )
+  }
+
+  const session = await getFrameSessionById(frameSessionId)
+
+  if (!session) {
+    const successful = await createFrameSession({ fid })
+
+    if (!successful) {
+      return res.redirect(
+        307,
+        createFrameErrorUrl()
+      )
+    }
   }
 
   const successful = await incrementSessionQuestion(frameSessionId)

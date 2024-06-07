@@ -49,7 +49,7 @@ export const getServerSideProps = (async (context) => {
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/begin`
   const imageUrl = `${process.env.NEXTAUTH_URL}/assets/frames/questions/${questionIndex}.png`
 
-  const frame: Partial<IntoriFrameType> = {
+  const frame: IntoriFrameType = {
     question: question.question,
     inputs: getFrameInputsBasedOnAnswerOffset(
       questionIndex,
