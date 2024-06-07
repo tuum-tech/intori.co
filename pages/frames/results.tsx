@@ -12,6 +12,9 @@ import Input from '../../components/common/Input'
 import { PrimaryButton } from '../../components/common/Button'
 import styles from './FramePage.module.css'
 import { getFrameSessionById } from '../../models/frameSession'
+import {
+  createStartNewFrameQuestionUrl
+} from '../../utils/frames/generatePageUrls'
  
 type Props = {
   imageUrl: string
@@ -78,7 +81,7 @@ export const getServerSideProps = (async (context) => {
     inputs.push({
         type: 'button',
         content: 'Keep Going >',
-        postUrl: `${process.env.NEXTAUTH_URL}/api/frames/question`
+        postUrl: createStartNewFrameQuestionUrl({ frameSessionId }),
     })
   }
 

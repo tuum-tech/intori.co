@@ -37,6 +37,7 @@ const answeredQuestion = async (
   } = frameSubmissionHelpers(req)
 
   if (!question) {
+    console.log('ERROR: no question found')
     return res.redirect(
       307,
       createFrameErrorUrl()
@@ -60,6 +61,7 @@ const answeredQuestion = async (
   }
 
   if (!session) {
+    console.log('ERROR: no session created or found')
     return res.redirect(
       307,
       createFrameErrorUrl()
@@ -90,7 +92,10 @@ const answeredQuestion = async (
 
   return res.redirect(
     307,
-    createFrameResultsUrl({ fid })
+    createFrameResultsUrl({
+      fid,
+      frameSessionId: session.id
+    })
   )
 }
 
