@@ -89,7 +89,7 @@ export const incrementSessionQuestion = async (
 export const getFrameSessionFromRequest = async (
   req: NextApiRequest
 ) => {
-  const frameSessionId = req.query.fsi
+  const frameSessionId = req.query.fsid
 
   if (!frameSessionId) {
     return null
