@@ -214,6 +214,10 @@ export const getSuggestedUsers = async (
     options?.maxResults ?? suggestedUserFids.length
   ).map((suggestedUser) => suggestedUser.fid)
 
+  if (!fids.length) {
+    return []
+  }
+
   const userDetails = await fetchUserDetailsByFids(fids)
 
   const suggestedUsers = suggestedUserFids.map((suggestedUser) => {
