@@ -79,5 +79,49 @@ export const intoriQuestions = [
   {
     question: 'Which of the following are your favorite type of snack?',
     answers: [ 'Sweet', 'Salty', 'Healthy', 'Indulgent', 'Spicy', 'Savory', 'None']
+  },
+  {
+    question: "Which of the following values are most important to you in your professional life?",
+    answers: ["Life Balance", "$$ Stability", "Growth", "Positive Impact", "Innovation", "Collaboration", "Other"]
+  },
+  {
+    question: "What is your highest level of education?",
+    answers: ["High School", "Associate's", "Bachelor's", "Master's", "Doctorate", "Certification", "Other"]
+  },
+  {
+    question: "Which of the following are your exercise preferences?",
+    answers: ["Gym", "Running", "Yoga", "Sports", "Home Workout", "Outside", "None"]
+  },
+  {
+    question: "What are your sleep habits?",
+    answers: ["Early Bird", "Night Owl", "Insomniac", "Heavy Sleep", "Variable", "Regular Naps", "Other"]
+  },
+  {
+    question: "Which of the following is your preferred operating system?",
+    answers: ["Windows", "macOS", "Linux", "Android", "iOS", "Chrome OS", "Other"]
+  },
+  {
+    question: "Which of the following is your dream vacation destination?",
+    answers: ["Tropics", "Historic City", "Wilderness", "Cultural Tour", "Space", "Road Trip", "Other"]
+  },
+  {
+    question: "Which of the following is your preferred mode of travel?",
+    answers: ["Plane", "Train", "Car", "Cruise", "Biking", "Walking", "Other"]
+  },
+  {
+    question: "Which of the following is your level of environmental consciousness?",
+    answers: ["Very Concerned", "Moderately", "Slightly", "Neutral", "Unconcerned", "Activist", "Other"]
+  },
+  {
+    question: "Which of the following is your importance of work-life balance?",
+    answers: ["Essential", "Very", "Moderately", "Slightly", "Not Important", "Flexible", "Other"]
+  },
+  {
+    question: "What is your favorite type of cuisine?",
+    answers: ["Italian", "Mexican", "Chinese", "Indian", "Japanese", "French", "Thai", "Greek", "Spanish", "Korean"]
+  },
+  {
+    question: "What type of exercise do you prefer?",
+    answers: ["Gym workouts", "Outdoor activities", "Yoga", "Sports", "Home workouts", "No exercise"]
   }
 ]
