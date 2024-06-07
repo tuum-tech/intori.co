@@ -47,17 +47,15 @@ const answeredQuestion = async (
   let session = await getFrameSessionById(frameSessionId)
 
   if (!session) {
-    const successful = await createFrameSession({ fid })
+    session = await createFrameSession({ fid })
 
-    if (!successful) {
+    if (!session) {
       console.log('failed to create new frame session')
       return res.redirect(
         307,
         createFrameErrorUrl()
       )
     }
-
-    session = await getFrameSessionById(successful.id)
   }
 
   if (!session) {
@@ -68,6 +66,7 @@ const answeredQuestion = async (
     )
   }
 
+  console.log('session: ', session)
   const successful = await incrementSessionQuestion(session.id)
 
   if (!successful) {
