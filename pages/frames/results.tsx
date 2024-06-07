@@ -77,7 +77,7 @@ export const getServerSideProps = (async (context) => {
       content: 'Share Frame'
   })
 
-  if (session.questionNumber < 3) {
+  if (session.questionNumber < 4) {
     inputs.push({
         type: 'button',
         content: 'Keep Going >',
