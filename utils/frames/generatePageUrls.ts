@@ -2,12 +2,12 @@ export const createFrameErrorUrl = (): string => {
   return '/frames/error'
 }
 
-
 export const createFrameResultsUrl = (params: {
-  fid: number
+  fid: number,
+  frameSessionId: string
 }): string => {
-  const { fid } = params
-  return `/frames/results?fid=${fid}`
+  const { fid, frameSessionId } = params
+  return `/frames/results?fid=${fid}&fsid=${frameSessionId}`
 }
 
 export const createFrameQuestionUrl = (params: {
@@ -19,7 +19,13 @@ export const createFrameQuestionUrl = (params: {
   return `/frames/question?qi=${questionIndex}&ioff=${answerOffset}&fsid=${frameSessionId}`
 }
 
-export const createStartNewFrameQuestionUrl = (): string => {
+export const createStartNewFrameQuestionUrl = (params: {
+  frameSessionId?: string
+} = {}): string => {
+  if (!params.frameSessionId) {
+    return `${process.env.NEXTAUTH_URL}/api/frames/question?fsid=${params.frameSessionId}`
+  }
+
   return `${process.env.NEXTAUTH_URL}/api/frames/question`
 }
 
