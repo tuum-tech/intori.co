@@ -4,6 +4,8 @@ import {
 } from '../../../utils/frames/frameSubmissionHelpers'
 import { validateFarcasterPacketMessage } from '../utils/farcasterServer'
 import { createUserAnswer } from '../../../models/userAnswers'
+import { incrementSessionQuestion } from '../../../models/frameSession'
+import { createFrameErrorUrl, createFrameResultsUrl } from '../../../utils/frames/generatePageUrls'
 
 const answeredQuestion = async (
   req: NextApiRequest,
@@ -18,7 +20,7 @@ const answeredQuestion = async (
   if (!validFarcasterPacket) {
     return res.redirect(
       307,
-      `/frames/error`
+      createFrameErrorUrl()
     )
   }
   
@@ -26,13 +28,23 @@ const answeredQuestion = async (
     fid,
     buttonClicked,
     question,
-    fidThatCastedFrame
+    fidThatCastedFrame,
+    frameSessionId
   } = frameSubmissionHelpers(req)
 
   if (!question) {
     return res.redirect(
       307,
-      `/frames/error`
+      createFrameErrorUrl()
+    )
+  }
+
+  const successful = await incrementSessionQuestion(frameSessionId)
+
+  if (!successful) {
+    return res.redirect(
+      307,
+      createFrameErrorUrl()
     )
   }
 
@@ -50,7 +62,7 @@ const answeredQuestion = async (
 
   return res.redirect(
     307,
-    `/frames/results?fid=${fid}`
+    createFrameResultsUrl({ fid })
   )
 }
 

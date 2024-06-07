@@ -11,6 +11,7 @@ import {
 import Input from '../../components/common/Input'
 import { PrimaryButton } from '../../components/common/Button'
 import styles from './FramePage.module.css'
+import { getFrameSessionById } from '../../models/frameSession'
  
 type Props = {
   imageUrl: string
@@ -19,7 +20,7 @@ type Props = {
 }
  
 export const getServerSideProps = (async (context) => {
-  if (!context?.query.fid) {
+  if (!context?.query.fid || !context?.query.fsid) {
     return {
       redirect: {
         destination: '/frames/error',
@@ -29,6 +30,18 @@ export const getServerSideProps = (async (context) => {
   }
 
   const fid = parseInt(context.query.fid as string, 10) || 0
+  const frameSessionId = context.query.fsid?.toString() as string
+
+  const session = await getFrameSessionById(frameSessionId)
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/frames/error',
+        permanent: false
+      }
+    }
+  }
 
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/begin`
   const imageUrl = `${process.env.NEXTAUTH_URL}/api/results/${fid}`
@@ -43,13 +56,15 @@ export const getServerSideProps = (async (context) => {
     content: '/farcaster',
   })
 
-  // TODO: get suggested user
-  inputs.push({
-    type: 'button',
-    action: 'link',
-    target: 'https://warpcast.com/intori',
-    content: '/intori',
-  })
+  if (session?.questionNumber === 3) {
+    // TODO: get suggested user
+    inputs.push({
+      type: 'button',
+      action: 'link',
+      target: 'https://warpcast.com/intori',
+      content: '/intori',
+    })
+  }
   
 
   inputs.push({
@@ -59,11 +74,13 @@ export const getServerSideProps = (async (context) => {
       content: 'Share Frame'
   })
 
-  inputs.push({
-      type: 'button',
-      content: 'Keep Going >',
-      postUrl: `${process.env.NEXTAUTH_URL}/api/frames/question`
-  })
+  if (session.questionNumber < 3) {
+    inputs.push({
+        type: 'button',
+        content: 'Keep Going >',
+        postUrl: `${process.env.NEXTAUTH_URL}/api/frames/question`
+    })
+  }
 
   const frame: IntoriFrameType = {
     inputs

@@ -14,19 +14,19 @@ import {
 import Input from '../../components/common/Input'
 import { PrimaryButton } from '../../components/common/Button'
 import styles from './FramePage.module.css'
+import { createFrameErrorUrl } from '../../utils/frames/generatePageUrls'
  
 type Props = {
-  postUrl: string
   imageUrl: string
   frameUrl: string
   frame: IntoriFrameType
 }
  
 export const getServerSideProps = (async (context) => {
-  if (!context?.query?.qi) {
+  if (!context?.query?.qi || !context?.query?.fsid) {
     return {
       redirect: {
-        destination: '/frames/error',
+        destination: createFrameErrorUrl(),
         permanent: false
       }
     }
@@ -34,29 +34,32 @@ export const getServerSideProps = (async (context) => {
 
   const questionIndex = parseInt(context.query.qi as string, 10)
   const answerOffset = parseInt(context.query.ioff as string, 10) || 0
+  const frameSessionId = context.query.fsid?.toString() as string
   const question = intoriQuestions[questionIndex]
 
   if (!question) {
     return {
       redirect: {
-        destination: '/frames/error',
+        destination: createFrameErrorUrl(),
         permanent: false
       }
     }
   }
 
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/begin`
-  const postUrl = `${process.env.NEXTAUTH_URL}/frames/answer`
   const imageUrl = `${process.env.NEXTAUTH_URL}/assets/frames/questions/${questionIndex}.png`
 
   const frame: Partial<IntoriFrameType> = {
     question: question.question,
-    inputs: getFrameInputsBasedOnAnswerOffset(questionIndex, answerOffset)
+    inputs: getFrameInputsBasedOnAnswerOffset(
+      questionIndex,
+      answerOffset,
+      frameSessionId
+    )
   }
 
   return {
     props: {
-      postUrl,
       imageUrl,
       frameUrl,
       frame: frame as IntoriFrameType
@@ -65,7 +68,6 @@ export const getServerSideProps = (async (context) => {
 }) satisfies GetServerSideProps<Props>
  
 export default function Page({
-  postUrl,
   imageUrl,
   frameUrl,
   frame
@@ -87,7 +89,6 @@ export default function Page({
         frame={frame}
         imageUrl={imageUrl}
         frameUrl={frameUrl}
-        postUrl={postUrl}
       />
       <AppLayout>
         <Section>
