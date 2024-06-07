@@ -70,12 +70,11 @@ const newQuestion = async (
   let alreadyAnsweredQuestion = await getUserAnswerForQuestion(fid, nextQuestion.question)
   let tries = 0;
 
-  while (alreadyAnsweredQuestion && tries < 5) {
+  while (alreadyAnsweredQuestion && tries < 10) {
     tries += 1
     nextQuestionIndex = Math.floor(Math.random() * intoriQuestions.length)
     nextQuestion = intoriQuestions[nextQuestionIndex]
     alreadyAnsweredQuestion = await getUserAnswerForQuestion(fid, nextQuestion.question)
-    break
   }
 
   if (tries === 5) {
