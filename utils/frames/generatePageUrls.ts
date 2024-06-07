@@ -22,7 +22,7 @@ export const createFrameQuestionUrl = (params: {
 export const createStartNewFrameQuestionUrl = (params: {
   frameSessionId?: string
 } = {}): string => {
-  if (!params.frameSessionId) {
+  if (params.frameSessionId) {
     return `${process.env.NEXTAUTH_URL}/api/frames/question?fsid=${params.frameSessionId}`
   }
 
