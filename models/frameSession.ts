@@ -35,7 +35,8 @@ export const createFrameSession = async (newFrameSession: CreateFrameSessionType
 
   const ref = await doc.get()
 
-  return ref.data() as FrameSessionType
+  return { id: ref.id, ...ref.data() } as FrameSessionType;
+
 }
 
 export const getFrameSessionById = async (id: string): Promise<FrameSessionType | null> => {
@@ -48,9 +49,10 @@ export const getFrameSessionById = async (id: string): Promise<FrameSessionType 
   const doc = await docRef.get();
 
   if (doc.exists) {
-    return doc.data() as FrameSessionType
+    return { id: doc.id, ...doc.data() } as FrameSessionType;
   }
-return null
+
+  return null
 }
 
 export const incrementSessionQuestion = async (
@@ -81,7 +83,7 @@ export const incrementSessionQuestion = async (
 
   const updatedSession = await docRef.get()
 
-  return updatedSession.data() as FrameSessionType
+  return { id: updatedSession.id, ...updatedSession.data() } as FrameSessionType;
 }
 
 export const getFrameSessionFromRequest = async (
