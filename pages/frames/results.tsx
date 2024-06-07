@@ -12,6 +12,7 @@ import Input from '../../components/common/Input'
 import { PrimaryButton } from '../../components/common/Button'
 import styles from './FramePage.module.css'
 import { getFrameSessionById } from '../../models/frameSession'
+import { getSuggestedUsersAndChannels } from '../../models/userAnswers'
 import {
   createStartNewFrameQuestionUrl
 } from '../../utils/frames/generatePageUrls'
@@ -48,25 +49,54 @@ export const getServerSideProps = (async (context) => {
 
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/begin`
   const imageUrl = `${process.env.NEXTAUTH_URL}/api/results/${fid}`
+  const imageUrlQueryParts: string[] = []
 
   const inputs: IntoriFrameInputType[] = []
 
-  // TODO: get suggested channel
-  inputs.push({
-    type: 'button',
-    action: 'link',
-    target: 'https://warpcast.com/~/channel/farcaster',
-    content: '/farcaster',
+  const suggestions = await getSuggestedUsersAndChannels(fid, {
+    maxResults: 5
   })
 
-  if (session?.questionNumber === 3) {
-    // TODO: get suggested user
+  const channelSuggestions = suggestions.filter(suggestion => suggestion.channel)
+  const userSuggestions = suggestions.filter(suggestion => suggestion.user)
+
+  if (channelSuggestions.length) {
+    const randomChannel = channelSuggestions[Math.floor(Math.random() * channelSuggestions.length)]
+
     inputs.push({
       type: 'button',
       action: 'link',
-      target: 'https://warpcast.com/intori',
-      content: '/intori',
+      target: `https://warpcast.com/~/channel/${randomChannel}`,
+      content: `/${randomChannel.channel?.name}`
     })
+
+    imageUrlQueryParts.push(`sc=${randomChannel.channel?.name}`)
+    imageUrlQueryParts.push(`scr=${randomChannel.reason}`)
+  }
+
+  if (session?.questionNumber === 3) {
+    if (!userSuggestions.length) {
+      inputs.push({
+        type: 'button',
+        action: 'link',
+        target: 'https://warpcast.com/intori',
+        content: '/intori',
+      })
+    } else {
+      const randomUser = userSuggestions[Math.floor(Math.random() * userSuggestions.length)]
+
+      if (randomUser.user) {
+        inputs.push({
+          type: 'button',
+          action: 'link',
+          target: `https://warpcast.com/${randomUser.user?.username}`,
+          content: `/${randomUser.user?.username}`
+        })
+      }
+
+      imageUrlQueryParts.push(`su=${randomUser.user?.username}`)
+      imageUrlQueryParts.push(`sur=${randomUser.reason}`)
+    }
   }
   
 
@@ -91,7 +121,7 @@ export const getServerSideProps = (async (context) => {
 
   return {
     props: {
-      imageUrl,
+      imageUrl: imageUrl + '?' + imageUrlQueryParts.join('&'),
       frameUrl,
       frame
     }
