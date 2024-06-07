@@ -3,6 +3,12 @@ import { frameSubmissionHelpers } from '../../../utils/frames/frameSubmissionHel
 import { validateFarcasterPacketMessage } from '../utils/farcasterServer'
 import { getUserAnswerForQuestion } from '../../../models/userAnswers'
 import { intoriQuestions } from '../../../utils/frames/intoriFrameForms'
+import { getFrameSessionFromRequest, createFrameSession } from '../../../models/frameSession'
+import {
+  createFrameQuestionUrl,
+  createFrameErrorUrl,
+  createFrameResultsUrl
+} from '../../../utils/frames/generatePageUrls'
 
 // User is requesting a new question
 const newQuestion = async (
@@ -18,11 +24,31 @@ const newQuestion = async (
   if (!validFarcasterPacket) {
     return res.redirect(
       307,
-      `/frames/error`
+      createFrameErrorUrl()
     )
   }
 
   const { fid } = frameSubmissionHelpers(req)
+
+  let session = await getFrameSessionFromRequest(req)
+
+  if (!session) {
+    session = await createFrameSession({ fid })
+  }
+
+  if (!session) {
+    return res.redirect(
+      307,
+      createFrameErrorUrl()
+    )
+  }
+
+  if (session.questionNumber === 3) {
+    return res.redirect(
+      307,
+      createFrameResultsUrl({ fid })
+    )
+  }
 
   // getting next answer offset to see more answers of an already given question
   if (req.query.qi && req.query.ioff) {
@@ -31,7 +57,11 @@ const newQuestion = async (
 
     return res.redirect(
       307,
-      `/frames/question?qi=${currentQuestionIndex}&ioff=${requestedAnswerOffset}`
+      createFrameQuestionUrl({
+        questionIndex: currentQuestionIndex,
+        answerOffset: requestedAnswerOffset,
+        frameSessionId: session.id
+      })
     )
   }
 
@@ -54,7 +84,11 @@ const newQuestion = async (
 
   return res.redirect(
     307,
-    `/frames/question?qi=${nextQuestionIndex}`
+    createFrameQuestionUrl({
+      questionIndex: nextQuestionIndex,
+      answerOffset: 0,
+      frameSessionId: session.id
+    })
   )
 }
 

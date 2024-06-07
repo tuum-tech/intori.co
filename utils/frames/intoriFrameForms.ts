@@ -1,3 +1,4 @@
+import { createStartNewFrameQuestionUrl } from './generatePageUrls'
 export type IntoriFrameInputType = {
     type: 'button'
     content: string
@@ -22,7 +23,7 @@ export const introductionStep: IntoriFrameType = {
       {
         type: 'button',
         content: 'Go!',
-        postUrl: `${process.env.NEXTAUTH_URL}/api/frames/question`
+        postUrl: createStartNewFrameQuestionUrl()
       }
     ]
 }
@@ -32,7 +33,7 @@ export const errorFrame: IntoriFrameType = {
       {
         type: 'button',
         content: 'Try Again',
-        postUrl: `${process.env.NEXTAUTH_URL}/api/frames/question`
+        postUrl: createStartNewFrameQuestionUrl()
       }
     ]
 }

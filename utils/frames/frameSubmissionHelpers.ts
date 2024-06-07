@@ -1,5 +1,9 @@
 import type { NextApiRequest } from 'next'
 import { intoriQuestions, IntoriFrameInputType } from './intoriFrameForms'
+import {
+  createFrameQuestionUrl,
+  createSubmitAnswerUrl
+} from './generatePageUrls'
 
 export type FarcasterFrameSubmitBodyType = {
   untrustedData: {
@@ -14,15 +18,6 @@ export type FarcasterFrameSubmitBodyType = {
   trustedData: {
     messageBytes: string
   }
-}
-
-export const frameQuestionUrl = (params: {
-  questionIndex: number,
-  answerOffset?: number
-}): string => {
-  const { questionIndex, answerOffset } = params
-
-  return `${process.env.NEXTAUTH_URL}/frames/question?qi=${questionIndex}&ioff=${answerOffset ?? 0}`
 }
 
 // question: { question: string, answers: string[] }
@@ -69,20 +64,24 @@ const getBackAnswerOffset = (questionIndex: number, answerOffset: number): numbe
 const convertAnswersToInputs = (
   answers: string[],
   questionIndex: number, 
-  answerOffset: number
+  answerOffset: number,
+  frameSessionId: string
 ): IntoriFrameInputType[] => {
-  const submitAnswerPostUrl = `${process.env.NEXTAUTH_URL}/api/frames/answer?qi=${questionIndex}&ioff=${answerOffset}`
-
   return answers.map((answer) => ({
     type: 'button',
     content: answer,
-    postUrl: submitAnswerPostUrl
+    postUrl: createSubmitAnswerUrl({
+      questionIndex,
+      answerOffset,
+      frameSessionId
+    })
   })) as IntoriFrameInputType[]
 }
 
 export const getFrameInputsBasedOnAnswerOffset = (
   questionIndex: number,
-  answerOffset: number
+  answerOffset: number,
+  frameSessionId: string
 ): IntoriFrameInputType[] => {
   const question = intoriQuestions[questionIndex]
   const inputs: IntoriFrameInputType[] = []
@@ -90,7 +89,7 @@ export const getFrameInputsBasedOnAnswerOffset = (
   if (!answerOffset) {
     if (question.answers.length <= 4) {
       inputs.push(
-        ...convertAnswersToInputs(question.answers, questionIndex, 0)
+        ...convertAnswersToInputs(question.answers, questionIndex, 0, frameSessionId)
       )
 
       return inputs
@@ -99,15 +98,16 @@ export const getFrameInputsBasedOnAnswerOffset = (
     const firstThreeAnswers = question.answers.slice(0, 3)
 
     inputs.push(
-      ...convertAnswersToInputs(firstThreeAnswers, questionIndex, 0)
+      ...convertAnswersToInputs(firstThreeAnswers, questionIndex, 0, frameSessionId)
     )
 
     inputs.push({
       type: 'button',
       content: 'More >',
-      postUrl: frameQuestionUrl({
+      postUrl: createFrameQuestionUrl({
           questionIndex,
-          answerOffset: getNextAnswerOffset(questionIndex, 0)
+          answerOffset: getNextAnswerOffset(questionIndex, 0),
+          frameSessionId
       })
     })
 
@@ -120,22 +120,27 @@ export const getFrameInputsBasedOnAnswerOffset = (
   inputs.push({
     type: 'button',
     content: '< Back',
-    postUrl: frameQuestionUrl({ questionIndex, answerOffset: previousOffset })
+    postUrl: createFrameQuestionUrl({
+      questionIndex,
+      answerOffset: previousOffset,
+      frameSessionId
+    })
   })
 
   if (!isLastFrameOfAnswers) {
     const nextTwoAnswers = question.answers.slice(answerOffset, answerOffset + 2)
 
     inputs.push(
-      ...convertAnswersToInputs(nextTwoAnswers, questionIndex, answerOffset)
+      ...convertAnswersToInputs(nextTwoAnswers, questionIndex, answerOffset, frameSessionId)
     )
 
     inputs.push({
       type: 'button',
       content: 'More >',
-      postUrl: frameQuestionUrl({
+      postUrl: createFrameQuestionUrl({
         questionIndex,
-        answerOffset: getNextAnswerOffset(questionIndex, answerOffset)
+        answerOffset: getNextAnswerOffset(questionIndex, answerOffset),
+        frameSessionId
       })
     })
 
@@ -145,7 +150,7 @@ export const getFrameInputsBasedOnAnswerOffset = (
   const lastAnswers = question.answers.slice(answerOffset)
 
   inputs.push(
-    ...convertAnswersToInputs(lastAnswers, questionIndex, answerOffset)
+    ...convertAnswersToInputs(lastAnswers, questionIndex, answerOffset, frameSessionId)
   )
 
   return inputs
@@ -159,6 +164,7 @@ export const frameSubmissionHelpers = (req: NextApiRequest) => {
   const currentSequenceStep = parseInt(req.query.step?.toString() || '0') ?? 0
   const referrer = req.body.untrustedData.url as string
   const buttonIndexClicked = req.body.untrustedData.buttonIndex
+  const frameSessionId = req.query.fsid?.toString() || ''
 
   let question: typeof intoriQuestions[0] | null = null
   let buttonClicked = ''
@@ -166,7 +172,11 @@ export const frameSubmissionHelpers = (req: NextApiRequest) => {
 
   if (req.query.qi && buttonIndexClicked) {
     question = intoriQuestions[questionIndex]
-    const inputs = getFrameInputsBasedOnAnswerOffset(questionIndex, answerOffset)
+    const inputs = getFrameInputsBasedOnAnswerOffset(
+      questionIndex, 
+      answerOffset,
+      frameSessionId
+    )
 
     buttonClicked = inputs[buttonIndexClicked - 1].content
   }
@@ -180,6 +190,7 @@ export const frameSubmissionHelpers = (req: NextApiRequest) => {
     questionIndex,
     currentSequenceStep,
     referrer,
-    answerOffset
+    answerOffset,
+    frameSessionId
   }
 }
