@@ -101,6 +101,7 @@ const getProfileFramePictureImage = async (
   }
 
   if (!suggestedUserName && !suggestedChannel) {
+    // TODO: make less confusing, be more straight to it. say 'no suggestions at this time.'
     const text = 'Keep Going! Your next recommendations will be even sharper.'
     baseImage.print(
       font26,

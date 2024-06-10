@@ -115,6 +115,8 @@ export const getServerSideProps = (async (context) => {
     })
   }
 
+  // TODO: add back the learn more intori.co button
+
   const frame: IntoriFrameType = {
     inputs
   }
