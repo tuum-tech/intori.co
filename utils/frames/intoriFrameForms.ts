@@ -1,23 +1,18 @@
-export type IntoriFrameStepInputType = {
+import { createStartNewFrameQuestionUrl } from './generatePageUrls'
+export type IntoriFrameInputType = {
     type: 'button'
     content: string
     action?: 'link'
     target?: string
+    postUrl?: string // A 256-byte string that defines a button-specific URL to send the Signature Packet to. If set, this overrides fc:frame:post_url.
 }
 
-export type IntoriFrameStepType = {
-  title: string
+export type IntoriFrameType = {
   question?: string
-  inputs: IntoriFrameStepInputType[]
+  inputs: IntoriFrameInputType[]
 }
 
-export type IntoriFrameFormType = {
-  name: string
-  steps: IntoriFrameStepType[]
-}
-
-export const introductionStep: IntoriFrameStepType = {
-    title: 'Intori',
+export const introductionStep: IntoriFrameType = {
     inputs: [
       {
         type: 'button',
@@ -27,13 +22,27 @@ export const introductionStep: IntoriFrameStepType = {
       },
       {
         type: 'button',
-        content: 'Go!'
+        content: 'Go!',
+        postUrl: createStartNewFrameQuestionUrl()
       }
     ]
 }
 
-export const finalStep: IntoriFrameStepType = {
-    title: 'Congrats – your profile is growing!',
+export const errorFrame: IntoriFrameType = {
+    inputs: [
+      {
+        type: 'button',
+        content: 'Try Again',
+        postUrl: createStartNewFrameQuestionUrl()
+      }
+    ]
+}
+
+const urlSafeText = encodeURIComponent('Check out this frame from Intori!')
+const shareFrameUrlSafeText = encodeURIComponent(process.env.NEXTAUTH_URL + '/frames/begin')
+const shareFrameUrl = `https://warpcast.com/~/compose?text=${urlSafeText}&embeds[]=${shareFrameUrlSafeText}`
+
+export const finalStep: IntoriFrameType = {
     inputs: [
       {
         type: 'button',
@@ -46,7 +55,7 @@ export const finalStep: IntoriFrameStepType = {
       {
         type: 'button',
         action: 'link',
-        target: process.env.NEXTAUTH_URL + '/frames/sequence/',
+        target: shareFrameUrl,
         content: 'Share Frame'
       },
       {
@@ -58,563 +67,61 @@ export const finalStep: IntoriFrameStepType = {
     ]
 }
 
-export const intoriFrameForms: Record<string, IntoriFrameFormType> = {
-  initial: {
-    name: 'Professional Experience',
-    steps: [
-      {
-        title: 'Professional Experience',
-        question: 'How would you describe your current professional status?',
-        inputs: [
-          {
-            type: 'button',
-            content: 'Employed'
-          },
-          {
-            type: 'button',
-            content: 'Self-employed'
-          },
-          {
-            type: 'button',
-            content: 'Freelancer'
-          },
-          {
-            type: 'button',
-            content: 'More'
-          },
-        ]
-      },
-      {
-        title: 'Professional Experience',
-        question: 'How would you describe your current professional status?',
-        inputs: [
-          {
-            type: 'button',
-            content: 'Student'
-          },
-          {
-            type: 'button',
-            content: 'Retired'
-          },
-          {
-            type: 'button',
-            content: 'Job Seeking'
-          },
-          {
-            type: 'button',
-            content: 'Other'
-          },
-        ]
-      },
-      {
-        title: 'Skills & Endorsements',
-        question: 'Which of the following skills best align with your expertise?',
-        inputs: [
-          {
-            type: 'button',
-            content: 'Programming'
-          },
-          {
-            type: 'button',
-            content: 'Design'
-          },
-          {
-            type: 'button',
-            content: 'Management'
-          },
-          {
-            type: 'button',
-            content: 'More'
-          },
-        ]
-      },
-      {
-        title: 'Skills & Endorsements',
-        question: 'Which of the following skills best align with your expertise?',
-        inputs: [
-          {
-            type: 'button',
-            content: 'Sales'
-          },
-          {
-            type: 'button',
-            content: 'Marketing'
-          },
-          {
-            type: 'button',
-            content: 'Education'
-          },
-          {
-            type: 'button',
-            content: 'Other'
-          },
-        ]
-      }
-    ]
+export const intoriQuestions = [
+  {
+    question: 'Which of the following is your music preference?',
+    answers: [ 'Pop', 'Rock', 'Classical', 'Jazz', 'Electronic', 'Hip-Hop', 'Country']
   },
-  personalValues: {
-      name: 'personalValues',
-      steps: [
-        {
-            title: 'Personal Values & Goals',
-            question: 'Which of the following values are most important to you in your professional life?',
-            inputs: [
-              {
-                type: 'button',
-                content: 'Life Balance'
-              },
-              {
-                type: 'button',
-                content: '$$ Stability'
-              },
-              {
-                type: 'button',
-                content: 'Growth'
-              },
-              {
-                type: 'button',
-                content: 'Next'
-              },
-            ]
-        },
-        {
-            title: 'Personal Values & Goals',
-            question: 'Which of the following values are most important to you in your professional life?',
-            inputs: [
-              {
-                type: 'button',
-                content: 'Positive Impact'
-              },
-              {
-                type: 'button',
-                content: 'Innovation'
-              },
-              {
-                type: 'button',
-                content: 'Collaboration'
-              },
-              {
-                type: 'button',
-                content: 'Other'
-              },
-            ]
-        },
-        {
-            title: 'Education & Certifications',
-            question: 'What is your highest level of education?',
-            inputs: [
-              {
-                type: 'button',
-                content: 'High School'
-              },
-              {
-                type: 'button',
-                content: 'Associate\'s'
-              },
-              {
-                type: 'button',
-                content: 'Bachelor\'s'
-              },
-              {
-                type: 'button',
-                content: 'Next'
-              },
-            ]
-        },
-        {
-            title: 'Education & Certifications',
-            question: 'What is your highest level of education?',
-            inputs: [
-              {
-                type: 'button',
-                content: 'Master\'s'
-              },
-              {
-                type: 'button',
-                content: 'Doctorate'
-              },
-              {
-                type: 'button',
-                content: 'Certification'
-              },
-              {
-                type: 'button',
-                content: 'Other'
-              }
-            ]
-        }
-      ]
+  {
+    question: 'Which of the following is your favorite movie genre?',
+    answers: [ 'Action', 'Romance', 'Comedy', 'Horror', 'Fantasy', 'Documentaries', 'Sci-Fi']
   },
-  lifeStyle: {
-    name: 'lifeStyle',
-    steps: [
-      {
-        title: 'Lifestyle & Wellness',
-        question: 'Which of the following are your exercise preferences?',
-        inputs: [
-          {
-            type: 'button',
-            content: 'Gym'
-          },
-          {
-            type: 'button',
-            content: 'Running'
-          },
-          {
-            type: 'button',
-            content: 'Yoga'
-          },
-          {
-            type: 'button',
-            content: 'More'
-          },
-        ]
-      },
-      {
-        title: 'Lifestyle & Wellness',
-        question: 'Which of the following are your exercise preferences?',
-        inputs: [
-          {
-            type: 'button',
-            content: 'Sports'
-          },
-          {
-            type: 'button',
-            content: 'Home Workout'
-          },
-          {
-            type: 'button',
-            content: 'Outside'
-          },
-          {
-            type: 'button',
-            content: 'None'
-          },
-        ]
-      },
-      {
-        title: 'Lifestyle & Wellness',
-        question: 'What are your sleep habits?',
-        inputs: [
-          {
-            type: 'button',
-            content: 'Early Bird'
-          },
-          {
-            type: 'button',
-            content: 'Night Owl'
-          },
-          {
-            type: 'button',
-            content: 'Insomniac'
-          },
-          {
-            type: 'button',
-            content: 'More'
-          },
-        ]
-      },
-      {
-        title: 'Lifestyle & Wellness',
-        question: 'What are your sleep habits?',
-        inputs: [
-          {
-            type: 'button',
-            content: 'Heavy Sleep'
-          },
-          {
-            type: 'button',
-            content: 'Variable'
-          },
-          {
-            type: 'button',
-            content: 'Regular Naps'
-          },
-          {
-            type: 'button',
-            content: 'Other'
-          }
-        ]
-      }
-    ]
+  {
+    question: 'Which of the following are your favorite type of snack?',
+    answers: [ 'Sweet', 'Salty', 'Healthy', 'Indulgent', 'Spicy', 'Savory', 'None']
   },
-  foodAndDrink: {
-    name: 'foodAndDrink',
-    steps: [
-      {
-        title: 'Food and Drink',
-        question: 'Which of the following are your preferred type of cuisine?',
-        inputs: [
-          {
-            type: 'button',
-            content: 'Italian'
-          },
-          {
-            type: 'button',
-            content: 'Mexican'
-          },
-          {
-            type: 'button',
-            content: 'Chinese'
-          },
-          {
-            type: 'button',
-            content: 'More'
-          },
-        ]
-      },
-      {
-        title: 'Food and Drink',
-        question: 'Which of the following are your preferred type of cuisine?',
-        inputs: [
-          {
-            type: 'button',
-            content: '< Back'
-          },
-          {
-            type: 'button',
-            content: 'Indian'
-          },
-          {
-            type: 'button',
-            content: 'Japanese'
-          },
-          {
-            type: 'button',
-            content: 'More'
-          },
-        ]
-      },
-      {
-        title: 'Food and Drink',
-        question: 'Which of the following are your preferred type of cuisine?',
-        inputs: [
-          {
-            type: 'button',
-            content: '< Back'
-          },
-          {
-            type: 'button',
-            content: 'French'
-          },
-          {
-            type: 'button',
-            content: 'American'
-          },
-          {
-            type: 'button',
-            content: 'Other'
-          },
-        ]
-      },
-      {
-        title: 'Food and Drink',
-        question: 'Which of the following are your favorite type of snack?',
-        inputs: [
-          {
-            type: 'button',
-            content: '< Back'
-          },
-          {
-            type: 'button',
-            content: 'Sweet'
-          },
-          {
-            type: 'button',
-            content: 'Salty'
-          },
-          {
-            type: 'button',
-            content: 'More'
-          },
-        ]
-      },
-      {
-        title: 'Food and Drink',
-        question: 'Which of the following are your favorite type of snack?',
-        inputs: [
-          {
-            type: 'button',
-            content: '< Back'
-          },
-          {
-            type: 'button',
-            content: 'Healthy'
-          },
-          {
-            type: 'button',
-            content: 'Indulgent'
-          },
-          {
-            type: 'button',
-            content: 'More'
-          },
-        ]
-      },
-      {
-        title: 'Food and Drink',
-        question: 'Which of the following are your favorite type of snack?',
-        inputs: [
-          {
-            type: 'button',
-            content: '< Back'
-          },
-          {
-            type: 'button',
-            content: 'Spicy'
-          },
-          {
-            type: 'button',
-            content: 'Savory'
-          },
-          {
-            type: 'button',
-            content: 'None'
-          },
-        ]
-      },
-    ]
+  {
+    question: "Which of the following values are most important to you in your professional life?",
+    answers: ["Life Balance", "$$ Stability", "Growth", "Positive Impact", "Innovation", "Collaboration", "Other"]
   },
-  movieGenre: {
-    name: 'movieGenre',
-    steps: [
-      {
-        title: 'Movie Genre',
-        question: 'Which of the following is your favorite movie genre?',
-        inputs: [
-          {
-            type: 'button',
-            content: 'Action'
-          },
-          {
-            type: 'button',
-            content: 'Romance'
-          },
-          {
-            type: 'button',
-            content: 'Comedy'
-          },
-          {
-            type: 'button',
-            content: 'More'
-          },
-        ]
-      },
-      {
-        title: 'Movie Genre',
-        question: 'Which of the following is your favorite movie genre?',
-        inputs: [
-          {
-            type: 'button',
-            content: '< Back'
-          },
-          {
-            type: 'button',
-            content: 'Horror'
-          },
-          {
-            type: 'button',
-            content: 'Fantasy'
-          },
-          {
-            type: 'button',
-            content: 'More'
-          },
-        ]
-      },
-      {
-        title: 'Movie Genre',
-        question: 'Which of the following is your favorite movie genre?',
-        inputs: [
-          {
-            type: 'button',
-            content: '< Back'
-          },
-          {
-            type: 'button',
-            content: 'Documentaries'
-          },
-          {
-            type: 'button',
-            content: 'Sci-Fi'
-          },
-          {
-            type: 'button',
-            content: 'Other'
-          },
-        ]
-      },
-    ]
+  {
+    question: "What is your highest level of education?",
+    answers: ["High School", "Associate's", "Bachelor's", "Master's", "Doctorate", "Certification", "Other"]
   },
-  musicGenre: {
-    name: 'musicGenre',
-    steps: [
-      {
-        title: 'Music Genre',
-        question: 'Which of the following is your music preference?',
-        inputs: [
-          {
-            type: 'button',
-            content: 'Pop'
-          },
-          {
-            type: 'button',
-            content: 'Rock'
-          },
-          {
-            type: 'button',
-            content: 'Classical'
-          },
-          {
-            type: 'button',
-            content: 'More'
-          },
-        ]
-      },
-      {
-        title: 'Music Genre',
-        question: 'Which of the following is your music preference?',
-        inputs: [
-          {
-            type: 'button',
-            content: '< Back'
-          },
-          {
-            type: 'button',
-            content: 'Jazz'
-          },
-          {
-            type: 'button',
-            content: 'Electronic'
-          },
-          {
-            type: 'button',
-            content: 'More'
-          },
-        ]
-      },
-      {
-        title: 'Music Genre',
-        question: 'Which of the following is your music preference?',
-        inputs: [
-          {
-            type: 'button',
-            content: '< Back'
-          },
-          {
-            type: 'button',
-            content: 'Hip-Hop'
-          },
-          {
-            type: 'button',
-            content: 'Country'
-          },
-          {
-            type: 'button',
-            content: 'Other'
-          },
-        ]
-      },
-    ]
+  {
+    question: "Which of the following are your exercise preferences?",
+    answers: ["Gym", "Running", "Yoga", "Sports", "Home Workout", "Outside", "None"]
+  },
+  {
+    question: "What are your sleep habits?",
+    answers: ["Early Bird", "Night Owl", "Insomniac", "Heavy Sleep", "Variable", "Regular Naps", "Other"]
+  },
+  {
+    question: "Which of the following is your preferred operating system?",
+    answers: ["Windows", "macOS", "Linux", "Android", "iOS", "Chrome OS", "Other"]
+  },
+  {
+    question: "Which of the following is your dream vacation destination?",
+    answers: ["Tropics", "Historic City", "Wilderness", "Cultural Tour", "Space", "Road Trip", "Other"]
+  },
+  {
+    question: "Which of the following is your preferred mode of travel?",
+    answers: ["Plane", "Train", "Car", "Cruise", "Biking", "Walking", "Other"]
+  },
+  {
+    question: "Which of the following is your level of environmental consciousness?",
+    answers: ["Very Concerned", "Moderately", "Slightly", "Neutral", "Unconcerned", "Activist", "Other"]
+  },
+  {
+    question: "Which of the following is your importance of work-life balance?",
+    answers: ["Essential", "Very", "Moderately", "Slightly", "Not Important", "Flexible", "Other"]
+  },
+  {
+    question: "What is your favorite type of cuisine?",
+    answers: ["Italian", "Mexican", "Chinese", "Indian", "Japanese", "French", "Thai", "Greek", "Spanish", "Korean"]
+  },
+  {
+    question: "What type of exercise do you prefer?",
+    answers: ["Gym workouts", "Outdoor activities", "Yoga", "Sports", "Home workouts", "No exercise"]
   }
-}
+]

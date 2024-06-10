@@ -10,7 +10,6 @@ import {
 
 export type UserAnswerType = {
   fid: number
-  sequence: string
   question: string
   answer: string
   date: Timestamp
@@ -18,7 +17,6 @@ export type UserAnswerType = {
 
 export type UserAnswerPageType = {
   fid: number
-  sequence: string
   question: string
   answer: string
   date: {
@@ -29,7 +27,6 @@ export type UserAnswerPageType = {
 
 export type CreateUserAnswerType = {
   fid: number
-  sequence: string
   question: string
   answer: string
   casterFid: number
@@ -104,7 +101,6 @@ export const countUserAnswers = async (fid: number): Promise<number> => {
 
     return snapshot.size
   } catch (error) {
-    console.error('Error counting userAnswers:', error)
     return -1 // Return -1 to indicate error
   }
 
@@ -147,7 +143,6 @@ export const findCurrentStreak = async (fid: number): Promise<number> => {
 
     return currentStreak
   } catch (error) {
-    console.error('Error finding current streak:', error)
     return 0
   }
 }
@@ -160,9 +155,7 @@ export const getSuggestedUsers = async (
 ): Promise<SuggestionType[]> => {
   const collection = getCollection()
 
-  console.time('getUserAnswersByFid')
   const userAnswers = await getUserAnswersByFid(fid)
-  console.timeEnd('getUserAnswersByFid')
 
   const suggestedUserFids: {
     fid: number
@@ -183,7 +176,6 @@ export const getSuggestedUsers = async (
 
   const uniqueUserAnswers = removeDuplicateAnswers(userAnswers)
 
-  console.time('sameAnswerSameQuestion' + userAnswers.length)
   await Promise.all(
     uniqueUserAnswers.map(async (userAnswer) => {
       const querySnapshot = await collection
@@ -216,16 +208,17 @@ export const getSuggestedUsers = async (
       }
     })
   )
-  console.timeEnd('sameAnswerSameQuestion' + uniqueUserAnswers.length)
 
   const fids = suggestedUserFids.slice(
     0,
     options?.maxResults ?? suggestedUserFids.length
   ).map((suggestedUser) => suggestedUser.fid)
 
-  console.time('fetchUserDetailsByFids')
+  if (!fids.length) {
+    return []
+  }
+
   const userDetails = await fetchUserDetailsByFids(fids)
-  console.timeEnd('fetchUserDetailsByFids')
 
   const suggestedUsers = suggestedUserFids.map((suggestedUser) => {
     const user = userDetails.find((user) => user.fid === suggestedUser.fid)
@@ -256,8 +249,6 @@ export const getSuggestedUsersAndChannels = async (
   const suggestedChannels: SuggestionType[] = []
   const channelCounts: Record<string, number> = {}
 
-  console.log('suggestedUsers', suggestedUsers.length)
-  console.time('promise.all')
   await Promise.all(
     suggestedUsers.map(async (suggestion) => {
       if (!suggestion.user) {
@@ -282,7 +273,6 @@ export const getSuggestedUsersAndChannels = async (
       }
     })
   )
-  console.timeEnd('promise.all')
 
   const sortedChannelCounts = Object.entries(channelCounts).sort((a, b) => b[1] - a[1])
 
@@ -332,4 +322,3 @@ export const countSuggestedUsersAndChannels = async (
     totalSuggestedUsers
   }
 }
-
