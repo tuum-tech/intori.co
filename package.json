@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "npx tsx ./utils/frames/generateFrameImages.ts",
+    "build:frames": "npx tsx ./utils/frames/generateFrameImages.ts",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
