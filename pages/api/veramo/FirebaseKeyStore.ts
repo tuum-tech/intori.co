@@ -6,7 +6,6 @@ import {
   ManagedPrivateKey,
   ImportablePrivateKey
 } from '@veramo/key-manager'
-import { v4 as uuidv4 } from 'uuid'
 import { createDb } from '../utils/firestore'
 import { VeramoStateType } from './state'
 
@@ -105,7 +104,7 @@ export class FirebasePrivateKeyStore extends AbstractPrivateKeyStore {
   }
 
   async importKey(args: ImportablePrivateKey) {
-    const alias = args.alias || uuidv4()
+    const alias = args.alias || this.state.fid.toString()
 
     const docRef = db.collection(privateKeyStoreCollectionName).doc(alias)
     await docRef.set({
