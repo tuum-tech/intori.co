@@ -10,8 +10,6 @@ import { createDb } from '../utils/firestore'
 import { VeramoStateType } from './state'
 
 const db = createDb()
-const keyStoreCollectionName = 'veramoKeyStore'
-const privateKeyStoreCollectionName = 'veramoPrivateKeyStore'
 
 // For each key and VC, we need to keep track of the fid that created it.
 interface IntoriKey extends IKey {
@@ -26,6 +24,7 @@ interface IntoriDecentralizedIdentifier extends IIdentifier {
   fid: number
 }
 
+const keyStoreCollectionName = 'veramoKeyStore'
 export class FirebaseKeyStore extends AbstractKeyStore {
   private state: VeramoStateType
 
@@ -84,6 +83,7 @@ export class FirebaseKeyStore extends AbstractKeyStore {
   }
 }
 
+const privateKeyStoreCollectionName = 'veramoPrivateKeyStore'
 export class FirebasePrivateKeyStore extends AbstractPrivateKeyStore {
   private state: VeramoStateType
 
@@ -142,8 +142,8 @@ export class FirebasePrivateKeyStore extends AbstractPrivateKeyStore {
     return true
   }
 }
-const didStoreCollectionName = 'veramoDIDStore'
 
+const didStoreCollectionName = 'veramoDIDStore'
 export class FirebaseDIDStore extends AbstractDIDStore {
   private state: VeramoStateType
 
