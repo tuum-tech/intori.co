@@ -13,7 +13,7 @@ import type {
   CreateVCResponseResult
 } from './types/params'
 
-export async function createVC(
+export async function createVerifiableCredential(
   state: VeramoState,
   vcRequestParams: CreateVCRequestParams
 ): Promise<CreateVCResponseResult> {

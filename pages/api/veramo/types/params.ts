@@ -9,8 +9,14 @@ import type {
 } from "../plugins/verifiable-creds-manager";
 
 export type CreateVCRequestParams = {
-  vcValue: object;
-  vcKey?: string;
+  vcValue: {
+    fid: number
+    answer: string
+    question: string
+    casterFid: number
+    timestamp: number
+  };
+  vcKey?: 'IntoriAnswer'
   credTypes?: string[];
   options?: SaveOptions;
   accessToken?: string;

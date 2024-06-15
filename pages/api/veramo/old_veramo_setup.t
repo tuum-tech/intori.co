@@ -83,6 +83,8 @@ export async function getVeramoAgent(state: VeramoState): Promise<Agent> {
           intori: new KeyManagementSystem(new IntoriPrivateKeyStore(state)),
         },
       }),
+
+      // need to make own did manager with firebase
       new DIDManager({
         store: new IntoriDIDStore(state),
         defaultProvider: "did:pkh",
