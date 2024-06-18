@@ -6,6 +6,8 @@
   cursor: pointer;
   font-weight: 600;
   font-size: 14px;
+  display: inline-flex;
+  align-items: center;
 }
 
 .primaryButton:disabled,
@@ -24,4 +26,14 @@
   background: #272738;
   border-color: #272738;
   color: #FFF;
+}
+
+.primaryButton > svg:first-child,
+.secondaryButton > svg:first-child {
+  margin-right: 8px;
+}
+
+.primaryButton > svg:last-child,
+.secondaryButton > svg:last-child {
+  margin-left: 8px;
 }
