@@ -1,12 +1,13 @@
-import NextAuth from "next-auth"
+import NextAuth, { type NextAuthOptions } from "next-auth"
 import util from 'util'
 import CredentialsProvider from "next-auth/providers/credentials"
 import { createAppClient, viemConnector } from "@farcaster/auth-client"
 import { NextApiRequest, NextApiResponse } from "next"
 
-// eslint-disable-next-line import/no-anonymous-default-export
-export default (req: NextApiRequest, res: NextApiResponse) =>
-  NextAuth(req, res, {
+export const authOptions: NextAuthOptions = {
+    jwt: {
+      secret: process.env.NEXTAUTH_SECRET
+    },
     providers: [
       CredentialsProvider({
         name: "Sign in with Farcaster",
@@ -44,10 +45,6 @@ export default (req: NextApiRequest, res: NextApiResponse) =>
             ethereum: viemConnector(),
           })
 
-          console.log({
-              domain: new URL(process.env.NEXTAUTH_URL || 'NEXTAUTH_URL must be set.').host
-          })
-
           const verifyResponse = await appClient.verifySignInMessage({
             message: credentials?.message as string,
             signature: credentials?.signature as `0x${string}`,
@@ -82,6 +79,12 @@ export default (req: NextApiRequest, res: NextApiResponse) =>
       session({ session, token }) {
         session.user.fid = token.id as string
         return session;
-      },
+      }
     }
-  })
+}
+
+// eslint-disable-next-line import/no-anonymous-default-export
+export default (
+  req: NextApiRequest,
+  res: NextApiResponse
+) => NextAuth(req, res, authOptions)

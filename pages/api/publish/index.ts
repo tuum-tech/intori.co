@@ -1,5 +1,5 @@
-import { getSession } from 'next-auth/react'
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { getServerSession } from "next-auth"
 import {
   getUserAnswerForQuestion,
   updateUserAnswerWithBlockchainMetadata
@@ -8,6 +8,8 @@ import {
 // For creating VC and pushing to blockchain
 import { getAgent } from '../veramo/setup'
 import { registerCredential } from '../../../lib/ethers/registerCredential'
+import { authOptions } from "../auth/[...nextauth]"
+
 
 const publishAnswerToBlockchain = async (
   req: NextApiRequest,
@@ -17,10 +19,14 @@ const publishAnswerToBlockchain = async (
     return res.status(405).end()
   }
 
-  const session = await getSession({ req })
+  const session = await getServerSession(req, res, authOptions)
+
+  console.log({ session })
 
   if (!session?.user?.fid) {
-    return res.status(403).end()
+    return res.status(401).json({
+      error: 'You are not logged in.'
+    })
   }
 
   const fid = parseInt(session.user.fid, 10)
@@ -28,7 +34,8 @@ const publishAnswerToBlockchain = async (
 
   const userAnswer = await getUserAnswerForQuestion(fid, question)
 
-  if (!userAnswer || userAnswer.answer === answer) {
+  console.log({ userAnswer })
+  if (!userAnswer || userAnswer.answer !== answer) {
     return res.status(400).json({ message: 'Response not found.' })
   }
 
@@ -74,6 +81,12 @@ const publishAnswerToBlockchain = async (
     question,
     blockchainTransaction
   )
+
+  return res.status(200).json({
+    publicHash: blockchainTransaction.hash,
+    publicBlockHash: blockchainTransaction.blockHash,
+    publicBlockNumber: blockchainTransaction.blockNumber
+  })
 }
 
 export default publishAnswerToBlockchain
