@@ -1,0 +1,42 @@
+.responsesContainer {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  gap: 32px;
+}
+
+.response {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-basis: calc(33.33% - 32px);
+  background: #131722;
+  border-radius: 12px;
+  padding: 24px;
+  color: #FFF;
+}
+.response h4 {
+  margin-top: 0;
+  font-size: 14px;
+}
+.response h3 {
+  font-size: 32px;
+  margin: 8px 0;
+  font-weight: 800;
+}
+.response sub {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+}
+.response sub svg {
+  margin-right: 8px;
+}
+
+.private {
+  color: #67625B;
+}
+.public {
+  color: #FFF;
+}
