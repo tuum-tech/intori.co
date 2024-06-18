@@ -19,7 +19,7 @@ const publishAnswerToBlockchain = async (
     return res.status(405).end()
   }
 
-  const session = await getServerSession(req, res, authOptions)
+  const session = await getServerSession(req, res, authOptions(req))
 
   console.log({ session })
 

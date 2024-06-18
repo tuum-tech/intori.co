@@ -4,7 +4,7 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import { createAppClient, viemConnector } from "@farcaster/auth-client"
 import { NextApiRequest, NextApiResponse } from "next"
 
-export const authOptions: NextAuthOptions = {
+export const authOptions: (req: NextApiRequest) => NextAuthOptions = (req) => ({
     jwt: {
       secret: process.env.NEXTAUTH_SECRET
     },
@@ -81,10 +81,12 @@ export const authOptions: NextAuthOptions = {
         return session;
       }
     }
-}
+})
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (
   req: NextApiRequest,
   res: NextApiResponse
-) => NextAuth(req, res, authOptions)
+) => {
+  return NextAuth(req, res, authOptions(req))
+}
