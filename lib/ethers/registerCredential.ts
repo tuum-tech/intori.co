@@ -2,7 +2,7 @@ import { ethers, BigNumber } from 'ethers'
 import { VerifiableCredential, IIdentifier } from '@veramo/core'
 import abi from '../../contracts/CredentialRegistryABI.json'
 
-type TransactionType = {
+export type TransactionType = {
   hash: string;
   type: number;
   blockHash: string;
