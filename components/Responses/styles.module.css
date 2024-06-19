@@ -3,6 +3,7 @@
   flex-wrap: wrap;
   flex-direction: row;
   gap: 32px;
+  justify-content: space-evenly;
 }
 
 .response {
@@ -39,4 +40,28 @@
 }
 .public {
   color: #FFF;
+}
+
+@media only screen and (max-width: 1200px) {
+  .responsesContainer {
+    gap: 16px;
+  }
+  .response {
+    flex-basis: calc(50% - 16px);
+  }
+}
+@media only screen and (max-width: 880px) {
+  .response {
+    flex-basis: 100%;
+  }
+  .response sub + button,
+  .response sub + a,
+  .response sub + a button {
+    width: 100%;
+  }
+}
+@media only screen and (max-width: 500px) {
+  .response {
+    padding: 12px;
+  }
 }

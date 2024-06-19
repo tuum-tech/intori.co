@@ -72,6 +72,7 @@ export const AppLayout: React.FC<Props> = ({ children }) => {
           items={[
             { label: 'Dashboard', href: '/dashboard' },
             { label: 'Suggestions', href: '/suggestions' },
+            { label: 'Your Responses', href: '/responses' },
             { label: 'Log out', onClick: logout }
           ]}
         >
