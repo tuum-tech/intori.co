@@ -7,6 +7,9 @@ import styles from './AppLayout.module.css'
 import { Footer } from '../../components/Footer'
 import { Dropdown } from '../../components/common/Dropdown'
 import { PrimaryButton } from '../../components/common/Button'
+import { ConnectWalletButton } from '../../components/ConnectWallet'
+import { NotVerifiedAddressModal } from '../../components/ConnectWallet/NotVerifiedAddressModal'
+import { useEthereumWallet } from '../../contexts/EthereumWallet'
 
 type Props = {
   children: React.ReactNode
@@ -14,6 +17,10 @@ type Props = {
 
 export const AppLayout: React.FC<Props> = ({ children }) => {
   const session = useSession()
+  const {
+    notVerifiedAddressModalShowing,
+    setNotVerifiedAddressModalShowing
+  } = useEthereumWallet()
   const { pathname } = useRouter()
 
   const logout = async (e: React.MouseEvent) => {
@@ -53,6 +60,10 @@ export const AppLayout: React.FC<Props> = ({ children }) => {
 
   return (
     <div className={styles.appLayout}>
+      <NotVerifiedAddressModal
+        isOpen={notVerifiedAddressModalShowing}
+        onClose={() => setNotVerifiedAddressModalShowing(false)}
+      />
       <header className={styles.header}>
         <div className={styles.headerLeft}>
           <Image src="/intorilogomark.svg" alt="Intori" width={26} height={35} />
@@ -68,6 +79,7 @@ export const AppLayout: React.FC<Props> = ({ children }) => {
             </Link>
           </nav>
         </div>
+        <ConnectWalletButton />
         <Dropdown
           items={[
             { label: 'Dashboard', href: '/dashboard' },
