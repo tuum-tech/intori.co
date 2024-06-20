@@ -1,4 +1,5 @@
 import React, { useCallback, createContext, useState, useContext, Dispatch, SetStateAction } from 'react';
+import { toast } from 'react-toastify'
 import { connectWallet } from '../lib/wallet/connectWallet'
 import { ethers } from 'ethers'
 
@@ -33,6 +34,8 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
 
       setSigner(signer)
       setAddress(address)
+
+      toast.success('Wallet connected successfully!')
     } catch (err) {
       if ((err as Error).message === 'NOT_VERIFIED_ADDRESS') {
         setNotVerifiedAddressModalShowing(true)
