@@ -1,13 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from "next-auth"
 import {
-  getUserAnswerForQuestion,
-  updateUserAnswerWithBlockchainMetadata
+  getUserAnswerForQuestion
 } from '../../../models/userAnswers'
 
 // For creating VC and pushing to blockchain
 import { getAgent } from '../veramo/setup'
-import { registerCredential } from '../../../lib/ethers/registerCredential'
 import { authOptions } from "../auth/[...nextauth]"
 
 
