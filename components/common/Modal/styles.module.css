@@ -1,0 +1,26 @@
+.modal {
+  background: #0B0B15;
+  border: 1px solid #2A3042;
+  border-radius: 20px;
+  max-width: 96%;
+  width: 500px;
+  max-height: 80vh;
+  margin: 20vh auto 0 auto;
+  padding: 24px;
+  color: #fff;
+}
+.modal h2 {
+  margin-top: 0;
+  font-size: 32px;
+}
+.modal p a {
+  color: #9664FA;
+}
+.overlay {
+  position: fixed;
+  inset: 0px;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+.modalFooter {
+  text-align: right;
+}
