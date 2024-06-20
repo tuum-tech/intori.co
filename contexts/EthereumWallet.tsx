@@ -123,7 +123,11 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const credentialId = ethers.utils.keccak256(
       ethers.utils.toUtf8Bytes(
-        verifiableCredential.credentialSubject.timestamp
+        [
+          verifiableCredential.credentialSubject.timestamp,
+          verifiableCredential.credentialSubject.question,
+          verifiableCredential.credentialSubject.answer
+        ].join()
       )
     )
 
