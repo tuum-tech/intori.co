@@ -127,6 +127,15 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
       )
     )
 
+    console.log(
+      {
+        credentialId,
+        credentialHash,
+      },
+      userDecentralizedIdentifier.did,
+      'IntoriAnswerCredential'
+    )
+
     const blockchainTransaction = await contract.registerCredential(
       credentialId,
       userDecentralizedIdentifier.did,
