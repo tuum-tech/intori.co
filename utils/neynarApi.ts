@@ -42,6 +42,20 @@ export const fetchUserDetailsByFids = async (fids: number[]): Promise<FarcasterU
   }).map((user) => ({
     username: user.username,
     fid: user.fid,
-    image: user.pfp_url,
+    image: user.pfp_url
   }))
+}
+
+export const fetchVerifiedEthereumAddressesForUser = async (
+  fid: number
+): Promise<string[]> => {
+  const { users } = await neynar.fetchBulkUsers([fid])
+
+  if (!users.length) {
+    return []
+  }
+
+  const user = users[0]
+
+  return user.verified_addresses.eth_addresses
 }
