@@ -7,22 +7,35 @@ import {
     FarcasterUserType,
     FarcasterChannelType
 } from '../utils/neynarApi'
+import { TransactionType } from '../lib/ethers/registerCredential'
 
 export type UserAnswerType = {
   fid: number
   question: string
   answer: string
   date: Timestamp
+  casterFid: number
+
+  // when this answer is published to blockchain
+  publicHash?: string
+  publicBlockHash?: string
+  publicBlockNumber?: number
 }
 
 export type UserAnswerPageType = {
   fid: number
   question: string
   answer: string
+  casterFid: number
   date: {
     seconds: number
     nanoseconds: number
   }
+
+  // when this answer is published to blockchain
+  publicHash?: string
+  publicBlockHash?: string
+  publicBlockNumber?: number
 }
 
 export type CreateUserAnswerType = {
@@ -322,3 +335,26 @@ export const countSuggestedUsersAndChannels = async (
     totalSuggestedUsers
   }
 }
+
+export const updateUserAnswerWithBlockchainMetadata = async (
+  fid: number,
+  question: string,
+  blockchainTranscationResult: TransactionType
+) => {
+  const collection = getCollection()
+
+  const querySnapshot = await collection
+    .where('fid', '==', fid)
+    .where('question', '==', question)
+    .get()
+
+  for (let i = 0; i < querySnapshot.docs.length; i++) {
+    const doc = querySnapshot.docs[i]
+    await doc.ref.update({
+      publicHash: blockchainTranscationResult.hash,
+      publicBlockHash: blockchainTranscationResult.blockHash,
+      publicBlockNumber: blockchainTranscationResult.blockNumber
+    })
+  }
+}
+
