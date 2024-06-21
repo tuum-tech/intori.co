@@ -5,6 +5,7 @@ import styles from './styles.module.css'
 export const ConnectWalletButton: React.FC = () => {
   const {
     address,
+    formattedAddress,
     attemptToConnectWallet
   } = useEthereumWallet()
   const [loading, setLoading] = useState<boolean>(false)
@@ -21,13 +22,6 @@ export const ConnectWalletButton: React.FC = () => {
     setLoading(false)
   }
 
-  const formattedAddress = useMemo(() => {
-    if (address) {
-      return `${address.slice(0, 4)}...${address.slice(-4)}`
-    }
-
-    return ''
-  },[address])
 
   if (address) {
     return (

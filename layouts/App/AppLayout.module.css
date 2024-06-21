@@ -56,12 +56,14 @@
   border-radius: 50%;
 }
 
+@media only screen and (max-width: 650px) {
+  .header > button,
+  .headerLeft nav {
+    display: none;
+  }
+}
 @media only screen and (max-width: 460px) {
   .appLayout {
     padding: 12px;
-  }
-
-  .headerLeft nav {
-    display: none;
   }
 }

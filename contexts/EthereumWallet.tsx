@@ -1,4 +1,4 @@
-import React, { useCallback, createContext, useState, useContext, Dispatch, SetStateAction } from 'react';
+import React, { useMemo, useCallback, createContext, useState, useContext, Dispatch, SetStateAction } from 'react';
 import { ethers } from 'ethers'
 import axios from 'axios'
 import { toast } from 'react-toastify'
@@ -13,6 +13,7 @@ export type EthereumWalletContextType = {
 
   address?: string
   setAddress: Dispatch<SetStateAction<string | undefined>>
+  formattedAddress: string
 
   chainId?: number
   setChainId: Dispatch<SetStateAction<number | undefined>>
@@ -159,6 +160,14 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
     return blockchainTransaction
   }, [signer])
 
+  const formattedAddress = useMemo(() => {
+    if (address) {
+      return `${address.slice(0, 4)}...${address.slice(-4)}`
+    }
+
+    return ''
+  },[address])
+
   return (
     <WalletContext.Provider value={{
       signer,
@@ -166,6 +175,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
 
       address,
       setAddress,
+      formattedAddress,
 
       chainId,
       setChainId,
