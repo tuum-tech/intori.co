@@ -1,4 +1,5 @@
 import type { NextPage, GetServerSideProps } from "next";
+import Link from 'next/link'
 import { toast } from "react-toastify";
 import { useRouter } from "next/router"
 import { useSession, getSession } from "next-auth/react"
@@ -8,6 +9,7 @@ import { AppLayout } from "@/layouts/App"
 import { UserAnswerPageType, getUserAnswersByFid } from '@/models/userAnswers'
 import { WelcomeCard } from './WelcomeCard'
 import { CallToActionCard } from './CallToActionCard'
+import { PrimaryButton } from '../../components/common/Button'
 import { SuggestionType } from '../../models/userAnswers'
 import { Skeleton } from '../../components/common/Skeleton'
 import { Section } from '../../components/common/Section'
@@ -170,6 +172,11 @@ const Dashboard: NextPage<Props> = ({ answers }) => {
             title="Questions answered"
           >
             {answers.length}
+            <Link href="/responses">
+              <PrimaryButton>
+                View Your Responses
+              </PrimaryButton>
+            </Link>
           </WelcomeCard>
         </div>
       </Section>

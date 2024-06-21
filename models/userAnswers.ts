@@ -26,10 +26,16 @@ export type UserAnswerPageType = {
   fid: number
   question: string
   answer: string
+  casterFid: number
   date: {
     seconds: number
     nanoseconds: number
   }
+
+  // when this answer is published to blockchain
+  publicHash?: string
+  publicBlockHash?: string
+  publicBlockNumber?: number
 }
 
 export type CreateUserAnswerType = {

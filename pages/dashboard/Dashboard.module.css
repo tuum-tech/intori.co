@@ -1,7 +1,7 @@
 .welcomeRow {
   display: flex;
   flex-wrap: nowrap;
-  align-items: flex-end;
+  align-items: flex-start;
   gap: 24px;
 }
 .welcomeRow > div {
@@ -20,7 +20,7 @@
 }
 
 .welcomeCard {
-  padding: 55px 24px;
+  padding: 55px 24px 24px 24px;
   background: #272738;
   border: 1px solid #2A3042;
   border-radius: 16px;
@@ -37,6 +37,10 @@
 }
 .welcomeCard h3 {
   font-size: 64px;
+}
+.welcomeCard h3 a {
+  line-height: 16px;
+  display: block;
 }
 
 .ctaCard {

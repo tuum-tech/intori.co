@@ -49,7 +49,11 @@
   border-radius: 50%;
 }
 
-@media only screen and (max-width: 400px) {
+@media only screen and (max-width: 460px) {
+  .appLayout {
+    padding: 12px;
+  }
+
   .headerLeft nav {
     display: none;
   }
