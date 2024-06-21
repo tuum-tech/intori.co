@@ -19,7 +19,10 @@ export const AppLayout: React.FC<Props> = ({ children }) => {
   const session = useSession()
   const {
     notVerifiedAddressModalShowing,
-    setNotVerifiedAddressModalShowing
+    setNotVerifiedAddressModalShowing,
+    signer,
+    formattedAddress,
+    attemptToConnectWallet
   } = useEthereumWallet()
   const { pathname } = useRouter()
 
@@ -85,6 +88,7 @@ export const AppLayout: React.FC<Props> = ({ children }) => {
             { label: 'Dashboard', href: '/dashboard' },
             { label: 'Suggestions', href: '/suggestions' },
             { label: 'Your Responses', href: '/responses' },
+            { label: signer ? formattedAddress : 'Connect Wallet', onClick: attemptToConnectWallet },
             { label: 'Log out', onClick: logout }
           ]}
         >
