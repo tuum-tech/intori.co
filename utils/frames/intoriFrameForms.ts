@@ -70,6 +70,10 @@ export const finalStep: IntoriFrameType = {
 // TODO: first questions for user: music, movie, and season
 export const intoriQuestions = [
   {
+    question: 'Which of the following is your favorite season?',
+    answers: [ 'Spring', 'Summer', 'Fall', 'Winter']
+  },
+  {
     question: 'Which of the following is your music preference?',
     answers: [ 'Pop', 'Rock', 'Classical', 'Jazz', 'Electronic', 'Hip-Hop', 'Country']
   },
