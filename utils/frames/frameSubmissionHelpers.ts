@@ -87,7 +87,7 @@ export const getFrameInputsBasedOnAnswerOffset = (
   const inputs: IntoriFrameInputType[] = []
 
   if (!answerOffset) {
-    if (question.answers.length <= 3) {
+    if (question.answers.length <= 4) {
       inputs.push(
         ...convertAnswersToInputs(question.answers, questionIndex, 0, frameSessionId)
       )

@@ -65,14 +65,20 @@ const newQuestion = async (
     )
   }
 
-  let nextQuestionIndex = Math.floor(Math.random() * intoriQuestions.length)
+  let nextQuestionIndex = 0
   let nextQuestion = intoriQuestions[nextQuestionIndex]
   let alreadyAnsweredQuestion = await getUserAnswerForQuestion(fid, nextQuestion.question)
   let tries = 0;
 
   while (alreadyAnsweredQuestion && tries < 10) {
     tries += 1
-    nextQuestionIndex = Math.floor(Math.random() * intoriQuestions.length)
+
+    // try 0, 1, and 2 question indexes first
+    if (nextQuestionIndex < 3) {
+      nextQuestionIndex += 1
+    } else {
+      nextQuestionIndex = Math.floor(Math.random() * intoriQuestions.length)
+    }
     nextQuestion = intoriQuestions[nextQuestionIndex]
     alreadyAnsweredQuestion = await getUserAnswerForQuestion(fid, nextQuestion.question)
   }
