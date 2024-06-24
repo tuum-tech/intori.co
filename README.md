@@ -1,36 +1,31 @@
 # Intori App
+> Your data, connected
+
+[intori.co](https://www.intori.co/)
 
 ## Getting Started
 
-First, run the development server:
+First, setup your `.env.local`
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env.local
+
+# Edit .env.local and add your own values
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Run the dev server:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+yarn install
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+npm run dev
 
-## Learn More
+# To check for linting, typescript, and nextjs errors
+npm run build
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Populate fake user answers
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Your `NEXTAUTH_URL` must start with `http://localhost` and you must be logged in with Farcaster.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Go to `/api/test` to populate 3 fake user answers with your authenticated FID.

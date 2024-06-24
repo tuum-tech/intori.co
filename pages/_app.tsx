@@ -2,6 +2,7 @@ import type { AppProps } from 'next/app'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { SessionProvider } from "next-auth/react"
+import { WalletProvider } from '../contexts/EthereumWallet'
 import Head from 'next/head'
 import { Fragment } from 'react'
 import './global.css'
@@ -24,8 +25,10 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
         <meta property="og:type" content="website"/>
       </Head>
       <SessionProvider session={session}>
-        <ToastContainer position="top-right" />
-        <Component {...pageProps} />
+        <WalletProvider>
+          <ToastContainer position="top-right" />
+          <Component {...pageProps} />
+        </WalletProvider>
       </SessionProvider>
     </Fragment>
   )

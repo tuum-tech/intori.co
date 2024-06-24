@@ -1,0 +1,23 @@
+.button,
+.address {
+  background: none;
+  border: 1px solid #9664FA;
+  border-radius: 10px;
+  margin-right: 12px;
+  color: #fff;
+  padding: 6px 25px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+
+  transition: background 0.4s;
+}
+
+.button:hover {
+  background: #9664FA;
+}
+
+.address {
+  cursor: initial;
+}

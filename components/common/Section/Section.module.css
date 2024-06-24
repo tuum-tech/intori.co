@@ -24,3 +24,8 @@ h2 + .content {
   padding: 0;
   margin: 0;
 }
+@media only screen and (max-width: 460px) {
+  .section  {
+    padding: 24px 12px;
+  }
+}
