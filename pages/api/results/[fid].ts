@@ -46,7 +46,6 @@ const getProfileFramePictureImage = async (
   const suggestedUserReason = req.query.sur as string
 
   const suggestedChannel = req.query.sc as string
-  const suggestedChannelReason = req.query.scr as string
 
   // adding the number stats
   const font26 = await loadKumbSans26()
@@ -82,9 +81,8 @@ const getProfileFramePictureImage = async (
     )
   }
 
-  if (suggestedChannel && suggestedChannelReason) {
-    const prefix = suggestedChannelReason.split('this channel')[0].trim()
-    const text = `${prefix} /${suggestedChannel}`
+  if (suggestedChannel) {
+    const text = `Users that have similar answers follow /${suggestedChannel}`
 
     baseImage.print(
       font20,
@@ -101,7 +99,6 @@ const getProfileFramePictureImage = async (
   }
 
   if (!suggestedUserName && !suggestedChannel) {
-    // TODO: make less confusing, be more straight to it. say 'no suggestions at this time.'
     const text = 'Keep Going! Your next recommendations will be even sharper.'
     baseImage.print(
       font26,
