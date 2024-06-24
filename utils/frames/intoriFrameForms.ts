@@ -74,11 +74,11 @@ export const intoriQuestions = [
   },
   {
     question: 'Which of the following is your music preference?',
-    answers: [ 'Pop', 'Rock', 'Classical', 'Jazz', 'Electronic', 'Hip-Hop', 'Country']
+    answers: [ 'Pop', 'Rock', 'Latin', 'Classical', 'Jazz', 'Electronic', 'Hip-Hop', 'Country']
   },
   {
     question: 'Which of the following is your favorite movie genre?',
-    answers: [ 'Action', 'Romance', 'Comedy', 'Horror', 'Fantasy', 'Documentaries', 'Sci-Fi']
+    answers: [ 'Action', 'Drama', 'Romance', 'Comedy', 'Horror', 'Animation', 'Sci-Fi']
   },
   {
     question: 'Which of the following are your favorite type of snack?',
