@@ -17,6 +17,7 @@
 .headerLeft {
   display: flex;
   align-items: center;
+  flex-grow: 1;
 }
 .headerLeft nav {
   margin-left: 64px;
@@ -29,9 +30,15 @@
   justify-content: center;
   border-radius: 12px;
   margin-right: 16px;
+  background: #2A304200;
+  transition: background 0.3s;
 }
-.selected {
-  background: #8558E3;
+.headerLeft a:hover {
+  background: #2A3042FF;
+}
+.selected,
+.headerLeft a.selected:hover {
+  background: #8558E3 !important;
 }
 
 .avatar {
@@ -49,12 +56,14 @@
   border-radius: 50%;
 }
 
+@media only screen and (max-width: 650px) {
+  .header > button,
+  .headerLeft nav {
+    display: none;
+  }
+}
 @media only screen and (max-width: 460px) {
   .appLayout {
     padding: 12px;
-  }
-
-  .headerLeft nav {
-    display: none;
   }
 }
