@@ -2,8 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import Jimp from 'jimp'
 import * as path from 'path'
 import {
-  loadKumbSans20,
-  loadKumbSans26
+  loadKumbSans20
 } from '../../../utils/frames/fonts'
 
 // Note: This is used to create a circle masked image
@@ -46,16 +45,14 @@ const getProfileFramePictureImage = async (
   const suggestedUserReason = req.query.sur as string
 
   const suggestedChannel = req.query.sc as string
-  const suggestedChannelReason = req.query.scr as string
 
   // adding the number stats
-  const font26 = await loadKumbSans26()
   const font20 = await loadKumbSans20()
 
   baseImage.print(
     font20,
-    190,
-    226,
+    216,
+    202,
     {
       text: 'You earned 2 points, Share for 25 more!',
       alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
@@ -66,14 +63,25 @@ const getProfileFramePictureImage = async (
   )
 
   if (suggestedUserName && suggestedUserReason) {
-    const suffix = suggestedUserReason.split('You')[1].trim()
-    const text = `You and @${suggestedUserName} ${suffix}`
     baseImage.print(
       font20,
       60,
       270,
       {
-        text,
+        text: suggestedUserReason,
+        alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
+        alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
+      },
+      648,
+      95
+    )
+  } else {
+    baseImage.print(
+      font20,
+      60,
+      270,
+      {
+        text: 'Keep Going! Your next recommendations will be even sharper.',
         alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
         alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
       },
@@ -82,9 +90,8 @@ const getProfileFramePictureImage = async (
     )
   }
 
-  if (suggestedChannel && suggestedChannelReason) {
-    const prefix = suggestedChannelReason.split('this channel')[0].trim()
-    const text = `${prefix} /${suggestedChannel}`
+  if (suggestedChannel) {
+    const text = `Users that have similar answers follow /${suggestedChannel}`
 
     baseImage.print(
       font20,
@@ -96,23 +103,6 @@ const getProfileFramePictureImage = async (
         alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
       },
       464,
-      95
-    )
-  }
-
-  if (!suggestedUserName && !suggestedChannel) {
-    // TODO: make less confusing, be more straight to it. say 'no suggestions at this time.'
-    const text = 'Keep Going! Your next recommendations will be even sharper.'
-    baseImage.print(
-      font26,
-      60,
-      270,
-      {
-        text,
-        alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
-        alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
-      },
-      648,
       95
     )
   }
