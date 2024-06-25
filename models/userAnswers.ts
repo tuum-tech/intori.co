@@ -2,8 +2,6 @@ import { subDays } from 'date-fns'
 import { Timestamp } from 'firebase/firestore'
 import { createDb } from '../pages/api/utils/firestore'
 import {
-    getChannelsThatUserFollows,
-    fetchUserDetailsByFids,
     FarcasterUserType,
     FarcasterChannelType
 } from '../utils/neynarApi'
@@ -122,7 +120,6 @@ export const countUserAnswers = async (fid: number): Promise<number> => {
   } catch (error) {
     return -1 // Return -1 to indicate error
   }
-
 }
 
 const isConsecutiveDays = (date1: Date, date2: Date): boolean => {
@@ -226,10 +223,20 @@ export const getResponsesWithAnswerToQuestion = async (
   const querySnapshot = await collection
     .where('question', '==', question)
     .where('answer', '==', answer)
-    .select('fid')
     .limit(limit)
     .get()
 
   return querySnapshot.docs.map((doc) => doc.data()) as UserAnswerType[]
 }
 
+export const getRecentAnswersForUser = async (fid: number, limit: number = 10) => {
+  const collection = getCollection()
+
+  const querySnapshot = await collection
+    .where('fid', '==', fid)
+    .orderBy('date', 'desc')
+    .limit(limit)
+    .get()
+
+  return querySnapshot.docs.map((doc) => doc.data() as UserAnswerPageType)
+}
