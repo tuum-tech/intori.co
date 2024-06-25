@@ -91,15 +91,15 @@ export const getServerSideProps = (async (context) => {
   if (session.questionNumber < 3) {
     inputs.push({
         type: 'button',
-        content: 'Keep Going >',
-        postUrl: createStartNewFrameQuestionUrl({ frameSessionId }),
+        action: 'link',
+        target: 'https://www.intori.co/',
+        content: 'Learn More'
     })
 
     inputs.push({
         type: 'button',
-        action: 'link',
-        target: 'https://www.intori.co/',
-        content: 'Learn More'
+        content: 'Keep Going >',
+        postUrl: createStartNewFrameQuestionUrl({ frameSessionId }),
     })
   }
 
