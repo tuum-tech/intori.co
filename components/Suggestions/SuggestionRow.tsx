@@ -16,10 +16,18 @@ export const SuggestionRow: React.FC<Props> = ({
     return (
       <tr>
         <td>
-          <span
-            className={styles.avatar}
-            style={{ backgroundImage: `url(${channel.imageUrl})` }}
-          />
+          { !!channel.imageUrl && (
+            <span
+              className={styles.avatar}
+              style={{ backgroundImage: `url(${channel.imageUrl})` }}
+            />
+          )}
+          { !channel.imageUrl && (
+            <span
+              className={styles.avatar}
+              style={{ backgroundColor: 'grey' }}
+            />
+          )}
         </td>
         <td className={styles.name}>
           <span>{channel.name}</span>
@@ -54,10 +62,18 @@ export const SuggestionRow: React.FC<Props> = ({
   return (
       <tr>
         <td>
-          <span
-            className={styles.avatar}
-            style={{ backgroundImage: `url(${user.image})` }}
-          />
+          { !!user.image && (
+            <span
+              className={styles.avatar}
+              style={{ backgroundImage: `url(${user.image})` }}
+            />
+          )}
+          { !user.image && (
+            <span
+              className={styles.avatar}
+              style={{ backgroundColor: 'grey' }}
+            />
+          )}
         </td>
         <td className={styles.name}>
           <span>{user?.username}</span>

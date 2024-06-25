@@ -6,11 +6,10 @@ import { useEffect, useMemo, useState } from "react";
 
 import { AppLayout } from "@/layouts/App"
 import { SuggestionType } from '../../models/userAnswers'
-import { Skeleton } from '../../components/common/Skeleton'
 import { Section } from '../../components/common/Section'
-import { SuggestionRow } from '../../components/Suggestions/SuggestionRow'
-
-import styles from './Suggestions.module.css'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import 'react-tabs/style/react-tabs.css';
+import { SuggestionsTable, LoadingSuggestionsTable } from '../../components/Suggestions/SuggestionsTable'
 
 export const getServerSideProps = (async (context) => {
   const session = await getSession(context)
@@ -65,71 +64,54 @@ const Suggestions: NextPage = () => {
 
   const loading = useMemo(() => session.status === 'loading' || loadingSuggestions, [session, loadingSuggestions])
 
+  const userSuggestions = useMemo(() => {
+    return suggestions.filter((suggestion) => suggestion.user)
+  }, [suggestions])
+
+  const channelSuggestions = useMemo(() => {
+    return suggestions.filter((suggestion) => suggestion.channel)
+  }, [suggestions])
+
   if (loading || !session?.data?.user) {
     return (
       <AppLayout>
-      <Section title="Your Suggestions" subtitle="Meet someone new">
-        <table className={styles.suggestionsTable}>
-          <thead>
-            <tr>
-              <th></th>
-              <th>Name</th>
-              <th>Type</th>
-              <th>Reason</th>
-            </tr>
-          </thead>
-          <tbody>
-            {[...Array(10)].map((_, index) => (
-              <tr key={index}>
-                <td>
-                  <span
-                    className={styles.avatar}
-                    style={{ backgroundColor: 'grey' }}
-                  />
-                </td>
+        <Section title="Suggested Follows" subtitle="Meet someone new">
+          <Tabs>
+            <TabList>
+              <Tab>Users (0)</Tab>
+              <Tab>Channels (0)</Tab>
+            </TabList>
 
-                <td>
-                  <Skeleton width={100 + Math.floor(Math.random() * 41) - 20} />
-                </td>
+            <TabPanel>
+              <LoadingSuggestionsTable />
+            </TabPanel>
 
-                <td>
-                  <Skeleton width={50 + Math.floor(Math.random() * 41) - 20} />
-                </td>
-
-                <td>
-                  <Skeleton width={350 + Math.floor(Math.random() * 41) - 20} />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </Section>
+            <TabPanel>
+              <LoadingSuggestionsTable />
+            </TabPanel>
+          </Tabs>
+        </Section>
       </AppLayout>
     )
   }
 
   return (
     <AppLayout>
-      <Section title="Your Suggestions" subtitle="Meet someone new">
-        <table className={styles.suggestionsTable}>
-          <thead>
-            <tr>
-              <th></th>
-              <th>Name</th>
-              <th>Type</th>
-              <th>Reason</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {suggestions.map((suggestion, index) => (
-              <SuggestionRow
-                key={suggestion.user?.fid || suggestion?.channel?.id || index}
-                suggestion={suggestion}
-              />
-            ))}
-          </tbody>
-        </table>
+      <Section title="Suggested Follows" subtitle="Meet someone new">
+        <Tabs>
+          <TabList>
+            <Tab>Users ({userSuggestions.length})</Tab>
+            <Tab>Channels ({channelSuggestions.length})</Tab>
+          </TabList>
+
+          <TabPanel>
+            <SuggestionsTable suggestions={userSuggestions} />
+          </TabPanel>
+
+          <TabPanel>
+            <SuggestionsTable suggestions={channelSuggestions} />
+          </TabPanel>
+        </Tabs>
       </Section>
     </AppLayout>
   )
