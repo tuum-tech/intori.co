@@ -5,10 +5,12 @@ import { getUserAnswerForQuestion } from '../../../models/userAnswers'
 import { appendQuestionToFrameSession } from '../../../models/frameSession'
 import { intoriQuestions } from '../../../utils/frames/intoriFrameForms'
 import { getFrameSessionFromRequest, createFrameSession } from '../../../models/frameSession'
+import { hasUserReachedSixAnswerLimit } from '../../../utils/frames/limitSixAnswersPerDay'
 import {
   createFrameQuestionUrl,
   createFrameErrorUrl,
-  createFrameResultsUrl
+  createFrameResultsUrl,
+  createLimitReachedUrl
 } from '../../../utils/frames/generatePageUrls'
 
 // User is requesting a new question
@@ -66,7 +68,13 @@ const newQuestion = async (
     )
   }
 
-  // TODO: add check if this user answered 6 questions in last 24 hours
+  const reachedLimit = await hasUserReachedSixAnswerLimit(fid)
+  if (reachedLimit) {
+    return res.redirect(
+      307,
+      createLimitReachedUrl()
+    )
+  }
 
   let nextQuestionIndex = 0
   let nextQuestion = intoriQuestions[nextQuestionIndex]
