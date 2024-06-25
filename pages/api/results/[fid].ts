@@ -77,6 +77,19 @@ const getProfileFramePictureImage = async (
       648,
       95
     )
+  } else {
+    baseImage.print(
+      font20,
+      60,
+      270,
+      {
+        text: 'Keep Going! Your next recommendations will be even sharper.',
+        alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
+        alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
+      },
+      648,
+      95
+    )
   }
 
   if (suggestedChannel) {
@@ -92,22 +105,6 @@ const getProfileFramePictureImage = async (
         alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
       },
       464,
-      95
-    )
-  }
-
-  if (!suggestedUserName && !suggestedChannel) {
-    const text = 'Keep Going! Your next recommendations will be even sharper.'
-    baseImage.print(
-      font26,
-      60,
-      270,
-      {
-        text,
-        alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
-        alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
-      },
-      648,
       95
     )
   }
