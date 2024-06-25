@@ -25,14 +25,14 @@ const createFakeAnswers = async (
     return res.status(403).end()
   }
 
-  const fid = parseInt(session.user.fid, 10)
+  // const fid = parseInt(session.user.fid, 10)
 
-  const TOTAL = 3
+  const TOTAL = 120
   for (let i = 0; i < TOTAL; i++) {
     const randomQuestion = intoriQuestions[Math.floor(Math.random() * intoriQuestions.length)]
 
     const userAnswer: CreateUserAnswerType = {
-      fid,
+      fid: Math.floor(Math.random() * (470224 - 470200 + 1)) + 470200,
       question: randomQuestion.question,
       answer: randomQuestion.answers[Math.floor(Math.random() * randomQuestion.answers.length)],
       casterFid: 294394 // intori user fid

@@ -18,3 +18,19 @@ body {
   background-color: #000;
   background-attachment: fixed;
 }
+
+.react-tabs__tab-list {
+  border-bottom: 1px solid #2A3042 !important;
+  margin-bottom: 32px !important;
+}
+
+.react-tabs__tab {
+  color: #FFF !important;
+  border: none !important;
+  padding: 24px !important;
+}
+
+.react-tabs__tab--selected {
+  background: #9664FA !important;
+  font-weight: 500 !important;
+}

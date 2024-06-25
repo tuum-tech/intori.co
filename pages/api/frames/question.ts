@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { frameSubmissionHelpers } from '../../../utils/frames/frameSubmissionHelpers'
 import { validateFarcasterPacketMessage } from '../utils/farcasterServer'
 import { getUserAnswerForQuestion } from '../../../models/userAnswers'
+import { appendQuestionToFrameSession } from '../../../models/frameSession'
 import { intoriQuestions } from '../../../utils/frames/intoriFrameForms'
 import { getFrameSessionFromRequest, createFrameSession } from '../../../models/frameSession'
 import {
@@ -65,6 +66,8 @@ const newQuestion = async (
     )
   }
 
+  // TODO: add check if this user answered 6 questions in last 24 hours
+
   let nextQuestionIndex = 0
   let nextQuestion = intoriQuestions[nextQuestionIndex]
   let alreadyAnsweredQuestion = await getUserAnswerForQuestion(fid, nextQuestion.question)
@@ -86,6 +89,8 @@ const newQuestion = async (
   if (tries === 5) {
     // TODO: add frame that you answered all questions
   }
+
+  await appendQuestionToFrameSession(session.id, nextQuestion.question)
 
   return res.redirect(
     307,

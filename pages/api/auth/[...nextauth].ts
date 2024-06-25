@@ -1,7 +1,7 @@
 import NextAuth, { type NextAuthOptions } from "next-auth"
 import util from 'util'
 import CredentialsProvider from "next-auth/providers/credentials"
-import { createAppClient, viemConnector } from "@farcaster/auth-client"
+import { createAppClient, viemConnector } from "@farcaster/auth-kit"
 import { NextApiRequest, NextApiResponse } from "next"
 
 export const authOptions: (req: NextApiRequest) => NextAuthOptions = (req) => ({

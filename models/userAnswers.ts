@@ -2,8 +2,6 @@ import { subDays } from 'date-fns'
 import { Timestamp } from 'firebase/firestore'
 import { createDb } from '../pages/api/utils/firestore'
 import {
-    getChannelsThatUserFollows,
-    fetchUserDetailsByFids,
     FarcasterUserType,
     FarcasterChannelType
 } from '../utils/neynarApi'
@@ -50,7 +48,13 @@ export type SuggestionType = {
   user?: FarcasterUserType
   channel?: FarcasterChannelType
   reason: string[]
-} 
+}
+
+export type ChannelSuggestionType = {
+  type: 'channel'
+  channel: FarcasterChannelType
+  reason: string[]
+}
 
 let userAnswersCollection: FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData>
 
@@ -116,7 +120,6 @@ export const countUserAnswers = async (fid: number): Promise<number> => {
   } catch (error) {
     return -1 // Return -1 to indicate error
   }
-
 }
 
 const isConsecutiveDays = (date1: Date, date2: Date): boolean => {
@@ -158,158 +161,6 @@ export const findCurrentStreak = async (fid: number): Promise<number> => {
   } catch (error) {
     return 0
   }
-}
-
-export const getSuggestedUsers = async (
-  fid: number,
-  options?: {
-    maxResults: number
-  }
-): Promise<SuggestionType[]> => {
-  const collection = getCollection()
-
-  const userAnswers = await getUserAnswersByFid(fid)
-
-  const suggestedUserFids: {
-    fid: number
-    reason: string[]
-  }[] = []
-
-  const removeDuplicateAnswers = (arr: UserAnswerType[]): UserAnswerType[] => {
-    const uniqueQuestions = new Map<string, boolean>();
-    return arr.filter(item => {
-      if (uniqueQuestions.has(item.question)) {
-        return false;
-      } else {
-        uniqueQuestions.set(item.question, true);
-        return true;
-      }
-    });
-  };
-
-  const uniqueUserAnswers = removeDuplicateAnswers(userAnswers)
-
-  await Promise.all(
-    uniqueUserAnswers.map(async (userAnswer) => {
-      const querySnapshot = await collection
-        .where('question', '==', userAnswer.question)
-        .where('answer', '==', userAnswer.answer)
-        .select('fid')
-        .limit(10)
-        .get()
-
-      for (let j = 0; j < querySnapshot.docs.length; j++) {
-        const suggestedUserAnswer = querySnapshot.docs[j].data() as UserAnswerType
-
-        if (suggestedUserAnswer.fid === fid) {
-          continue
-        }
-
-        const alreadySuggested = suggestedUserFids.findIndex((suggestedUser) => suggestedUser.fid === suggestedUserAnswer.fid)
-
-        if (alreadySuggested !== -1) {
-          suggestedUserFids[alreadySuggested].reason.push(`Both answered "${userAnswer.answer}" for "${userAnswer.question}"`)
-          continue
-        }
-
-        suggestedUserFids.push({
-          fid: suggestedUserAnswer.fid,
-          reason: [
-            `You both answered "${userAnswer.answer}" for "${userAnswer.question}"`
-          ]
-        })
-      }
-    })
-  )
-
-  const fids = suggestedUserFids.slice(
-    0,
-    options?.maxResults ?? suggestedUserFids.length
-  ).map((suggestedUser) => suggestedUser.fid)
-
-  if (!fids.length) {
-    return []
-  }
-
-  const userDetails = await fetchUserDetailsByFids(fids)
-
-  const suggestedUsers = suggestedUserFids.map((suggestedUser) => {
-    const user = userDetails.find((user) => user.fid === suggestedUser.fid)
-
-    if (!user) {
-      return null
-    }
-
-    return {
-      user: user as FarcasterUserType,
-      type: 'user',
-      reason: suggestedUser.reason
-    }
-  }).filter((suggestedUser) => suggestedUser !== null)
-
-  return suggestedUsers as SuggestionType[]
-}
-
-export const getSuggestedUsersAndChannels = async (
-  fid: number,
-  options?: {
-    maxResults: number
-  }
-): Promise<SuggestionType[]> => {
-  const suggestedUsers = await getSuggestedUsers(fid, options)
-
-  const allChannels: FarcasterChannelType[] = []
-  const suggestedChannels: SuggestionType[] = []
-  const channelCounts: Record<string, number> = {}
-
-  await Promise.all(
-    suggestedUsers.map(async (suggestion) => {
-      if (!suggestion.user) {
-        return
-      }
-
-      const channels = await getChannelsThatUserFollows(
-        suggestion.user.fid,
-        options?.maxResults || 25
-      )
-
-      for (let j = 0; j < channels.length; j++) {
-        const channelId = channels[j].id
-
-        if (!channelCounts[channelId]) {
-          channelCounts[channelId] = 1
-          allChannels.push(channels[j])
-        } else {
-          channelCounts[channelId]++
-        }
-
-      }
-    })
-  )
-
-  const sortedChannelCounts = Object.entries(channelCounts).sort((a, b) => b[1] - a[1])
-
-  for (let i = 0; i < sortedChannelCounts.length; i++) {
-    const channelId = sortedChannelCounts[i][0]
-
-    if (sortedChannelCounts[i][1] < 2) {
-      continue
-    }
-
-    const channel = allChannels.find((c) => c.id === channelId)
-
-    if (!channel) {
-      continue
-    }
-
-    suggestedChannels.push({
-      type: 'channel',
-      channel,
-      reason: ['Users that have similar answers to you follow this channel.']
-    })
-  }
-
-  return suggestedUsers.concat(suggestedChannels) as SuggestionType[]
 }
 
 export const countSuggestedUsersAndChannels = async (
@@ -358,3 +209,34 @@ export const updateUserAnswerWithBlockchainMetadata = async (
   }
 }
 
+export const getResponsesWithAnswerToQuestion = async (
+  options: {
+    question: string
+    answer: string
+    limit: number
+  }
+): Promise<UserAnswerType[]> => {
+  const collection = getCollection()
+
+  const { question, answer, limit } = options
+
+  const querySnapshot = await collection
+    .where('question', '==', question)
+    .where('answer', '==', answer)
+    .limit(limit)
+    .get()
+
+  return querySnapshot.docs.map((doc) => doc.data()) as UserAnswerType[]
+}
+
+export const getRecentAnswersForUser = async (fid: number, limit: number = 10) => {
+  const collection = getCollection()
+
+  const querySnapshot = await collection
+    .where('fid', '==', fid)
+    .orderBy('date', 'desc')
+    .limit(limit)
+    .get()
+
+  return querySnapshot.docs.map((doc) => doc.data() as UserAnswerPageType)
+}

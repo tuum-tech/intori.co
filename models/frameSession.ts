@@ -7,6 +7,7 @@ export type FrameSessionType = {
   fid: number
   questionNumber: number
   createdAt: Timestamp
+  questions: string[] // questions given in this session
 }
 
 export type CreateFrameSessionType = {
@@ -30,6 +31,7 @@ export const createFrameSession = async (newFrameSession: CreateFrameSessionType
   const doc = await collection.add({
     ...newFrameSession,
     questionNumber: 0,
+    questions: [],
     createdAt: new Date()
   })
 
@@ -96,4 +98,27 @@ export const getFrameSessionFromRequest = async (
   }
 
   return await getFrameSessionById(frameSessionId as string)
+}
+
+export const appendQuestionToFrameSession = async (
+  frameSessionId: string,
+  question: string
+): Promise<void> => {
+  const collection = getCollection()
+
+  const docRef = collection.doc(frameSessionId)
+  const doc = await docRef.get()
+
+  if (!doc.exists) {
+    return
+  }
+
+  const currentDocumentState = doc.data() as FrameSessionType
+
+  await docRef.update({
+    questions: [
+      ...(currentDocumentState.questions || []),
+      question
+    ]
+  })
 }

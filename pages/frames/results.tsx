@@ -12,10 +12,13 @@ import Input from '../../components/common/Input'
 import { PrimaryButton } from '../../components/common/Button'
 import styles from './FramePage.module.css'
 import { getFrameSessionById } from '../../models/frameSession'
-import { getSuggestedUsersAndChannels } from '../../models/userAnswers'
 import {
   createStartNewFrameQuestionUrl
 } from '../../utils/frames/generatePageUrls'
+import {
+  getSuggestedChannel,
+  getSuggestedUser
+} from '../../utils/frames/suggestions'
  
 type Props = {
   imageUrl: string
@@ -53,53 +56,31 @@ export const getServerSideProps = (async (context) => {
 
   const inputs: IntoriFrameInputType[] = []
 
-  const suggestions = await getSuggestedUsersAndChannels(fid, {
-    maxResults: 5
+  const channelSuggestion = await getSuggestedChannel(session)
+
+  inputs.push({
+    type: 'button',
+    action: 'link',
+    target: `https://warpcast.com/~/channel/${channelSuggestion}`,
+    content: `/${channelSuggestion}`
   })
 
-  const channelSuggestions = suggestions.filter(suggestion => suggestion.channel)
-  const userSuggestions = suggestions.filter(suggestion => suggestion.user)
+  imageUrlQueryParts.push(`sc=${channelSuggestion}`)
 
-  if (channelSuggestions.length) {
-    const randomChannel = channelSuggestions[Math.floor(Math.random() * channelSuggestions.length)]
+  if (session?.questionNumber === 3) {
+    const userSuggestion = await getSuggestedUser(session)
 
     inputs.push({
       type: 'button',
       action: 'link',
-      target: `https://warpcast.com/~/channel/${randomChannel}`,
-      content: `/${randomChannel.channel?.name}`
+      target: `https://warpcast.com/${userSuggestion.user}`,
+      content: `@${userSuggestion.user}`
     })
 
-    imageUrlQueryParts.push(`sc=${randomChannel.channel?.name}`)
-    imageUrlQueryParts.push(`scr=${randomChannel.reason}`)
-  }
-
-  if (session?.questionNumber === 3) {
-    if (!userSuggestions.length) {
-      inputs.push({
-        type: 'button',
-        action: 'link',
-        target: 'https://warpcast.com/intori',
-        content: '/intori',
-      })
-    } else {
-      const randomUser = userSuggestions[Math.floor(Math.random() * userSuggestions.length)]
-
-      if (randomUser.user) {
-        inputs.push({
-          type: 'button',
-          action: 'link',
-          target: `https://warpcast.com/${randomUser.user?.username}`,
-          content: `/${randomUser.user?.username}`
-        })
-      }
-
-      imageUrlQueryParts.push(`su=${randomUser.user?.username}`)
-      imageUrlQueryParts.push(`sur=${randomUser.reason}`)
-    }
+    imageUrlQueryParts.push(`su=${userSuggestion.user}`)
+    imageUrlQueryParts.push(`sur=${userSuggestion.reason}`)
   }
   
-
   inputs.push({
       type: 'button',
       action: 'link',
@@ -110,12 +91,17 @@ export const getServerSideProps = (async (context) => {
   if (session.questionNumber < 3) {
     inputs.push({
         type: 'button',
+        action: 'link',
+        target: 'https://www.intori.co/',
+        content: 'Learn More'
+    })
+
+    inputs.push({
+        type: 'button',
         content: 'Keep Going >',
         postUrl: createStartNewFrameQuestionUrl({ frameSessionId }),
     })
   }
-
-  // TODO: add back the learn more intori.co button
 
   const frame: IntoriFrameType = {
     inputs
