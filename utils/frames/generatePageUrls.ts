@@ -37,3 +37,7 @@ export const createSubmitAnswerUrl = (params: {
   const { questionIndex, answerOffset, frameSessionId } = params
   return `${process.env.NEXTAUTH_URL}/api/frames/answer?qi=${questionIndex}&ioff=${answerOffset}&fsid=${frameSessionId}`
 }
+
+export const createLimitReachedUrl = (): string => {
+  return `${process.env.NEXTAUTH_URL}/frames/limit`
+}
