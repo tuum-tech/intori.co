@@ -1,15 +1,103 @@
 import { FrameSessionType } from '../../models/frameSession'
 import {
   getUserAnswerForQuestion,
-  getResponsesWithAnswerToQuestion
+  getResponsesWithAnswerToQuestion,
+  getRecentAnswersForUser,
+  SuggestionType
 } from '../../models/userAnswers'
 import {
   fetchUserDetailsByFids,
-  getChannelsThatUserFollows
+  getChannelsThatUserFollows,
+  FarcasterChannelType
 } from '../neynarApi'
-import { intoriQuestions } from './intoriFrameForms'
+import {
+  intoriQuestions,
+  isInitialQuestion
+} from './intoriFrameForms'
 
-// we need to suggest users that share answers with last question
+const getSuggestedChannelsForInitialQuestion = (
+  question: string, 
+  answer: string
+): string[] => {
+  const questionIndex = intoriQuestions.findIndex(q => q.question === question)
+  const suggestions: string[] = []
+
+  if (questionIndex >= 3) {
+    return []
+  }
+
+  if (questionIndex === 0) {
+    // always push these for the question
+    suggestions.push('outside')
+
+    switch (answer) {
+      case 'Spring':
+        suggestions.push('flowers', 'flora', 'sunsets', 'gardening')
+        break
+      case 'Summer':
+        suggestions.push('surfing', 'beaches', 'sunsets', 'grilling', 'travel', 'waterscapes', 'tropicalgarden')
+        break
+      case 'Fall':
+        suggestions.push('woodland', 'tree', 'mountains')
+        break
+      case 'Winter':
+        suggestions.push('snow', 'skiing', 'alps', 'snowboarding', 'mountains', 'mountainlife')
+        break
+    }
+
+    return suggestions
+  }
+
+  // music
+  if (questionIndex === 1) {
+    suggestions.push('music','spotify', 'albumoftheday')
+
+    switch (answer) {
+      case 'Pop':
+        suggestions.push('kpop', 'audiophile')
+        break
+      case 'Rock':
+        suggestions.push('rock', 'audiophile')
+        break
+      case 'Latin':
+        suggestions.push('latinmusic')
+        break
+      case 'Classical':
+        suggestions.push('classical')
+        break
+      case 'Electronic':
+        suggestions.push('electronic', 'housemusic', 'techno', 'campfire')
+        break
+      case 'Hip-Hop':
+        suggestions.push('rap')
+        break
+      case 'Country':
+        suggestions.push('countrymusic')
+        break
+    }
+
+    return suggestions
+  }
+
+  // movies
+  suggestions.push('movies', 'screens', 'moviefortonight', 'popcorn', 'best-movies')
+
+  switch (answer) {
+    case 'Horror':
+      suggestions.push('horror')
+      break
+    case 'Sci-Fi':
+      suggestions.push('scifi', 'starwars', 'star-trek')
+      break
+    case 'Animation':
+      suggestions.push('disney', 'anime')
+      break
+  }
+
+  return suggestions
+}
+
+// get suggested user for frame sequence
 export const getSuggestedUser = async (
   frameSession: FrameSessionType
 ): Promise<{
@@ -84,6 +172,7 @@ export const getSuggestedUser = async (
   }
 }
 
+// get suggested channel for frame sequence
 export const getSuggestedChannel = async (
   frameSession: FrameSessionType
 ): Promise<string> => {
@@ -104,10 +193,9 @@ export const getSuggestedChannel = async (
   }
 
   const lastQuestionAnswered = frameSession.questions[frameSession.questions.length - 1]
-  const questionIndex = intoriQuestions.findIndex(question => question.question === lastQuestionAnswered)
 
   // if one of the initial 3 questions, we want to show different suggestions
-  if (questionIndex < 3) {
+  if (isInitialQuestion(lastQuestionAnswered)) {
     const userResponse = await getUserAnswerForQuestion(frameSession.fid, lastQuestionAnswered)
     if (!userResponse) {
       suggestions.push('farcaster')
@@ -117,72 +205,9 @@ export const getSuggestedChannel = async (
     }
 
     const { answer } = userResponse
+    const initialQuestionSuggestions = getSuggestedChannelsForInitialQuestion(lastQuestionAnswered, answer)
 
-    // seasons
-    if (questionIndex === 0) {
-      // always push these for the question
-      suggestions.push('outside')
-
-      switch (answer) {
-        case 'Spring':
-          suggestions.push('flowers', 'flora', 'sunsets', 'gardening')
-          break
-        case 'Summer':
-          suggestions.push('surfing', 'beaches', 'sunsets', 'grilling', 'travel', 'waterscapes', 'tropicalgarden')
-          break
-        case 'Fall':
-          suggestions.push('woodland', 'tree', 'mountains')
-          break
-        case 'Winter':
-          suggestions.push('snow', 'skiing', 'alps', 'snowboarding', 'mountains', 'mountainlife')
-          break
-      }
-    }
-
-    // music
-    if (questionIndex === 1) {
-      suggestions.push('music','spotify', 'albumoftheday')
-
-      switch (answer) {
-        case 'Pop':
-          suggestions.push('kpop', 'audiophile')
-          break
-        case 'Rock':
-          suggestions.push('rock', 'audiophile')
-          break
-        case 'Latin':
-          suggestions.push('latinmusic')
-          break
-        case 'Classical':
-          suggestions.push('classical')
-          break
-        case 'Electronic':
-          suggestions.push('electronic', 'housemusic', 'techno', 'campfire')
-          break
-        case 'Hip-Hop':
-          suggestions.push('rap')
-          break
-        case 'Country':
-          suggestions.push('countrymusic')
-          break
-      }
-    }
-
-    if (questionIndex === 2) { // movies
-      suggestions.push('movies', 'screens', 'moviefortonight', 'popcorn', 'best-movies')
-
-      switch (answer) {
-        case 'Horror':
-          suggestions.push('horror')
-          break
-        case 'Sci-Fi':
-          suggestions.push('scifi', 'starwars', 'star-trek')
-          break
-        case 'Animation':
-          suggestions.push('disney', 'anime')
-          break
-      }
-    }
+    suggestions.push(...initialQuestionSuggestions)
 
     return randomSuggestion()
   }
@@ -197,4 +222,132 @@ export const getSuggestedChannel = async (
   )
 
   return randomSuggestion()
+}
+
+// The 'reason' text fields here can be different since this is for the frontend app
+export const getAllSuggestedUSersAndChannels = async (
+  options: {
+    fid: number
+  }
+): Promise<SuggestionType[]> => {
+  const { fid } = options
+  const recentResponses = await getRecentAnswersForUser(fid, 12)
+
+  const suggestions: SuggestionType[] = []
+  const suggestedUserFids: {
+    fid: number
+    reason: string[]
+  }[] = []
+
+  for (let i = 0; i < recentResponses.length; i++) {
+    const response = recentResponses[i]
+
+    if (isInitialQuestion(response.question)) {
+      const initialQuestionSuggestions = getSuggestedChannelsForInitialQuestion(
+        response.question,
+        response.answer
+      )
+
+      const channelSuggestions = initialQuestionSuggestions.map((ch) => {
+        return {
+          type: 'channel',
+          channel: {
+            id: ch,
+            name: ch
+          },
+          reason: [`You answered "${response.answer}"`]
+        } as SuggestionType
+      })
+
+      suggestions.push(...channelSuggestions)
+    }
+
+    const otherUserResponses = await getResponsesWithAnswerToQuestion({
+      question: response.question,
+      answer: response.answer,
+      limit: 12
+    })
+
+    for (let j = 0; j < otherUserResponses.length; j++) {
+      const res = otherUserResponses[j]
+
+      if (res.fid === fid) {
+        continue
+      }
+
+      const alreadySuggested = suggestedUserFids.findIndex(
+        (suggestedFid) => suggestedFid.fid === res.fid
+      )
+
+      if (alreadySuggested !== -1) {
+        suggestedUserFids[alreadySuggested].reason.push(
+          `You both answered "${response.answer}" to "${response.question}"`
+        )
+        continue
+      }
+
+      suggestedUserFids.push({
+        fid: res.fid,
+        reason: [`You both answered "${response.answer}" to "${response.question}"`]
+      })
+    }
+  }
+
+  const userDetails = await fetchUserDetailsByFids(
+    suggestedUserFids.map((s) => s.fid)
+  )
+
+  const usersToBeSuggest = suggestedUserFids.map((s) => {
+    return {
+      type: 'user',
+      user: userDetails.find((u) => u.fid === s.fid),
+      reason: s.reason
+    }
+  }) as SuggestionType[]
+
+  suggestions.push(...usersToBeSuggest)
+
+  const channelsToBeSuggested: {
+    channel: FarcasterChannelType
+    count: number
+  }[] = []
+
+  for (let i = 0; i < suggestedUserFids.length; i++) {
+    const suggestedFid = suggestedUserFids[i]
+    const channels = await getChannelsThatUserFollows(suggestedFid.fid, 5)
+
+    for (let j = 0; j < channels.length; j++) {
+      const channel = channels[j]
+      const name = channel.name as string
+
+      const index = channelsToBeSuggested.findIndex((c) => c.channel.name === name)
+
+      if (index === -1) {
+        channelsToBeSuggested.push({
+          channel,
+          count: 1
+        })
+
+        continue
+      }
+
+      channelsToBeSuggested[index].count += 1
+    }
+  }
+
+  channelsToBeSuggested.sort((a, b) => b.count - a.count)
+
+  const channelsToSuggest = channelsToBeSuggested.slice(0, 5).map(
+    ({ channel }) => {
+      return {
+        type: 'channel',
+        reason: ['Users that have similar interests follow this channel'],
+        channel
+      } as SuggestionType
+    }
+  )
+
+  suggestions.push(...channelsToSuggest)
+
+  return suggestions
 }

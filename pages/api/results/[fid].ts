@@ -65,14 +65,12 @@ const getProfileFramePictureImage = async (
   )
 
   if (suggestedUserName && suggestedUserReason) {
-    const suffix = suggestedUserReason.split('You')[1].trim()
-    const text = `You and @${suggestedUserName} ${suffix}`
     baseImage.print(
       font20,
       60,
       270,
       {
-        text,
+        text: suggestedUserReason,
         alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
         alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
       },
