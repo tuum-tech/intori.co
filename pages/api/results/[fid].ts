@@ -2,8 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import Jimp from 'jimp'
 import * as path from 'path'
 import {
-  loadKumbSans20,
-  loadKumbSans26
+  loadKumbSans20
 } from '../../../utils/frames/fonts'
 
 // Note: This is used to create a circle masked image
@@ -48,13 +47,12 @@ const getProfileFramePictureImage = async (
   const suggestedChannel = req.query.sc as string
 
   // adding the number stats
-  const font26 = await loadKumbSans26()
   const font20 = await loadKumbSans20()
 
   baseImage.print(
     font20,
-    190,
-    226,
+    216,
+    202,
     {
       text: 'You earned 2 points, Share for 25 more!',
       alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
