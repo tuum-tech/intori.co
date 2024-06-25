@@ -129,3 +129,8 @@ export const intoriQuestions = [
     answers: ["Gym workouts", "Outdoor activities", "Yoga", "Sports", "Home workouts", "No exercise"]
   }
 ]
+export const isInitialQuestion = (question: string): boolean => {
+  const questionIndex = intoriQuestions.findIndex(q => q.question === question)
+
+  return questionIndex < 3
+}

@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react'
-import { getSuggestedUsersAndChannels } from '../../models/userAnswers'
+import { getAllSuggestedUSersAndChannels } from '../../utils/frames/suggestions'
 
 const getSuggestions = async (
   req: NextApiRequest,
@@ -16,7 +16,9 @@ const getSuggestions = async (
     return res.status(401).end()
   }
 
-  const suggestions = await getSuggestedUsersAndChannels(parseInt(session.user.fid, 10))
+  const suggestions = await getAllSuggestedUSersAndChannels({
+    fid: parseInt(session.user.fid, 10)
+  })
 
   // cache for 1 hour
   res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate')
