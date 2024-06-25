@@ -66,6 +66,8 @@ const newQuestion = async (
     )
   }
 
+  // TODO: add check if this user answered 6 questions in last 24 hours
+
   let nextQuestionIndex = 0
   let nextQuestion = intoriQuestions[nextQuestionIndex]
   let alreadyAnsweredQuestion = await getUserAnswerForQuestion(fid, nextQuestion.question)
