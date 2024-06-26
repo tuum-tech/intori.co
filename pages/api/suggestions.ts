@@ -26,4 +26,5 @@ const getSuggestions = async (
   res.status(200).json(suggestions)
 }
 
+
 export default getSuggestions

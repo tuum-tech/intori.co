@@ -293,6 +293,10 @@ export const getAllSuggestedUSersAndChannels = async (
     }
   }
 
+  if (!suggestedUserFids.length) {
+    return suggestions
+  }
+
   const userDetails = await fetchUserDetailsByFids(
     suggestedUserFids.map((s) => s.fid)
   )
