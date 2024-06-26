@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useCallback, useState } from "react";
 import type { NextPage, GetServerSideProps } from "next";
 import { useRouter } from "next/router"
 import { useSession, getSession } from "next-auth/react"
@@ -6,6 +6,7 @@ import { useSession, getSession } from "next-auth/react"
 import { AppLayout } from "@/layouts/App"
 import { ListResponses } from '../../components/Responses/OneResponseCard'
 import { Section } from '../../components/common/Section'
+import { SwitchAutoPublish } from '../../components/UserBlockchainSettings/SwitchAutoPublish'
 import {
   getUserAnswersByFid,
   UserAnswerPageType
@@ -58,6 +59,7 @@ const Responses: NextPage<Props> = ({ userAnswers }) => {
   return (
     <AppLayout>
       <Section title="Your Responses" subtitle="You can now publish your responses to the blockchain.">
+        <SwitchAutoPublish />
         <ListResponses responses={userAnswers} />
       </Section>
     </AppLayout>
