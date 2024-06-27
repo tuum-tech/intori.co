@@ -70,10 +70,13 @@ const getCollection = () => {
 export const createUserAnswer = async (newUserAnswer: CreateUserAnswerType) => {
   const collection = getCollection()
 
-  return collection.add({
+  const ref = await collection.add({
     ...newUserAnswer,
     date: new Date()
   })
+
+  const doc = await ref.get()
+  return doc.data() as UserAnswerType
 }
 
 export const getUserAnswersByFid = async (fid: number) => {

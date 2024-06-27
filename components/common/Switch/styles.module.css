@@ -1,0 +1,21 @@
+.switch {
+  display: flex;
+  color: #FFF;
+  align-items: center;
+  margin-bottom: 64px;
+  flex-wrap: wrap;
+}
+.switch > span {
+  margin-right: 12px;
+  flex-basis: 100%;
+  flex-grow: 1;
+  margin-bottom: 8px;
+}
+
+.switch > sub {
+  font-size: 12px;
+  line-height: 12px;
+  bottom: 0;
+  color: #AAA;
+  margin-left: 12px;
+}
