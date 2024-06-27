@@ -8,6 +8,7 @@ import styles from './styles.module.css'
 import { PrimaryButton, SecondaryButton } from '../common/Button'
 import { useEthereumWallet } from '../../contexts/EthereumWallet'
 import { TransactionType } from '../../lib/ethers/registerCredential'
+import { Empty } from '../common/Empty'
 
 type Props = {
   response: UserAnswerPageType
@@ -102,6 +103,17 @@ export const ListResponses: React.FC<{
 }> = ({ responses }) => {
   return (
     <div className={styles.responsesContainer}>
+      {
+        responses.length === 0 && (
+          <Empty>
+            You have not answered any questions yet.
+
+            <br />
+
+            Visit <a href="https://warpcast.com/~/channel/intori">Intori</a> on Farcaster and answer some frames!
+          </Empty>
+        )
+      }
       {
         responses.map((response) => (
           <OneResponseCard
