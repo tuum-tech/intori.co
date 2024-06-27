@@ -1,0 +1,7 @@
+.empty {
+  text-align: center;
+  margin-top: 64px;
+  margin-bottom: 64px;
+  color: #666;
+  flex-direction: column;
+}
