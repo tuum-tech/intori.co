@@ -3,7 +3,10 @@ import {
   frameSubmissionHelpers
 } from '../../../utils/frames/frameSubmissionHelpers'
 import { validateFarcasterPacketMessage } from '../utils/farcasterServer'
-import { createUserAnswer } from '../../../models/userAnswers'
+import { createUserAnswer, updateUserAnswerWithBlockchainMetadata } from '../../../models/userAnswers'
+import { getBlockchainSettingsForUser } from '../../../models/userBlockchainSettings'
+import { createVerifiableCredential } from '../veramo/createVerifiableCredential'
+import { registerCredential } from '../../../lib/ethers/registerCredential'
 import {
   incrementSessionQuestion,
   getFrameSessionById,
@@ -82,12 +85,29 @@ const answeredQuestion = async (
   //   return res.status(400).end()
   // }
 
-  await createUserAnswer({
+  const userResponse = await createUserAnswer({
     fid,
     question: question.question,
     answer: buttonClicked,
     casterFid: fidThatCastedFrame
   })
+
+  const { autoPublish } = await getBlockchainSettingsForUser(fid)
+
+  if (autoPublish) {
+    try {
+      const {
+        verifiableCredential,
+        userDecentralizedIdentifier
+      } = await createVerifiableCredential(userResponse)
+
+      const publicTransaction = await registerCredential(verifiableCredential, userDecentralizedIdentifier)
+
+      await updateUserAnswerWithBlockchainMetadata(fid, userResponse.question, publicTransaction)
+    } catch (err) {
+      console.error('Failed to publish to blockchain:', err)
+    }
+  }
 
   return res.redirect(
     307,

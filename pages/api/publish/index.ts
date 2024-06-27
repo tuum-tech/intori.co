@@ -3,10 +3,10 @@ import { getServerSession } from "next-auth"
 import {
   getUserAnswerForQuestion
 } from '../../../models/userAnswers'
+import { authOptions } from "../auth/[...nextauth]"
 
 // For creating VC and pushing to blockchain
-import { getAgent } from '../veramo/setup'
-import { authOptions } from "../auth/[...nextauth]"
+import { createVerifiableCredential } from '../veramo/createVerifiableCredential'
 
 
 const publishAnswerToBlockchain = async (
@@ -34,37 +34,10 @@ const publishAnswerToBlockchain = async (
     return res.status(400).json({ message: 'Response not found.' })
   }
 
-  const agent = await getAgent({ fid })
-
-  const userDecentralizedIdentifier = await agent.didManagerGetOrCreate({
-    kms: 'local',
-    provider: 'did:pkh',
-    options: { network: 'eip155', chainId: '1' },
-    alias: fid.toString() // pass fid as alias, too.
-  })
-
-  const credentialSubject = {
-    fid,
-    answer,
-    question,
-    casterFid: userAnswer.casterFid,
-    timestamp: Date.now()
-  }
-
-  const credentialType = 'IntoriAnswerCredential'
-  const credentialId = userDecentralizedIdentifier.did + fid
-
-  const verifiableCredential = await agent.createVerifiableCredential({
-    proofFormat: 'jwt',
-    credential: {
-      id: credentialId,
-      credentialSubject,
-      type: [credentialType],
-      issuer: {
-        id: userDecentralizedIdentifier.did
-      }
-    }
-  })
+  const {
+    verifiableCredential,
+    userDecentralizedIdentifier
+  } = await createVerifiableCredential(userAnswer)
 
   return res.status(200).json({
     verifiableCredential,
