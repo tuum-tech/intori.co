@@ -27,6 +27,10 @@ export const loadKumbSans26 = async () => {
   return await loadFont('kumbh_sans_26.fnt')
 }
 
+export const loadKumbSans24 = async () => {
+  return await loadFont('kumbh_sans_24.fnt')
+}
+
 export const loadKumbSans21 = async () => {
   return await loadFont('kumbh_sans_21.fnt')
 }
