@@ -1,4 +1,3 @@
-import { contexts as credential_contexts } from '@transmute/credentials-context';
 import {
   createAgent,
   ICredentialPlugin,
@@ -13,13 +12,6 @@ import {
   CredentialIssuerEIP712,
   ICredentialIssuerEIP712
 } from '@veramo/credential-eip712';
-import {
-  CredentialIssuerLD,
-  ICredentialIssuerLD,
-  LdDefaultContexts,
-  VeramoEcdsaSecp256k1RecoverySignature2020,
-  VeramoEd25519Signature2018
-} from '@veramo/credential-ld';
 import { CredentialPlugin, W3cMessageHandler } from '@veramo/credential-w3c';
 import { DIDComm, DIDCommMessageHandler, IDIDComm } from '@veramo/did-comm';
 import { JwtMessageHandler } from '@veramo/did-jwt';
@@ -51,7 +43,6 @@ type VeramoAgent = TAgent<
     IMessageHandler &
     IDIDComm &
     ICredentialPlugin &
-    ICredentialIssuerLD &
     ICredentialIssuerEIP712 &
     ISelectiveDisclosure
 >
@@ -71,7 +62,6 @@ const setup = async (state: VeramoStateType): Promise<VeramoAgent> => {
       IMessageHandler &
       IDIDComm &
       ICredentialPlugin &
-      ICredentialIssuerLD &
       ICredentialIssuerEIP712 &
       ISelectiveDisclosure
   >({
@@ -110,16 +100,6 @@ const setup = async (state: VeramoStateType): Promise<VeramoAgent> => {
       new DIDComm(),
       new CredentialPlugin(),
       new CredentialIssuerEIP712(),
-      new CredentialIssuerLD({
-        contextMaps: [
-          LdDefaultContexts,
-
-          /* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
-          // @ts-ignore
-          credential_contexts
-        ],
-        suites: [new VeramoEcdsaSecp256k1RecoverySignature2020(), new VeramoEd25519Signature2018()],
-      })
     ],
   })
 
