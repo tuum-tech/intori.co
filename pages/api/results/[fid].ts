@@ -101,14 +101,14 @@ const getProfileFramePictureImage = async (
 
     baseImage.print(
       font24,
-      152,
+      197,
       242,
       {
         text,
         alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
         alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
       },
-      464,
+      375,
       95
     )
   }
