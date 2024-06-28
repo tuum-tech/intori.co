@@ -59,7 +59,7 @@ const generateQuestionnaireStepImage = async (
       image.composite(
         onStepImage,
         stepOffsetX,
-        12,
+        52,
         {
           mode: Jimp.BLEND_SOURCE_OVER,
           opacitySource: 1,
@@ -70,7 +70,7 @@ const generateQuestionnaireStepImage = async (
       image.composite(
         offStepImage,
         stepOffsetX,
-        12,
+        52,
         {
           mode: Jimp.BLEND_SOURCE_OVER,
           opacitySource: 1,
