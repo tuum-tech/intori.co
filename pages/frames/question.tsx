@@ -15,6 +15,7 @@ import Input from '../../components/common/Input'
 import { PrimaryButton } from '../../components/common/Button'
 import styles from './FramePage.module.css'
 import { createFrameErrorUrl } from '../../utils/frames/generatePageUrls'
+import { getFrameSessionById } from '../../models/frameSession'
  
 type Props = {
   imageUrl: string
@@ -35,6 +36,7 @@ export const getServerSideProps = (async (context) => {
   const questionIndex = parseInt(context.query.qi as string, 10)
   const answerOffset = parseInt(context.query.ioff as string, 10) || 0
   const frameSessionId = context.query.fsid?.toString() as string
+  const session = await getFrameSessionById(frameSessionId)
   const question = intoriQuestions[questionIndex]
 
   console.log({
@@ -44,7 +46,7 @@ export const getServerSideProps = (async (context) => {
     question
   })
 
-  if (!question) {
+  if (!question || !session) {
     return {
       redirect: {
         destination: createFrameErrorUrl(),
@@ -54,7 +56,7 @@ export const getServerSideProps = (async (context) => {
   }
 
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/begin`
-  const imageUrl = `${process.env.NEXTAUTH_URL}/assets/frames/questions/${questionIndex}.png`
+  const imageUrl = `${process.env.NEXTAUTH_URL}/assets/frames/questions/${questionIndex}_${session.questionNumber + 1}.png`
 
   const frame: IntoriFrameType = {
     question: question.question,
