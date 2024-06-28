@@ -20,7 +20,9 @@ type Props = {
  
 export const getServerSideProps = (async () => {
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/begin`
-  const imageUrl = `${process.env.NEXTAUTH_URL}/assets/templates/limit_reached_frame.png`
+
+  const randomLimitReachedFrameImageIndex = Math.floor(Math.random() * 3) + 1
+  const imageUrl = `${process.env.NEXTAUTH_URL}/assets/templates/limit_reached_frame_${randomLimitReachedFrameImageIndex}.png`
 
   const inputs: IntoriFrameInputType[] = []
 
