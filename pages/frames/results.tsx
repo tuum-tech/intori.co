@@ -79,8 +79,11 @@ export const getServerSideProps = (async (context) => {
 
     imageUrlQueryParts.push(`su=${userSuggestion.user}`)
     imageUrlQueryParts.push(`sur=${userSuggestion.reason}`)
+
+    // passing this will show the 'points' text
+    imageUrlQueryParts.push(`last=true`)
   }
-  
+
   inputs.push({
       type: 'button',
       action: 'link',

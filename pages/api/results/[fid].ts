@@ -2,7 +2,8 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import Jimp from 'jimp'
 import * as path from 'path'
 import {
-  loadKumbSans20
+  loadKumbSans20,
+  loadKumbSans24
 } from '../../../utils/frames/fonts'
 
 // Note: This is used to create a circle masked image
@@ -46,27 +47,32 @@ const getProfileFramePictureImage = async (
 
   const suggestedChannel = req.query.sc as string
 
-  // adding the number stats
-  const font20 = await loadKumbSans20()
+  const lastStepFrame = !!req.query.last
 
-  baseImage.print(
-    font20,
-    216,
-    202,
-    {
-      text: 'You earned 2 points, Share for 25 more!',
-      alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
-      alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
-    },
-    448,
-    32
-  )
+  const font20 = await loadKumbSans20()
+  const font24 = await loadKumbSans24()
+
+  if (lastStepFrame) {
+    // only show on last step
+    baseImage.print(
+      font20,
+      201,
+      202,
+      {
+        text: 'You earned 6 points, Share for 25 more!',
+        alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
+        alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
+      },
+      448,
+      32
+    )
+  }
 
   if (suggestedUserName && suggestedUserReason) {
     baseImage.print(
-      font20,
+      font24,
       60,
-      270,
+      334,
       {
         text: suggestedUserReason,
         alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
@@ -77,9 +83,9 @@ const getProfileFramePictureImage = async (
     )
   } else {
     baseImage.print(
-      font20,
+      font24,
       60,
-      270,
+      334,
       {
         text: 'Keep Going! Your next recommendations will be even sharper.',
         alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
@@ -94,15 +100,15 @@ const getProfileFramePictureImage = async (
     const text = `Users that have similar answers follow /${suggestedChannel}`
 
     baseImage.print(
-      font20,
-      152,
-      360,
+      font24,
+      197,
+      242,
       {
         text,
         alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
         alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
       },
-      464,
+      375,
       95
     )
   }
