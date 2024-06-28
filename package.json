@@ -15,6 +15,7 @@
     "@neynar/nodejs-sdk": "^1.23.0",
     "@veramo/core": "^6.0.0",
     "@veramo/credential-eip712": "^6.0.0",
+    "@veramo/credential-ld": "^6.0.0",
     "@veramo/credential-w3c": "^6.0.0",
     "@veramo/data-store": "^6.0.0",
     "@veramo/data-store-json": "^6.0.0",
