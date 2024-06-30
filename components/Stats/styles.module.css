@@ -1,0 +1,26 @@
+.statsContainer {
+  display: flex;
+  justify-content: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.statsCard {
+  display: inline-block;
+  flex-basis: calc(33.3333% - 16px);
+  padding: 24px;
+  background: #272738;
+  border: 1px solid #2A3042;
+  border-radius: 16px;
+  color: #FFF;
+}
+
+.statsCard h6 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.statsCard h3 {
+  margin: 0;
+  font-size: 64px;
+  font-weight: 600;
+}

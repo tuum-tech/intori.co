@@ -122,3 +122,17 @@ export const appendQuestionToFrameSession = async (
     ]
   })
 }
+
+export const getAllFrameSessionQuestionCounts = async (): Promise<number[]> => {
+  const collection = getCollection()
+
+  const querySnapshot = await collection.select('questionNumber').get()
+
+  const counts = [0, 0, 0, 0]
+
+  for (let i = 0; i < querySnapshot.docs.length; i++) {
+    counts[querySnapshot.docs[i].data().questionNumber]++
+  }
+
+  return counts
+}
