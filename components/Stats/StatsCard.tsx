@@ -19,7 +19,7 @@ export const StatsCard: React.FC<Props> = ({
 }
 
 
-export const StatsContainer: React.FC<{ children: any }> = ({ children }) => {
+export const StatsContainer: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <div className={styles.statsContainer}>
       {children}
