@@ -14,6 +14,7 @@ declare module "next-auth" {
   }
   interface Session extends NextAuth.Session {
     user: User
+    admin: boolean
   }
 }
 
