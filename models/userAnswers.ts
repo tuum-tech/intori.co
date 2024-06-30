@@ -243,3 +243,24 @@ export const getRecentAnswersForUser = async (fid: number, limit: number = 10) =
 
   return querySnapshot.docs.map((doc) => doc.data() as UserAnswerPageType)
 }
+
+export const getUniqueUserFids = async (): Promise<number> => {
+  const collection = getCollection()
+  const querySnapshot = await collection.get()
+
+  const uniqueFids = new Set<number>()
+
+  querySnapshot.forEach((doc) => {
+    const userAnswer = doc.data() as UserAnswerType
+    uniqueFids.add(userAnswer.fid)
+  })
+
+  return Array.from(uniqueFids).length
+}
+
+export const countUserResponses = async (): Promise<number> => {
+  const collection = getCollection()
+  const querySnapshot = await collection.count().get()
+
+  return querySnapshot.data().count
+}
