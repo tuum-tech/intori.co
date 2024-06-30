@@ -104,6 +104,13 @@ export const getServerSideProps = (async (context) => {
         content: 'Keep Going >',
         postUrl: createStartNewFrameQuestionUrl({ frameSessionId }),
     })
+  } else {
+    inputs.push({
+        type: 'button',
+        action: 'link',
+        target: 'https://www.intori.co/',
+        content: 'Learn More'
+    })
   }
 
   const frame: IntoriFrameType = {
