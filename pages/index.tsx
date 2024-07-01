@@ -56,6 +56,16 @@ const SigninDefaultScreen = () => {
             alt="Intori Mobile"
           />
         </div>
+        
+        <div className={styles.videoContainer}>
+          <h3>Watch how <span>easy</span> it is to make connections</h3>
+          <iframe
+            src="https://www.loom.com/embed/11fb6d1323d74d42b3ca2ef3c1afb10c"
+            frameBorder={0}
+            allowFullScreen
+            height="500px"
+          />
+        </div>
 
         <div className={styles.faq}>
           <h2>Get to know Intori: <span>FAQ</span></h2>

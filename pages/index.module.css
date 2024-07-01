@@ -13,6 +13,18 @@
 .mobileImage {
   display: none;
 }
+.videoContainer h3 {
+  color: #FFF;
+  font-size: 54px;
+}
+.videoContainer h3 span {
+  color: #9664FA;
+  font-weight: 500;
+}
+.videoContainer iframe {
+  width: 90%;
+  margin: auto;
+}
 .faq {
   width: 60%;
   margin: 100px auto;
@@ -63,6 +75,7 @@
   .appImageContainer {
     height: 100vh;
     width: 96%;
+    margin-bottom: 100px;
   }
 
   .desktopImage {
@@ -72,6 +85,10 @@
   .mobileImage {
     margin-top: 100px;
     display: block;
+  }
+
+  .videoContainer h3 {
+    font-size: 32px;
   }
 
   .faq {
@@ -88,5 +105,10 @@
   }
   .faq details p {
     font-size: 14px;
+  }
+}
+@media only screen and (max-width: 600px) {
+  .appImageContainer {
+    margin-bottom: 256px;
   }
 }
