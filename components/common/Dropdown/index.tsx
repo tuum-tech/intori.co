@@ -7,13 +7,15 @@ import React, {
 import Link from 'next/link'
 import styles from './Dropdown.module.css'
 
+export type DropdownItemType = {
+  label: string
+  onClick?: React.MouseEventHandler
+  href?: string
+  newTab?: boolean
+}
+
 type Props = {
-    items: {
-        label: string
-        onClick?: React.MouseEventHandler
-        href?: string
-        newTab?: boolean
-    }[]
+    items: DropdownItemType[]
     children: React.ReactNode
 }
 
