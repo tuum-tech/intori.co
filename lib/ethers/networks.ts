@@ -48,3 +48,20 @@ export const getNetworkParamsByChainId = (chainId: string) => {
       return null;
   }
 }
+
+export const getBlockExplorerUrlForTransaction = (hash: string): string => {
+  const chainId =  (
+    `0x${parseInt(process.env.NEXT_PUBLIC_CHAIN_ID || '0', 10).toString(16)}`
+  )
+
+  switch (chainId) {
+    case convertToHex(8453):
+      return `https://base.blockscout.com/tx/${hash}`
+    case convertToHex(84532):
+      return `https://base-sepolia.blockscout.com/tx/${hash}`
+    case convertToHex(1337):
+      return `http://127.0.0.1:8545/tx/${hash}`
+    default:
+      return '';
+  }
+}
