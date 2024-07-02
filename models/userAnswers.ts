@@ -6,6 +6,7 @@ import {
     FarcasterChannelType
 } from '../utils/neynarApi'
 import { TransactionType } from '../lib/ethers/registerCredential'
+import { intoriQuestions } from '../utils/frames/intoriFrameForms'
 
 export type UserAnswerType = {
   fid: number
@@ -112,6 +113,37 @@ export const getUserAnswerForQuestion = async (
   }
 
   return null
+}
+
+export const getInitialQuestionsThatUserHasNotAnswered = async (
+  fid: number
+): Promise<number[]> => {
+  const initialQuestions = [
+    intoriQuestions[0].question,
+    intoriQuestions[1].question,
+    intoriQuestions[2].question
+  ]
+
+  const collection = getCollection()
+
+  const querySnapshot = await collection
+    .where('fid', '==', fid)
+    .where('question', 'in', initialQuestions)
+    .get();
+
+  if (querySnapshot.empty) {
+    return []
+  }
+
+  if (querySnapshot.size === 3) {
+    return []
+  }
+
+  const answeredQuestions = querySnapshot.docs.map((doc) => doc.data().question)
+
+  return initialQuestions
+          .filter((question) => !answeredQuestions.includes(question))
+          .map((question) => initialQuestions.indexOf(question))
 }
 
 export const countUserAnswers = async (fid: number): Promise<number> => {
