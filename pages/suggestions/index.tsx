@@ -65,11 +65,15 @@ const Suggestions: NextPage = () => {
   const loading = useMemo(() => session.status === 'loading' || loadingSuggestions, [session, loadingSuggestions])
 
   const userSuggestions = useMemo(() => {
-    return suggestions.filter((suggestion) => suggestion.user)
+    return suggestions
+      .filter((suggestion) => suggestion.user)
+      .sort((a, b) => b.reason.length - a.reason.length)
   }, [suggestions])
 
   const channelSuggestions = useMemo(() => {
-    return suggestions.filter((suggestion) => suggestion.channel)
+    return suggestions
+      .filter((suggestion) => suggestion.channel)
+      .sort((a, b) => b.reason.length - a.reason.length)
   }, [suggestions])
 
   if (loading || !session?.data?.user) {
