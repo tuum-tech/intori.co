@@ -27,7 +27,15 @@ export const OneResponseCard: NextPage<Props> = ({
   const [
     blockchainMetadata,
     setBlockchainMetadata
-  ] = useState<Partial<TransactionType>>({})
+  ] = useState<Partial<TransactionType>>(
+    response.publicBlockHash
+      ? {
+        hash: response.publicHash,
+        blockHash: response.publicBlockHash,
+        blockNumber: response.publicBlockNumber
+      }
+      : {}
+  )
 
   const publishToBlockchain = async () => {
     if (!signer) {
