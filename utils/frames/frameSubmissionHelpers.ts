@@ -87,6 +87,7 @@ export const getFrameInputsBasedOnAnswerOffset = (
   const inputs: IntoriFrameInputType[] = []
 
   if (!answerOffset) {
+    // TODO: add skip
     if (question.answers.length <= 4) {
       inputs.push(
         ...convertAnswersToInputs(question.answers, questionIndex, 0, frameSessionId)
@@ -146,6 +147,8 @@ export const getFrameInputsBasedOnAnswerOffset = (
 
     return inputs
   }
+
+  // TODO: append skip to last group of answers
 
   const lastAnswers = question.answers.slice(answerOffset)
 
