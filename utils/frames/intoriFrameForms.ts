@@ -81,7 +81,7 @@ export const intoriQuestions = [
     answers: [ 'Action', 'Drama', 'Romance', 'Comedy', 'Horror', 'Animation', 'Sci-Fi']
   },
   {
-    question: 'Which of the following are your favorite type of snack?',
+    question: 'Which of the following is your favorite type of snack?',
     answers: [ 'Sweet', 'Salty', 'Healthy', 'Indulgent', 'Spicy', 'Savory', 'None']
   },
   {
