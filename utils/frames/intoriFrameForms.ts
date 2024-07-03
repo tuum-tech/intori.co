@@ -69,8 +69,8 @@ export const finalStep: IntoriFrameType = {
 
 export const intoriQuestions = [
   {
-    question: 'Which of the following is your favorite season?',
-    answers: [ 'Spring', 'Summer', 'Fall', 'Winter']
+    question: "What is your favorite type of cuisine?",
+    answers: ["Italian", "Mexican", "Chinese", "Indian", "Japanese", "French", "Thai", "Greek", "Spanish", "Korean"]
   },
   {
     question: 'Which of the following is your music preference?',
@@ -121,10 +121,11 @@ export const intoriQuestions = [
     answers: ["Essential", "Very", "Moderately", "Slightly", "Not Important", "Flexible", "Other"]
   },
   {
-    question: "What is your favorite type of cuisine?",
-    answers: ["Italian", "Mexican", "Chinese", "Indian", "Japanese", "French", "Thai", "Greek", "Spanish", "Korean"]
+    question: 'Which of the following is your favorite season?',
+    answers: [ 'Spring', 'Summer', 'Fall', 'Winter']
   }
 ]
+
 export const isInitialQuestion = (question: string): boolean => {
   const questionIndex = intoriQuestions.findIndex(q => q.question === question)
 
