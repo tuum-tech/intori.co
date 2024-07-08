@@ -86,9 +86,19 @@ export const getFrameInputsBasedOnAnswerOffset = (
   const question = intoriQuestions[questionIndex]
   const inputs: IntoriFrameInputType[] = []
 
+  const skipButton: IntoriFrameInputType = {
+    type: 'button',
+    content: 'Skip',
+    postUrl: createSubmitAnswerUrl({
+      questionIndex,
+      answerOffset,
+      frameSessionId
+    })
+  }
+
   if (!answerOffset) {
     // TODO: add skip
-    if (question.answers.length <= 4) {
+    if (question.answers.length <= 3) {
       inputs.push(
         ...convertAnswersToInputs(question.answers, questionIndex, 0, frameSessionId)
       )
