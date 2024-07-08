@@ -154,7 +154,7 @@ export const getSuggestedUser = async (
       (suggestedFid) => suggestedFid === otherUserResponse.fid
     )
 
-    if (alreadySuggested === -1) {
+    if (alreadySuggested > -1) {
       continue
     }
 
