@@ -170,7 +170,7 @@ export const intoriQuestions = [
   },
   {
     question: "Do you have any dietary restrictions?",
-    answers: ["Vegetarian", "Vegan", "Gluten-free", "Dairy-free", "Nut-free", "Other", "None"]
+    answers: ["Vegetarian", "Vegan", "Gluten-free", "Dairy-free", "Nut-free"]
   },
   {
     question: "What type of drink do you prefer?",
@@ -198,7 +198,7 @@ export const intoriQuestions = [
   },
   {
     question: "Do you follow any specific wellness trends?",
-    answers: ["Keto", "Paleo", "Fasting", "Plant-based", "Clean Eats", "None"]
+    answers: ["Keto", "Paleo", "Fasting", "Plant-based", "Clean Eats"]
   },
   {
     question: "How often do you take breaks during your workday?",
@@ -206,7 +206,7 @@ export const intoriQuestions = [
   },
   {
     question: "What type of wellness products do you use regularly?",
-    answers: ["Supplements", "Essential Oils", "Herbal Teas", "Fitness Trackers", "Other", "None"]
+    answers: ["Supplements", "Essential Oils", "Herbal Teas", "Fitness Trackers"]
   },
   {
     question: "How do you prefer to relax after a long day?",
@@ -230,7 +230,7 @@ export const intoriQuestions = [
   },
   {
     question: "How do you prioritize your mental health?",
-    answers: ["Therapy", "Journaling", "Meditation", "Socializing", "Self-Help", "None"]
+    answers: ["Therapy", "Journaling", "Meditation", "Socializing", "Self-Help"]
   },
   {
     question: "How do you track your fitness progress?",
