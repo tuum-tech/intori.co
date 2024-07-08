@@ -41,3 +41,11 @@ export const createSubmitAnswerUrl = (params: {
 export const createLimitReachedUrl = (): string => {
   return `${process.env.NEXTAUTH_URL}/frames/limit`
 }
+
+export const createSkipQuestionUrl = (params: {
+  questionIndex: number
+  frameSessionId: string
+}): string => {
+  const { questionIndex, frameSessionId } = params
+  return `${process.env.NEXTAUTH_URL}/api/frames/skip?qi=${questionIndex}&fsid=${frameSessionId}`
+}

@@ -2,7 +2,8 @@ import type { NextApiRequest } from 'next'
 import { intoriQuestions, IntoriFrameInputType } from './intoriFrameForms'
 import {
   createFrameQuestionUrl,
-  createSubmitAnswerUrl
+  createSubmitAnswerUrl,
+  createSkipQuestionUrl
 } from './generatePageUrls'
 
 export type FarcasterFrameSubmitBodyType = {
@@ -20,8 +21,7 @@ export type FarcasterFrameSubmitBodyType = {
   }
 }
 
-// question: { question: string, answers: string[] }
-const determineAllAnswerOffsetsForQuestion = (questionIndex: number): number[] => {
+export const determineAllAnswerOffsetsForQuestion = (questionIndex: number): number[] => {
   const question = intoriQuestions[questionIndex]
   const answerOffsets: number[] = [0]
 
@@ -31,16 +31,17 @@ const determineAllAnswerOffsetsForQuestion = (questionIndex: number): number[] =
 
   answerOffsets.push(3)
 
-  while (answerOffsets[answerOffsets.length - 1] + 3 < question.answers.length) {
+  // for next pages, will always show '< back' [answer 1, answer 2] ('More >' or 'Skip')
+  while (answerOffsets[answerOffsets.length - 1] + 2 < question.answers.length) {
     answerOffsets.push(
       answerOffsets[answerOffsets.length - 1] + 2
     )
   }
 
-  answerOffsets.push(
-    question.answers.length - 1 - answerOffsets[answerOffsets.length - 1]
-    
-  )
+  // answerOffsets.push(
+  //   question.answers.length - 1 - answerOffsets[answerOffsets.length - 1]
+  //   
+  // )
   return answerOffsets
 }
 
@@ -86,8 +87,17 @@ export const getFrameInputsBasedOnAnswerOffset = (
   const question = intoriQuestions[questionIndex]
   const inputs: IntoriFrameInputType[] = []
 
+  const skipButton: IntoriFrameInputType = {
+    type: 'button',
+    content: 'Skip',
+    postUrl: createSkipQuestionUrl({
+      questionIndex,
+      frameSessionId
+    })
+  }
+
   if (!answerOffset) {
-    if (question.answers.length <= 4) {
+    if (question.answers.length <= 3) {
       inputs.push(
         ...convertAnswersToInputs(question.answers, questionIndex, 0, frameSessionId)
       )
@@ -114,7 +124,7 @@ export const getFrameInputsBasedOnAnswerOffset = (
     return inputs
   }
 
-  const isLastFrameOfAnswers = answerOffset + 3 >= question.answers.length
+  const isLastFrameOfAnswers = answerOffset + 2 >= question.answers.length
 
   const previousOffset = getBackAnswerOffset(questionIndex, answerOffset)
   inputs.push({
@@ -152,6 +162,8 @@ export const getFrameInputsBasedOnAnswerOffset = (
   inputs.push(
     ...convertAnswersToInputs(lastAnswers, questionIndex, answerOffset, frameSessionId)
   )
+
+  inputs.push(skipButton)
 
   return inputs
 }
