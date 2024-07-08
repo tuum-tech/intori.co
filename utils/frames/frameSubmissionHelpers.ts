@@ -20,8 +20,7 @@ export type FarcasterFrameSubmitBodyType = {
   }
 }
 
-// question: { question: string, answers: string[] }
-const determineAllAnswerOffsetsForQuestion = (questionIndex: number): number[] => {
+export const determineAllAnswerOffsetsForQuestion = (questionIndex: number): number[] => {
   const question = intoriQuestions[questionIndex]
   const answerOffsets: number[] = [0]
 
@@ -31,16 +30,17 @@ const determineAllAnswerOffsetsForQuestion = (questionIndex: number): number[] =
 
   answerOffsets.push(3)
 
-  while (answerOffsets[answerOffsets.length - 1] + 3 < question.answers.length) {
+  // for next pages, will always show '< back' [answer 1, answer 2] ('More >' or 'Skip')
+  while (answerOffsets[answerOffsets.length - 1] + 2 < question.answers.length) {
     answerOffsets.push(
       answerOffsets[answerOffsets.length - 1] + 2
     )
   }
 
-  answerOffsets.push(
-    question.answers.length - 1 - answerOffsets[answerOffsets.length - 1]
-    
-  )
+  // answerOffsets.push(
+  //   question.answers.length - 1 - answerOffsets[answerOffsets.length - 1]
+  //   
+  // )
   return answerOffsets
 }
 
