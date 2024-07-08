@@ -12,12 +12,12 @@ export const hasUserReachedSixAnswerLimit = async (fid: number): Promise<boolean
   }
 
   const now = new Date();
-  const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+  const twelveHoursAgo = new Date(now.getTime() - 12 * 60 * 60 * 1000);
 
   for (const response of pastSixAnswers) {
     const date = convertSecondsToDate(response.date.seconds)
 
-    if (date < twentyFourHoursAgo) {
+    if (date < twelveHoursAgo) {
       return false
     }
   }
