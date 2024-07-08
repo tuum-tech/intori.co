@@ -97,7 +97,6 @@ export const getFrameInputsBasedOnAnswerOffset = (
   }
 
   if (!answerOffset) {
-    // TODO: add skip
     if (question.answers.length <= 3) {
       inputs.push(
         ...convertAnswersToInputs(question.answers, questionIndex, 0, frameSessionId)
@@ -125,7 +124,7 @@ export const getFrameInputsBasedOnAnswerOffset = (
     return inputs
   }
 
-  const isLastFrameOfAnswers = answerOffset + 3 >= question.answers.length
+  const isLastFrameOfAnswers = answerOffset + 2 >= question.answers.length
 
   const previousOffset = getBackAnswerOffset(questionIndex, answerOffset)
   inputs.push({
@@ -156,9 +155,9 @@ export const getFrameInputsBasedOnAnswerOffset = (
     })
 
     return inputs
+  } else {
+    inputs.push(skipButton)
   }
-
-  // TODO: append skip to last group of answers
 
   const lastAnswers = question.answers.slice(answerOffset)
 
