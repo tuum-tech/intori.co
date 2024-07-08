@@ -3,6 +3,7 @@ import { frameSubmissionHelpers } from '../../../utils/frames/frameSubmissionHel
 import { validateFarcasterPacketMessage } from '../utils/farcasterServer'
 import { getUserAnswerForQuestion, getInitialQuestionsThatUserHasNotAnswered } from '../../../models/userAnswers'
 import { appendQuestionToFrameSession } from '../../../models/frameSession'
+import { getLastSkippedQuestion } from '../../../models/userQuestionSkip'
 import { intoriQuestions } from '../../../utils/frames/intoriFrameForms'
 import { getFrameSessionFromRequest, createFrameSession } from '../../../models/frameSession'
 import { hasUserReachedSixAnswerLimit } from '../../../utils/frames/limitSixAnswersPerDay'
@@ -87,10 +88,14 @@ const newQuestion = async (
     nextQuestionIndex = Math.floor(Math.random() * intoriQuestions.length)
     nextQuestion = intoriQuestions[nextQuestionIndex]
 
+    const lastSkippedQuestion = await getLastSkippedQuestion(fid)
     let alreadyAnsweredQuestion = await getUserAnswerForQuestion(fid, nextQuestion.question)
     let tries = 0;
 
-    while (alreadyAnsweredQuestion && tries < 5) {
+    while (
+      alreadyAnsweredQuestion && tries < 5 &&
+      lastSkippedQuestion?.question === nextQuestion.question
+    ) {
       tries += 1
       nextQuestionIndex = Math.floor(Math.random() * intoriQuestions.length)
       nextQuestion = intoriQuestions[nextQuestionIndex]
