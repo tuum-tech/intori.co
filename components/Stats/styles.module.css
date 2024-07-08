@@ -24,3 +24,18 @@
   font-size: 64px;
   font-weight: 600;
 }
+
+@media only screen and (max-width: 800px) {
+  .statsCard {
+    flex-basis: calc(50% - 16px);
+  }
+}
+
+@media only screen and (max-width: 700px) {
+  .statsContainer {
+    flex-direction: column;
+  }
+  .statsCard {
+    flex-basis: 100%;
+  }
+}

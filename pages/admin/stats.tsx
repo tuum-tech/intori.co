@@ -7,12 +7,14 @@ import { getAllFrameSessionQuestionCounts } from '@/models/frameSession'
 import { Section } from '../../components/common/Section'
 import { StatsCard, StatsContainer } from '../../components/Stats/StatsCard'
 import { countAllUserQuestionSkips } from '../../models/userQuestionSkip'
+import { intoriQuestions } from '../../utils/frames/intoriFrameForms'
 
 type Props = {
   uniqueUsersCount: number
   frameSessionQuestionCounts: number[]
   totalResponses: number
   totalSkips: number
+  totalQuestions: number
 }
 
 export const getServerSideProps = (async (context) => {
@@ -40,13 +42,15 @@ export const getServerSideProps = (async (context) => {
   const frameSessionQuestionCounts = await getAllFrameSessionQuestionCounts()
   const totalResponses = await countUserResponses()
   const totalSkips = await countAllUserQuestionSkips()
+  const totalQuestions = intoriQuestions.length
 
   return {
     props: {
       uniqueUsersCount,
       frameSessionQuestionCounts,
       totalResponses,
-      totalSkips
+      totalSkips,
+      totalQuestions
     }
   }
 }) satisfies GetServerSideProps<Props>
@@ -55,7 +59,8 @@ const AdminStats: NextPage<Props> = ({
   uniqueUsersCount,
   frameSessionQuestionCounts,
   totalResponses,
-  totalSkips
+  totalSkips,
+  totalQuestions
 }) => {
   return (
     <AppLayout>
@@ -97,6 +102,11 @@ const AdminStats: NextPage<Props> = ({
           <StatsCard
             title="Questions Skipped"
             value={totalSkips}
+          />
+
+          <StatsCard
+            title="Total Questions"
+            value={totalQuestions}
           />
         </StatsContainer>
       </Section>
