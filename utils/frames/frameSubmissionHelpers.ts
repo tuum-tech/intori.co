@@ -2,7 +2,8 @@ import type { NextApiRequest } from 'next'
 import { intoriQuestions, IntoriFrameInputType } from './intoriFrameForms'
 import {
   createFrameQuestionUrl,
-  createSubmitAnswerUrl
+  createSubmitAnswerUrl,
+  createSkipQuestionUrl
 } from './generatePageUrls'
 
 export type FarcasterFrameSubmitBodyType = {
@@ -89,9 +90,8 @@ export const getFrameInputsBasedOnAnswerOffset = (
   const skipButton: IntoriFrameInputType = {
     type: 'button',
     content: 'Skip',
-    postUrl: createSubmitAnswerUrl({
+    postUrl: createSkipQuestionUrl({
       questionIndex,
-      answerOffset,
       frameSessionId
     })
   }
@@ -155,8 +155,6 @@ export const getFrameInputsBasedOnAnswerOffset = (
     })
 
     return inputs
-  } else {
-    inputs.push(skipButton)
   }
 
   const lastAnswers = question.answers.slice(answerOffset)
@@ -164,6 +162,8 @@ export const getFrameInputsBasedOnAnswerOffset = (
   inputs.push(
     ...convertAnswersToInputs(lastAnswers, questionIndex, answerOffset, frameSessionId)
   )
+
+  inputs.push(skipButton)
 
   return inputs
 }
