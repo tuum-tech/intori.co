@@ -82,43 +82,43 @@ export const intoriQuestions = [
   },
   {
     question: 'Which of the following is your favorite type of snack?',
-    answers: [ 'Sweet', 'Salty', 'Healthy', 'Indulgent', 'Spicy', 'Savory', 'None']
+    answers: [ 'Sweet', 'Salty', 'Healthy', 'Indulgent', 'Spicy', 'Savory']
   },
   {
     question: "Which of the following values are most important to you in your professional life?",
-    answers: ["Life Balance", "$ Stability", "Growth", "Impact", "Innovation", "Collaboration", "Other"]
+    answers: ["Life Balance", "$ Stability", "Growth", "Impact", "Innovation", "Collaboration"]
   },
   {
     question: "What is your highest level of education?",
-    answers: ["High School", "Associate's", "Bachelor's", "Master's", "Doctorate", "Cert.", "Other"]
+    answers: ["High School", "Associate's", "Bachelor's", "Master's", "Doctorate", "Cert."]
   },
   {
     question: "Which of the following are your exercise preferences?",
-    answers: ["Gym", "Running", "Yoga", "Sports", "Home Workout", "Outside", "None"]
+    answers: ["Gym", "Running", "Yoga", "Sports", "Home Workout", "Outside"]
   },
   {
     question: "What are your sleep habits?",
-    answers: ["Early Bird", "Night Owl", "Insomniac", "Heavy Sleep", "Variable", "Regular Naps", "Other"]
+    answers: ["Early Bird", "Night Owl", "Insomniac", "Heavy Sleep", "Variable", "Regular Naps"]
   },
   {
     question: "Which of the following is your preferred operating system?",
-    answers: ["Windows", "macOS", "Linux", "Android", "iOS", "Chrome OS", "Other"]
+    answers: ["Windows", "macOS", "Linux", "Android", "iOS", "Chrome OS"],
   },
   {
     question: "Which of the following is your dream vacation destination?",
-    answers: ["Tropics", "Historic", "Wilderness", "Cultural Tour", "Space", "Road Trip", "Other"]
+    answers: ["Tropics", "Historic", "Wilderness", "Cultural Tour", "Space", "Road Trip"],
   },
   {
     question: "Which of the following is your preferred mode of travel?",
-    answers: ["Plane", "Train", "Car", "Cruise", "Biking", "Walking", "Other"]
+    answers: ["Plane", "Train", "Car", "Cruise", "Biking", "Walking"]
   },
   {
     question: "Which of the following is your level of environmental consciousness?",
-    answers: ["Concerned", "Moderately", "Slightly", "Neutral", "Unconcerned", "Activist", "Other"]
+    answers: ["Concerned", "Moderately", "Slightly", "Neutral", "Unconcerned", "Activist"]
   },
   {
     question: "Which of the following is your importance of work-life balance?",
-    answers: ["Essential", "Very", "Moderately", "Slightly", "Not Important", "Flexible", "Other"]
+    answers: ["Essential", "Very", "Moderately", "Slightly", "Not Important", "Flexible"]
   },
   {
     question: 'Which of the following is your favorite season?',
@@ -170,7 +170,7 @@ export const intoriQuestions = [
   },
   {
     question: "Do you have any dietary restrictions?",
-    answers: ["Vegetarian", "Vegan", "Gluten-free", "Dairy-free", "Nut-free", "Other", "None"]
+    answers: ["Vegetarian", "Vegan", "Gluten-free", "Dairy-free", "Nut-free"]
   },
   {
     question: "What type of drink do you prefer?",
@@ -198,7 +198,7 @@ export const intoriQuestions = [
   },
   {
     question: "Do you follow any specific wellness trends?",
-    answers: ["Keto", "Paleo", "Fasting", "Plant-based", "Clean Eats", "None"]
+    answers: ["Keto", "Paleo", "Fasting", "Plant-based", "Clean Eats"]
   },
   {
     question: "How often do you take breaks during your workday?",
@@ -206,7 +206,7 @@ export const intoriQuestions = [
   },
   {
     question: "What type of wellness products do you use regularly?",
-    answers: ["Supplements", "Essential Oils", "Herbal Teas", "Fitness Trackers", "Other", "None"]
+    answers: ["Supplements", "Essential Oils", "Herbal Teas", "Fitness Trackers"]
   },
   {
     question: "How do you prefer to relax after a long day?",
@@ -230,7 +230,7 @@ export const intoriQuestions = [
   },
   {
     question: "How do you prioritize your mental health?",
-    answers: ["Therapy", "Journaling", "Meditation", "Socializing", "Self-Help", "None"]
+    answers: ["Therapy", "Journaling", "Meditation", "Socializing", "Self-Help"]
   },
   {
     question: "How do you track your fitness progress?",

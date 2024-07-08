@@ -28,20 +28,23 @@ const getSuggestedChannelsForInitialQuestion = (
 
   if (questionIndex === 0) {
     // always push these for the question
-    suggestions.push('outside')
+    suggestions.push('food')
 
     switch (answer) {
-      case 'Spring':
-        suggestions.push('flowers', 'flora', 'sunsets', 'gardening')
+      case 'Italian':
+        suggestions.push('pizza', 'base-it')
         break
-      case 'Summer':
-        suggestions.push('surfing', 'beaches', 'sunsets', 'grilling', 'travel', 'waterscapes', 'tropicalgarden')
+      case 'Mexican':
+        suggestions.push('taco-tuesday')
         break
-      case 'Fall':
-        suggestions.push('woodland', 'tree', 'mountains')
+      case 'Japanese':
+        suggestions.push('sakura')
         break
-      case 'Winter':
-        suggestions.push('snow', 'skiing', 'alps', 'snowboarding', 'mountains', 'mountainlife')
+      case 'Thai':
+        suggestions.push('sakura')
+        break
+      case 'Korean':
+        suggestions.push('sakura')
         break
     }
 
