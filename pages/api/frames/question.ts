@@ -93,7 +93,8 @@ const newQuestion = async (
     let tries = 0;
 
     while (
-      alreadyAnsweredQuestion && tries < 5 &&
+      alreadyAnsweredQuestion &&
+      tries < 10 &&
       lastSkippedQuestion?.question === nextQuestion.question
     ) {
       tries += 1
@@ -102,7 +103,7 @@ const newQuestion = async (
       alreadyAnsweredQuestion = await getUserAnswerForQuestion(fid, nextQuestion.question)
     }
 
-    if (tries === 5) {
+    if (tries === 10) {
       return res.redirect(
         307,
         createLimitReachedUrl()
