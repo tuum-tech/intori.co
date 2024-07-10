@@ -80,7 +80,7 @@ export const getServerSideProps = (async (context) => {
   })
 
   // todo: pass suggested fid
-  // imageUrlQueryParts.push(`su=${userSuggestion.fid}`)
+  imageUrlQueryParts.push(`su=${userSuggestion.fid}`)
   imageUrlQueryParts.push(`sur=${userSuggestion.reason}`)
 
   // if (session.questionNumber < 3) {
