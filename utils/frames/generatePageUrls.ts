@@ -3,11 +3,10 @@ export const createFrameErrorUrl = (): string => {
 }
 
 export const createFrameResultsUrl = (params: {
-  fid: number,
   frameSessionId: string
 }): string => {
-  const { fid, frameSessionId } = params
-  return `${process.env.NEXTAUTH_URL}/frames/results?fid=${fid}&fsid=${frameSessionId}`
+  const { frameSessionId } = params
+  return `${process.env.NEXTAUTH_URL}/frames/results?fsid=${frameSessionId}`
 }
 
 export const createFrameQuestionUrl = (params: {
@@ -48,4 +47,11 @@ export const createSkipQuestionUrl = (params: {
 }): string => {
   const { questionIndex, frameSessionId } = params
   return `${process.env.NEXTAUTH_URL}/api/frames/skip?qi=${questionIndex}&fsid=${frameSessionId}`
+}
+
+export const createNextRevealUrl = (params: {
+  fsid: string
+}) => {
+  const { fsid } = params
+  return `${process.env.NEXTAUTH_URL}/api/frames/reveal?fsid=${fsid}`
 }

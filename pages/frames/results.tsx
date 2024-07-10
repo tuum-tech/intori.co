@@ -12,13 +12,7 @@ import Input from '../../components/common/Input'
 import { PrimaryButton } from '../../components/common/Button'
 import styles from './FramePage.module.css'
 import { getFrameSessionById } from '../../models/frameSession'
-import {
-  createStartNewFrameQuestionUrl
-} from '../../utils/frames/generatePageUrls'
-import {
-  getSuggestedChannel,
-  getSuggestedUser
-} from '../../utils/frames/suggestions'
+import { getSuggestedUser } from '../../utils/frames/suggestions'
  
 type Props = {
   imageUrl: string
@@ -27,7 +21,7 @@ type Props = {
 }
  
 export const getServerSideProps = (async (context) => {
-  if (!context?.query.fid || !context?.query.fsid) {
+  if (!context?.query.fsid) {
     return {
       redirect: {
         destination: '/frames/error',
@@ -36,7 +30,6 @@ export const getServerSideProps = (async (context) => {
     }
   }
 
-  const fid = parseInt(context.query.fid as string, 10) || 0
   const frameSessionId = context.query.fsid?.toString() as string
 
   const session = await getFrameSessionById(frameSessionId)
@@ -51,38 +44,10 @@ export const getServerSideProps = (async (context) => {
   }
 
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/begin`
-  const imageUrl = `${process.env.NEXTAUTH_URL}/api/results/${fid}`
+  const imageUrl = `${process.env.NEXTAUTH_URL}/api/results/${session.id}`
   const imageUrlQueryParts: string[] = []
 
   const inputs: IntoriFrameInputType[] = []
-
-  const channelSuggestion = await getSuggestedChannel(session)
-
-  inputs.push({
-    type: 'button',
-    action: 'link',
-    target: `https://warpcast.com/~/channel/${channelSuggestion}`,
-    content: `/${channelSuggestion}`
-  })
-
-  imageUrlQueryParts.push(`sc=${channelSuggestion}`)
-
-  if (session?.questionNumber === 3) {
-    const userSuggestion = await getSuggestedUser(session)
-
-    inputs.push({
-      type: 'button',
-      action: 'link',
-      target: `https://warpcast.com/${userSuggestion.user}`,
-      content: `@${userSuggestion.user}`
-    })
-
-    imageUrlQueryParts.push(`su=${userSuggestion.user}`)
-    imageUrlQueryParts.push(`sur=${userSuggestion.reason}`)
-
-    // passing this will show the 'points' text
-    imageUrlQueryParts.push(`last=true`)
-  }
 
   inputs.push({
       type: 'button',
@@ -91,27 +56,46 @@ export const getServerSideProps = (async (context) => {
       content: 'Share Frame'
   })
 
-  if (session.questionNumber < 3) {
-    inputs.push({
-        type: 'button',
-        action: 'link',
-        target: 'https://www.intori.co/',
-        content: 'Learn More'
-    })
+  inputs.push({
+      type: 'button',
+      action: 'link',
+      target: 'https://www.intori.co/',
+      content: 'Learn More'
+  })
 
-    inputs.push({
-        type: 'button',
-        content: 'Keep Going >',
-        postUrl: createStartNewFrameQuestionUrl({ frameSessionId }),
-    })
-  } else {
-    inputs.push({
-        type: 'button',
-        action: 'link',
-        target: 'https://www.intori.co/',
-        content: 'Learn More'
-    })
-  }
+  const userSuggestion = await getSuggestedUser(session)
+
+  inputs.push({
+    type: 'button',
+    action: 'link',
+    target: `https://warpcast.com/${userSuggestion.user}`,
+    content: `@${userSuggestion.user}`
+  })
+
+  inputs.push({
+    type: 'button',
+    postUrl: '',
+    content: '✨Reveal'
+  })
+
+  // todo: pass suggested fid
+  // imageUrlQueryParts.push(`su=${userSuggestion.fid}`)
+  imageUrlQueryParts.push(`sur=${userSuggestion.reason}`)
+
+  // if (session.questionNumber < 3) {
+  //   inputs.push({
+  //       type: 'button',
+  //       action: 'link',
+  //       target: 'https://www.intori.co/',
+  //       content: 'Learn More'
+  //   })
+
+  //   inputs.push({
+  //       type: 'button',
+  //       content: 'Keep Going >',
+  //       postUrl: createStartNewFrameQuestionUrl({ frameSessionId }),
+  //   })
+  // }
 
   const frame: IntoriFrameType = {
     inputs

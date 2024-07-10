@@ -41,6 +41,8 @@ export const fetchUserDetailsByFids = async (fids: number[]): Promise<FarcasterU
     return !invalidUsernameRegex.test(user.username)
   }).map((user) => ({
     username: user.username,
+    displayName: user.display_name,
+    bio: user.profile.bio,
     fid: user.fid,
     image: user.pfp_url
   }))

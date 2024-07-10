@@ -50,7 +50,7 @@ const newQuestion = async (
   if (session.questionNumber === 3) {
     return res.redirect(
       307,
-      createFrameResultsUrl({ fid, frameSessionId: session.id })
+      createFrameResultsUrl({ frameSessionId: session.id })
     )
   }
 
