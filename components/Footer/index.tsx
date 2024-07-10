@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import Img from 'next/image'
+import Link from 'next/link'
 import styles from './styles.module.css'
 
 export const Footer: React.FC = () => {
@@ -39,15 +40,12 @@ export const Footer: React.FC = () => {
 
       <div className={styles.legal}>
         <div>
-          <a href="/" target="_blank" rel="noopener noreferrer">
+          <Link href="/terms-of-use">
             Terms & Conditions
-          </a>
-          <a href="/" target="_blank" rel="noopener noreferrer">
+          </Link>
+          <Link href="/privacy-policy">
             Privacy Policy
-          </a>
-          <a href="/" target="_blank" rel="noopener noreferrer">
-            Cookie Policy
-          </a>
+          </Link>
           <a href="mailto:contact@tuum.tech" target="_blank" rel="noopener noreferrer">
             Feedback & Bug Report
           </a>

@@ -5,8 +5,8 @@ import { Footer } from '../../components/Footer'
 
 type Props = {
   children: React.ReactNode
-  title: JSX.Element | React.ReactNode
-  subtitle: string
+  title?: JSX.Element | React.ReactNode
+  subtitle?: string
 }
 
 export const AuthLayout: React.FC<Props> = ({
@@ -19,8 +19,8 @@ export const AuthLayout: React.FC<Props> = ({
         <div className={styles.logo}>
           <Img src="/intori-logo-full.svg" alt="Intori" width={68} height={30} />
         </div>
-        <h1>{title}</h1>
-        <h2>{subtitle}</h2>
+        {!!title && <h1>{title}</h1>}
+        {!!subtitle && <h2>{subtitle}</h2>}
         {children}
         <Footer />
       </div>
