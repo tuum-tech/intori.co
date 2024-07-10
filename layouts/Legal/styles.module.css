@@ -1,0 +1,49 @@
+.header {
+  width: 50%;
+  margin: 72px auto;
+}
+
+.header a {
+  color: #8558E3;
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+.legalLayout a {
+  color: #8558E3;
+}
+
+.legalLayout {
+  color: #FFF;
+  width: 50%;
+  margin: auto;
+}
+
+.legalLayout h1 {
+  text-align: center;
+}
+
+.legalLayout h2 {
+  margin-top: 64px;
+}
+.legalLayout div {
+  margin-top: 64px;
+}
+
+.legalLayout ul li {
+  margin-top: 16px;
+}
+
+@media only screen and (max-width: 1050px) {
+  .legalLayout,
+  .header {
+    width: 80%;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .legalLayout,
+  .header {
+    width: 90%;
+  }
+}
