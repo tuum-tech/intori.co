@@ -84,7 +84,7 @@ const getProfileFramePictureImage = async (
       alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
-    228,
+    288,
     29
   )
 
