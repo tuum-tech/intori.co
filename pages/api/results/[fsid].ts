@@ -16,27 +16,27 @@ import { timeAgo } from '../../../utils/textHelpers'
 
 // Note: This is used to create a circle masked image
 //
-// async function createCircularImage(url: string, baseImage: Jimp): Promise<Jimp> {
-//   try {
-//     const urlImage = await Jimp.read(url)
-// 
-//     const maskImage = await Jimp.read(
-//       path.join(process.cwd(), 'public/frame_template_mask.png')
-//     )
-// 
-//     maskImage.resize(85, 85)
-//     urlImage.resize(85, 85)
-// 
-//     urlImage.mask(maskImage, 0, 0)
-// 
-//     baseImage.composite(urlImage, 440, 133.5)
-// 
-//     return baseImage
-//   } catch (error) {
-//     console.error('Error creating circular image:', error)
-//     throw error
-//   }
-// }
+async function createCircularImage(url: string, baseImage: Jimp): Promise<void> {
+  try {
+    const urlImage = await Jimp.read(url)
+
+    const maskImage = await Jimp.read(
+      path.join(process.cwd(), 'public/frame_template_mask.png')
+    )
+
+    const circleImageSize = 165
+
+    maskImage.resize(circleImageSize, circleImageSize)
+    urlImage.resize(circleImageSize, circleImageSize)
+
+    urlImage.mask(maskImage, 0, 0)
+
+    baseImage.composite(urlImage, 486, 126)
+  } catch (error) {
+    console.error('Error creating circular image:', error)
+    throw error
+  }
+}
 
 const getProfileFramePictureImage = async (
   req: NextApiRequest,
@@ -86,6 +86,14 @@ const getProfileFramePictureImage = async (
     },
     228,
     29
+  )
+
+  const avatar = suggestedUserData.image ?? path.join(process.cwd(), 'public/assets/templates/avatar_fallback.png')
+
+  // avatar
+  await createCircularImage(
+    avatar,
+    baseImage
   )
 
   // total responses
