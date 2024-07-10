@@ -13,6 +13,7 @@ import { PrimaryButton } from '../../components/common/Button'
 import styles from './FramePage.module.css'
 import { getFrameSessionById } from '../../models/frameSession'
 import { getSuggestedUser } from '../../utils/frames/suggestions'
+import { createNextRevealUrl } from '../../utils/frames/generatePageUrls'
  
 type Props = {
   imageUrl: string
@@ -74,7 +75,7 @@ export const getServerSideProps = (async (context) => {
 
   inputs.push({
     type: 'button',
-    postUrl: '',
+    postUrl: createNextRevealUrl({ fsid: session.id }),
     content: '✨Reveal'
   })
 
