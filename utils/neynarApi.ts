@@ -70,3 +70,33 @@ export const getLastCastForUser = async (fid: number) => {
   // timestamp looks like "2024-07-10T05:45:57.000Z",
   return res.result.casts[0]
 }
+
+export const doesUserFollowIntori = async (fid: number): Promise<boolean> => {
+  let foundIntori = false
+  let cursor: string | null = ''
+
+  while (!foundIntori) {
+    const following = await neynar.fetchUserFollowingV2(
+      fid,
+      {
+        limit: 50,
+        sortType: 'desc_chron',
+        cursor: cursor || undefined
+      }
+    )
+
+    const followingFids = following.users.map((user) => user.fid)
+
+    if (followingFids.includes(294394)) {
+      foundIntori = true
+    } 
+
+    if (!following.next.cursor) {
+      break
+    }
+
+    cursor = following.next.cursor
+  }
+
+  return foundIntori
+}
