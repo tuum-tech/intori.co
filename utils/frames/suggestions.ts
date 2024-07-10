@@ -252,26 +252,6 @@ export const getAllSuggestedUsersAndChannels = async (
   for (let i = 0; i < recentResponses.length; i++) {
     const response = recentResponses[i]
 
-    if (isInitialQuestion(response.question)) {
-      const initialQuestionSuggestions = getSuggestedChannelsForInitialQuestion(
-        response.question,
-        response.answer
-      )
-
-      const channelSuggestions = initialQuestionSuggestions.map((ch) => {
-        return {
-          type: 'channel',
-          channel: {
-            id: ch,
-            name: ch
-          },
-          reason: [`You answered "${response.answer}"`]
-        } as SuggestionType
-      })
-
-      suggestions.push(...channelSuggestions)
-    }
-
     const otherUserResponses = await getResponsesWithAnswerToQuestion({
       question: response.question,
       answer: response.answer,
