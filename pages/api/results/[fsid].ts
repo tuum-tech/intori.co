@@ -42,7 +42,6 @@ const getProfileFramePictureImage = async (
   req: NextApiRequest,
   res: NextApiResponse
 ) => {
-  console.log('generating result frame image...........')
   if (req.method !== 'GET') {
     return res.status(405).end()
   }
@@ -62,12 +61,11 @@ const getProfileFramePictureImage = async (
 
   const reason = req.query.sur as string
   const suggestedUserFid = parseInt(req.query.su as string, 10)
-  console.log({ suggestedUserFid })
   const [suggestedUserData] = await fetchUserDetailsByFids([suggestedUserFid])
 
   const totalResponses = await countTotalResponsesForUser(suggestedUserFid)
   const lastCast = await getLastCastForUser(suggestedUserFid)
-  const lastCastTimeAgo = lastCast ? `Last Cast ${timeAgo(lastCast.timestamp)}` : 'Never casted'
+  const lastCastTimeAgo = lastCast ? `Last cast ${timeAgo(lastCast.timestamp)}` : 'Never casted'
   const sameAnswers = await getAnswersInCommonBetweenUsers(session.fid, suggestedUserFid)
 
   const font14 = await loadKumbSans14()
@@ -132,7 +130,7 @@ const getProfileFramePictureImage = async (
     {
       text: suggestedUserData.bio,
       alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
-      alignmentY: Jimp.VERTICAL_ALIGN_TOP
+      alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
     416,
     57
