@@ -112,7 +112,6 @@ const answeredQuestion = async (
   return res.redirect(
     307,
     createFrameResultsUrl({
-      fid,
       frameSessionId: session.id
     })
   )
