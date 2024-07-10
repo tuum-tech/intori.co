@@ -2,9 +2,17 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import Jimp from 'jimp'
 import * as path from 'path'
 import {
-  loadKumbSans24
+  loadKumbSans32,
+  loadKumbSans24,
+  loadKumbSans14
 } from '../../../utils/frames/fonts'
-// import { fetchUserDetailsByFids } from '../../../utils/neynarApi'
+import { fetchUserDetailsByFids, getLastCastForUser } from '../../../utils/neynarApi'
+import { countTotalResponsesForUser, getAnswersInCommonBetweenUsers } from '../../../models/userAnswers'
+import { getFrameSessionFromRequest } from '../../../models/frameSession'
+import {
+  createFrameErrorUrl
+} from '../../../utils/frames/generatePageUrls'
+import { timeAgo } from '../../../utils/textHelpers'
 
 // Note: This is used to create a circle masked image
 //
@@ -42,28 +50,126 @@ const getProfileFramePictureImage = async (
       path.join(process.cwd(), 'public/assets/templates/results_frame_template.png')
   )
 
+  const session = await getFrameSessionFromRequest(req)
+
+  if (!session) {
+    return res.redirect(
+      307,
+      createFrameErrorUrl()
+    )
+  }
+
   const reason = req.query.sur as string
-  // const suggestedUserFid = parseInt(req.query.su as string, 10)
-  // const [suggestedUserData] = await fetchUserDetailsByFids([suggestedUserFid])
+  const suggestedUserFid = parseInt(req.query.su as string, 10)
+  const [suggestedUserData] = await fetchUserDetailsByFids([suggestedUserFid])
 
-  // TODO: get suggested user data. we need avatar, username, display name, and bio
-  // TODO: count total responses for suggested user
-  // TODO: get last cast time ago for suggested user
-  // TODO: get answers in common with suggested user
+  const totalResponses = await countTotalResponsesForUser(suggestedUserFid)
+  const lastCast = await getLastCastForUser(suggestedUserFid)
+  const lastCastTimeAgo = lastCast ? timeAgo(lastCast.timestamp) : 'Never'
+  const sameAnswers = await getAnswersInCommonBetweenUsers(session.fid, suggestedUserFid)
 
+  const font14 = await loadKumbSans14()
   const font24 = await loadKumbSans24()
+  const font32 = await loadKumbSans32()
 
+  // username
   baseImage.print(
-    font24,
-    60,
-    334,
+    font14,
+    425,
+    76,
     {
-      text: reason,
+      text: `@${suggestedUserData.username}`,
       alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
-    648,
-    95
+    228,
+    29
+  )
+
+  // total responses
+  baseImage.print(
+    font14,
+    356,
+    302,
+    {
+      text: `${totalResponses} Response${totalResponses === 1 ? '' : 's'}`,
+      alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
+      alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
+    },
+    228,
+    26
+  )
+
+  // last cast
+  baseImage.print(
+    font14,
+    356,
+    346,
+    {
+      text: lastCastTimeAgo,
+      alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
+      alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
+    },
+    208,
+    26
+  )
+
+  // bio
+  baseImage.print(
+    font14,
+    356,
+    389,
+    {
+      text: suggestedUserData.bio,
+      alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
+      alignmentY: Jimp.VERTICAL_ALIGN_TOP
+    },
+    416,
+    57
+  )
+
+  // first reason
+  baseImage.print(
+    font24,
+    318,
+    463,
+    {
+      text: reason,
+      alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
+      alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
+    },
+    454,
+    150
+  )
+
+  // +N other responses
+  if (sameAnswers.length > 1) {
+    baseImage.print(
+      font14,
+      314,
+      623,
+      {
+        text: `+${sameAnswers.length - 1} other answer${sameAnswers.length === 2 ? '' : 's'} in common!`,
+        alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
+        alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
+      },
+      285,
+      32
+    )
+  }
+
+  // name
+  baseImage.print(
+    font32,
+    187,
+    658,
+    {
+      text: suggestedUserData.displayName,
+      alignmentX: Jimp.HORIZONTAL_ALIGN_RIGHT,
+      alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
+    },
+    568,
+    97
   )
 
   const buffer = await baseImage.getBufferAsync(Jimp.MIME_PNG)
