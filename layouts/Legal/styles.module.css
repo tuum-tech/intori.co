@@ -33,3 +33,17 @@
 .legalLayout ul li {
   margin-top: 16px;
 }
+
+@media only screen and (max-width: 1050px) {
+  .legalLayout,
+  .header {
+    width: 80%;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .legalLayout,
+  .header {
+    width: 90%;
+  }
+}
