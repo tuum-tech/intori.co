@@ -172,7 +172,7 @@ const getProfileFramePictureImage = async (
     187,
     658,
     {
-      text: suggestedUserData.displayName,
+      text: suggestedUserData.displayName || suggestedUserData.username,
       alignmentX: Jimp.HORIZONTAL_ALIGN_RIGHT,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
