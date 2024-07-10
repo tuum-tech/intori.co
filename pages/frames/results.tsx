@@ -61,7 +61,7 @@ export const getServerSideProps = (async (context) => {
       type: 'button',
       action: 'link',
       target: 'https://www.intori.co/',
-      content: 'Learn'
+      content: 'My Stats'
   })
 
   const userSuggestion = await getSuggestedUser(session)
@@ -70,13 +70,13 @@ export const getServerSideProps = (async (context) => {
     type: 'button',
     action: 'link',
     target: `https://warpcast.com/${userSuggestion.user}`,
-    content: `@${userSuggestion.user}`
+    content: 'Follow'
   })
 
   inputs.push({
     type: 'button',
     postUrl: createNextRevealUrl({ fsid: session.id }),
-    content: '✨Reveal'
+    content: '✨ Reveal'
   })
 
   // todo: pass suggested fid
