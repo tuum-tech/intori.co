@@ -128,7 +128,7 @@ const getProfileFramePictureImage = async (
     356,
     389,
     {
-      text: suggestedUserData.bio,
+      text: suggestedUserData.bio ?? 'No bio',
       alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
