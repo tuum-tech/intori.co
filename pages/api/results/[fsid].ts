@@ -62,6 +62,9 @@ const getProfileFramePictureImage = async (
   const suggestionsRevealed = parseInt(req.query.i?.toString() ?? '0', 10)
   const userSuggestion = session.suggestions[suggestionsRevealed % session.suggestions.length]
 
+  console.log({ suggestionsRevealed })
+  console.log({ userSuggestion })
+
   if (!userSuggestion.user?.fid) {
     return res.redirect(
       307,
