@@ -67,7 +67,7 @@ const getProfileFramePictureImage = async (
 
   const totalResponses = await countTotalResponsesForUser(suggestedUserFid)
   const lastCast = await getLastCastForUser(suggestedUserFid)
-  const lastCastTimeAgo = lastCast ? timeAgo(lastCast.timestamp) : 'Never'
+  const lastCastTimeAgo = lastCast ? `Last Cast ${timeAgo(lastCast.timestamp)}` : 'Never casted'
   const sameAnswers = await getAnswersInCommonBetweenUsers(session.fid, suggestedUserFid)
 
   const font14 = await loadKumbSans14()
