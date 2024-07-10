@@ -16,6 +16,8 @@ export type FarcasterUserType = {
   username: string
   fid: number
   image?: string
+  displayName?: string
+  bio?: string
 }
 
 export const getChannelsThatUserFollows = async (
@@ -42,7 +44,7 @@ export const fetchUserDetailsByFids = async (fids: number[]): Promise<FarcasterU
   }).map((user) => ({
     username: user.username,
     displayName: user.display_name,
-    bio: user.profile.bio,
+    bio: user.profile.bio.text,
     fid: user.fid,
     image: user.pfp_url
   }))
@@ -60,4 +62,11 @@ export const fetchVerifiedEthereumAddressesForUser = async (
   const user = users[0]
 
   return user.verified_addresses.eth_addresses
+}
+
+export const getLastCastForUser = async (fid: number) => {
+  const res = await neynar.fetchAllCastsCreatedByUser(fid, { limit: 1 })
+
+  // timestamp looks like "2024-07-10T05:45:57.000Z",
+  return res.result.casts[0]
 }
