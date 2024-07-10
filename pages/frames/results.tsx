@@ -70,17 +70,6 @@ export const getServerSideProps = (async (context) => {
       content: 'My Stats'
   })
 
-  if (!session.suggestions.length) {
-    const suggestions = await getAllSuggestedUsersAndChannels({
-      fid: session.fid,
-      usersOnly: true
-    })
-
-    await saveSuggestionsToFrameSession(session.id, suggestions)
-
-    session.suggestions = suggestions
-  }
-
   const suggestionsRevealed = session.suggestionsRevealed ?? 0
 
   if (suggestionsRevealed > 3 && !session.followsIntori) {
@@ -97,6 +86,20 @@ export const getServerSideProps = (async (context) => {
 
     await saveIfUserFollowsIntori(session.id, followsIntori)
   }
+
+  if (!session.suggestions.length) {
+    const suggestions = await getAllSuggestedUsersAndChannels({
+      fid: session.fid,
+      usersOnly: true
+    })
+
+    await saveSuggestionsToFrameSession(session.id, suggestions)
+
+    session.suggestions = suggestions
+  }
+
+  console.log('suggestionsRevealed', suggestionsRevealed)
+  console.log('session.suggestions', session.suggestions)
 
   const userSuggestion = session.suggestions[suggestionsRevealed % session.suggestions.length]
 
