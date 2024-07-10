@@ -177,7 +177,7 @@ export const getSuggestedUser = async (
   return {
     fid: randomUserFid,
     user: userDetails.username,
-    reason: `You both answered "${userResponse.answer}"`
+    reason: `You both answered "${userResponse.answer}" for "${userResponse.question}"`
   }
 }
 
