@@ -11,15 +11,6 @@ import {
 import Input from '../../components/common/Input'
 import { PrimaryButton } from '../../components/common/Button'
 import styles from './FramePage.module.css'
-import {
-  getFrameSessionById,
-  saveSuggestionsToFrameSession,
-  saveIfUserFollowsIntori,
-  incremenetSuggestionsRevealed
-} from '../../models/frameSession'
-import { getAllSuggestedUsersAndChannels } from '../../utils/frames/suggestions'
-import { createNextRevealUrl } from '../../utils/frames/generatePageUrls'
-import { doesUserFollowIntori } from '../../utils/neynarApi'
  
 type Props = {
   imageUrl: string
@@ -37,86 +28,17 @@ export const getServerSideProps = (async (context) => {
     }
   }
 
-  const frameSessionId = context.query.fsid?.toString() as string
-
-  const session = await getFrameSessionById(frameSessionId)
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/frames/error',
-        permanent: false
-      }
-    }
-  }
-
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/begin`
-  const imageUrl = `${process.env.NEXTAUTH_URL}/api/results/${session.id}`
-  const imageUrlQueryParts: string[] = []
+  const imageUrl = `${process.env.NEXTAUTH_URL}/assets/templates/follow_required.png`
 
   const inputs: IntoriFrameInputType[] = []
 
   inputs.push({
-      type: 'button',
-      action: 'link',
-      target: frameUrl,
-      content: 'Share'
-  })
-
-  inputs.push({
-      type: 'button',
-      action: 'link',
-      target: 'https://www.intori.co/',
-      content: 'My Stats'
-  })
-
-  if (!session.suggestions.length) {
-    const suggestions = await getAllSuggestedUsersAndChannels({
-      fid: session.fid,
-      usersOnly: true
-    })
-
-    await saveSuggestionsToFrameSession(session.id, suggestions)
-
-    session.suggestions = suggestions
-  }
-
-  const suggestionsRevealed = session.suggestionsRevealed ?? 0
-
-  if (suggestionsRevealed > 3 && !session.followsIntori) {
-    const followsIntori = await doesUserFollowIntori(session.fid)
-
-    if (!followsIntori) {
-      return {
-        redirect: {
-          destination: '/frames/followIntori',
-          permanent: false
-        }
-      }
-    }
-
-    await saveIfUserFollowsIntori(session.id, followsIntori)
-  }
-
-  const userSuggestion = session.suggestions[suggestionsRevealed % session.suggestions.length]
-
-  incremenetSuggestionsRevealed(session.id)
-
-  inputs.push({
     type: 'button',
     action: 'link',
-    target: `https://warpcast.com/${userSuggestion.user}`,
-    content: 'Follow'
+    target: `https://warpcast.com/intori`,
+    content: '@intori'
   })
-
-  inputs.push({
-    type: 'button',
-    postUrl: createNextRevealUrl({ fsid: session.id }),
-    content: '✨ Reveal'
-  })
-
-  imageUrlQueryParts.push(`su=${userSuggestion.user?.fid}`)
-  imageUrlQueryParts.push(`sur=${userSuggestion.reason}`)
 
   const frame: IntoriFrameType = {
     inputs
@@ -124,7 +46,7 @@ export const getServerSideProps = (async (context) => {
 
   return {
     props: {
-      imageUrl: imageUrl + '?' + imageUrlQueryParts.join('&'),
+      imageUrl,
       frameUrl,
       frame
     }

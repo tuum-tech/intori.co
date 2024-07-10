@@ -234,9 +234,10 @@ export const getSuggestedChannel = async (
 }
 
 // The 'reason' text fields here can be different since this is for the frontend app
-export const getAllSuggestedUSersAndChannels = async (
+export const getAllSuggestedUsersAndChannels = async (
   options: {
-    fid: number
+    fid: number,
+    usersOnly?: boolean
   }
 ): Promise<SuggestionType[]> => {
   const { fid } = options
@@ -320,6 +321,12 @@ export const getAllSuggestedUSersAndChannels = async (
 
   suggestions.push(...usersToBeSuggest)
 
+  if (options.usersOnly) {
+    return suggestions
+  }
+
+  return suggestions
+  /* Channels temporarily removed from suggestions
   const channelsToBeSuggested: {
     channel: FarcasterChannelType
     count: number
@@ -363,4 +370,5 @@ export const getAllSuggestedUSersAndChannels = async (
   suggestions.push(...channelsToSuggest)
 
   return suggestions
+  */
 }
