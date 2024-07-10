@@ -54,14 +54,14 @@ export const getServerSideProps = (async (context) => {
       type: 'button',
       action: 'link',
       target: frameUrl,
-      content: 'Share Frame'
+      content: 'Share'
   })
 
   inputs.push({
       type: 'button',
       action: 'link',
       target: 'https://www.intori.co/',
-      content: 'Learn More'
+      content: 'Learn'
   })
 
   const userSuggestion = await getSuggestedUser(session)
