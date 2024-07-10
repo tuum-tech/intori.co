@@ -42,6 +42,7 @@ const getProfileFramePictureImage = async (
   req: NextApiRequest,
   res: NextApiResponse
 ) => {
+  console.log('generating result frame image...........')
   if (req.method !== 'GET') {
     return res.status(405).end()
   }
@@ -61,6 +62,7 @@ const getProfileFramePictureImage = async (
 
   const reason = req.query.sur as string
   const suggestedUserFid = parseInt(req.query.su as string, 10)
+  console.log({ suggestedUserFid })
   const [suggestedUserData] = await fetchUserDetailsByFids([suggestedUserFid])
 
   const totalResponses = await countTotalResponsesForUser(suggestedUserFid)
