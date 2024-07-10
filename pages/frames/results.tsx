@@ -101,6 +101,7 @@ export const getServerSideProps = (async (context) => {
   console.log('suggestionsRevealed', suggestionsRevealed)
   console.log('session.suggestions', session.suggestions)
 
+  imageUrlQueryParts.push(`i=${suggestionsRevealed}`)
   const userSuggestion = session.suggestions[suggestionsRevealed % session.suggestions.length]
 
   incremenetSuggestionsRevealed(session.id)
@@ -117,9 +118,6 @@ export const getServerSideProps = (async (context) => {
     postUrl: createNextRevealUrl({ fsid: session.id }),
     content: '✨ Reveal'
   })
-
-  imageUrlQueryParts.push(`su=${userSuggestion.user?.fid}`)
-  imageUrlQueryParts.push(`sur=${userSuggestion.reason}`)
 
   const frame: IntoriFrameType = {
     inputs

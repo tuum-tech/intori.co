@@ -6,8 +6,8 @@ import {
   loadKumbSans24,
   loadKumbSans14
 } from '../../../utils/frames/fonts'
-import { fetchUserDetailsByFids, getLastCastForUser } from '../../../utils/neynarApi'
-import { countTotalResponsesForUser, getAnswersInCommonBetweenUsers } from '../../../models/userAnswers'
+import { getLastCastForUser } from '../../../utils/neynarApi'
+import { countTotalResponsesForUser } from '../../../models/userAnswers'
 import { getFrameSessionFromRequest } from '../../../models/frameSession'
 import {
   createFrameErrorUrl
@@ -59,14 +59,20 @@ const getProfileFramePictureImage = async (
     )
   }
 
-  const reason = req.query.sur as string
-  const suggestedUserFid = parseInt(req.query.su as string, 10)
-  const [suggestedUserData] = await fetchUserDetailsByFids([suggestedUserFid])
+  const suggestionsRevealed = parseInt(req.query.i?.toString() ?? '0', 10)
+  const userSuggestion = session.suggestions[suggestionsRevealed % session.suggestions.length]
 
+  if (!userSuggestion.user?.fid) {
+    return res.redirect(
+      307,
+      createFrameErrorUrl()
+    )
+  }
+
+  const suggestedUserFid = userSuggestion.user.fid
   const totalResponses = await countTotalResponsesForUser(suggestedUserFid)
   const lastCast = await getLastCastForUser(suggestedUserFid)
   const lastCastTimeAgo = lastCast ? `Last cast ${timeAgo(lastCast.timestamp)}` : 'Never casted'
-  const sameAnswers = await getAnswersInCommonBetweenUsers(session.fid, suggestedUserFid)
 
   const font14 = await loadKumbSans14()
   const font24 = await loadKumbSans24()
@@ -78,7 +84,7 @@ const getProfileFramePictureImage = async (
     425,
     76,
     {
-      text: `@${suggestedUserData.username}`,
+      text: `@${userSuggestion.user.username}`,
       alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
@@ -86,7 +92,7 @@ const getProfileFramePictureImage = async (
     29
   )
 
-  const avatar = suggestedUserData.image ?? path.join(process.cwd(), 'public/assets/templates/avatar_fallback.png')
+  const avatar = userSuggestion.user.image ?? path.join(process.cwd(), 'public/assets/templates/avatar_fallback.png')
 
   // avatar
   await createCircularImage(
@@ -128,7 +134,7 @@ const getProfileFramePictureImage = async (
     356,
     374,
     {
-      text: suggestedUserData.bio || 'No bio',
+      text: userSuggestion.user.bio || 'No bio',
       alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
@@ -142,7 +148,7 @@ const getProfileFramePictureImage = async (
     318,
     463,
     {
-      text: reason,
+      text: userSuggestion.reason[0],
       alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
@@ -151,13 +157,13 @@ const getProfileFramePictureImage = async (
   )
 
   // +N other responses
-  if (sameAnswers.length > 1) {
+  if (userSuggestion.reason.length > 1) {
     baseImage.print(
       font14,
       314,
       623,
       {
-        text: `+${sameAnswers.length - 1} other answer${sameAnswers.length === 2 ? '' : 's'} in common!`,
+        text: `+${userSuggestion.reason.length - 1} other answer${userSuggestion.reason.length === 2 ? '' : 's'} in common!`,
         alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
         alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
       },
@@ -172,7 +178,7 @@ const getProfileFramePictureImage = async (
     187,
     658,
     {
-      text: suggestedUserData.displayName || suggestedUserData.username,
+      text: userSuggestion.user.displayName || userSuggestion.user.username,
       alignmentX: Jimp.HORIZONTAL_ALIGN_RIGHT,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
