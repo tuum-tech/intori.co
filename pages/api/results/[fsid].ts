@@ -31,11 +31,23 @@ async function createCircularImage(url: string, baseImage: Jimp): Promise<void> 
 
     urlImage.mask(maskImage, 0, 0)
 
-    baseImage.composite(urlImage, 486, 126)
+    baseImage.composite(urlImage, 514, 121)
   } catch (error) {
     console.error('Error creating circular image:', error)
     throw error
   }
+}
+
+async function addPowerBadge(baseImage: Jimp): Promise<void> {
+  const powerBadge = await Jimp.read(
+    path.join(process.cwd(), 'public/assets/templates/powerbadge.png')
+  )
+
+  baseImage.composite(powerBadge, 706, 707, {
+    mode: Jimp.BLEND_SOURCE_OVER,
+    opacitySource: 1,
+    opacityDest: 1
+  })
 }
 
 const getProfileFramePictureImage = async (
@@ -84,14 +96,14 @@ const getProfileFramePictureImage = async (
   // username
   baseImage.print(
     font14,
-    425,
-    76,
+    441,
+    48,
     {
       text: `@${userSuggestion.user.username}`,
       alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
-    288,
+    303,
     29
   )
 
@@ -106,8 +118,8 @@ const getProfileFramePictureImage = async (
   // total responses
   baseImage.print(
     font14,
-    356,
-    302,
+    324,
+    259,
     {
       text: `${totalResponses} Response${totalResponses === 1 ? '' : 's'}`,
       alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
@@ -120,8 +132,8 @@ const getProfileFramePictureImage = async (
   // last cast
   baseImage.print(
     font14,
-    356,
-    346,
+    324,
+    301,
     {
       text: lastCastTimeAgo,
       alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
@@ -134,28 +146,28 @@ const getProfileFramePictureImage = async (
   // bio
   baseImage.print(
     font14,
-    356,
-    374,
+    324,
+    346,
     {
       text: userSuggestion.user.bio || 'No bio',
       alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
-      alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
+      alignmentY: Jimp.VERTICAL_ALIGN_TOP
     },
     416,
-    57
+    84
   )
 
   // first reason
   baseImage.print(
     font24,
-    318,
-    463,
+    287,
+    453,
     {
       text: userSuggestion.reason[0],
       alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
-    454,
+    490,
     150
   )
 
@@ -163,8 +175,8 @@ const getProfileFramePictureImage = async (
   if (userSuggestion.reason.length > 1) {
     baseImage.print(
       font14,
-      314,
-      623,
+      289,
+      615,
       {
         text: `+${userSuggestion.reason.length - 1} other answer${userSuggestion.reason.length === 2 ? '' : 's'} in common!`,
         alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
@@ -178,16 +190,35 @@ const getProfileFramePictureImage = async (
   // name
   baseImage.print(
     font32,
-    187,
-    658,
+    125,
+    698,
     {
       text: userSuggestion.user.displayName || userSuggestion.user.username,
       alignmentX: Jimp.HORIZONTAL_ALIGN_RIGHT,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
     568,
-    97
+    40
   )
+
+  // fid
+  baseImage.print(
+    font14,
+    125,
+    739,
+    {
+      text: `FID ${userSuggestion.user.fid}`,
+      alignmentX: Jimp.HORIZONTAL_ALIGN_RIGHT,
+      alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
+    },
+    568,
+    17
+  )
+
+  // power badge next to name
+  if (userSuggestion.user.powerBadge) {
+    await addPowerBadge(baseImage)
+  }
 
   const buffer = await baseImage.getBufferAsync(Jimp.MIME_PNG)
 
