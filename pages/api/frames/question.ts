@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { frameSubmissionHelpers } from '../../../utils/frames/frameSubmissionHelpers'
 import { validateFarcasterPacketMessage } from '../utils/farcasterServer'
-import { getUserAnswerForQuestion, getInitialQuestionsThatUserHasNotAnswered } from '../../../models/userAnswers'
+import { getUserAnswerForQuestion } from '../../../models/userAnswers'
 import { appendQuestionToFrameSession } from '../../../models/frameSession'
 import { getLastSkippedQuestion } from '../../../models/userQuestionSkip'
 import { intoriQuestions } from '../../../utils/frames/intoriFrameForms'
