@@ -29,6 +29,7 @@ type Props = {
  
 export const getServerSideProps = (async (context) => {
   if (!context?.query.fsid) {
+    console.log(' no fsid ')
     return {
       redirect: {
         destination: '/frames/error',
@@ -42,6 +43,7 @@ export const getServerSideProps = (async (context) => {
   const session = await getFrameSessionById(frameSessionId)
 
   if (!session) {
+    console.log('no session')
     return {
       redirect: {
         destination: '/frames/error',
