@@ -12,7 +12,7 @@ import Input from '../../components/common/Input'
 import { PrimaryButton } from '../../components/common/Button'
 import styles from './FramePage.module.css'
 import { getFrameSessionById } from '../../models/frameSession'
-import { createStartNewFrameQuestionUrl } from '../../utils/frames/generatePageUrls'
+import { createStartNewFrameQuestionUrl, createFrameErrorUrl } from '../../utils/frames/generatePageUrls'
  
 type Props = {
   imageUrl: string
@@ -24,7 +24,7 @@ export const getServerSideProps = (async (context) => {
   if (!context?.query.fsid) {
     return {
       redirect: {
-        destination: '/frames/error',
+        destination: createFrameErrorUrl(),
         permanent: false
       }
     }
@@ -37,7 +37,7 @@ export const getServerSideProps = (async (context) => {
   if (!session) {
     return {
       redirect: {
-        destination: '/frames/error',
+        destination: createFrameErrorUrl(),
         permanent: false
       }
     }
@@ -89,7 +89,7 @@ export default function Page({
         frame={frame}
         imageUrl={imageUrl}
         frameUrl={frameUrl}
-        frameImageAspectRatio="1:1"
+        frameImageAspectRatio="1.91:1"
       />
       <AppLayout>
         <Section>
