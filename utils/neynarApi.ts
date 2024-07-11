@@ -18,6 +18,7 @@ export type FarcasterUserType = {
   image?: string
   displayName?: string
   bio?: string
+  powerBadge: boolean
 }
 
 export const getChannelsThatUserFollows = async (
@@ -46,7 +47,8 @@ export const fetchUserDetailsByFids = async (fids: number[]): Promise<FarcasterU
     displayName: user.display_name,
     bio: user.profile.bio.text,
     fid: user.fid,
-    image: user.pfp_url
+    image: user.pfp_url,
+    powerBadge: user.power_badge ?? false
   }))
 }
 
