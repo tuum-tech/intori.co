@@ -103,12 +103,12 @@ const newQuestion = async (
     }
   }
 
-  if (tries === 10) {
-    return res.redirect(
-      307,
-      createLimitReachedUrl()
-    )
-  }
+  // if (tries === 10) {
+  //   return res.redirect(
+  //     307,
+  //     createLimitReachedUrl()
+  //   )
+  // }
 
   await appendQuestionToFrameSession(session.id, nextQuestion.question)
 
