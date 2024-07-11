@@ -18,20 +18,36 @@ import { timeAgo } from '../../../utils/textHelpers'
 //
 async function createCircularImage(url: string, baseImage: Jimp): Promise<void> {
   try {
-    const urlImage = await Jimp.read(url)
+    const urlImage = await Jimp.read(url);
 
     const maskImage = await Jimp.read(
       path.join(process.cwd(), 'public/frame_template_mask.png')
-    )
+    );
 
-    const circleImageSize = 165
+    const circleImageSize = 165;
 
-    maskImage.resize(circleImageSize, circleImageSize)
-    urlImage.resize(circleImageSize, circleImageSize)
+    // Resize the mask to the desired circle size
+    maskImage.resize(circleImageSize, circleImageSize);
 
-    urlImage.mask(maskImage, 0, 0)
+    // Calculate the scale to maintain aspect ratio
+    const scale = Math.min(circleImageSize / urlImage.bitmap.width, circleImageSize / urlImage.bitmap.height);
 
-    baseImage.composite(urlImage, 514, 121)
+    // Resize the image proportionally
+    urlImage.scale(scale);
+
+    // Create a square canvas with a transparent background
+    const squareImage = new Jimp(circleImageSize, circleImageSize, 0x00000000);
+
+    // Center the resized image within the square canvas
+    const x = (circleImageSize - urlImage.bitmap.width) / 2;
+    const y = (circleImageSize - urlImage.bitmap.height) / 2;
+    squareImage.composite(urlImage, x, y);
+
+    // Apply the mask to the square image
+    squareImage.mask(maskImage, 0, 0);
+
+    // Composite the result onto the base image
+    baseImage.composite(squareImage, 514, 121);
   } catch (error) {
     console.error('Error creating circular image:', error)
     throw error
