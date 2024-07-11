@@ -55,3 +55,10 @@ export const createNextRevealUrl = (params: {
   const { fsid } = params
   return `${process.env.NEXTAUTH_URL}/api/frames/reveal?fsid=${fsid}`
 }
+
+export const createFollowIntoriUrl = (params: {
+  fsid: string
+}) => {
+  const { fsid } = params
+  return `${process.env.NEXTAUTH_URL}/frames/followIntori?fsid=${fsid}`
+}
