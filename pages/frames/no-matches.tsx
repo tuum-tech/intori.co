@@ -11,20 +11,8 @@ import {
 import Input from '../../components/common/Input'
 import { PrimaryButton } from '../../components/common/Button'
 import styles from './FramePage.module.css'
-import {
-  getFrameSessionById,
-  saveSuggestionsToFrameSession,
-  saveIfUserFollowsIntori,
-  incremenetSuggestionsRevealed
-} from '../../models/frameSession'
-import { getAllSuggestedUsersAndChannels } from '../../utils/frames/suggestions'
-import {
-  createNextRevealUrl,
-  createFollowIntoriUrl,
-  createFrameErrorUrl,
-  createNoMatchesFoundUrl
-} from '../../utils/frames/generatePageUrls'
-import { doesUserFollowIntori } from '../../utils/neynarApi'
+import { getFrameSessionById } from '../../models/frameSession'
+import { createStartNewFrameQuestionUrl } from '../../utils/frames/generatePageUrls'
  
 type Props = {
   imageUrl: string
@@ -34,10 +22,9 @@ type Props = {
  
 export const getServerSideProps = (async (context) => {
   if (!context?.query.fsid) {
-    console.log(' no fsid ')
     return {
       redirect: {
-        destination: createFrameErrorUrl(),
+        destination: '/frames/error',
         permanent: false
       }
     }
@@ -50,85 +37,21 @@ export const getServerSideProps = (async (context) => {
   if (!session) {
     return {
       redirect: {
-        destination: createFrameErrorUrl(),
+        destination: '/frames/error',
         permanent: false
       }
     }
   }
 
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/begin`
-  const imageUrl = `${process.env.NEXTAUTH_URL}/api/results/${session.id}`
-  const imageUrlQueryParts: string[] = []
+  const imageUrl = `${process.env.NEXTAUTH_URL}/assets/templates/no_matches.png`
 
   const inputs: IntoriFrameInputType[] = []
 
   inputs.push({
-      type: 'button',
-      action: 'link',
-      target: frameUrl,
-      content: 'Share'
-  })
-
-  inputs.push({
-      type: 'button',
-      action: 'link',
-      target: 'https://www.intori.co/',
-      content: 'My Stats'
-  })
-
-  const suggestionsRevealed = session.suggestionsRevealed ?? 0
-
-  if (suggestionsRevealed > 3 && !session.followsIntori) {
-    const followsIntori = await doesUserFollowIntori(session.fid)
-
-    if (!followsIntori) {
-      return {
-        redirect: {
-          destination: createFollowIntoriUrl({ fsid: session.id }),
-          permanent: false
-        }
-      }
-    }
-
-    await saveIfUserFollowsIntori(session.id, followsIntori)
-  }
-
-  if (!session.suggestions.length) {
-    const suggestions = await getAllSuggestedUsersAndChannels({
-      fid: session.fid,
-      usersOnly: true
-    })
-
-    await saveSuggestionsToFrameSession(session.id, suggestions)
-
-    session.suggestions = suggestions
-  }
-
-  imageUrlQueryParts.push(`i=${suggestionsRevealed}`)
-  const userSuggestion = session.suggestions[suggestionsRevealed % session.suggestions.length]
-
-  incremenetSuggestionsRevealed(session.id)
-
-  if (!userSuggestion) {
-    return {
-      redirect: {
-        destination: createNoMatchesFoundUrl({ fsid: session.id }),
-        permanent: false
-      }
-    }
-  }
-
-  inputs.push({
     type: 'button',
-    action: 'link',
-    target: `https://warpcast.com/${userSuggestion.user?.username}`,
-    content: 'Follow'
-  })
-
-  inputs.push({
-    type: 'button',
-    postUrl: createNextRevealUrl({ fsid: session.id }),
-    content: '✨ Reveal'
+    postUrl: createStartNewFrameQuestionUrl({ frameSessionId }),
+    content: 'Keep Going'
   })
 
   const frame: IntoriFrameType = {
@@ -137,7 +60,7 @@ export const getServerSideProps = (async (context) => {
 
   return {
     props: {
-      imageUrl: imageUrl + '?' + imageUrlQueryParts.join('&'),
+      imageUrl,
       frameUrl,
       frame
     }
