@@ -96,6 +96,7 @@ export const doesUserFollowIntori = async (fid: number): Promise<boolean> => {
     }
 
     cursor = following.next.cursor
+    await new Promise((resolve) => setTimeout(resolve, 400))
   }
 
   return foundIntori
