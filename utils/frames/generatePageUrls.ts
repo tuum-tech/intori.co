@@ -62,3 +62,10 @@ export const createFollowIntoriUrl = (params: {
   const { fsid } = params
   return `${process.env.NEXTAUTH_URL}/frames/followIntori?fsid=${fsid}`
 }
+
+export const createNoMatchesFoundUrl = (params: {
+  fsid: string
+}) => {
+  const { fsid } = params
+  return `${process.env.NEXTAUTH_URL}/frames/no-matches?fsid=${fsid}`
+}
