@@ -39,8 +39,11 @@ export const errorFrame: IntoriFrameType = {
 }
 
 const urlSafeText = encodeURIComponent('Check out this frame from Intori!')
-const shareFrameUrlSafeText = encodeURIComponent(process.env.NEXTAUTH_URL + '/frames/begin')
-const shareFrameUrl = `https://warpcast.com/~/compose?text=${urlSafeText}&embeds[]=${shareFrameUrlSafeText}`
+
+export const getShareFrameCastIntent = (): string => {
+  const shareFrameUrlSafeText = encodeURIComponent(process.env.NEXTAUTH_URL + '/frames/begin')
+  return `https://warpcast.com/~/compose?text=${urlSafeText}&embeds[]=${shareFrameUrlSafeText}`
+}
 
 export const finalStep: IntoriFrameType = {
     inputs: [
@@ -55,7 +58,7 @@ export const finalStep: IntoriFrameType = {
       {
         type: 'button',
         action: 'link',
-        target: shareFrameUrl,
+        target: getShareFrameCastIntent(),
         content: 'Share Frame'
       },
       {

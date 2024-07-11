@@ -20,9 +20,6 @@ const getSuggestions = async (
     fid: parseInt(session.user.fid, 10)
   })
 
-  // cache for 1 hour
-  res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate')
-
   res.status(200).json(suggestions)
 }
 

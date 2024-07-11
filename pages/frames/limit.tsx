@@ -6,7 +6,8 @@ import { AppLayout } from "@/layouts/App"
 import { Section } from '../../components/common/Section'
 import {
     IntoriFrameType,
-    IntoriFrameInputType
+    IntoriFrameInputType,
+    getShareFrameCastIntent
 } from '../../utils/frames/intoriFrameForms'
 import Input from '../../components/common/Input'
 import { PrimaryButton } from '../../components/common/Button'
@@ -29,7 +30,7 @@ export const getServerSideProps = (async () => {
   inputs.push({
       type: 'button',
       action: 'link',
-      target: frameUrl,
+      target: getShareFrameCastIntent(),
       content: 'Share Frame'
   })
 
