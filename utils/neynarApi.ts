@@ -85,8 +85,11 @@ export const doesUserFollowIntori = async (fid: number): Promise<boolean> => {
       }
     )
 
-    for (let i = 0; i < following.users.length; i++) {
-      if (following.users[i].fid === 294394) {
+    // @ts-expect-error because type definitions are not correct.
+    const fids = following.users.map((user) => user.user.fid)
+
+    for (let i = 0; i < fids.length; i++) {
+      if (fids[i] === 294394) {
         foundIntori = true
         break
       }
