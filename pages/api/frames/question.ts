@@ -77,25 +77,31 @@ const newQuestion = async (
     )
   }
 
-  let nextQuestionIndex = Math.floor(Math.random() * intoriQuestions.length)
+  let nextQuestionIndex = intoriQuestions.length - 1
   let nextQuestion = intoriQuestions[nextQuestionIndex]
 
   const lastSkippedQuestion = await getLastSkippedQuestion(fid)
-  let alreadyAnsweredQuestion = await getUserAnswerForQuestion(fid, nextQuestion.question)
   let tries = 0;
 
-  while (
-    alreadyAnsweredQuestion &&
-    tries < 10 &&
-    lastSkippedQuestion?.question === nextQuestion.question
-  ) {
+  while (tries < 10) {
     tries += 1
+
     nextQuestionIndex = Math.floor(Math.random() * intoriQuestions.length)
     nextQuestion = intoriQuestions[nextQuestionIndex]
-    alreadyAnsweredQuestion = await getUserAnswerForQuestion(fid, nextQuestion.question)
-  }
 
-  console.log({ alreadyAnsweredQuestion, tries })
+    if (
+      lastSkippedQuestion &&
+      nextQuestion.question === lastSkippedQuestion.question
+    ) {
+      continue
+    }
+
+    const alreadyAnsweredQuestion = await getUserAnswerForQuestion(fid, nextQuestion.question)
+
+    if (!alreadyAnsweredQuestion) {
+      break
+    }
+  }
 
   if (tries === 10) {
     return res.redirect(
