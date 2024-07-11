@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react'
-import { getAllSuggestedUSersAndChannels } from '../../utils/frames/suggestions'
+import { getAllSuggestedUsersAndChannels } from '../../utils/frames/suggestions'
 
 const getSuggestions = async (
   req: NextApiRequest,
@@ -16,7 +16,7 @@ const getSuggestions = async (
     return res.status(401).end()
   }
 
-  const suggestions = await getAllSuggestedUSersAndChannels({
+  const suggestions = await getAllSuggestedUsersAndChannels({
     fid: parseInt(session.user.fid, 10)
   })
 

@@ -11,14 +11,15 @@ import {
 import Input from '../../components/common/Input'
 import { PrimaryButton } from '../../components/common/Button'
 import styles from './FramePage.module.css'
-import { getFrameSessionById } from '../../models/frameSession'
 import {
-  createStartNewFrameQuestionUrl
-} from '../../utils/frames/generatePageUrls'
-import {
-  getSuggestedChannel,
-  getSuggestedUser
-} from '../../utils/frames/suggestions'
+  getFrameSessionById,
+  saveSuggestionsToFrameSession,
+  saveIfUserFollowsIntori,
+  incremenetSuggestionsRevealed
+} from '../../models/frameSession'
+import { getAllSuggestedUsersAndChannels } from '../../utils/frames/suggestions'
+import { createNextRevealUrl, createFollowIntoriUrl } from '../../utils/frames/generatePageUrls'
+import { doesUserFollowIntori } from '../../utils/neynarApi'
  
 type Props = {
   imageUrl: string
@@ -27,7 +28,8 @@ type Props = {
 }
  
 export const getServerSideProps = (async (context) => {
-  if (!context?.query.fid || !context?.query.fsid) {
+  if (!context?.query.fsid) {
+    console.log(' no fsid ')
     return {
       redirect: {
         destination: '/frames/error',
@@ -36,12 +38,12 @@ export const getServerSideProps = (async (context) => {
     }
   }
 
-  const fid = parseInt(context.query.fid as string, 10) || 0
   const frameSessionId = context.query.fsid?.toString() as string
 
   const session = await getFrameSessionById(frameSessionId)
 
   if (!session) {
+    console.log('no session')
     return {
       redirect: {
         destination: '/frames/error',
@@ -51,67 +53,73 @@ export const getServerSideProps = (async (context) => {
   }
 
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/begin`
-  const imageUrl = `${process.env.NEXTAUTH_URL}/api/results/${fid}`
+  const imageUrl = `${process.env.NEXTAUTH_URL}/api/results/${session.id}`
   const imageUrlQueryParts: string[] = []
 
   const inputs: IntoriFrameInputType[] = []
-
-  const channelSuggestion = await getSuggestedChannel(session)
-
-  inputs.push({
-    type: 'button',
-    action: 'link',
-    target: `https://warpcast.com/~/channel/${channelSuggestion}`,
-    content: `/${channelSuggestion}`
-  })
-
-  imageUrlQueryParts.push(`sc=${channelSuggestion}`)
-
-  if (session?.questionNumber === 3) {
-    const userSuggestion = await getSuggestedUser(session)
-
-    inputs.push({
-      type: 'button',
-      action: 'link',
-      target: `https://warpcast.com/${userSuggestion.user}`,
-      content: `@${userSuggestion.user}`
-    })
-
-    imageUrlQueryParts.push(`su=${userSuggestion.user}`)
-    imageUrlQueryParts.push(`sur=${userSuggestion.reason}`)
-
-    // passing this will show the 'points' text
-    imageUrlQueryParts.push(`last=true`)
-  }
 
   inputs.push({
       type: 'button',
       action: 'link',
       target: frameUrl,
-      content: 'Share Frame'
+      content: 'Share'
   })
 
-  if (session.questionNumber < 3) {
-    inputs.push({
-        type: 'button',
-        action: 'link',
-        target: 'https://www.intori.co/',
-        content: 'Learn More'
+  inputs.push({
+      type: 'button',
+      action: 'link',
+      target: 'https://www.intori.co/',
+      content: 'My Stats'
+  })
+
+  const suggestionsRevealed = session.suggestionsRevealed ?? 0
+
+  if (suggestionsRevealed > 3 && !session.followsIntori) {
+    const followsIntori = await doesUserFollowIntori(session.fid)
+
+    if (!followsIntori) {
+      return {
+        redirect: {
+          destination: createFollowIntoriUrl({ fsid: session.id }),
+          permanent: false
+        }
+      }
+    }
+
+    await saveIfUserFollowsIntori(session.id, followsIntori)
+  }
+
+  if (!session.suggestions.length) {
+    const suggestions = await getAllSuggestedUsersAndChannels({
+      fid: session.fid,
+      usersOnly: true
     })
 
-    inputs.push({
-        type: 'button',
-        content: 'Keep Going >',
-        postUrl: createStartNewFrameQuestionUrl({ frameSessionId }),
-    })
-  } else {
-    inputs.push({
-        type: 'button',
-        action: 'link',
-        target: 'https://www.intori.co/',
-        content: 'Learn More'
-    })
+    await saveSuggestionsToFrameSession(session.id, suggestions)
+
+    session.suggestions = suggestions
   }
+
+  console.log('suggestionsRevealed', suggestionsRevealed)
+  console.log('session.suggestions', session.suggestions)
+
+  imageUrlQueryParts.push(`i=${suggestionsRevealed}`)
+  const userSuggestion = session.suggestions[suggestionsRevealed % session.suggestions.length]
+
+  incremenetSuggestionsRevealed(session.id)
+
+  inputs.push({
+    type: 'button',
+    action: 'link',
+    target: `https://warpcast.com/${userSuggestion.user}`,
+    content: 'Follow'
+  })
+
+  inputs.push({
+    type: 'button',
+    postUrl: createNextRevealUrl({ fsid: session.id }),
+    content: '✨ Reveal'
+  })
 
   const frame: IntoriFrameType = {
     inputs
@@ -148,6 +156,7 @@ export default function Page({
         frame={frame}
         imageUrl={imageUrl}
         frameUrl={frameUrl}
+        frameImageAspectRatio="1:1"
       />
       <AppLayout>
         <Section>

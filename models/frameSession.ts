@@ -1,6 +1,7 @@
 import { Timestamp } from 'firebase/firestore'
 import type { NextApiRequest } from 'next'
 import { createDb } from '../pages/api/utils/firestore'
+import { SuggestionType } from './userAnswers'
 
 export type FrameSessionType = {
   id: string
@@ -8,6 +9,10 @@ export type FrameSessionType = {
   questionNumber: number
   createdAt: Timestamp
   questions: string[] // questions given in this session
+
+  suggestions: SuggestionType[]
+  suggestionsRevealed: number
+  followsIntori: boolean
 }
 
 export type CreateFrameSessionType = {
@@ -32,7 +37,9 @@ export const createFrameSession = async (newFrameSession: CreateFrameSessionType
     ...newFrameSession,
     questionNumber: 0,
     questions: [],
-    createdAt: new Date()
+    createdAt: new Date(),
+    suggestions: [],
+    suggestionsRevealed: 0
   })
 
   const ref = await doc.get()
@@ -135,4 +142,51 @@ export const getAllFrameSessionQuestionCounts = async (): Promise<number[]> => {
   }
 
   return counts
+}
+
+export const saveSuggestionsToFrameSession = async (
+  fsid: string,
+  suggestions: SuggestionType[]
+): Promise<void> => {
+  const collection = getCollection()
+
+  const docRef = collection.doc(fsid)
+
+  await docRef.update({
+    suggestions
+  })
+}
+
+export const saveIfUserFollowsIntori = async (
+  fsid: string,
+  followsIntori: boolean
+): Promise<void> => {
+  const collection = getCollection()
+
+  const docRef = collection.doc(fsid)
+
+  await docRef.update({
+    followsIntori
+  })
+}
+
+export const incremenetSuggestionsRevealed = async (
+  fsid: string
+): Promise<number> => {
+  const collection = getCollection()
+
+  const docRef = collection.doc(fsid)
+  const doc = await docRef.get()
+
+  if (!doc.exists) {
+    return 1
+  }
+
+  const currentDocumentState = doc.data() as FrameSessionType
+
+  await docRef.update({
+    suggestionsRevealed: currentDocumentState.suggestionsRevealed + 1
+  })
+
+  return currentDocumentState.suggestionsRevealed + 1
 }

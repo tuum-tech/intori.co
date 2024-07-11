@@ -12,13 +12,15 @@ type Props = {
   imageUrl: string
   postUrl?: string
   frameUrl?: string
+  frameImageAspectRatio?:  '1.91:1' | '1:1'
 }
 
 export const FrameGenerator: React.FC<Props> = ({
   frame,
   imageUrl,
   postUrl,
-  frameUrl
+  frameUrl,
+  frameImageAspectRatio
 }) => {
   const getTarget = useCallback((input: IntoriFrameInputType) => {
     if (input.content === 'Share Frame' && frameUrl) {
@@ -33,6 +35,7 @@ export const FrameGenerator: React.FC<Props> = ({
     <FarcasterFrameHead
       imgUrl={imageUrl}
       description={frame.question || 'Your data, connected.'}
+      frameImageAspectRatio={frameImageAspectRatio}
     >
       { !!postUrl && <meta name="fc:frame:post_url" content={postUrl} /> }
 
