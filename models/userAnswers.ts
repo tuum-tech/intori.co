@@ -296,3 +296,42 @@ export const countUserResponses = async (): Promise<number> => {
 
   return querySnapshot.data().count
 }
+
+export const countTotalResponsesForUser = async (fid: number): Promise<number> => {
+  const collection = getCollection()
+  const querySnapshot = await collection.where('fid', '==', fid).get()
+
+  return querySnapshot.size
+}
+
+export const getAnswersInCommonBetweenUsers = async (
+  fid1: number,
+  fid2: number
+): Promise<UserAnswerType[]> => {
+  const collection = getCollection()
+
+  const querySnapshot = await collection
+    .where('fid', '==', fid1)
+    .get()
+
+  const user1Answers = querySnapshot.docs.map((doc) => doc.data() as UserAnswerType)
+
+  const querySnapshot2 = await collection
+    .where('fid', '==', fid2)
+    .get()
+
+  const user2Answers = querySnapshot2.docs.map((doc) => doc.data() as UserAnswerType)
+
+  const commonAnswers = user1Answers.filter((answer1) => {
+    return user2Answers.some((answer2) => {
+      return answer1.question === answer2.question && answer1.answer === answer2.answer
+    })
+  })
+
+  commonAnswers.sort((a, b) => {
+    // most recent answers first
+    return b.date.toMillis() - a.date.toMillis()
+  })
+
+  return commonAnswers
+}

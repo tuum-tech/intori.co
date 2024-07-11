@@ -53,6 +53,7 @@ export default function Page({
         frame={frame}
         imageUrl={imageUrl}
         frameUrl={frameUrl}
+        frameImageAspectRatio="1:1"
       />
       <AppLayout>
         <Section>

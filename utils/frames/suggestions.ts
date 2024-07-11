@@ -177,7 +177,7 @@ export const getSuggestedUser = async (
   return {
     fid: randomUserFid,
     user: userDetails.username,
-    reason: `You both answered "${userResponse.answer}"`
+    reason: `You both answered "${userResponse.answer}" for "${userResponse.question}"`
   }
 }
 
@@ -234,9 +234,10 @@ export const getSuggestedChannel = async (
 }
 
 // The 'reason' text fields here can be different since this is for the frontend app
-export const getAllSuggestedUSersAndChannels = async (
+export const getAllSuggestedUsersAndChannels = async (
   options: {
-    fid: number
+    fid: number,
+    usersOnly?: boolean
   }
 ): Promise<SuggestionType[]> => {
   const { fid } = options
@@ -250,26 +251,6 @@ export const getAllSuggestedUSersAndChannels = async (
 
   for (let i = 0; i < recentResponses.length; i++) {
     const response = recentResponses[i]
-
-    if (isInitialQuestion(response.question)) {
-      const initialQuestionSuggestions = getSuggestedChannelsForInitialQuestion(
-        response.question,
-        response.answer
-      )
-
-      const channelSuggestions = initialQuestionSuggestions.map((ch) => {
-        return {
-          type: 'channel',
-          channel: {
-            id: ch,
-            name: ch
-          },
-          reason: [`You answered "${response.answer}"`]
-        } as SuggestionType
-      })
-
-      suggestions.push(...channelSuggestions)
-    }
 
     const otherUserResponses = await getResponsesWithAnswerToQuestion({
       question: response.question,
@@ -320,6 +301,12 @@ export const getAllSuggestedUSersAndChannels = async (
 
   suggestions.push(...usersToBeSuggest)
 
+  if (options.usersOnly) {
+    return suggestions
+  }
+
+  return suggestions
+  /* Channels temporarily removed from suggestions
   const channelsToBeSuggested: {
     channel: FarcasterChannelType
     count: number
@@ -363,4 +350,5 @@ export const getAllSuggestedUSersAndChannels = async (
   suggestions.push(...channelsToSuggest)
 
   return suggestions
+  */
 }
