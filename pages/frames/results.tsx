@@ -111,7 +111,7 @@ export const getServerSideProps = (async (context) => {
   inputs.push({
     type: 'button',
     action: 'link',
-    target: `https://warpcast.com/${userSuggestion.user}`,
+    target: `https://warpcast.com/${userSuggestion.user?.username}`,
     content: 'Follow'
   })
 
