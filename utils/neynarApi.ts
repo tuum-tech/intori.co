@@ -86,6 +86,7 @@ export const doesUserFollowIntori = async (fid: number): Promise<boolean> => {
     )
 
     const followingFids = following.users.map((user) => user.fid)
+    console.log({ followingFids })
 
     if (followingFids.includes(294394)) {
       foundIntori = true
