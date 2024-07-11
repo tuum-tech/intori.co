@@ -29,25 +29,24 @@ async function createCircularImage(url: string, baseImage: Jimp): Promise<void> 
     // Resize the mask to the desired circle size
     maskImage.resize(circleImageSize, circleImageSize);
 
-    // Calculate the scale to maintain aspect ratio
-    const scale = Math.min(circleImageSize / urlImage.bitmap.width, circleImageSize / urlImage.bitmap.height);
+    // Calculate the scale to fill the circle mask without stretching
+    const scale = Math.max(circleImageSize / urlImage.bitmap.width, circleImageSize / urlImage.bitmap.height);
 
     // Resize the image proportionally
     urlImage.scale(scale);
 
-    // Create a square canvas with a transparent background
-    const squareImage = new Jimp(circleImageSize, circleImageSize, 0x00000000);
+    // Calculate the dimensions to crop the image to fit the circle mask
+    const x = (urlImage.bitmap.width - circleImageSize) / 2;
+    const y = (urlImage.bitmap.height - circleImageSize) / 2;
 
-    // Center the resized image within the square canvas
-    const x = (circleImageSize - urlImage.bitmap.width) / 2;
-    const y = (circleImageSize - urlImage.bitmap.height) / 2;
-    squareImage.composite(urlImage, x, y);
+    // Crop the image to ensure it covers the circle mask completely
+    urlImage.crop(x, y, circleImageSize, circleImageSize);
 
-    // Apply the mask to the square image
-    squareImage.mask(maskImage, 0, 0);
+    // Apply the mask to the cropped image
+    urlImage.mask(maskImage, 0, 0);
 
     // Composite the result onto the base image
-    baseImage.composite(squareImage, 514, 121);
+    baseImage.composite(urlImage, 514, 121);
   } catch (error) {
     console.error('Error creating circular image:', error)
     throw error
