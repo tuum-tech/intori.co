@@ -85,6 +85,8 @@ export const doesUserFollowIntori = async (fid: number): Promise<boolean> => {
       }
     )
 
+    console.log({ following })
+    console.log(following.users[0])
     const followingFids = following.users.map((user) => user.fid)
     console.log({ followingFids })
 
