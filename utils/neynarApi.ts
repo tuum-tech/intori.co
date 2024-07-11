@@ -79,7 +79,7 @@ export const doesUserFollowIntori = async (fid: number): Promise<boolean> => {
     const following = await neynar.fetchUserFollowingV2(
       fid,
       {
-        limit: 50,
+        limit: 100,
         sortType: 'desc_chron',
         cursor: cursor || undefined
       }
