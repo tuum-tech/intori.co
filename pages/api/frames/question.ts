@@ -77,38 +77,31 @@ const newQuestion = async (
     )
   }
 
-  const initialQuestionsToAnswer = await getInitialQuestionsThatUserHasNotAnswered(fid)
-  let nextQuestionIndex = 0
+  let nextQuestionIndex = Math.floor(Math.random() * intoriQuestions.length)
   let nextQuestion = intoriQuestions[nextQuestionIndex]
 
-  if (initialQuestionsToAnswer.length > 0) {
-    nextQuestionIndex = initialQuestionsToAnswer[0]
-    nextQuestion = intoriQuestions[nextQuestionIndex]
-  } else {
+  const lastSkippedQuestion = await getLastSkippedQuestion(fid)
+  let alreadyAnsweredQuestion = await getUserAnswerForQuestion(fid, nextQuestion.question)
+  let tries = 0;
+
+  while (
+    alreadyAnsweredQuestion &&
+    tries < 10 &&
+    lastSkippedQuestion?.question === nextQuestion.question
+  ) {
+    tries += 1
     nextQuestionIndex = Math.floor(Math.random() * intoriQuestions.length)
     nextQuestion = intoriQuestions[nextQuestionIndex]
+    alreadyAnsweredQuestion = await getUserAnswerForQuestion(fid, nextQuestion.question)
+  }
 
-    const lastSkippedQuestion = await getLastSkippedQuestion(fid)
-    let alreadyAnsweredQuestion = await getUserAnswerForQuestion(fid, nextQuestion.question)
-    let tries = 0;
+  console.log({ alreadyAnsweredQuestion, tries })
 
-    while (
-      alreadyAnsweredQuestion &&
-      tries < 10 &&
-      lastSkippedQuestion?.question === nextQuestion.question
-    ) {
-      tries += 1
-      nextQuestionIndex = Math.floor(Math.random() * intoriQuestions.length)
-      nextQuestion = intoriQuestions[nextQuestionIndex]
-      alreadyAnsweredQuestion = await getUserAnswerForQuestion(fid, nextQuestion.question)
-    }
-
-    if (tries === 10) {
-      return res.redirect(
-        307,
-        createLimitReachedUrl()
-      )
-    }
+  if (tries === 10) {
+    return res.redirect(
+      307,
+      createLimitReachedUrl()
+    )
   }
 
   await appendQuestionToFrameSession(session.id, nextQuestion.question)

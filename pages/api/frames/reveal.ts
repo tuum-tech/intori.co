@@ -19,6 +19,7 @@ const revealNextSuggestion = async (
   const validFarcasterPacket = await validateFarcasterPacketMessage(req.body)
 
   if (!validFarcasterPacket) {
+    console.log('invalid farcaster packet')
     return res.redirect(
       307,
       createFrameErrorUrl()
@@ -34,13 +35,12 @@ const revealNextSuggestion = async (
   }
 
   if (!session) {
+    console.log('no session')
     return res.redirect(
       307,
       createFrameErrorUrl()
     )
   }
-
-  // TODO: track how many reveals user has done.
 
   return res.redirect(
     307,
