@@ -11,6 +11,10 @@ import {
 import Input from '../../components/common/Input'
 import { PrimaryButton } from '../../components/common/Button'
 import styles from './FramePage.module.css'
+import { createNextRevealUrl } from '../../utils/frames/generatePageUrls'
+import {
+  getFrameSessionById
+} from '../../models/frameSession'
  
 type Props = {
   imageUrl: string
@@ -18,7 +22,28 @@ type Props = {
   frame: IntoriFrameType
 }
  
-export const getServerSideProps = (async () => {
+export const getServerSideProps = (async (context) => {
+  if (!context?.query.fsid) {
+    return {
+      redirect: {
+        destination: '/frames/error',
+        permanent: false
+      }
+    }
+  }
+
+  const frameSessionId = context.query.fsid?.toString() as string
+
+  const session = await getFrameSessionById(frameSessionId)
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/frames/error',
+        permanent: false
+      }
+    }
+  }
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/begin`
   const imageUrl = `${process.env.NEXTAUTH_URL}/assets/templates/follow_required.png`
 
@@ -29,6 +54,12 @@ export const getServerSideProps = (async () => {
     action: 'link',
     target: `https://warpcast.com/intori`,
     content: '@intori'
+  })
+
+  inputs.push({
+    type: 'button',
+    postUrl: createNextRevealUrl({ fsid: session.id }),
+    content: '✨ Reveal'
   })
 
   const frame: IntoriFrameType = {
