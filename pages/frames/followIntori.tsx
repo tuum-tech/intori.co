@@ -18,16 +18,7 @@ type Props = {
   frame: IntoriFrameType
 }
  
-export const getServerSideProps = (async (context) => {
-  if (!context?.query.fsid) {
-    return {
-      redirect: {
-        destination: '/frames/error',
-        permanent: false
-      }
-    }
-  }
-
+export const getServerSideProps = (async () => {
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/begin`
   const imageUrl = `${process.env.NEXTAUTH_URL}/assets/templates/follow_required.png`
 
