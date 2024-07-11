@@ -18,7 +18,7 @@ import {
   incremenetSuggestionsRevealed
 } from '../../models/frameSession'
 import { getAllSuggestedUsersAndChannels } from '../../utils/frames/suggestions'
-import { createNextRevealUrl } from '../../utils/frames/generatePageUrls'
+import { createNextRevealUrl, createFollowIntoriUrl } from '../../utils/frames/generatePageUrls'
 import { doesUserFollowIntori } from '../../utils/neynarApi'
  
 type Props = {
@@ -80,7 +80,7 @@ export const getServerSideProps = (async (context) => {
     if (!followsIntori) {
       return {
         redirect: {
-          destination: '/frames/followIntori',
+          destination: createFollowIntoriUrl({ fsid: session.id }),
           permanent: false
         }
       }
