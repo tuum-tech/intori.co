@@ -39,13 +39,6 @@ export const getServerSideProps = (async (context) => {
   const session = await getFrameSessionById(frameSessionId)
   const question = intoriQuestions[questionIndex]
 
-  console.log({
-    questionIndex,
-    answerOffset,
-    frameSessionId,
-    question
-  })
-
   if (!question || !session) {
     return {
       redirect: {
@@ -66,8 +59,6 @@ export const getServerSideProps = (async (context) => {
       frameSessionId
     )
   }
-
-  console.log({ frame })
 
   return {
     props: {
