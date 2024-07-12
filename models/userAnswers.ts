@@ -335,3 +335,19 @@ export const getAnswersInCommonBetweenUsers = async (
 
   return commonAnswers
 }
+
+export const getLastAnsweredQuestionForUser = async (fid: number): Promise<UserAnswerType|null> => {
+  const collection = getCollection()
+
+  const querySnapshot = await collection
+    .where('fid', '==', fid)
+    .orderBy('date', 'desc')
+    .limit(1)
+    .get()
+
+  if (querySnapshot.empty) {
+    return null
+  }
+
+  return querySnapshot.docs[0].data() as UserAnswerType
+}

@@ -1,7 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { frameSubmissionHelpers } from '../../../utils/frames/frameSubmissionHelpers'
 import { validateFarcasterPacketMessage } from '../utils/farcasterServer'
-import { getUserAnswerForQuestion } from '../../../models/userAnswers'
+import {
+  getUserAnswerForQuestion,
+  getLastAnsweredQuestionForUser
+} from '../../../models/userAnswers'
 import { appendQuestionToFrameSession } from '../../../models/frameSession'
 import { getLastSkippedQuestion } from '../../../models/userQuestionSkip'
 import { intoriQuestions } from '../../../utils/frames/intoriFrameForms'
@@ -77,7 +80,16 @@ const newQuestion = async (
     )
   }
 
-  let nextQuestionIndex = intoriQuestions.length - 1
+  let indexOfLastAnsweredQuestion = -1
+  const lastAnsweredQuestion = await getLastAnsweredQuestionForUser(fid)
+
+  if (lastAnsweredQuestion) {
+    indexOfLastAnsweredQuestion = intoriQuestions.findIndex(
+      (question) => question.question === lastAnsweredQuestion.question
+    )
+  }
+
+  let nextQuestionIndex = indexOfLastAnsweredQuestion
   let nextQuestion = intoriQuestions[nextQuestionIndex]
 
   const lastSkippedQuestion = await getLastSkippedQuestion(fid)
@@ -86,7 +98,7 @@ const newQuestion = async (
   while (tries < 10) {
     tries += 1
 
-    nextQuestionIndex = Math.floor(Math.random() * intoriQuestions.length)
+    nextQuestionIndex = nextQuestionIndex + 1
     nextQuestion = intoriQuestions[nextQuestionIndex]
 
     if (
@@ -103,12 +115,12 @@ const newQuestion = async (
     }
   }
 
-  // if (tries === 10) {
-  //   return res.redirect(
-  //     307,
-  //     createLimitReachedUrl()
-  //   )
-  // }
+  if (tries === 10) {
+    return res.redirect(
+      307,
+      createLimitReachedUrl()
+    )
+  }
 
   await appendQuestionToFrameSession(session.id, nextQuestion.question)
 
