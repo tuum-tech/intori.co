@@ -45,3 +45,10 @@ export const replaceNewlinesWithSpaces = (input: string): string => {
   return input.replace(/\n/g, ' ');
 }
 
+
+export const removeEmojis = (input: string): string => {
+  // This regex matches most emoji characters
+  const emojiRegex = /[\uD83C-\uDBFF\uDC00-\uDFFF]+|[\u2600-\u26FF\u2700-\u27BF\u2B50-\u2B55]+/g;
+  
+  return input.replace(emojiRegex, '')
+}

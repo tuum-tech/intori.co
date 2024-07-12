@@ -14,7 +14,8 @@ import {
 } from '../../../utils/frames/generatePageUrls'
 import {
   timeAgo,
-  replaceNewlinesWithSpaces
+  replaceNewlinesWithSpaces,
+  removeEmojis
 } from '../../../utils/textHelpers'
 
 // Note: This is used to create a circle masked image
@@ -166,7 +167,7 @@ const getProfileFramePictureImage = async (
     {
       text: (
         userSuggestion.user.bio
-          ? replaceNewlinesWithSpaces(userSuggestion.user.bio)
+          ? removeEmojis(replaceNewlinesWithSpaces(userSuggestion.user.bio))
           : 'No bio'
       ),
       alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
@@ -212,7 +213,10 @@ const getProfileFramePictureImage = async (
     125,
     698,
     {
-      text: userSuggestion.user.displayName || userSuggestion.user.username,
+      text: (userSuggestion.user.displayName
+        ? removeEmojis(userSuggestion.user.displayName)
+        : userSuggestion.user.username
+      ),
       alignmentX: Jimp.HORIZONTAL_ALIGN_RIGHT,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
