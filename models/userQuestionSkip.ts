@@ -1,8 +1,10 @@
 import { createDb } from '../pages/api/utils/firestore'
+import { Timestamp } from 'firebase/firestore'
 
 export type UserQuestionSkip = {
   fid: number
   question: string
+  date: Timestamp
 }
 
 let userQuestionSkipsCollection: FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData>
@@ -20,7 +22,11 @@ const getCollection = () => {
 
 export const createUserQuestionSkip = async (newSkip: UserQuestionSkip) => {
   const collection = getCollection()
-  await collection.add(newSkip)
+
+  await collection.add({
+    ...newSkip,
+    date: Timestamp.now()
+  })
 
   return newSkip
 }
@@ -40,7 +46,7 @@ export const getLastSkippedQuestion = async (fid: number): Promise<UserQuestionS
 
   const query = await collection
     .where('fid', '==', fid)
-    .orderBy('createdAt', 'desc')
+    .orderBy('date', 'desc')
     .limit(1)
     .get()
 
