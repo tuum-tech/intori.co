@@ -12,7 +12,10 @@ import { getFrameSessionFromRequest } from '../../../models/frameSession'
 import {
   createFrameErrorUrl
 } from '../../../utils/frames/generatePageUrls'
-import { timeAgo } from '../../../utils/textHelpers'
+import {
+  timeAgo,
+  replaceNewlinesWithSpaces
+} from '../../../utils/textHelpers'
 
 // Note: This is used to create a circle masked image
 //
@@ -89,9 +92,6 @@ const getProfileFramePictureImage = async (
   const suggestionsRevealed = parseInt(req.query.i?.toString() ?? '0', 10)
   const userSuggestion = session.suggestions[suggestionsRevealed % session.suggestions.length]
 
-  console.log({ suggestionsRevealed })
-  console.log({ userSuggestion })
-
   if (!userSuggestion.user?.fid) {
     return res.redirect(
       307,
@@ -164,7 +164,11 @@ const getProfileFramePictureImage = async (
     324,
     346,
     {
-      text: userSuggestion.user.bio || 'No bio',
+      text: (
+        userSuggestion.user.bio
+          ? replaceNewlinesWithSpaces(userSuggestion.user.bio)
+          : 'No bio'
+      ),
       alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
       alignmentY: Jimp.VERTICAL_ALIGN_TOP
     },
