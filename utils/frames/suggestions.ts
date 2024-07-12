@@ -112,8 +112,6 @@ export const getSuggestedUser = async (
     !frameSession.questions ||
     frameSession.questions.length === 0
   ) {
-    console.log('No questions answered yet')
-    console.log(frameSession)
     return {
       fid: 294394,
       user: 'intori',
@@ -125,8 +123,6 @@ export const getSuggestedUser = async (
   const userResponse = await getUserAnswerForQuestion(frameSession.fid, lastQuestionAnswered)
 
   if (!userResponse) {
-    console.log('No questions answered yet')
-    console.log(lastQuestionAnswered)
     return {
       fid: 294394,
       user: 'intori',
@@ -139,7 +135,6 @@ export const getSuggestedUser = async (
     question: userResponse.question,
     limit: 10
   })
-  console.log({ otherUserResponses })
 
   const suggestedUserFids: number[] = []
 
@@ -162,7 +157,6 @@ export const getSuggestedUser = async (
   }
 
   if (!suggestedUserFids.length) {
-    console.log(' no suggested user fids ')
     return {
       fid: 294394,
       user: 'intori',

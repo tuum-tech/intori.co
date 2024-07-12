@@ -96,14 +96,8 @@ const newQuestion = async (
   )
 
   let nextQuestion = intoriQuestions[nextQuestionIndex]
-  console.log({
-    nextQuestionIndex,
-    nextQuestion,
-  })
 
-  // skipped 35
   const lastSkippedQuestion = await getLastSkippedQuestion(fid)
-  console.log({ lastSkippedQuestion })
   let tries = 0;
 
   while (tries < 10) {
@@ -116,7 +110,6 @@ const newQuestion = async (
       lastSkippedQuestion &&
       lastSkippedQuestion.question === nextQuestion.question
     ) {
-      console.log('skipping skipped question.')
       continue
     }
 
