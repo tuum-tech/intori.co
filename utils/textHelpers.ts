@@ -40,3 +40,8 @@ export function timeAgo(dateString: string): string {
     }
     return `${Math.floor(seconds)} seconds ago`;
 }
+
+export const replaceNewlinesWithSpaces = (input: string): string => {
+  return input.replace(/\n/g, ' ');
+}
+
