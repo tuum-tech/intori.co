@@ -10,6 +10,7 @@ import { useEthereumWallet } from '../../contexts/EthereumWallet'
 import { TransactionType } from '../../lib/ethers/registerCredential'
 import { getBlockExplorerUrlForTransaction } from '../../lib/ethers/networks'
 import { Empty } from '../common/Empty'
+import { timeAgo } from '../../utils/textHelpers'
 
 type Props = {
   response: UserAnswerPageType
@@ -104,6 +105,9 @@ export const OneResponseCard: NextPage<Props> = ({
           </a>
         </>
       )}
+      <div className={styles.date}>
+        You answered {timeAgo(new Date(response.date.seconds * 1000).toISOString())}
+      </div>
     </div>
   )
 }

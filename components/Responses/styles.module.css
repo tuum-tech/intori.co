@@ -42,6 +42,13 @@
   color: #FFF;
 }
 
+.date {
+  font-size: 12px;
+  margin-top: 6px;
+  margin-bottom: 0;
+  color: #67625B;
+}
+
 @media only screen and (max-width: 1200px) {
   .responsesContainer {
     gap: 16px;
