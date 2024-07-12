@@ -31,6 +31,11 @@ export const getServerSideProps = (async (context) => {
   const fid = parseInt(session.user.fid, 10)
   const userAnswers = await getUserAnswersByFid(fid)
 
+  // sort so most recent answers are first
+  userAnswers.sort((a, b) => {
+    return b.date.seconds - a.date.seconds
+  })
+
   return {
     props: {
       userAnswers: userAnswers.map((answer) => ({
