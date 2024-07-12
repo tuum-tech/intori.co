@@ -35,7 +35,6 @@ type Props = {
  
 export const getServerSideProps = (async (context) => {
   if (!context?.query.fsid) {
-    console.log(' no fsid ')
     return {
       redirect: {
         destination: createFrameErrorUrl(),
