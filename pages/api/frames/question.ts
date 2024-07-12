@@ -89,7 +89,12 @@ const newQuestion = async (
     )
   }
 
-  let nextQuestionIndex = indexOfLastAnsweredQuestion
+  let nextQuestionIndex = (
+    indexOfLastAnsweredQuestion === intoriQuestions.length - 1
+      ? 0
+      : indexOfLastAnsweredQuestion
+  )
+
   let nextQuestion = intoriQuestions[nextQuestionIndex]
 
   const lastSkippedQuestion = await getLastSkippedQuestion(fid)
@@ -103,7 +108,7 @@ const newQuestion = async (
 
     if (
       lastSkippedQuestion &&
-      nextQuestion.question === lastSkippedQuestion.question
+      lastSkippedQuestion.question === nextQuestion.question
     ) {
       continue
     }
