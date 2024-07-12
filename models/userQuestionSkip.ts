@@ -47,7 +47,6 @@ export const getLastSkippedQuestion = async (fid: number): Promise<UserQuestionS
   const query = await collection
     .where('fid', '==', fid)
     .orderBy('date', 'desc')
-    .limit(1)
     .get()
 
   if (query.docs.length === 0) {
