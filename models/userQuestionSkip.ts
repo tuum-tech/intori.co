@@ -25,7 +25,7 @@ export const createUserQuestionSkip = async (newSkip: UserQuestionSkip) => {
 
   await collection.add({
     ...newSkip,
-    date: Timestamp.now()
+    date: new Date()
   })
 
   return newSkip
