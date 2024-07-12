@@ -4,7 +4,7 @@ import { Timestamp } from 'firebase/firestore'
 export type UserQuestionSkip = {
   fid: number
   question: string
-  date: Timestamp
+  date?: Timestamp
 }
 
 let userQuestionSkipsCollection: FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData>
