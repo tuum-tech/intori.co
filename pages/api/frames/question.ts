@@ -103,7 +103,12 @@ const newQuestion = async (
   while (tries < 10) {
     tries += 1
 
-    nextQuestionIndex = nextQuestionIndex + 1
+    nextQuestionIndex = (
+      nextQuestionIndex + 1 === intoriQuestions.length
+       ? 0
+       : nextQuestionIndex + 1
+    )
+
     nextQuestion = intoriQuestions[nextQuestionIndex]
 
     if (
