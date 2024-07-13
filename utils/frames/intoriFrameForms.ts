@@ -1,5 +1,5 @@
 import { createStartNewFrameQuestionUrl } from './generatePageUrls'
-import questions from './questions.json'
+import questions from '../../public/questions.json'
 
 export type IntoriFrameInputType = {
     type: 'button'
