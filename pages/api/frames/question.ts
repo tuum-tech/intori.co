@@ -7,6 +7,7 @@ import {
 } from '../../../models/userAnswers'
 import { appendQuestionToFrameSession } from '../../../models/frameSession'
 import { getLastSkippedQuestions } from '../../../models/userQuestionSkip'
+import { saveUserFollowings } from '../../../models/userFollowings'
 import { intoriQuestions } from '../../../utils/frames/intoriFrameForms'
 import { getFrameSessionFromRequest, createFrameSession } from '../../../models/frameSession'
 import { hasUserReachedSixAnswerLimit } from '../../../utils/frames/limitSixAnswersPerDay'
@@ -41,6 +42,7 @@ const newQuestion = async (
 
   if (!session) {
     session = await createFrameSession({ fid })
+    saveUserFollowings(fid)
   }
 
   if (!session) {
