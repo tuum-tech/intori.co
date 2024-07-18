@@ -63,7 +63,7 @@ async function addPowerBadge(baseImage: Jimp): Promise<void> {
     path.join(process.cwd(), 'public/assets/templates/powerbadge.png')
   )
 
-  baseImage.composite(powerBadge, 702, 99, {
+  baseImage.composite(powerBadge, 340, 59, {
     mode: Jimp.BLEND_SOURCE_OVER,
     opacitySource: 1,
     opacityDest: 1
@@ -212,7 +212,7 @@ const getProfileFramePictureImage = async (
   // name
   baseImage.print(
     font32,
-    385,
+    387,
     90,
     {
       text: (userSuggestion.user.displayName
@@ -222,21 +222,21 @@ const getProfileFramePictureImage = async (
       alignmentX: Jimp.HORIZONTAL_ALIGN_RIGHT,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
-    308,
+    352,
     40
   )
 
   // fid
   baseImage.print(
     font14,
-    385,
+    387,
     134,
     {
       text: `FID ${userSuggestion.user.fid}`,
       alignmentX: Jimp.HORIZONTAL_ALIGN_RIGHT,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
-    308,
+    352,
     17
   )
 
