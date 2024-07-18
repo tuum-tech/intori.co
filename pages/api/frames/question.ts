@@ -6,7 +6,7 @@ import {
   getLastAnsweredQuestionForUser
 } from '../../../models/userAnswers'
 import { appendQuestionToFrameSession } from '../../../models/frameSession'
-import { getLastSkippedQuestion } from '../../../models/userQuestionSkip'
+import { getLastSkippedQuestions } from '../../../models/userQuestionSkip'
 import { intoriQuestions } from '../../../utils/frames/intoriFrameForms'
 import { getFrameSessionFromRequest, createFrameSession } from '../../../models/frameSession'
 import { hasUserReachedSixAnswerLimit } from '../../../utils/frames/limitSixAnswersPerDay'
@@ -97,7 +97,7 @@ const newQuestion = async (
 
   let nextQuestion = intoriQuestions[nextQuestionIndex]
 
-  const lastSkippedQuestion = await getLastSkippedQuestion(fid)
+  const skippedQuestions = await getLastSkippedQuestions(fid, 5)
   let tries = 0;
 
   while (tries < 10) {
@@ -111,10 +111,7 @@ const newQuestion = async (
 
     nextQuestion = intoriQuestions[nextQuestionIndex]
 
-    if (
-      lastSkippedQuestion &&
-      lastSkippedQuestion.question === nextQuestion.question
-    ) {
+    if (skippedQuestions.includes(nextQuestion.question)) {
       continue
     }
 
