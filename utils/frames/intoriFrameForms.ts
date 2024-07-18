@@ -29,7 +29,7 @@ export const introductionStep: IntoriFrameType = {
       },
       {
         type: 'button',
-        content: 'Go!',
+        content: '🌟 Discover',
         postUrl: createStartNewFrameQuestionUrl()
       }
     ]
