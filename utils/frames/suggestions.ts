@@ -5,6 +5,7 @@ import {
   getRecentAnswersForUser,
   SuggestionType
 } from '../../models/userAnswers'
+import { doesUserAlreadyFollowUser } from '../../models/userFollowings'
 import {
   fetchUserDetailsByFids,
   getChannelsThatUserFollows,
@@ -256,6 +257,12 @@ export const getAllSuggestedUsersAndChannels = async (
       const res = otherUserResponses[j]
 
       if (res.fid === fid) {
+        continue
+      }
+
+      const alreadyFollows = await doesUserAlreadyFollowUser(fid, res.fid)
+
+      if (alreadyFollows) {
         continue
       }
 
