@@ -135,7 +135,7 @@ const getProfileFramePictureImage = async (
 
   // total responses
   baseImage.print(
-    font18,
+    font21,
     230,
     277,
     {
