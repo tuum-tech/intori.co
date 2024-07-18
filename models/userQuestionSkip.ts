@@ -41,20 +41,25 @@ export const didUserSkipQuestion = async (fid: number, question: string): Promis
   return query.docs.length > 0
 }
 
-export const getLastSkippedQuestion = async (fid: number): Promise<UserQuestionSkip | null> => {
+export const getLastSkippedQuestions = async (fid: number, amount: number): Promise<string[]> => {
   const collection = getCollection()
 
   const query = await collection
     .where('fid', '==', fid)
     .orderBy('date', 'desc')
-    .limit(1)
+    .select('question')
+    .limit(amount)
     .get()
 
   if (query.docs.length === 0) {
-    return null
+    return []
   }
 
-  return query.docs[0].data() as UserQuestionSkip
+  return query.docs.map((doc) => {
+    const data = doc.data()
+
+    return data.question
+  })
 }
 
 export const countAllUserQuestionSkips = async (): Promise<number> => {
