@@ -1,7 +1,7 @@
 import { NeynarAPIClient } from '@neynar/nodejs-sdk'
 
 const neynar = new NeynarAPIClient(
-  process.env.NEYNAR_API_KEY || 'Please add NEYNAR_API_KEY to env'
+  '46689088-4A63-4573-9BC8-B74736EE65DC'
 )
 
 export type FarcasterChannelType = {
@@ -107,3 +107,35 @@ export const doesUserFollowIntori = async (fid: number): Promise<boolean> => {
 
   return foundIntori
 }
+
+export const getFidsUserIsFollowing = async (fid: number): Promise<number[]> => {
+  const followingFids: number[] = []
+  let cursor: string | null = ''
+
+  do {
+    const following = await neynar.fetchUserFollowingV2(
+      fid,
+      {
+        limit: 100,
+        sortType: 'desc_chron',
+        cursor: cursor || undefined
+      }
+    )
+
+    // @ts-expect-error because type definitions are not correct.
+    const fids = following.users.map((user) => user.user.fid)
+
+    followingFids.push(...fids)
+
+    if (!following.next.cursor) {
+      break
+    }
+
+    cursor = following.next.cursor
+    await new Promise((resolve) => setTimeout(resolve, 400))
+  } while (cursor)
+
+  return followingFids
+}
+
+getFidsUserIsFollowing(230238)
