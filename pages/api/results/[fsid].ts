@@ -3,7 +3,8 @@ import Jimp from 'jimp'
 import * as path from 'path'
 import {
   loadKumbSans32,
-  loadKumbSans24,
+  loadKumbSans26medium,
+  loadKumbSans18,
   loadKumbSans14
 } from '../../../utils/frames/fonts'
 import { getLastCastForUser } from '../../../utils/neynarApi'
@@ -28,7 +29,7 @@ async function createCircularImage(url: string, baseImage: Jimp): Promise<void> 
       path.join(process.cwd(), 'public/frame_template_mask.png')
     );
 
-    const circleImageSize = 165;
+    const circleImageSize = 183;
 
     // Resize the mask to the desired circle size
     maskImage.resize(circleImageSize, circleImageSize);
@@ -50,7 +51,7 @@ async function createCircularImage(url: string, baseImage: Jimp): Promise<void> 
     urlImage.mask(maskImage, 0, 0);
 
     // Composite the result onto the base image
-    baseImage.composite(urlImage, 514, 121);
+    baseImage.composite(urlImage, 201, 49);
   } catch (error) {
     console.error('Error creating circular image:', error)
     throw error
@@ -62,7 +63,7 @@ async function addPowerBadge(baseImage: Jimp): Promise<void> {
     path.join(process.cwd(), 'public/assets/templates/powerbadge.png')
   )
 
-  baseImage.composite(powerBadge, 706, 707, {
+  baseImage.composite(powerBadge, 702, 99, {
     mode: Jimp.BLEND_SOURCE_OVER,
     opacitySource: 1,
     opacityDest: 1
@@ -106,21 +107,22 @@ const getProfileFramePictureImage = async (
   const lastCastTimeAgo = lastCast ? `Last cast ${timeAgo(lastCast.timestamp)}` : 'Never casted'
 
   const font14 = await loadKumbSans14()
-  const font24 = await loadKumbSans24()
+  const font18 = await loadKumbSans18()
+  const font26medium = await loadKumbSans26medium()
   const font32 = await loadKumbSans32()
 
   // username
   baseImage.print(
-    font14,
-    441,
-    48,
+    font18,
+    444,
+    49,
     {
       text: `@${userSuggestion.user.username}`,
       alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
-    303,
-    29
+    295,
+    37
   )
 
   const avatar = userSuggestion.user.image ?? path.join(process.cwd(), 'public/assets/templates/avatar_fallback.png')
@@ -133,37 +135,37 @@ const getProfileFramePictureImage = async (
 
   // total responses
   baseImage.print(
-    font14,
-    324,
-    259,
+    font18,
+    230,
+    277,
     {
       text: `${totalResponses} Response${totalResponses === 1 ? '' : 's'}`,
       alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
-    228,
-    26
+    216,
+    28
   )
 
   // last cast
   baseImage.print(
-    font14,
-    324,
-    301,
+    font18,
+    484,
+    277,
     {
       text: lastCastTimeAgo,
       alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
-    208,
-    26
+    262,
+    28
   )
 
   // bio
   baseImage.print(
-    font14,
-    324,
-    346,
+    font18,
+    202,
+    317,
     {
       text: (
         userSuggestion.user.bio
@@ -173,45 +175,45 @@ const getProfileFramePictureImage = async (
       alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
       alignmentY: Jimp.VERTICAL_ALIGN_TOP
     },
-    416,
-    84
+    537,
+    128
   )
 
   // first reason
   baseImage.print(
-    font24,
-    287,
-    453,
+    font26medium,
+    221,
+    466,
     {
       text: userSuggestion.reason[0],
       alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
-    490,
-    150
+    522,
+    148
   )
 
   // +N other responses
   if (userSuggestion.reason.length > 1) {
     baseImage.print(
-      font14,
-      289,
-      615,
+      font18,
+      230,
+      643,
       {
         text: `+${userSuggestion.reason.length - 1} other answer${userSuggestion.reason.length === 2 ? '' : 's'} in common!`,
         alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
         alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
       },
-      285,
-      32
+      159,
+      25
     )
   }
 
   // name
   baseImage.print(
     font32,
-    125,
-    698,
+    385,
+    90,
     {
       text: (userSuggestion.user.displayName
         ? removeEmojis(userSuggestion.user.displayName)
@@ -220,21 +222,21 @@ const getProfileFramePictureImage = async (
       alignmentX: Jimp.HORIZONTAL_ALIGN_RIGHT,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
-    568,
+    308,
     40
   )
 
   // fid
   baseImage.print(
     font14,
-    125,
-    739,
+    385,
+    134,
     {
       text: `FID ${userSuggestion.user.fid}`,
       alignmentX: Jimp.HORIZONTAL_ALIGN_RIGHT,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
-    568,
+    308,
     17
   )
 
