@@ -55,3 +55,14 @@ export const saveUserFollowings = async (fid: number) => {
     console.error(`Failed to save user followings for ${fid}`, err)
   }
 }
+
+export const doesUserAlreadyFollowUser = async (fid: number, followingFid: number) => {
+  const collection = getCollection()
+
+  const querySnapshot = await collection
+    .where('fid', '==', fid)
+    .where('followingFid', '==', followingFid)
+    .get()
+
+  return !querySnapshot.empty
+}
