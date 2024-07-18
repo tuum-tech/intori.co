@@ -4,7 +4,7 @@ import * as path from 'path'
 import {
   loadKumbSans32,
   loadKumbSans26medium,
-  loadKumbSans18,
+  loadKumbSans21,
   loadKumbSans14
 } from '../../../utils/frames/fonts'
 import { getLastCastForUser } from '../../../utils/neynarApi'
@@ -107,13 +107,13 @@ const getProfileFramePictureImage = async (
   const lastCastTimeAgo = lastCast ? `Last cast ${timeAgo(lastCast.timestamp)}` : 'Never casted'
 
   const font14 = await loadKumbSans14()
-  const font18 = await loadKumbSans18()
+  const font21 = await loadKumbSans21()
   const font26medium = await loadKumbSans26medium()
   const font32 = await loadKumbSans32()
 
   // username
   baseImage.print(
-    font18,
+    font21,
     444,
     49,
     {
@@ -149,7 +149,7 @@ const getProfileFramePictureImage = async (
 
   // last cast
   baseImage.print(
-    font18,
+    font21,
     484,
     277,
     {
@@ -163,7 +163,7 @@ const getProfileFramePictureImage = async (
 
   // bio
   baseImage.print(
-    font18,
+    font21,
     202,
     317,
     {
@@ -196,7 +196,7 @@ const getProfileFramePictureImage = async (
   // +N other responses
   if (userSuggestion.reason.length > 1) {
     baseImage.print(
-      font18,
+      font21,
       230,
       643,
       {
@@ -204,7 +204,7 @@ const getProfileFramePictureImage = async (
         alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
         alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
       },
-      159,
+      436,
       25
     )
   }
