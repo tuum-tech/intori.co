@@ -38,19 +38,33 @@ export const getServerSideProps = (async (context) => {
     }
   }
 
-  const uniqueUsersCount = await getUniqueUserFids()
-  const frameSessionQuestionCounts = await getAllFrameSessionQuestionCounts()
-  const totalResponses = await countUserResponses()
-  const totalSkips = await countAllUserQuestionSkips()
-  const totalQuestions = intoriQuestions.length
+  try {
+    const uniqueUsersCount = await getUniqueUserFids()
+    const frameSessionQuestionCounts = await getAllFrameSessionQuestionCounts()
+    const totalResponses = await countUserResponses()
+    const totalSkips = await countAllUserQuestionSkips()
+    const totalQuestions = intoriQuestions.length
+
+    return {
+      props: {
+        uniqueUsersCount,
+        frameSessionQuestionCounts,
+        totalResponses,
+        totalSkips,
+        totalQuestions
+      }
+    }
+  } catch (err) {
+    console.error('Failed to get admin stats', err)
+  }
 
   return {
     props: {
-      uniqueUsersCount,
-      frameSessionQuestionCounts,
-      totalResponses,
-      totalSkips,
-      totalQuestions
+      uniqueUsersCount: 0,
+      frameSessionQuestionCounts: [0, 0, 0, 0],
+      totalResponses: 0,
+      totalSkips: 0,
+      totalQuestions: 0
     }
   }
 }) satisfies GetServerSideProps<Props>
