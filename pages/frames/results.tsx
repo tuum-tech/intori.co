@@ -23,7 +23,8 @@ import {
   createNextRevealUrl,
   createFollowIntoriUrl,
   createFrameErrorUrl,
-  createNoMatchesFoundUrl
+  createNoMatchesFoundUrl,
+  createStartNewFrameQuestionUrl
 } from '../../utils/frames/generatePageUrls'
 import { doesUserFollowIntori } from '../../utils/neynarApi'
  
@@ -61,20 +62,6 @@ export const getServerSideProps = (async (context) => {
   const imageUrlQueryParts: string[] = []
 
   const inputs: IntoriFrameInputType[] = []
-
-  inputs.push({
-      type: 'button',
-      action: 'link',
-      target: getShareFrameCastIntent(),
-      content: 'Share'
-  })
-
-  inputs.push({
-      type: 'button',
-      action: 'link',
-      target: 'https://www.intori.co/',
-      content: 'My Stats'
-  })
 
   const suggestionsRevealed = session.suggestionsRevealed ?? 0
 
@@ -129,6 +116,14 @@ export const getServerSideProps = (async (context) => {
     type: 'button',
     postUrl: createNextRevealUrl({ fsid: session.id }),
     content: '✨ Reveal'
+  })
+
+  inputs.push({
+    type: 'button',
+    postUrl: createStartNewFrameQuestionUrl({
+      frameSessionId: session.id
+    }),
+    content: 'Next Question'
   })
 
   const frame: IntoriFrameType = {
