@@ -6,8 +6,7 @@ import { AppLayout } from "@/layouts/App"
 import { Section } from '../../components/common/Section'
 import {
     IntoriFrameType,
-    IntoriFrameInputType,
-    getShareFrameCastIntent
+    IntoriFrameInputType
 } from '../../utils/frames/intoriFrameForms'
 import Input from '../../components/common/Input'
 import { PrimaryButton } from '../../components/common/Button'
