@@ -36,7 +36,9 @@ const OneQuestion: React.FC<{
     onSubmit: async (values) => {
       try {
         if (isNew) {
-          await createQuestion(values)
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { id, ...body } = values
+          await createQuestion(body)
         } else {
           await updateQuestion(initialQuestion.id, values)
         }
