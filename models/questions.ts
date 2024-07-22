@@ -8,6 +8,13 @@ export type QuestionType = {
   order: number
 }
 
+export type CreateQuestionType = {
+  question: string
+  answers: string[]
+  categories: string[]
+  order: number
+}
+
 let frameSessionsCollection: FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData>
 
 const getCollection = () => {
