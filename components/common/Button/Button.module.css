@@ -1,5 +1,4 @@
-.primaryButton,
-.secondaryButton {
+.button {
   border-radius: 10px;
   padding: 12px 50px;
   border: 1px solid #FFF;
@@ -11,8 +10,7 @@
   justify-content: center;
 }
 
-.primaryButton:disabled,
-.secondaryButton:disabled {
+.button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
@@ -29,12 +27,16 @@
   color: #FFF;
 }
 
-.primaryButton > svg:first-child,
-.secondaryButton > svg:first-child {
+.dangerButton {
+  background: #ff3333;
+  border-color: #272738;
+  color: #FFF;
+}
+
+.button > svg:first-child {
   margin-right: 8px;
 }
 
-.primaryButton > svg:last-child,
-.secondaryButton > svg:last-child {
+.button > svg:last-child {
   margin-left: 8px;
 }
