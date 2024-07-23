@@ -55,6 +55,12 @@ const AdminStats: NextPage<Props> = ({ questions: inQuestions }) => {
         id
       },
     ])
+
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: 'smooth'
+    })
+
   }
 
   return (
