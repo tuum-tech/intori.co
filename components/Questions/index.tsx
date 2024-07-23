@@ -51,7 +51,9 @@ const OneQuestion: React.FC<{
 
   const onDelete = async () => {
     try {
-      await deleteQuestion(initialQuestion.id)
+      if (!isNew) {
+        await deleteQuestion(initialQuestion.id)
+      }
       onQuestionDeleted(initialQuestion.id)
       toast.success('Question deleted.')
     } catch (err) {
