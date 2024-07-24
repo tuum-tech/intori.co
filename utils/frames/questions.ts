@@ -15,13 +15,19 @@ export const getAvailableQuestions = (params: {
     return questions
   }
 
-  const questionJsonPath = path.join(
-    __dirname,
-    '../../public/questions/channels',
-    `${params.channelId}.json`
-  )
+  try {
+    const questionJsonPath = path.join(
+      __dirname,
+      '../../public/questions/channels',
+      `${params.channelId}.json`
+    )
 
-  const contents = readFileSync(questionJsonPath, 'utf8')
+    const contents = readFileSync(questionJsonPath, 'utf8')
 
-  return JSON.parse(contents)
+    return JSON.parse(contents)
+  } catch (err) {
+    console.error('Failed to get questions by params:', params, err)
+  }
+
+  return []
 }

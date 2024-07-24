@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { validateFarcasterPacketMessage } from '../utils/farcasterServer'
-import { intoriQuestions } from '../../../utils/frames/intoriFrameForms'
+import { getAvailableQuestions } from '../../../utils/frames/questions'
 import { getFrameSessionFromRequest } from '../../../models/frameSession'
 import { createUserQuestionSkip } from '../../../models/userQuestionSkip'
 import {
@@ -37,7 +37,7 @@ const newQuestion = async (
 
   if (req.query.qi) {
     const questionIndex = parseInt(req.query.qi as string, 10)
-    const questionToSkip = intoriQuestions[questionIndex]
+    const questionToSkip = getAvailableQuestions({ channelId: session.channelId })[questionIndex]
 
     await createUserQuestionSkip({
       fid: session.fid,
