@@ -3,5 +3,7 @@ import { getFirestore } from 'firebase-admin/firestore'
 
 export const createDb = () => {
   const admin = initiateAdmin()
-  return getFirestore(admin!)
+  const firestore =  getFirestore(admin!)
+  firestore.settings({ ignoreUndefinedProperties: true })
+  return firestore
 }
