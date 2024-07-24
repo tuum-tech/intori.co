@@ -8,8 +8,8 @@ import {
 import { appendQuestionToFrameSession } from '../../../models/frameSession'
 import { getLastSkippedQuestions } from '../../../models/userQuestionSkip'
 import { saveUserFollowings } from '../../../models/userFollowings'
-import { intoriQuestions } from '../../../utils/frames/intoriFrameForms'
-import { getFrameSessionFromRequest, createFrameSession } from '../../../models/frameSession'
+import { getAvailableQuestions } from '../../../utils/frames/questions'
+import { createFrameSession } from '../../../models/frameSession'
 import { hasUserReachedSixAnswerLimit } from '../../../utils/frames/limitSixAnswersPerDay'
 import {
   createFrameQuestionUrl,
@@ -36,12 +36,12 @@ const newQuestion = async (
     )
   }
 
-  const { fid } = frameSubmissionHelpers(req)
+  const { fid, channelId, session: initialSession } = await frameSubmissionHelpers(req)
 
-  let session = await getFrameSessionFromRequest(req)
-
+  // If no session, create new frame session
+  let session = initialSession
   if (!session) {
-    session = await createFrameSession({ fid })
+    session = await createFrameSession({ fid, channelId })
     saveUserFollowings(fid)
   }
 
@@ -58,6 +58,8 @@ const newQuestion = async (
       createFrameResultsUrl({ frameSessionId: session.id })
     )
   }
+
+  const availableQuestions = getAvailableQuestions({ channelId: session.channelId })
 
   // getting next answer offset to see more answers of an already given question
   if (req.query.qi && req.query.ioff) {
@@ -86,32 +88,32 @@ const newQuestion = async (
   const lastAnsweredQuestion = await getLastAnsweredQuestionForUser(fid)
 
   if (lastAnsweredQuestion) {
-    indexOfLastAnsweredQuestion = intoriQuestions.findIndex(
+    indexOfLastAnsweredQuestion = availableQuestions.findIndex(
       (question) => question.question === lastAnsweredQuestion.question
     )
   }
 
   let nextQuestionIndex = (
-    indexOfLastAnsweredQuestion === intoriQuestions.length - 1
+    indexOfLastAnsweredQuestion === availableQuestions.length - 1
       ? 0
       : indexOfLastAnsweredQuestion
   )
 
-  let nextQuestion = intoriQuestions[nextQuestionIndex]
+  let nextQuestion = availableQuestions[nextQuestionIndex]
 
   const skippedQuestions = await getLastSkippedQuestions(fid, 5)
   let tries = 0;
 
-  while (tries < 10) {
+  while (tries < 20) {
     tries += 1
 
     nextQuestionIndex = (
-      nextQuestionIndex + 1 === intoriQuestions.length
+      nextQuestionIndex + 1 === availableQuestions.length
        ? 0
        : nextQuestionIndex + 1
     )
 
-    nextQuestion = intoriQuestions[nextQuestionIndex]
+    nextQuestion = availableQuestions[nextQuestionIndex]
 
     if (skippedQuestions.includes(nextQuestion.question)) {
       continue
@@ -124,7 +126,8 @@ const newQuestion = async (
     }
   }
 
-  if (tries === 10) {
+  if (tries === 20) {
+    console.log('Reached 20 tries to find a new question.')
     return res.redirect(
       307,
       createLimitReachedUrl()

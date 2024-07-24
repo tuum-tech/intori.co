@@ -6,7 +6,7 @@ import {
     FarcasterChannelType
 } from '../utils/neynarApi'
 import { TransactionType } from '../lib/ethers/registerCredential'
-import { intoriQuestions } from '../utils/frames/intoriFrameForms'
+import { channelFrames } from '../utils/frames/channelFrames'
 
 export type UserAnswerType = {
   fid: number
@@ -14,6 +14,7 @@ export type UserAnswerType = {
   answer: string
   date: Timestamp
   casterFid: number
+  channelId: string | null
 
   // when this answer is published to blockchain
   publicHash?: string
@@ -26,6 +27,7 @@ export type UserAnswerPageType = {
   question: string
   answer: string
   casterFid: number
+  channelId: string | null
   date: {
     seconds: number
     nanoseconds: number
@@ -42,6 +44,7 @@ export type CreateUserAnswerType = {
   question: string
   answer: string
   casterFid: number
+  channelId: string | null
 }
 
 export type SuggestionType = {
@@ -71,10 +74,17 @@ const getCollection = () => {
 export const createUserAnswer = async (newUserAnswer: CreateUserAnswerType) => {
   const collection = getCollection()
 
-  const ref = await collection.add({
+  const body = {
     ...newUserAnswer,
     date: new Date()
-  })
+  }
+
+  // force channelId to be null in the db
+  if (!newUserAnswer.channelId) {
+    body.channelId = null
+  }
+
+  const ref = await collection.add(body)
 
   const doc = await ref.get()
   return doc.data() as UserAnswerType
@@ -113,37 +123,6 @@ export const getUserAnswerForQuestion = async (
   }
 
   return null
-}
-
-export const getInitialQuestionsThatUserHasNotAnswered = async (
-  fid: number
-): Promise<number[]> => {
-  const initialQuestions = [
-    intoriQuestions[0].question,
-    intoriQuestions[1].question,
-    intoriQuestions[2].question
-  ]
-
-  const collection = getCollection()
-
-  const querySnapshot = await collection
-    .where('fid', '==', fid)
-    .where('question', 'in', initialQuestions)
-    .get();
-
-  if (querySnapshot.empty) {
-    return []
-  }
-
-  if (querySnapshot.size === 3) {
-    return []
-  }
-
-  const answeredQuestions = querySnapshot.docs.map((doc) => doc.data().question)
-
-  return initialQuestions
-          .filter((question) => !answeredQuestions.includes(question))
-          .map((question) => initialQuestions.indexOf(question))
 }
 
 export const countUserAnswers = async (fid: number): Promise<number> => {
@@ -264,16 +243,28 @@ export const getResponsesWithAnswerToQuestion = async (
   return querySnapshot.docs.map((doc) => doc.data()) as UserAnswerType[]
 }
 
-export const getRecentAnswersForUser = async (fid: number, limit: number = 10) => {
+export const getRecentAnswersForUser = async (
+  fid: number,
+  limit: number = 10,
+  filters: {
+    channelId?: string
+  } = {}
+) => {
   const collection = getCollection()
 
-  const querySnapshot = await collection
-    .where('fid', '==', fid)
-    .orderBy('date', 'desc')
-    .limit(limit)
-    .get()
+  let query = collection.where('fid', '==', fid)
 
-  return querySnapshot.docs.map((doc) => doc.data() as UserAnswerPageType)
+  if (filters.channelId) {
+    query = query.where('channelId', '==', filters.channelId)
+  } else {
+    query = query.where('channelId', '==', null)
+  }
+
+  query = query.orderBy('date', 'desc').limit(limit)
+
+  const snapshot = await query.get()
+
+  return snapshot.docs.map((doc) => doc.data() as UserAnswerPageType)
 }
 
 export const getUniqueUserFids = async (): Promise<number> => {

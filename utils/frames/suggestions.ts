@@ -8,98 +8,8 @@ import {
 import { doesUserAlreadyFollowUser } from '../../models/userFollowings'
 import {
   fetchUserDetailsByFids,
-  getChannelsThatUserFollows,
-  FarcasterChannelType
+  getChannelsThatUserFollows
 } from '../neynarApi'
-import {
-  intoriQuestions,
-  isInitialQuestion
-} from './intoriFrameForms'
-
-const getSuggestedChannelsForInitialQuestion = (
-  question: string, 
-  answer: string
-): string[] => {
-  const questionIndex = intoriQuestions.findIndex(q => q.question === question)
-  const suggestions: string[] = []
-
-  if (questionIndex >= 3) {
-    return []
-  }
-
-  if (questionIndex === 0) {
-    // always push these for the question
-    suggestions.push('food')
-
-    switch (answer) {
-      case 'Italian':
-        suggestions.push('pizza', 'base-it')
-        break
-      case 'Mexican':
-        suggestions.push('taco-tuesday')
-        break
-      case 'Japanese':
-        suggestions.push('sakura')
-        break
-      case 'Thai':
-        suggestions.push('sakura')
-        break
-      case 'Korean':
-        suggestions.push('sakura')
-        break
-    }
-
-    return suggestions
-  }
-
-  // music
-  if (questionIndex === 1) {
-    suggestions.push('music','spotify', 'albumoftheday')
-
-    switch (answer) {
-      case 'Pop':
-        suggestions.push('kpop', 'audiophile')
-        break
-      case 'Rock':
-        suggestions.push('rock', 'audiophile')
-        break
-      case 'Latin':
-        suggestions.push('latinmusic')
-        break
-      case 'Classical':
-        suggestions.push('classical')
-        break
-      case 'Electronic':
-        suggestions.push('electronic', 'housemusic', 'techno', 'campfire')
-        break
-      case 'Hip-Hop':
-        suggestions.push('rap')
-        break
-      case 'Country':
-        suggestions.push('countrymusic')
-        break
-    }
-
-    return suggestions
-  }
-
-  // movies
-  suggestions.push('movies', 'screens', 'moviefortonight', 'popcorn', 'best-movies')
-
-  switch (answer) {
-    case 'Horror':
-      suggestions.push('horror')
-      break
-    case 'Sci-Fi':
-      suggestions.push('scifi', 'starwars', 'star-trek')
-      break
-    case 'Animation':
-      suggestions.push('disney', 'anime')
-      break
-  }
-
-  return suggestions
-}
 
 // get suggested user for frame sequence
 export const getSuggestedUser = async (
@@ -198,24 +108,6 @@ export const getSuggestedChannel = async (
 
   const lastQuestionAnswered = frameSession.questions[frameSession.questions.length - 1]
 
-  // if one of the initial 3 questions, we want to show different suggestions
-  if (isInitialQuestion(lastQuestionAnswered)) {
-    const userResponse = await getUserAnswerForQuestion(frameSession.fid, lastQuestionAnswered)
-    if (!userResponse) {
-      suggestions.push('farcaster')
-      suggestions.push('base')
-
-      return randomSuggestion()
-    }
-
-    const { answer } = userResponse
-    const initialQuestionSuggestions = getSuggestedChannelsForInitialQuestion(lastQuestionAnswered, answer)
-
-    suggestions.push(...initialQuestionSuggestions)
-
-    return randomSuggestion()
-  }
-
   // then, we will get groups from a suggested user
   const suggestedUser = await getSuggestedUser(frameSession)
 
@@ -232,11 +124,14 @@ export const getSuggestedChannel = async (
 export const getAllSuggestedUsersAndChannels = async (
   options: {
     fid: number,
+    channelId?: string
     usersOnly?: boolean
   }
 ): Promise<SuggestionType[]> => {
-  const { fid } = options
-  const recentResponses = await getRecentAnswersForUser(fid, 12)
+  const { fid, channelId } = options
+  const recentResponses = await getRecentAnswersForUser(fid, 12, { channelId })
+  console.log('total response: ', recentResponses.length)
+  console.log('recent response channel ids:', recentResponses.map((res) => res.channelId))
 
   const suggestions: SuggestionType[] = []
   const suggestedUserFids: {

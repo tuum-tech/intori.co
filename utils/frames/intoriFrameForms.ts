@@ -1,5 +1,4 @@
 import { createStartNewFrameQuestionUrl } from './generatePageUrls'
-import questions from '../../public/questions.json'
 
 export type IntoriFrameInputType = {
     type: 'button'
@@ -14,12 +13,10 @@ export type IntoriFrameType = {
   inputs: IntoriFrameInputType[]
 }
 
-export type IntoriQuestionType = {
-  question: string
-  answers: string[]
-}
-
-export const introductionStep: IntoriFrameType = {
+export const createIntroductionStep = (params: {
+  channelId?: string
+} = {}): IntoriFrameType => {
+  return {
     inputs: [
       {
         type: 'button',
@@ -30,9 +27,10 @@ export const introductionStep: IntoriFrameType = {
       {
         type: 'button',
         content: '🌟 Discover',
-        postUrl: createStartNewFrameQuestionUrl()
+        postUrl: createStartNewFrameQuestionUrl(params)
       }
     ]
+  }
 }
 
 export const errorFrame: IntoriFrameType = {
@@ -75,12 +73,4 @@ export const finalStep: IntoriFrameType = {
         content: 'View intori.co'
       },
     ]
-}
-
-export const intoriQuestions = questions as IntoriQuestionType[]
-
-export const isInitialQuestion = (question: string): boolean => {
-  const questionIndex = intoriQuestions.findIndex(q => q.question === question)
-
-  return questionIndex < 3
 }

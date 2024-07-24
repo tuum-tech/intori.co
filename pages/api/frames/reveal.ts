@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { frameSubmissionHelpers } from '../../../utils/frames/frameSubmissionHelpers'
 import { validateFarcasterPacketMessage } from '../utils/farcasterServer'
-import { getFrameSessionFromRequest, createFrameSession } from '../../../models/frameSession'
 import {
   createFrameResultsUrl,
   createFrameErrorUrl
@@ -25,13 +24,7 @@ const revealNextSuggestion = async (
     )
   }
 
-  const { fid } = frameSubmissionHelpers(req)
-
-  let session = await getFrameSessionFromRequest(req)
-
-  if (!session) {
-    session = await createFrameSession({ fid })
-  }
+  const { session } = await frameSubmissionHelpers(req)
 
   if (!session) {
     return res.redirect(

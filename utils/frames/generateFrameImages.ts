@@ -1,7 +1,8 @@
 import Jimp from 'jimp'
 import { Font } from '@jimp/plugin-print'
 import * as path from 'path'
-import { intoriQuestions, IntoriQuestionType } from './intoriFrameForms'
+import { getAvailableQuestions, IntoriQuestionType } from './questions'
+import { channelFrames } from './channelFrames'
 import {
   loadKumbSans46,
   loadKumbSans26
@@ -82,6 +83,8 @@ export const generateQuestionnaireStepImages = async () => {
     'public/assets/frames/questions'
   )
 
+  const intoriQuestions = getAvailableQuestions()
+
   for (let i = 0; i < intoriQuestions.length; i++) {
     const questionIndex = i
 
@@ -95,6 +98,30 @@ export const generateQuestionnaireStepImages = async () => {
     const image = await generateQuestionnaireStepImage(intoriQuestion)
 
     image.write(questionImagePath)
+  }
+
+  for (let i = 0; i < channelFrames.length; i++) {
+    const channelQuestions = getAvailableQuestions({
+      channelId: channelFrames[i].channelId
+    })
+
+    const channelQuestionImagePathPrefix = path.join(
+      questionImagePathPrefix,
+      channelFrames[i].channelId
+    )
+
+    for (let channelQuestionIndex = 0; channelQuestionIndex < channelQuestions.length; channelQuestionIndex++) {
+      const channelQuestion = channelQuestions[channelQuestionIndex]
+
+      const channelQuestionImagePath = path.join(
+        channelQuestionImagePathPrefix,
+        channelQuestionIndex.toString() + '.png'
+      )
+
+      const image = await generateQuestionnaireStepImage(channelQuestion)
+
+      image.write(channelQuestionImagePath)
+    }
   }
 
   console.log('Done generating question frame images.')

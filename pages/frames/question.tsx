@@ -4,10 +4,8 @@ import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
 import { FrameGenerator } from '../../components/farcaster/FrameGenerator'
 import { AppLayout } from "@/layouts/App"
 import { Section } from '../../components/common/Section'
-import {
-    IntoriFrameType,
-    intoriQuestions
-} from '../../utils/frames/intoriFrameForms'
+import { IntoriFrameType } from '../../utils/frames/intoriFrameForms'
+import { getAvailableQuestions } from '../../utils/frames/questions'
 import {
   getFrameInputsBasedOnAnswerOffset
 } from '../../utils/frames/frameSubmissionHelpers'
@@ -37,7 +35,8 @@ export const getServerSideProps = (async (context) => {
   const answerOffset = parseInt(context.query.ioff as string, 10) || 0
   const frameSessionId = context.query.fsid?.toString() as string
   const session = await getFrameSessionById(frameSessionId)
-  const question = intoriQuestions[questionIndex]
+  const availableQuestions = getAvailableQuestions({ channelId: session?.channelId })
+  const question = availableQuestions[questionIndex]
 
   if (!question || !session) {
     return {
@@ -49,14 +48,25 @@ export const getServerSideProps = (async (context) => {
   }
 
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/begin`
-  const imageUrl = `${process.env.NEXTAUTH_URL}/assets/frames/questions/${questionIndex}.png`
+  const imageUrlParts = [
+    process.env.NEXTAUTH_URL,
+    '/assets/frames/questions/'
+  ]
+
+  if (session.channelId) {
+    imageUrlParts.push(`${session.channelId}/`)
+  }
+
+  imageUrlParts.push(`${questionIndex}.png`)
+
+  const imageUrl = imageUrlParts.join('')
 
   const frame: IntoriFrameType = {
     question: question.question,
     inputs: getFrameInputsBasedOnAnswerOffset(
       questionIndex,
       answerOffset,
-      frameSessionId
+      session
     )
   }
 

@@ -6,7 +6,7 @@ import { AppLayout } from "@/layouts/App"
 import { Section } from '../../components/common/Section'
 import {
     IntoriFrameType,
-    introductionStep
+    createIntroductionStep
 } from '../../utils/frames/intoriFrameForms'
 import Input from '../../components/common/Input'
 import { PrimaryButton } from '../../components/common/Button'
@@ -26,7 +26,7 @@ export const getServerSideProps = (async () => {
     props: {
       imageUrl,
       frameUrl,
-      frame: introductionStep
+      frame: createIntroductionStep()
     }
   }
 }) satisfies GetServerSideProps<Props>

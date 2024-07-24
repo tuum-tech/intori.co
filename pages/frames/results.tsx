@@ -80,8 +80,10 @@ export const getServerSideProps = (async (context) => {
   }
 
   if (!session.suggestions.length) {
+    console.log('Getting suggestions. session: ', session)
     const suggestions = await getAllSuggestedUsersAndChannels({
       fid: session.fid,
+      channelId: session.channelId,
       usersOnly: true
     })
 
