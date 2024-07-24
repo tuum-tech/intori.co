@@ -1,4 +1,4 @@
-import { intoriQuestions } from '../utils/frames/intoriFrameForms'
+import { getAvailableQuestions } from '../utils/frames/questions'
 import { createUserAnswer, CreateUserAnswerType } from '../models/userAnswers'
 
 const TOTAL = 10

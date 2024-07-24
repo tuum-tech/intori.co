@@ -171,16 +171,14 @@ export const getFrameInputsBasedOnAnswerOffset = (
 export const frameSubmissionHelpers = (req: NextApiRequest) => {
   const fid = req.body.untrustedData.fid
   const fidThatCastedFrame = req.body.untrustedData.castId.fid
-  const step = parseInt(req.query.step?.toString() || '0') ?? 0
   const answerOffset = parseInt(req.query.ioff?.toString() || '0') ?? 0
-  const currentSequenceStep = parseInt(req.query.step?.toString() || '0') ?? 0
-  const referrer = req.body.untrustedData.url as string
   const buttonIndexClicked = req.body.untrustedData.buttonIndex
   const frameSessionId = req.query.fsid?.toString() || ''
 
   let question: typeof intoriQuestions[0] | null = null
   let buttonClicked = ''
   const questionIndex = parseInt(req.query.qi?.toString() || '0') ?? 0
+  const channelId = req.query.channelId ? req.query.channelId.toString() : undefined
 
   if (req.query.qi && buttonIndexClicked) {
     question = intoriQuestions[questionIndex]
@@ -196,13 +194,9 @@ export const frameSubmissionHelpers = (req: NextApiRequest) => {
   return {
     fidThatCastedFrame,
     fid,
-    step,
     buttonClicked,
     question,
-    questionIndex,
-    currentSequenceStep,
-    referrer,
-    answerOffset,
-    frameSessionId
+    frameSessionId,
+    channelId
   }
 }
