@@ -6,6 +6,7 @@ import {
     FarcasterChannelType
 } from '../utils/neynarApi'
 import { TransactionType } from '../lib/ethers/registerCredential'
+import { channelFrames } from '../utils/frames/channelFrames'
 
 export type UserAnswerType = {
   fid: number
@@ -255,7 +256,7 @@ export const getRecentAnswersForUser = async (
   if (filters.channelId) {
     query = query.where('channelId', '==', filters.channelId)
   } else {
-    query = query.where('channelId', '==', null)
+    query = query.where('channelId', 'not-in', channelFrames.map((channel) => channel.channelId))
   }
 
   query = query.orderBy('date', 'desc').limit(limit)
