@@ -1,5 +1,7 @@
 import type { NextApiRequest } from 'next'
-import { intoriQuestions, IntoriFrameInputType } from './intoriFrameForms'
+import { IntoriFrameInputType } from './intoriFrameForms'
+import { getAvailableQuestions, IntoriQuestionType } from './questions' 
+import { getFrameSessionFromRequest, FrameSessionType } from '../../models/frameSession'
 import {
   createFrameQuestionUrl,
   createSubmitAnswerUrl,
@@ -21,8 +23,9 @@ export type FarcasterFrameSubmitBodyType = {
   }
 }
 
-export const determineAllAnswerOffsetsForQuestion = (questionIndex: number): number[] => {
-  const question = intoriQuestions[questionIndex]
+export const determineAllAnswerOffsetsForQuestion = (questionIndex: number, channelId?: string): number[] => {
+  const questions = getAvailableQuestions({ channelId })
+  const question = questions[questionIndex]
   const answerOffsets: number[] = [0]
 
   if (question.answers.length <= 3) {
@@ -82,9 +85,14 @@ const convertAnswersToInputs = (
 export const getFrameInputsBasedOnAnswerOffset = (
   questionIndex: number,
   answerOffset: number,
-  frameSessionId: string
+  frameSession: FrameSessionType
 ): IntoriFrameInputType[] => {
-  const question = intoriQuestions[questionIndex]
+  const frameSessionId = frameSession.id
+
+  const question = getAvailableQuestions({
+    channelId: frameSession.channelId
+  })[questionIndex]
+
   const inputs: IntoriFrameInputType[] = []
 
   const skipButton: IntoriFrameInputType = {
@@ -168,24 +176,27 @@ export const getFrameInputsBasedOnAnswerOffset = (
   return inputs
 }
 
-export const frameSubmissionHelpers = (req: NextApiRequest) => {
+export const frameSubmissionHelpers = async (req: NextApiRequest) => {
   const fid = req.body.untrustedData.fid
   const fidThatCastedFrame = req.body.untrustedData.castId.fid
   const answerOffset = parseInt(req.query.ioff?.toString() || '0') ?? 0
   const buttonIndexClicked = req.body.untrustedData.buttonIndex
-  const frameSessionId = req.query.fsid?.toString() || ''
+  const session = await getFrameSessionFromRequest(req)
 
-  let question: typeof intoriQuestions[0] | null = null
+  let question: IntoriQuestionType | undefined = undefined
   let buttonClicked = ''
   const questionIndex = parseInt(req.query.qi?.toString() || '0') ?? 0
   const channelId = req.query.channelId ? req.query.channelId.toString() : undefined
 
-  if (req.query.qi && buttonIndexClicked) {
-    question = intoriQuestions[questionIndex]
+  if (req.query.qi && buttonIndexClicked && session) {
+    const availableQuestions = getAvailableQuestions({ channelId: session?.channelId })
+
+    question = availableQuestions[questionIndex]
+
     const inputs = getFrameInputsBasedOnAnswerOffset(
       questionIndex, 
       answerOffset,
-      frameSessionId
+      session
     )
 
     buttonClicked = inputs[buttonIndexClicked - 1].content
@@ -196,7 +207,7 @@ export const frameSubmissionHelpers = (req: NextApiRequest) => {
     fid,
     buttonClicked,
     question,
-    frameSessionId,
+    session,
     channelId
   }
 }

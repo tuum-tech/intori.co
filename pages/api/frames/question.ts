@@ -9,7 +9,7 @@ import { appendQuestionToFrameSession } from '../../../models/frameSession'
 import { getLastSkippedQuestions } from '../../../models/userQuestionSkip'
 import { saveUserFollowings } from '../../../models/userFollowings'
 import { getAvailableQuestions } from '../../../utils/frames/questions'
-import { getFrameSessionFromRequest, createFrameSession } from '../../../models/frameSession'
+import { createFrameSession } from '../../../models/frameSession'
 import { hasUserReachedSixAnswerLimit } from '../../../utils/frames/limitSixAnswersPerDay'
 import {
   createFrameQuestionUrl,
@@ -36,10 +36,10 @@ const newQuestion = async (
     )
   }
 
-  const { fid, channelId } = frameSubmissionHelpers(req)
+  const { fid, channelId, session: initialSession } = await frameSubmissionHelpers(req)
 
-  let session = await getFrameSessionFromRequest(req)
-
+  // If no session, create new frame session
+  let session = initialSession
   if (!session) {
     session = await createFrameSession({ fid, channelId })
     saveUserFollowings(fid)

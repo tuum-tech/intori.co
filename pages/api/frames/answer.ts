@@ -7,9 +7,6 @@ import { createUserAnswer, updateUserAnswerWithBlockchainMetadata } from '../../
 import { getBlockchainSettingsForUser } from '../../../models/userBlockchainSettings'
 import { createVerifiableCredential } from '../veramo/createVerifiableCredential'
 import { registerCredential } from '../../../lib/ethers/registerCredential'
-import {
-  getFrameSessionById
-} from '../../../models/frameSession'
 import { createFrameErrorUrl, createFrameResultsUrl } from '../../../utils/frames/generatePageUrls'
 
 const answeredQuestion = async (
@@ -34,8 +31,8 @@ const answeredQuestion = async (
     buttonClicked,
     question,
     fidThatCastedFrame,
-    frameSessionId
-  } = frameSubmissionHelpers(req)
+    session
+  } = await frameSubmissionHelpers(req)
 
   if (!question) {
     return res.redirect(
@@ -43,8 +40,6 @@ const answeredQuestion = async (
       createFrameErrorUrl()
     )
   }
-
-  const session = await getFrameSessionById(frameSessionId)
 
   if (!session) {
     return res.redirect(
