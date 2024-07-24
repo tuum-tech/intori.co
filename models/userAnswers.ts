@@ -26,6 +26,7 @@ export type UserAnswerPageType = {
   question: string
   answer: string
   casterFid: number
+  channelId?: string
   date: {
     seconds: number
     nanoseconds: number
