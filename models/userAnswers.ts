@@ -13,6 +13,7 @@ export type UserAnswerType = {
   answer: string
   date: Timestamp
   casterFid: number
+  channelId?: string
 
   // when this answer is published to blockchain
   publicHash?: string
@@ -233,16 +234,26 @@ export const getResponsesWithAnswerToQuestion = async (
   return querySnapshot.docs.map((doc) => doc.data()) as UserAnswerType[]
 }
 
-export const getRecentAnswersForUser = async (fid: number, limit: number = 10) => {
+export const getRecentAnswersForUser = async (
+  fid: number,
+  limit: number = 10,
+  filters: {
+    channelId?: string
+  } = {}
+) => {
   const collection = getCollection()
 
-  const querySnapshot = await collection
-    .where('fid', '==', fid)
-    .orderBy('date', 'desc')
-    .limit(limit)
-    .get()
+  const query = collection.where('fid', '==', fid)
 
-  return querySnapshot.docs.map((doc) => doc.data() as UserAnswerPageType)
+  if (filters.channelId) {
+    query.where('channelId', '==', filters.channelId)
+  }
+
+  query.orderBy('date', 'desc').limit(limit)
+
+  const snapshot = await query.get()
+
+  return snapshot.docs.map((doc) => doc.data() as UserAnswerPageType)
 }
 
 export const getUniqueUserFids = async (): Promise<number> => {
