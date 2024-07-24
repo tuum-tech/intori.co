@@ -254,6 +254,8 @@ export const getRecentAnswersForUser = async (
 
   if (filters.channelId) {
     query = query.where('channelId', '==', filters.channelId)
+  } else {
+    query = query.where('channelId', '==', null)
   }
 
   query = query.orderBy('date', 'desc').limit(limit)
