@@ -104,7 +104,7 @@ const newQuestion = async (
   const skippedQuestions = await getLastSkippedQuestions(fid, 5)
   let tries = 0;
 
-  while (tries < 10) {
+  while (tries < 20) {
     tries += 1
 
     nextQuestionIndex = (
@@ -126,7 +126,8 @@ const newQuestion = async (
     }
   }
 
-  if (tries === 10) {
+  if (tries === 20) {
+    console.log('Reached 20 tries to find a new question.')
     return res.redirect(
       307,
       createLimitReachedUrl()
