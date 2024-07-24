@@ -36,12 +36,12 @@ const newQuestion = async (
     )
   }
 
-  const { fid } = frameSubmissionHelpers(req)
+  const { fid, channelId } = frameSubmissionHelpers(req)
 
   let session = await getFrameSessionFromRequest(req)
 
   if (!session) {
-    session = await createFrameSession({ fid })
+    session = await createFrameSession({ fid, channelId })
     saveUserFollowings(fid)
   }
 
