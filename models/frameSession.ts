@@ -36,14 +36,20 @@ const getCollection = () => {
 export const createFrameSession = async (newFrameSession: CreateFrameSessionType) => {
   const collection = getCollection()
 
-  const doc = await collection.add({
+  const body = {
     ...newFrameSession,
     questionNumber: 0,
     questions: [],
     createdAt: new Date(),
     suggestions: [],
     suggestionsRevealed: 0
-  })
+  }
+
+  if (!newFrameSession.channelId) {
+    delete body.channelId
+  }
+
+  const doc = await collection.add(body)
 
   const ref = await doc.get()
 
