@@ -14,7 +14,7 @@ export type UserAnswerType = {
   answer: string
   date: Timestamp
   casterFid: number
-  channelId?: string
+  channelId: string | null
 
   // when this answer is published to blockchain
   publicHash?: string
@@ -27,7 +27,7 @@ export type UserAnswerPageType = {
   question: string
   answer: string
   casterFid: number
-  channelId?: string
+  channelId: string | null
   date: {
     seconds: number
     nanoseconds: number
@@ -44,7 +44,7 @@ export type CreateUserAnswerType = {
   question: string
   answer: string
   casterFid: number
-  channelId?: string
+  channelId: string | null
 }
 
 export type SuggestionType = {
@@ -79,8 +79,9 @@ export const createUserAnswer = async (newUserAnswer: CreateUserAnswerType) => {
     date: new Date()
   }
 
+  // force channelId to be null in the db
   if (!newUserAnswer.channelId) {
-    delete body.channelId
+    body.channelId = null
   }
 
   const ref = await collection.add(body)
@@ -256,7 +257,7 @@ export const getRecentAnswersForUser = async (
   if (filters.channelId) {
     query = query.where('channelId', '==', filters.channelId)
   } else {
-    query = query.where('channelId', 'not-in', channelFrames.map((channel) => channel.channelId))
+    query = query.where('channelId', '==', null)
   }
 
   query = query.orderBy('date', 'desc').limit(limit)
