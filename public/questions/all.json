@@ -1,0 +1,622 @@
+[
+  {
+    "question": "What is your favorite type of cuisine?",
+    "answers": ["Italian", "Mexican", "Chinese", "Indian", "Japanese", "French", "Thai", "Greek", "Spanish", "Korean"],
+    "categories": ["Food", "Beverage", "Culture"]
+  },
+  {
+    "question": "What is your go-to comfort food?",
+    "answers": ["Pizza", "Ice Cream", "Chocolate", "Soup", "Burgers", "Pasta"],
+    "categories": ["Food", "Comfort", "Mood"]
+  },
+  {
+    "question": "How do you prefer your coffee?",
+    "answers": ["Black", "Sugar", "Cream", "Sugar / Cream", "Decaf", "Flavored"],
+    "categories": ["Beverage", "Preferences", "Routine"]
+  },
+  {
+    "question": "What type of milk do you prefer?",
+    "answers": ["Whole", "2%", "Skim", "Soy", "Almond", "Oat"],
+    "categories": ["Beverage", "Preferences", "Health"]
+  },
+  {
+    "question": "Which meal of the day is your favorite?",
+    "answers": ["Breakfast", "Brunch", "Lunch", "Tea Time", "Dinner", "Late Snack"],
+    "categories": ["Food", "Routine", "Preferences"]
+  },
+  {
+    "question": "Which of the following is your favorite type of snack?",
+    "answers": ["Sweet", "Salty", "Healthy", "Indulgent", "Spicy", "Savory"],
+    "categories": ["Food", "Snack", "Preferences"]
+  },
+  {
+    "question": "How do you like your eggs cooked?",
+    "answers": ["Scrambled", "Fried", "Poached", "Boiled", "Omelette", "Whites Only"],
+    "categories": ["Food", "Preferences", "Routine"]
+  },
+  {
+    "question": "Which type of bread do you prefer?",
+    "answers": ["White", "Wheat", "Rye", "Sourdough", "Gluten-free", "Multigrain"],
+    "categories": ["Food", "Preferences", "Health"]
+  },
+  {
+    "question": "What's your favorite type of cheese?",
+    "answers": ["Cheddar", "Mozzarella", "Swiss", "Blue", "Goat", "Vegan"],
+    "categories": ["Food", "Preferences", "Taste"]
+  },
+  {
+    "question": "How often do you eat out at restaurants?",
+    "answers": ["Daily", "Often", "Weekly", "Occasionally", "Rarely", "Never"],
+    "categories": ["Food", "Routine", "Social"]
+  },
+  {
+    "question": "What's your preferred style of pizza?",
+    "answers": ["New York", "Chicago", "Neapolitan", "Sicilian", "Gluten-free", "Vegan"],
+    "categories": ["Food", "Preferences", "Taste"]
+  },
+  {
+    "question": "How often do you cook at home?",
+    "answers": ["Daily", "Often", "Weekly", "Monthly", "Rarely", "Never", "Holidays"],
+    "categories": ["Food", "Routine", "Home"]
+  },
+  {
+    "question": "Do you have any dietary restrictions?",
+    "answers": ["Vegetarian", "Vegan", "Gluten-free", "Dairy-free", "Nut-free", "Other", "None"],
+    "categories": ["Food", "Health", "Diet"]
+  },
+  {
+    "question": "What type of drink do you prefer?",
+    "answers": ["Coffee", "Tea", "Soft Drink", "Alcohol", "Smoothie", "Juice", "Water"],
+    "categories": ["Beverage", "Preferences", "Routine"]
+  },
+  {
+    "question": "What ingredient do you prefer when cooking?",
+    "answers": ["Salt", "Pepper", "Garlic", "Olive Oil", "Butter", "Onion"],
+    "categories": ["Food", "Cooking", "Taste"]
+  },
+  {
+    "question": "What dessert do you enjoy most?",
+    "answers": ["Cake", "Ice Cream", "Pie", "Cheesecake", "Tiramisu", "Brownies", "Fruit Tart"],
+    "categories": ["Food", "Dessert", "Taste"]
+  },
+  {
+    "question": "What type of exercise do you prefer?",
+    "answers": ["Gym", "Running", "Yoga", "Sports", "Home Workouts", "Outside"],
+    "categories": ["Lifestyle", "Wellness", "Fitness"]
+  },
+  {
+    "question": "How many hours of sleep do you get on average per night?",
+    "answers": ["Under 5", "5-6", "7-8", "9-10", "Over 10", "Varies"],
+    "categories": ["Lifestyle", "Wellness", "Health"]
+  },
+  {
+    "question": "What's your approach to nutrition?",
+    "answers": ["Strict Diet", "Balanced", "Count Calories", "Intuitive Eating", "Vegetarian", "Vegan"],
+    "categories": ["Lifestyle", "Wellness", "Diet"]
+  },
+  {
+    "question": "How do you manage stress?",
+    "answers": ["Meditation", "Exercise", "Reading", "Socialize", "Music", "Crafts"],
+    "categories": ["Lifestyle", "Wellness", "Health"]
+  },
+  {
+    "question": "Do you follow any specific wellness trends?",
+    "answers": ["Keto", "Paleo", "Fasting", "Plant-based", "Clean Eating", "None"],
+    "categories": ["Lifestyle", "Wellness", "Diet"]
+  },
+  {
+    "question": "How often do you take breaks during your workday?",
+    "answers": ["Hourly", "Often", "Only Lunch", "Rarely", "Never", "No Schedule"],
+    "categories": ["Lifestyle", "Wellness", "Routine"]
+  },
+  {
+    "question": "What type of wellness products do you use regularly?",
+    "answers": ["Supplements", "Essential Oils", "Herbal Teas", "Fitness Trackers", "Other", "None"],
+    "categories": ["Lifestyle", "Wellness", "Health"]
+  },
+  {
+    "question": "How do you prefer to relax after a long day?",
+    "answers": ["Watch TV", "Reading", "A Walk", "A Bath", "Yoga", "Podcasts"],
+    "categories": ["Lifestyle", "Wellness", "Relaxation"]
+  },
+  {
+    "question": "What is your primary method for staying hydrated?",
+    "answers": ["Water", "Flavored Water", "Herbal Tea", "Sports Drink", "Juice", "Coffee/Tea"],
+    "categories": ["Lifestyle", "Wellness", "Health"]
+  },
+  {
+    "question": "How often do you engage in outdoor activities?",
+    "answers": ["Daily", "Often", "Weekly", "Occasionally", "Rarely", "Never"],
+    "categories": ["Lifestyle", "Wellness", "Fitness"]
+  },
+  {
+    "question": "How often do you practice mindfulness or meditation?",
+    "answers": ["Daily", "Weekly", "Monthly", "Occasionally", "Rarely", "Never"],
+    "categories": ["Lifestyle", "Wellness", "Health"]
+  },
+  {
+    "question": "What is your common method of commuting?",
+    "answers": ["Walking", "Cycling", "Public Transport", "Car", "Carpool", "Stay Home"],
+    "categories": ["Lifestyle", "Routine", "Transport"]
+  },
+  {
+    "question": "How do you prioritize your mental health?",
+    "answers": ["Therapy", "Journaling", "Meditation", "Socializing", "Self-Help", "None"],
+    "categories": ["Lifestyle", "Wellness", "Health"]
+  },
+  {
+    "question": "How do you track your fitness progress?",
+    "answers": ["App", "Wearable", "Journal", "Equipment", "Trainer", "Multiple", "Don't Track"],
+    "categories": ["Lifestyle", "Wellness", "Fitness"]
+  },
+  {
+    "question": "What's your favorite movie genre?",
+    "answers": ["Action", "Drama", "Romance", "Comedy", "Horror", "Sci-Fi", "Animation"],
+    "categories": ["Entertainment", "Hobbies", "Preferences"]
+  },
+  {
+    "question": "Which type of music do you listen to most often?",
+    "answers": ["Pop", "Rock", "Latin", "Classical", "Country", "EDM", "Hip-Hop"],
+    "categories": ["Entertainment", "Hobbies", "Preferences"]
+  },
+  {
+    "question": "What are your hobbies?",
+    "answers": ["Art", "Gaming", "Gardening", "Traveling", "Reading", "Sports", "Memes"],
+    "categories": ["Entertainment", "Hobbies", "Interests"]
+  },
+  {
+    "question": "What type of books do you prefer to read?",
+    "answers": ["Fiction", "Non-fiction", "Mystery", "Fantasy", "Biography", "Science"],
+    "categories": ["Entertainment", "Hobbies", "Preferences"]
+  },
+  {
+    "question": "How often do you attend live events?",
+    "answers": ["Weekly", "Monthly", "Occasionally", "Annually", "Rarely", "Never"],
+    "categories": ["Entertainment", "Hobbies", "Routine"]
+  },
+  {
+    "question": "What's your preferred streaming service for TV shows and movies?",
+    "answers": ["Netflix", "YouTube", "Hulu", "Amazon", "Disney", "Max", "Apple"],
+    "categories": ["Entertainment", "Hobbies", "Preferences"]
+  },
+  {
+    "question": "Which social platform do you use most?",
+    "answers": ["Facebook", "Twitter", "Farcaster", "Instagram", "TikTok", "LinkedIn", "Twitch", "Snapchat"],
+    "categories": ["Entertainment", "Hobbies", "Social"]
+  },
+  {
+    "question": "How do you usually spend your leisure time?",
+    "answers": ["TV", "Movies", "Sports", "Gaming", "Outside", "Friends", "Family"],
+    "categories": ["Entertainment", "Hobbies", "Leisure"]
+  },
+  {
+    "question": "What type of video games do you enjoy?",
+    "answers": ["Action", "Strategy", "RPG", "Sports", "Puzzle", "Simulation"],
+    "categories": ["Entertainment", "Hobbies", "Preferences"]
+  },
+  {
+    "question": "Do you play any musical instruments? If so, which one?",
+    "answers": ["Piano", "Guitar", "Violin", "Drums", "Flute", "Sax", "Trumpet", "Cello"],
+    "categories": ["Entertainment", "Hobbies", "Skills"]
+  },
+  {
+    "question": "What type of podcasts do you enjoy?",
+    "answers": ["Crime", "Comedy", "News", "Business", "Wellness", "Tech", "Storytelling"],
+    "categories": ["Entertainment", "Hobbies", "Preferences"]
+  },
+  {
+    "question": "Of these board games, which is your favorite?",
+    "answers": ["Chess", "Monopoly", "Scrabble", "Catan", "Risk", "Clue", "Uno"],
+    "categories": ["Entertainment", "Hobbies", "Games"]
+  },
+  {
+    "question": "What type of arts and crafts do you enjoy?",
+    "answers": ["Painting", "Drawing", "Knitting", "Scrapbook", "Pottery", "Jewelry", "Sewing"],
+    "categories": ["Entertainment", "Hobbies", "Interests"]
+  },
+  {
+    "question": "How do you prefer to learn new skills?",
+    "answers": ["Online Course", "Books", "Workshops", "Tutorials", "Podcasts", "In-Person", "Self Learn"],
+    "categories": ["Entertainment", "Hobbies", "Education"]
+  },
+  {
+    "question": "What kind of puzzles do you enjoy?",
+    "answers": ["Jigsaw", "Crossword", "Sudoku", "Brain Teaser", "Escape Room", "Word Search", "Logic"],
+    "categories": ["Entertainment", "Hobbies", "Games"]
+  },
+  {
+    "question": "What is your preferred operating system?",
+    "answers": ["Windows", "macOS", "Linux", "Android", "iOS", "Chrome OS"],
+    "categories": ["Technology", "Gadgets", "Preferences"]
+  },
+  {
+    "question": "Which brand of smartphone do you currently use?",
+    "answers": ["Apple", "Samsung", "Google", "Huawei", "Xiaomi", "OnePlus"],
+    "categories": ["Technology", "Gadgets", "Preferences"]
+  },
+  {
+    "question": "What type of computer do you prefer for personal use?",
+    "answers": ["Desktop", "Laptop", "Tablet", "Convertible", "Chromebook"],
+    "categories": ["Technology", "Gadgets", "Preferences"]
+  },
+  {
+    "question": "How often do you upgrade your primary gadgets (smartphone, computer, etc.)?",
+    "answers": ["Yearly", "Every 2 Years", "Every 3 Years", "When Broken", "Rarely", "Never"],
+    "categories": ["Technology", "Gadgets", "Routine"]
+  },
+  {
+    "question": "Which emerging technology are you most interested in?",
+    "answers": ["VR", "AR", "AI", "Crypto", "Robotics", "Quantum"],
+    "categories": ["Technology", "Gadgets", "Trends"]
+  },
+  {
+    "question": "What type of wearable technology do you use, if any?",
+    "answers": ["Watch", "Tracker", "Glasses", "None", "Buying Soon", "Interested"],
+    "categories": ["Technology", "Gadgets", "Wearables"]
+  },
+  {
+    "question": "How important is device security and privacy to you?",
+    "answers": ["Extremely", "Very", "Moderately", "Slightly", "Not important", "Unsure"],
+    "categories": ["Technology", "Gadgets", "Security"]
+  },
+  {
+    "question": "Do you use smart home devices? If so, which types?",
+    "answers": ["Speakers", "Lights", "Thermostats", "Security", "Several", "None", "Buying Soon"],
+    "categories": ["Technology", "Gadgets", "Home"]
+  },
+  {
+    "question": "How do you usually discover new gadgets and technology?",
+    "answers": ["Blogs", "Social", "Friends", "Reviews", "Stores", "Events", "Family"],
+    "categories": ["Technology", "Gadgets", "Discovery"]
+  },
+  {
+    "question": "What type of apps do you use most frequently on your smartphone?",
+    "answers": ["Social", "Productivity", "Games", "Streaming", "News", "Health", "Finance"],
+    "categories": ["Technology", "Gadgets", "Apps"]
+  },
+  {
+    "question": "How do you primarily use your tablet?",
+    "answers": ["Reading", "Watching", "Browsing", "Gaming", "Work", "Drawing", "Social"],
+    "categories": ["Technology", "Gadgets", "Use"]
+  },
+  {
+    "question": "What is your preferred method of backing up data?",
+    "answers": ["Cloud", "External HD", "USB Drive", "NAS", "Decentralized", "Multiple", "None"],
+    "categories": ["Technology", "Gadgets", "Backup"]
+  },
+  {
+    "question": "What feature is most important to you when buying new gadgets?",
+    "answers": ["Battery", "Speed", "Design", "Camera", "Price", "Brand", "Software/OS"],
+    "categories": ["Technology", "Gadgets", "Preferences"]
+  },
+  {
+    "question": "Which type of headphones do you prefer?",
+    "answers": ["Over-Ear", "On-Ear", "In-Ear", "Wireless", "Noise-Cancel", "Wired", "None"],
+    "categories": ["Technology", "Gadgets", "Preferences"]
+  },
+  {
+    "question": "How often do you use voice assistants (Siri, Alexa, Google Assistant)?",
+    "answers": ["Daily", "Often", "Weekly", "Occasionally", "Rarely", "Never"],
+    "categories": ["Technology", "Gadgets", "Use"]
+  },
+  {
+    "question": "What is your favorite season?",
+    "answers": ["Spring", "Summer", "Fall", "Winter"],
+    "categories": ["Travel", "Leisure", "Preferences"]
+  },
+  {
+    "question": "What is your dream vacation destination?",
+    "answers": ["Tropical", "Historic", "Adventure", "Cultural Tour", "Space", "Road Trip"],
+    "categories": ["Travel", "Leisure", "Dream"]
+  },
+  {
+    "question": "What is your preferred mode of travel?",
+    "answers": ["Plane", "Train", "Car", "Cruise", "Biking", "Walking"],
+    "categories": ["Travel", "Leisure", "Transport"]
+  },
+  {
+    "question": "What type of accommodation do you prefer when traveling?",
+    "answers": ["Luxury", "Boutique", "Rental", "Hostel", "Camping", "Friends", "Family"],
+    "categories": ["Travel", "Leisure", "Stay"]
+  },
+  {
+    "question": "How often do you travel internationally?",
+    "answers": ["Regularly", "Annually", "Occasionally", "Once", "Never", "When Possible"],
+    "categories": ["Travel", "Leisure", "Routine"]
+  },
+  {
+    "question": "What's your favorite outdoor activity?",
+    "answers": ["Hiking", "Cycling", "Skiing", "Surfing", "Climbing", "Boating", "Fishing"],
+    "categories": ["Travel", "Leisure", "Activities"]
+  },
+  {
+    "question": "Which do you prefer for a quick getaway?",
+    "answers": ["Beach", "Mountain", "City", "Theme Park", "Spa", "Staycation"],
+    "categories": ["Travel", "Leisure", "Getaway"]
+  },
+  {
+    "question": "How important are eco-friendly practices in your travel choices?",
+    "answers": ["Extremely", "Very", "Moderately", "Slightly", "Not Important", "No Consideration"],
+    "categories": ["Travel", "Leisure", "Sustainability"]
+  },
+  {
+    "question": "What kind of cultural activities interest you during travels?",
+    "answers": ["Tours", "Galleries", "Live Music", "Culinary", "Religious", "Festivals"],
+    "categories": ["Travel", "Leisure", "Culture"]
+  },
+  {
+    "question": "Do you participate in any travel loyalty programs?",
+    "answers": ["Frequent Flyer", "Hotel Rewards", "Cruise Loyalty", "None", "Multiple", "Considering"],
+    "categories": ["Travel", "Leisure", "Programs"]
+  },
+  {
+    "question": "What is your favorite travel season?",
+    "answers": ["Spring", "Summer", "Fall", "Winter", "Anytime", "Depends Where"],
+    "categories": ["Travel", "Leisure", "Preferences"]
+  },
+  {
+    "question": "How do you prefer to plan your trips?",
+    "answers": ["DIY", "Agent", "Tour Guide", "Last Minute", "Deals", "With Others"],
+    "categories": ["Travel", "Leisure", "Planning"]
+  },
+  {
+    "question": "What type of cuisine do you prefer when traveling?",
+    "answers": ["Local", "Street Food", "Fine Dining", "Fast Food", "International", "Home-Cooked"],
+    "categories": ["Travel", "Leisure", "Food"]
+  },
+  {
+    "question": "How do you document your travels?",
+    "answers": ["Photos", "Blogs", "Social", "Journal", "Video", "Scrapbook", "None"],
+    "categories": ["Travel", "Leisure", "Memories"]
+  },
+  {
+    "question": "What is your primary reason for traveling?",
+    "answers": ["Relaxation", "Adventure", "Culture", "Family/Friends", "Business", "Growth", "Wellness"],
+    "categories": ["Travel", "Leisure", "Purpose"]
+  },
+  {
+    "question": "Which travel apps do you use most frequently?",
+    "answers": ["Google Maps", "Waze", "TripAdvisor", "Airbnb", "Booking.com", "Skyscanner", "Expedia", "None"],
+    "categories": ["Travel", "Leisure", "Apps"]
+  },
+  {
+    "question": "How important is environmental consciousness to you?",
+    "answers": ["Very", "Moderately", "Slightly", "Neutral", "Unconcerned", "Activist"],
+    "categories": ["Values", "Beliefs", "Sustainability"]
+  },
+  {
+    "question": "How important is work-life balance to you?",
+    "answers": ["Essential", "Very", "Moderately", "Slightly", "Not Important", "Flexible"],
+    "categories": ["Values", "Beliefs", "Balance"]
+  },
+  {
+    "question": "What are your views on social issues?",
+    "answers": ["Progressive", "Conservative", "Moderate", "Apathetic", "Activist", "Non-partisan"],
+    "categories": ["Values", "Beliefs", "Social"]
+  },
+  {
+    "question": "How concerned are you with data privacy and security?",
+    "answers": ["Extremely", "Very", "Somewhat", "Not Very", "Unconcerned", "Not Sure"],
+    "categories": ["Values", "Beliefs", "Security"]
+  },
+  {
+    "question": "How do you feel about the use of artificial intelligence in society?",
+    "answers": ["Strongly Support", "Support", "Neutral", "Oppose", "Strongly Oppose", "Unsure"],
+    "categories": ["Values", "Beliefs", "Technology"]
+  },
+  {
+    "question": "What is your opinion on global economic policies?",
+    "answers": ["Free Trade", "Protectionism", "Fair Trade", "Isolationism", "Globalization", "Localism"],
+    "categories": ["Values", "Beliefs", "Economics"]
+  },
+  {
+    "question": "How often do you consider ethical consumption (e.g., buying local, organic, etc.)?",
+    "answers": ["Always", "Often", "Sometimes", "Rarely", "Never", "Unaware"],
+    "categories": ["Values", "Beliefs", "Consumption"]
+  },
+  {
+    "question": "What role does spirituality or religion play in your life?",
+    "answers": ["Central", "Important", "Minor", "Nonexistent", "Opposed", "Exploring"],
+    "categories": ["Values", "Beliefs", "Spirituality"]
+  },
+  {
+    "question": "How important is education in society?",
+    "answers": ["Critical", "Very", "Somewhat", "Not Very", "Unnecessary", "Varied"],
+    "categories": ["Values", "Beliefs", "Education"]
+  },
+  {
+    "question": "How active are you in charitable giving and community service?",
+    "answers": ["Very", "Moderately", "Occasionally", "Rarely", "Never", "Planning To"],
+    "categories": ["Values", "Beliefs", "Charity"]
+  },
+  {
+    "question": "How concerned are you with economic inequality?",
+    "answers": ["Majorly", "Somewhat", "Neutral", "Not Concerned", "Ok w/ Current"],
+    "categories": ["Values", "Beliefs", "Economics"]
+  },
+  {
+    "question": "How important are family values to you?",
+    "answers": ["Central", "Very", "Moderately", "Slightly", "Not", "Flexible"],
+    "categories": ["Values", "Beliefs", "Family"]
+  },
+  {
+    "question": "What is your opinion on animal rights?",
+    "answers": ["Advocate", "Supportive", "Neutral", "Slightly For", "Indifferent", "Opposed"],
+    "categories": ["Values", "Beliefs", "Rights"]
+  },
+  {
+    "question": "How important is cultural diversity to you?",
+    "answers": ["Essential", "Very", "Moderately", "Slightly", "Not Important", "Opposed"],
+    "categories": ["Values", "Beliefs", "Diversity"]
+  },
+  {
+    "question": "How active are you in political engagement?",
+    "answers": ["Very", "Moderately", "Occasionally", "Rarely", "Not Active", "Considering"],
+    "categories": ["Values", "Beliefs", "Politics"]
+  },
+  {
+    "question": "What is your current job role?",
+    "answers": ["Manager", "Developer", "Designer", "Sales", "Marketing", "HR", "Finance", "Other"],
+    "categories": ["Career", "Education", "Job Role"]
+  },
+  {
+    "question": "Which industry do you work in?",
+    "answers": ["Technology", "Healthcare", "Finance", "Education", "Retail", "Manufacturing", "Other"],
+    "categories": ["Career", "Education", "Industry"]
+  },
+  {
+    "question": "What is your highest level of education?",
+    "answers": ["High School", "Associate", "Bachelor's", "Master's", "Doctorate", "Other"],
+    "categories": ["Career", "Education", "Level"]
+  },
+  {
+    "question": "How do you prefer to learn new skills?",
+    "answers": ["Online Course", "Books", "Workshops", "Tutorials", "Podcasts", "In-Person", "Self Learn"],
+    "categories": ["Career", "Education", "Learning"]
+  },
+  {
+    "question": "What is your primary motivation at work?",
+    "answers": ["Salary", "Growth", "Passion", "Stability", "Recognition", "Other"],
+    "categories": ["Career", "Education", "Motivation"]
+  },
+  {
+    "question": "What is your relationship status?",
+    "answers": ["Single", "In Relationship", "Married", "Divorced", "Other"],
+    "categories": ["Relationships", "Social Life", "Status"]
+  },
+  {
+    "question": "How often do you socialize with friends?",
+    "answers": ["Daily", "Often", "Weekly", "Occasionally", "Rarely", "Never"],
+    "categories": ["Relationships", "Social Life", "Frequency"]
+  },
+  {
+    "question": "Do you participate in any community groups or activities?",
+    "answers": ["Yes", "No", "Considering", "Occasionally"],
+    "categories": ["Relationships", "Social Life", "Community"]
+  },
+  {
+    "question": "What is your preferred way to spend time with family?",
+    "answers": ["Meals", "Trips", "Games", "Movies", "Outings", "Other"],
+    "categories": ["Relationships", "Social Life", "Family"]
+  },
+  {
+    "question": "How would you describe your spending habits?",
+    "answers": ["Frugal", "Moderate", "Generous", "Impulsive", "Varies"],
+    "categories": ["Financial", "Preferences", "Spending"]
+  },
+  {
+    "question": "Do you have any specific saving goals?",
+    "answers": ["Retirement", "Travel", "Education", "Emergency Fund", "None", "Other"],
+    "categories": ["Financial", "Preferences", "Goals"]
+  },
+  {
+    "question": "What is your primary investment interest?",
+    "answers": ["Stocks", "Bonds", "Real Estate", "Crypto", "Mutual Funds", "None", "Other"],
+    "categories": ["Financial", "Preferences", "Investments"]
+  },
+  {
+    "question": "What are your personal growth interests?",
+    "answers": ["Fitness", "Education", "Career", "Hobbies", "Skills", "Other"],
+    "categories": ["Personal Development", "Interests", "Growth"]
+  },
+  {
+    "question": "How do you set your personal goals?",
+    "answers": ["Daily", "Weekly", "Monthly", "Annually", "Occasionally", "None"],
+    "categories": ["Personal Development", "Routine", "Goals"]
+  },
+  {
+    "question": "Do you use any tools for personal development?",
+    "answers": ["Apps", "Journals", "Courses", "Workshops", "Mentors", "None"],
+    "categories": ["Personal Development", "Tools", "Preferences"]
+  },
+  {
+    "question": "What is your cultural background?",
+    "answers": ["Asian", "African", "European", "Latino", "Middle Eastern", "American", "Other"],
+    "categories": ["Cultural", "Background", "Preferences"]
+  },
+  {
+    "question": "Do you practice any spiritual or religious activities?",
+    "answers": ["Yes", "No", "Occasionally", "Exploring"],
+    "categories": ["Cultural", "Spiritual", "Practices"]
+  },
+  {
+    "question": "How important is cultural heritage to you?",
+    "answers": ["Very Important", "Moderately", "Slightly", "Not Important", "Neutral"],
+    "categories": ["Cultural", "Heritage", "Values"]
+  },
+  {
+    "question": "What does your typical morning routine look like?",
+    "answers": ["Exercise", "Breakfast", "Work", "Meditation", "Reading", "Other"],
+    "categories": ["Lifestyle", "Routine", "Preferences"]
+  },
+  {
+    "question": "How do you typically wind down at the end of the day?",
+    "answers": ["Watch TV", "Read", "Exercise", "Meditate", "Socialize", "Other"],
+    "categories": ["Lifestyle", "Routine", "Preferences"]
+  },
+  {
+    "question": "How do you usually spend your weekends?",
+    "answers": ["Relaxing", "Traveling", "Socializing", "Hobbies", "Working", "Other"],
+    "categories": ["Lifestyle", "Routine", "Preferences"]
+  },
+  {
+    "question": "How often do you exercise each week?",
+    "answers": ["Daily", "Several a week", "Once a week", "Occasionally", "Rarely", "Never"],
+    "categories": ["Lifestyle", "Routine", "Fitness"]
+  },
+  {
+    "question": "What is your typical work schedule?",
+    "answers": ["9-5", "Shift work", "Freelance", "Part-time", "Full-time", "Variable"],
+    "categories": ["Lifestyle", "Routine", "Work"]
+  },
+  {
+    "question": "How often do you prepare meals in advance?",
+    "answers": ["Daily", "Weekly", "Occasionally", "Rarely", "Never"],
+    "categories": ["Food", "Routine", "Health"]
+  },
+  {
+    "question": "How long is your daily commute?",
+    "answers": ["Under 30 min", "30-60 minutes", "1-2 hours", "Over 2 hours", "Work from home", "Varies"],
+    "categories": ["Lifestyle", "Routine", "Transport"]
+  },
+  {
+    "question": "What genres of music do you prefer?",
+    "answers": ["Pop", "Rock", "Jazz", "Classical", "Hip-Hop", "Country", "Electronic", "Other"],
+    "categories": ["Entertainment", "Preferences", "Music"]
+  },
+  {
+    "question": "What types of movies do you enjoy the most?",
+    "answers": ["Action", "Comedy", "Drama", "Horror", "Romance", "Sci-Fi", "Documentary", "Other"],
+    "categories": ["Entertainment", "Preferences", "Movies"]
+  },
+  {
+    "question": "What genres of books do you prefer?",
+    "answers": ["Fiction", "Non-fiction", "Mystery", "Fantasy", "Biography", "Science", "Romance", "Other"],
+    "categories": ["Entertainment", "Preferences", "Books"]
+  },
+  {
+    "question": "What is your preferred style of clothing?",
+    "answers": ["Casual", "Formal", "Sporty", "Trendy", "Vintage", "Comfortable", "Other"],
+    "categories": ["Lifestyle", "Preferences", "Fashion"]
+  },
+  {
+    "question": "What tech devices do you use most frequently?",
+    "answers": ["Smartphone", "Laptop", "Tablet", "Smartwatch", "Gaming Console", "Smart Home", "Other"],
+    "categories": ["Technology", "Preferences", "Gadgets"]
+  },
+  {
+    "question": "Do you prefer solo travel or group travel?",
+    "answers": ["Solo", "With Family", "With Friends", "Group Tours", "Other"],
+    "categories": ["Travel", "Preferences", "Style"]
+  },
+  {
+    "question": "What type of restaurants do you prefer?",
+    "answers": ["Fast Food", "Casual Dining", "Fine Dining", "Cafes", "Food Trucks", "Home-cooked", "Other"],
+    "categories": ["Food", "Preferences", "Dining"]
+  },
+  {
+    "question": "Do you prefer small gatherings or large parties?",
+    "answers": ["Small", "Large", "Depends", "Neither"],
+    "categories": ["Lifestyle", "Preferences", "Social"]
+  }
+]

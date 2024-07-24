@@ -1,0 +1,52 @@
+[
+  {
+    "question": "What type of tabletop games do you prefer?",
+    "answers": ["Board", "Card", "RPGs", "War", "Tiles", "Cooperative", "Competitive"],
+    "categories": ["Tabletop", "Games", "Preferences"]
+  },
+  {
+    "question": "How often do you play tabletop games?",
+    "answers": ["Daily", "Weekly", "Monthly", "Occasionally", "Rarely", "Events Only", "Never"],
+    "categories": ["Tabletop", "Games", "Routine"]
+  },
+  {
+    "question": "What is your favorite board game genre?",
+    "answers": ["Strategy", "Adventure", "Party", "Family", "Abstract", "Eurogames", "Thematic"],
+    "categories": ["Tabletop", "Games", "Preferences"]
+  },
+  {
+    "question": "What is your favorite aspect of tabletop gaming?",
+    "answers": ["Strategy", "Social", "Stories", "Creativity", "Competition", "Relaxation", "Collecting"],
+    "categories": ["Tabletop", "Games", "Interests"]
+  },
+  {
+    "question": "How do you typically discover new tabletop games?",
+    "answers": ["Friends", "Family", "Reviews", "Social", "Events", "Forums", "Stores"],
+    "categories": ["Tabletop", "Games", "Discovery"]
+  },
+  {
+    "question": "When buying a new tabletop game, what do you prioritize most?",
+    "answers": ["Mechanics", "Theme/Art", "Player Count", "Replayability", "Reviews", "Price", "Quality"],
+    "categories": ["Tabletop", "Games", "Preferences"]
+  },
+  {
+    "question": "What is your preferred player count for tabletop games?",
+    "answers": ["Solo", "2 Players", "3-4 Players", "5-6 Players", "7+ Players", "Varies"],
+    "categories": ["Tabletop", "Games", "Preferences"]
+  },
+  {
+    "question": "Do you prefer digital or physical tabletop games?",
+    "answers": ["Digital", "Physical", "Both", "No Preference"],
+    "categories": ["Tabletop", "Games", "Preferences"]
+  },
+  {
+    "question": "What is your favorite setting for playing tabletop games?",
+    "answers": ["Home", "Game Store", "Events", "Friends House", "Online", "Other"],
+    "categories": ["Tabletop", "Games", "Preferences"]
+  },
+  {
+    "question": "How do you store your tabletop games?",
+    "answers": ["Shelves", "Closet", "Boxes", "Display Case", "Digitally", "Other"],
+    "categories": ["Tabletop", "Games", "Preferences"]
+  }
+]

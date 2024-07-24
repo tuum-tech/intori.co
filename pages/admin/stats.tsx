@@ -7,7 +7,7 @@ import { getAllFrameSessionQuestionCounts } from '@/models/frameSession'
 import { Section } from '../../components/common/Section'
 import { StatsCard, StatsContainer } from '../../components/Stats/StatsCard'
 import { countAllUserQuestionSkips } from '../../models/userQuestionSkip'
-import { intoriQuestions } from '../../utils/frames/intoriFrameForms'
+import { getAvailableQuestions } from '../../utils/frames/questions'
 
 type Props = {
   uniqueUsersCount: number
@@ -43,7 +43,7 @@ export const getServerSideProps = (async (context) => {
     const frameSessionQuestionCounts = await getAllFrameSessionQuestionCounts()
     const totalResponses = await countUserResponses()
     const totalSkips = await countAllUserQuestionSkips()
-    const totalQuestions = intoriQuestions.length
+    const totalQuestions = getAvailableQuestions().length
 
     return {
       props: {

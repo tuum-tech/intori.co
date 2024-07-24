@@ -20,12 +20,19 @@ export const createFrameQuestionUrl = (params: {
 
 export const createStartNewFrameQuestionUrl = (params: {
   frameSessionId?: string
+  channelId?: string
 } = {}): string => {
+  const queryParts: string[] = []
+
   if (params.frameSessionId) {
-    return `${process.env.NEXTAUTH_URL}/api/frames/question?fsid=${params.frameSessionId}`
+    queryParts.push(`fsid=${params.frameSessionId}`)
   }
 
-  return `${process.env.NEXTAUTH_URL}/api/frames/question`
+  if (params.channelId) {
+    queryParts.push(`channelId=${params.channelId}`)
+  }
+
+  return `${process.env.NEXTAUTH_URL}/api/frames/question?${queryParts.join('&')}`
 }
 
 export const createSubmitAnswerUrl = (params: {

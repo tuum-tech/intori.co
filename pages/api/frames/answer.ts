@@ -7,11 +7,6 @@ import { createUserAnswer, updateUserAnswerWithBlockchainMetadata } from '../../
 import { getBlockchainSettingsForUser } from '../../../models/userBlockchainSettings'
 import { createVerifiableCredential } from '../veramo/createVerifiableCredential'
 import { registerCredential } from '../../../lib/ethers/registerCredential'
-import {
-  incrementSessionQuestion,
-  getFrameSessionById,
-  createFrameSession
-} from '../../../models/frameSession'
 import { createFrameErrorUrl, createFrameResultsUrl } from '../../../utils/frames/generatePageUrls'
 
 const answeredQuestion = async (
@@ -36,8 +31,8 @@ const answeredQuestion = async (
     buttonClicked,
     question,
     fidThatCastedFrame,
-    frameSessionId
-  } = frameSubmissionHelpers(req)
+    session
+  } = await frameSubmissionHelpers(req)
 
   if (!question) {
     return res.redirect(
@@ -46,45 +41,19 @@ const answeredQuestion = async (
     )
   }
 
-  let session = await getFrameSessionById(frameSessionId)
-
-  if (!session) {
-    session = await createFrameSession({ fid })
-
-    if (!session) {
-      return res.redirect(
-        307,
-        createFrameErrorUrl()
-      )
-    }
-  }
-
   if (!session) {
     return res.redirect(
       307,
       createFrameErrorUrl()
     )
   }
-
-  const successful = await incrementSessionQuestion(session.id)
-
-  if (!successful) {
-    return res.redirect(
-      307,
-      createFrameErrorUrl()
-    )
-  }
-
-  // const alreadyAnswered = await getUserAnswerForQuestion(fid, question.question)
-  // if (alreadyAnswered) {
-  //   return res.status(400).end()
-  // }
 
   const userResponse = await createUserAnswer({
     fid,
     question: question.question,
     answer: buttonClicked,
-    casterFid: fidThatCastedFrame
+    casterFid: fidThatCastedFrame,
+    channelId: session.channelId ?? null
   })
 
   const { autoPublish } = await getBlockchainSettingsForUser(fid)
