@@ -10,6 +10,8 @@ export type FrameSessionType = {
   createdAt: Timestamp
   questions: string[] // questions given in this session
 
+  channelId?: string // the channel id that this frame session is for
+
   suggestions: SuggestionType[]
   suggestionsRevealed: number
   followsIntori: boolean
@@ -17,6 +19,7 @@ export type FrameSessionType = {
 
 export type CreateFrameSessionType = {
   fid: number
+  channelId?: string
 }
 
 let frameSessionsCollection: FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData>

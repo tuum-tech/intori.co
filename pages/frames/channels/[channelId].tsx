@@ -1,15 +1,15 @@
 import React, { useState } from 'react'
 import { toast } from 'react-toastify'
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
-import { FrameGenerator } from '../../components/farcaster/FrameGenerator'
+import { FrameGenerator } from '../../../components/farcaster/FrameGenerator'
 import { AppLayout } from "@/layouts/App"
-import { Section } from '../../components/common/Section'
+import { Section } from '../../../components/common/Section'
 import {
     IntoriFrameType,
     createIntroductionStep
-} from '../../utils/frames/intoriFrameForms'
-import Input from '../../components/common/Input'
-import { PrimaryButton } from '../../components/common/Button'
+} from '../../../utils/frames/intoriFrameForms'
+import Input from '../../../components/common/Input'
+import { PrimaryButton } from '../../../components/common/Button'
 import styles from './FramePage.module.css'
  
 type Props = {
@@ -18,15 +18,23 @@ type Props = {
   frame: IntoriFrameType
 }
  
-export const getServerSideProps = (async () => {
-  const frameUrl = `${process.env.NEXTAUTH_URL}/frames/begin`
-  const imageUrl = `${process.env.NEXTAUTH_URL}/assets/templates/intro_frame_template.png`
+export const getServerSideProps = (async (context) => {
+  const channelId = context.params?.channelId?.toString()
+
+  if (!channelId) {
+    return {
+      notFound: true
+    }
+  }
+
+  const frameUrl = `${process.env.NEXTAUTH_URL}/frames/channels/${channelId}`
+  const imageUrl = `${process.env.NEXTAUTH_URL}/assets/frames/channels/${channelId}/intro.png`
 
   return {
     props: {
       imageUrl,
       frameUrl,
-      frame: createIntroductionStep()
+      frame: createIntroductionStep({ channelId })
     }
   }
 }) satisfies GetServerSideProps<Props>
