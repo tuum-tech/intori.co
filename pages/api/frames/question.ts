@@ -8,7 +8,7 @@ import {
 import { appendQuestionToFrameSession } from '../../../models/frameSession'
 import { getLastSkippedQuestions } from '../../../models/userQuestionSkip'
 import { saveUserFollowings } from '../../../models/userFollowings'
-import { intoriQuestions } from '../../../utils/frames/intoriFrameForms'
+import { getAvailableQuestions } from '../../../utils/frames/questions'
 import { getFrameSessionFromRequest, createFrameSession } from '../../../models/frameSession'
 import { hasUserReachedSixAnswerLimit } from '../../../utils/frames/limitSixAnswersPerDay'
 import {
@@ -59,6 +59,8 @@ const newQuestion = async (
     )
   }
 
+  const availableQuestions = getAvailableQuestions({ channelId: session.channelId })
+
   // getting next answer offset to see more answers of an already given question
   if (req.query.qi && req.query.ioff) {
     const currentQuestionIndex = parseInt(req.query.qi as string, 10)
@@ -86,18 +88,18 @@ const newQuestion = async (
   const lastAnsweredQuestion = await getLastAnsweredQuestionForUser(fid)
 
   if (lastAnsweredQuestion) {
-    indexOfLastAnsweredQuestion = intoriQuestions.findIndex(
+    indexOfLastAnsweredQuestion = availableQuestions.findIndex(
       (question) => question.question === lastAnsweredQuestion.question
     )
   }
 
   let nextQuestionIndex = (
-    indexOfLastAnsweredQuestion === intoriQuestions.length - 1
+    indexOfLastAnsweredQuestion === availableQuestions.length - 1
       ? 0
       : indexOfLastAnsweredQuestion
   )
 
-  let nextQuestion = intoriQuestions[nextQuestionIndex]
+  let nextQuestion = availableQuestions[nextQuestionIndex]
 
   const skippedQuestions = await getLastSkippedQuestions(fid, 5)
   let tries = 0;
@@ -106,12 +108,12 @@ const newQuestion = async (
     tries += 1
 
     nextQuestionIndex = (
-      nextQuestionIndex + 1 === intoriQuestions.length
+      nextQuestionIndex + 1 === availableQuestions.length
        ? 0
        : nextQuestionIndex + 1
     )
 
-    nextQuestion = intoriQuestions[nextQuestionIndex]
+    nextQuestion = availableQuestions[nextQuestionIndex]
 
     if (skippedQuestions.includes(nextQuestion.question)) {
       continue
