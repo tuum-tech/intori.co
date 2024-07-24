@@ -246,6 +246,7 @@ export const getRecentAnswersForUser = async (
   const query = collection.where('fid', '==', fid)
 
   if (filters.channelId) {
+    console.log('getting your responses where channelId:', filters.channelId)
     query.where('channelId', '==', filters.channelId)
   }
 
