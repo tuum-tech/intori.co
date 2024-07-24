@@ -4,6 +4,7 @@ import { createUserAnswer, CreateUserAnswerType } from '../models/userAnswers'
 const TOTAL = 10
 
 export const seedFakeAnswers = async () => {
+  const intoriQuestions = getAvailableQuestions()
   for (let i = 0; i < TOTAL; i++) {
     const randomQuestion = intoriQuestions[Math.floor(Math.random() * intoriQuestions.length)]
 
