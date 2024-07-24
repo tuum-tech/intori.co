@@ -244,14 +244,13 @@ export const getRecentAnswersForUser = async (
 ) => {
   const collection = getCollection()
 
-  const query = collection.where('fid', '==', fid)
+  let query = collection.where('fid', '==', fid)
 
   if (filters.channelId) {
-    console.log('getting your responses where channelId:', filters.channelId)
-    query.where('channelId', '==', filters.channelId)
+    query = query.where('channelId', '==', filters.channelId)
   }
 
-  query.orderBy('date', 'desc').limit(limit)
+  query = query.orderBy('date', 'desc').limit(limit)
 
   const snapshot = await query.get()
 
