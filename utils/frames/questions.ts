@@ -17,8 +17,8 @@ export const getAvailableQuestions = (params: {
 
   try {
     const questionJsonPath = path.join(
-      __dirname,
-      '../../public/questions/channels',
+      process.cwd(),
+      'public/questions/channels',
       `${params.channelId}.json`
     )
 
