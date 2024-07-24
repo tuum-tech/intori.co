@@ -73,10 +73,16 @@ const getCollection = () => {
 export const createUserAnswer = async (newUserAnswer: CreateUserAnswerType) => {
   const collection = getCollection()
 
-  const ref = await collection.add({
+  const body = {
     ...newUserAnswer,
     date: new Date()
-  })
+  }
+
+  if (!newUserAnswer.channelId) {
+    delete body.channelId
+  }
+
+  const ref = await collection.add(body)
 
   const doc = await ref.get()
   return doc.data() as UserAnswerType
