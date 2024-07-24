@@ -12,7 +12,8 @@ export const seedFakeAnswers = async () => {
       fid: Math.floor(Math.random() * (470223)) + 1,
       question: randomQuestion.question,
       answer: randomQuestion.answers[Math.floor(Math.random() * randomQuestion.answers.length)],
-      casterFid: Math.floor(Math.random() * (470223)) + 1
+      casterFid: Math.floor(Math.random() * (470223)) + 1,
+      channelId: null
     }
 
     await createUserAnswer(userAnswer)
