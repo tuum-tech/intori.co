@@ -53,7 +53,7 @@ const answeredQuestion = async (
     question: question.question,
     answer: buttonClicked,
     casterFid: fidThatCastedFrame,
-    channelId: session.channelId
+    channelId: session.channelId ?? null
   })
 
   const { autoPublish } = await getBlockchainSettingsForUser(fid)
