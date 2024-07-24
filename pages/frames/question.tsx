@@ -48,7 +48,18 @@ export const getServerSideProps = (async (context) => {
   }
 
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/begin`
-  const imageUrl = `${process.env.NEXTAUTH_URL}/assets/frames/questions/${questionIndex}.png`
+  const imageUrlParts = [
+    process.env.NEXTAUTH_URL,
+    '/assets/frames/questions/'
+  ]
+
+  if (session.channelId) {
+    imageUrlParts.push(`${session.channelId}/`)
+  }
+
+  imageUrlParts.push(`${questionIndex}.png`)
+
+  const imageUrl = imageUrlParts.join('')
 
   const frame: IntoriFrameType = {
     question: question.question,
