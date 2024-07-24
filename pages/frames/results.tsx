@@ -87,6 +87,8 @@ export const getServerSideProps = (async (context) => {
       usersOnly: true
     })
 
+    console.log(suggestions)
+
     await saveSuggestionsToFrameSession(session.id, suggestions)
 
     session.suggestions = suggestions

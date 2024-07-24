@@ -130,6 +130,8 @@ export const getAllSuggestedUsersAndChannels = async (
 ): Promise<SuggestionType[]> => {
   const { fid, channelId } = options
   const recentResponses = await getRecentAnswersForUser(fid, 12, { channelId })
+  console.log('total response: ', recentResponses.length)
+  console.log('recent response channel ids:', recentResponses.map((res) => res.channelId))
 
   const suggestions: SuggestionType[] = []
   const suggestedUserFids: {
