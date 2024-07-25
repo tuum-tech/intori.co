@@ -76,12 +76,14 @@ const newQuestion = async (
     )
   }
 
-  const reachedLimit = await hasUserReachedSixAnswerLimit(fid)
-  if (reachedLimit) {
-    return res.redirect(
-      307,
-      createLimitReachedUrl()
-    )
+  if (!session.channelId) {
+    const reachedLimit = await hasUserReachedSixAnswerLimit(fid)
+    if (reachedLimit) {
+      return res.redirect(
+        307,
+        createLimitReachedUrl()
+      )
+    }
   }
 
   let indexOfLastAnsweredQuestion = -1
