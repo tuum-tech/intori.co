@@ -6,20 +6,24 @@ import { AppLayout } from "@/layouts/App"
 import { Section } from '../../components/common/Section'
 import {
     IntoriFrameType,
-    IntoriFrameInputType,
-    getShareFrameCastIntent
+    IntoriFrameInputType
 } from '../../utils/frames/intoriFrameForms'
+import { getFrameSessionById } from '../../models/frameSession'
 import Input from '../../components/common/Input'
 import { PrimaryButton } from '../../components/common/Button'
+import {
+  createFrameResultsUrl,
+  createFrameErrorUrl
+} from '../../utils/frames/generatePageUrls'
 import styles from './FramePage.module.css'
- 
+
 type Props = {
   imageUrl: string
   frameUrl: string
   frame: IntoriFrameType
 }
  
-export const getServerSideProps = (async () => {
+export const getServerSideProps = (async (context) => {
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/begin`
 
   const randomLimitReachedFrameImageIndex = Math.floor(Math.random() * 3) + 1
@@ -28,17 +32,37 @@ export const getServerSideProps = (async () => {
   const inputs: IntoriFrameInputType[] = []
 
   inputs.push({
-      type: 'button',
-      action: 'link',
-      target: getShareFrameCastIntent(),
-      content: 'Share Frame'
-  })
-
-  inputs.push({
     type: 'button',
     action: 'link',
     target: 'https://www.intori.co/',
     content: 'Learn More'
+  })
+
+  const frameSessionId = context.query.fsid?.toString() as string
+  if (!frameSessionId) {
+    return {
+      redirect: {
+        destination: createFrameErrorUrl(),
+        permanent: false
+      }
+    }
+  }
+
+  const session = await getFrameSessionById(frameSessionId)
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: createFrameErrorUrl(),
+        permanent: false
+      }
+    }
+  }
+
+  inputs.push({
+    type: 'button',
+    postUrl: createFrameResultsUrl({ frameSessionId: session.id }),
+    content: '✨ Reveal'
   })
 
   const frame: IntoriFrameType = {

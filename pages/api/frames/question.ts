@@ -81,7 +81,7 @@ const newQuestion = async (
     if (reachedLimit) {
       return res.redirect(
         307,
-        createLimitReachedUrl()
+        createLimitReachedUrl({ frameSessionId: session.id })
       )
     }
   }
@@ -93,6 +93,10 @@ const newQuestion = async (
     indexOfLastAnsweredQuestion = availableQuestions.findIndex(
       (question) => question.question === lastAnsweredQuestion.question
     )
+  }
+
+  if (indexOfLastAnsweredQuestion === availableQuestions.length - 1) {
+    // TODO: we are at the end. Show answered all questions frame.
   }
 
   let nextQuestionIndex = (
@@ -132,7 +136,7 @@ const newQuestion = async (
     console.log('Reached 20 tries to find a new question.')
     return res.redirect(
       307,
-      createLimitReachedUrl()
+      createLimitReachedUrl({ frameSessionId: session.id })
     )
   }
 
