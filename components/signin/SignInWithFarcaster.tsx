@@ -10,7 +10,10 @@ import { authKitConfig } from '../../utils/farcaster'
 
 import styles from './SignInWithFarcaster.module.css'
 
-export const SignInWithFarcasterButton: React.FC = () => {
+type Props = {
+  redirect?: string
+}
+export const SignInWithFarcasterButton: React.FC<Props> = ({ redirect }) => {
     const [error, setError] = useState(false)
 
     // A nonce ensures that each authentication request is unique.
@@ -37,9 +40,9 @@ export const SignInWithFarcasterButton: React.FC = () => {
                 redirect: false,
             })
 
-          window.location.href = "/dashboard"
+          window.location.href = redirect ?? "/dashboard"
         },
-        []
+        [redirect]
     )
 
     useEffect(() => {
