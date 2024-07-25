@@ -50,6 +50,12 @@ export const createLimitReachedUrl = (params: {
   return `${process.env.NEXTAUTH_URL}/frames/limit?fsid=${params.frameSessionId}`
 }
 
+export const createAnsweredAllQuestionsUrl = (params: {
+  frameSessionId: string
+}): string => {
+  return `${process.env.NEXTAUTH_URL}/frames/answered-all-questions?fsid=${params.frameSessionId}`
+}
+
 export const createSkipQuestionUrl = (params: {
   questionIndex: number
   frameSessionId: string
