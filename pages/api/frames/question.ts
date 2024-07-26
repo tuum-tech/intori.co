@@ -15,7 +15,8 @@ import {
   createFrameQuestionUrl,
   createFrameErrorUrl,
   createFrameResultsUrl,
-  createLimitReachedUrl
+  createLimitReachedUrl,
+  createAnsweredAllQuestionsUrl
 } from '../../../utils/frames/generatePageUrls'
 
 // User is requesting a new question
@@ -96,15 +97,13 @@ const newQuestion = async (
   }
 
   if (indexOfLastAnsweredQuestion === availableQuestions.length - 1) {
-    // TODO: we are at the end. Show answered all questions frame.
+      return res.redirect(
+        307,
+        createAnsweredAllQuestionsUrl({ frameSessionId: session.id })
+      )
   }
 
-  let nextQuestionIndex = (
-    indexOfLastAnsweredQuestion === availableQuestions.length - 1
-      ? 0
-      : indexOfLastAnsweredQuestion
-  )
-
+  let nextQuestionIndex = indexOfLastAnsweredQuestion
   let nextQuestion = availableQuestions[nextQuestionIndex]
 
   const skippedQuestions = await getLastSkippedQuestions(fid, 5)
@@ -113,11 +112,14 @@ const newQuestion = async (
   while (tries < 20) {
     tries += 1
 
-    nextQuestionIndex = (
-      nextQuestionIndex + 1 === availableQuestions.length
-       ? 0
-       : nextQuestionIndex + 1
-    )
+    nextQuestionIndex = nextQuestionIndex + 1
+
+    if (nextQuestionIndex === availableQuestions.length - 1) {
+      return res.redirect(
+        307,
+        createAnsweredAllQuestionsUrl({ frameSessionId: session.id })
+      )
+    }
 
     nextQuestion = availableQuestions[nextQuestionIndex]
 
