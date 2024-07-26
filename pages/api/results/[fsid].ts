@@ -2,10 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import Jimp from 'jimp'
 import * as path from 'path'
 import {
-  loadKumbSans32,
-  loadKumbSans26medium,
-  loadKumbSans21,
-  loadKumbSans14
+  loadFont
 } from '../../../utils/frames/fonts'
 import { getLastCastForUser } from '../../../utils/neynarApi'
 import { countTotalResponsesForUser } from '../../../models/userAnswers'
@@ -21,7 +18,7 @@ import {
 
 // Note: This is used to create a circle masked image
 //
-async function createCircularImage(url: string, baseImage: Jimp): Promise<void> {
+async function createAvatar(url: string, baseImage: Jimp): Promise<void> {
   try {
     const urlImage = await Jimp.read(url);
 
@@ -29,7 +26,7 @@ async function createCircularImage(url: string, baseImage: Jimp): Promise<void> 
       path.join(process.cwd(), 'public/frame_template_mask.png')
     );
 
-    const circleImageSize = 183;
+    const circleImageSize = 192;
 
     // Resize the mask to the desired circle size
     maskImage.resize(circleImageSize, circleImageSize);
@@ -51,7 +48,7 @@ async function createCircularImage(url: string, baseImage: Jimp): Promise<void> 
     urlImage.mask(maskImage, 0, 0);
 
     // Composite the result onto the base image
-    baseImage.composite(urlImage, 201, 49);
+    baseImage.composite(urlImage, 93, 119);
   } catch (error) {
     console.error('Error creating circular image:', error)
     throw error
@@ -63,7 +60,7 @@ async function addPowerBadge(baseImage: Jimp): Promise<void> {
     path.join(process.cwd(), 'public/assets/templates/powerbadge.png')
   )
 
-  baseImage.composite(powerBadge, 340, 59, {
+  baseImage.composite(powerBadge, 238, 119, {
     mode: Jimp.BLEND_SOURCE_OVER,
     opacitySource: 1,
     opacityDest: 1
@@ -106,66 +103,131 @@ const getProfileFramePictureImage = async (
   const lastCast = await getLastCastForUser(suggestedUserFid)
   const lastCastTimeAgo = lastCast ? `Last cast ${timeAgo(lastCast.timestamp)}` : 'Never casted'
 
-  const font14 = await loadKumbSans14()
-  const font21 = await loadKumbSans21()
-  const font26medium = await loadKumbSans26medium()
-  const font32 = await loadKumbSans32()
+  const font18black = await loadFont({
+    family: 'kumbh_sans',
+    weight: 'regular',
+    size: 18,
+    color: 'black'
+  })
+
+  const font21black = await loadFont({
+    family: 'kumbh_sans',
+    weight: 'regular',
+    size: 21,
+    color: 'black'
+  })
+
+  const font24grey = await loadFont({
+    family: 'kumbh_sans',
+    weight: 'regular',
+    size: 24,
+    color: 'grey'
+  })
+
+  const font32black = await loadFont({
+    family: 'kumbh_sans',
+    weight: 'regular',
+    size: 32,
+    color: 'black'
+  })
+  const font32white = await loadFont({
+    family: 'kumbh_sans',
+    weight: 'regular',
+    size: 32,
+    color: 'white'
+  })
+
+  // display name
+  baseImage.print(
+    font32black,
+    318,
+    162,
+    {
+      text: (userSuggestion.user.displayName
+        ? removeEmojis(userSuggestion.user.displayName)
+        : userSuggestion.user.username
+      ),
+      alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
+      alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
+    },
+    356,
+    26
+  )
 
   // username
   baseImage.print(
-    font21,
-    444,
-    49,
+    font24grey,
+    318,
+    198,
     {
       text: `@${userSuggestion.user.username}`,
-      alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
+      alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
-    295,
-    37
+    356,
+    26
+  )
+
+  // fid
+  baseImage.print(
+    font18black,
+    318,
+    234,
+    {
+      text: `FID ${userSuggestion.user.fid}`,
+      alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
+      alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
+    },
+    356,
+    26
   )
 
   const avatar = userSuggestion.user.image ?? path.join(process.cwd(), 'public/assets/templates/avatar_fallback.png')
 
   // avatar
-  await createCircularImage(
+  await createAvatar(
     avatar,
     baseImage
   )
 
+  // power badge on avatar
+  if (userSuggestion.user.powerBadge) {
+    await addPowerBadge(baseImage)
+  }
+
   // total responses
   baseImage.print(
-    font21,
-    230,
-    277,
+    font18black,
+    119,
+    62,
     {
       text: `${totalResponses} Response${totalResponses === 1 ? '' : 's'}`,
       alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
-    216,
-    28
+    118,
+    26
   )
 
   // last cast
   baseImage.print(
-    font21,
-    484,
-    277,
+    font18black,
+    415,
+    62,
     {
       text: lastCastTimeAgo,
       alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
-    262,
-    28
+    217,
+    26
   )
 
   // bio
   baseImage.print(
-    font21,
-    202,
-    317,
+    font21black,
+    107,
+    336,
     {
       text: (
         userSuggestion.user.bio
@@ -175,74 +237,38 @@ const getProfileFramePictureImage = async (
       alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
       alignmentY: Jimp.VERTICAL_ALIGN_TOP
     },
-    537,
-    128
+    552,
+    100
   )
 
   // first reason
   baseImage.print(
-    font26medium,
-    221,
-    466,
+    font32white,
+    93,
+    445,
     {
       text: userSuggestion.reason[0],
-      alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
+      alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
-    522,
-    148
+    581,
+    179
   )
 
   // +N other responses
   if (userSuggestion.reason.length > 1) {
     baseImage.print(
-      font21,
-      230,
-      643,
+      font18black,
+      107,
+      630,
       {
-        text: `+${userSuggestion.reason.length - 1} other answer${userSuggestion.reason.length === 2 ? '' : 's'} in common!`,
+        text: `+ ${userSuggestion.reason.length - 1} other answer${userSuggestion.reason.length === 2 ? '' : 's'} in common!`,
         alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
         alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
       },
-      436,
-      25
+      356,
+      26
     )
-  }
-
-  // name
-  baseImage.print(
-    font32,
-    387,
-    90,
-    {
-      text: (userSuggestion.user.displayName
-        ? removeEmojis(userSuggestion.user.displayName)
-        : userSuggestion.user.username
-      ),
-      alignmentX: Jimp.HORIZONTAL_ALIGN_RIGHT,
-      alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
-    },
-    352,
-    40
-  )
-
-  // fid
-  baseImage.print(
-    font14,
-    387,
-    134,
-    {
-      text: `FID ${userSuggestion.user.fid}`,
-      alignmentX: Jimp.HORIZONTAL_ALIGN_RIGHT,
-      alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
-    },
-    352,
-    17
-  )
-
-  // power badge next to name
-  if (userSuggestion.user.powerBadge) {
-    await addPowerBadge(baseImage)
   }
 
   const buffer = await baseImage.getBufferAsync(Jimp.MIME_PNG)
