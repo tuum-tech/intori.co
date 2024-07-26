@@ -15,11 +15,5 @@ export const loadFont = async (params: {
     fileName
   )
 
-  try {
-    await Jimp.read(pathToFont)
-  } catch (error) {
-    throw new Error(`Font file ${fileName} does not exist`)
-  }
-
   return await Jimp.loadFont(pathToFont)
 }
