@@ -126,14 +126,15 @@ const getProfileFramePictureImage = async (
 
   const font32black = await loadFont({
     family: 'kumbh_sans',
-    weight: 'regular',
+    weight: 'bold',
     size: 32,
     color: 'black'
   })
-  const font32white = await loadFont({
+
+  const font28white = await loadFont({
     family: 'kumbh_sans',
-    weight: 'regular',
-    size: 32,
+    weight: 'semibold',
+    size: 28,
     color: 'white'
   })
 
@@ -243,7 +244,7 @@ const getProfileFramePictureImage = async (
 
   // first reason
   baseImage.print(
-    font32white,
+    font28white,
     93,
     445,
     {
