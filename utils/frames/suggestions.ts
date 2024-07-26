@@ -130,8 +130,6 @@ export const getAllSuggestedUsersAndChannels = async (
 ): Promise<SuggestionType[]> => {
   const { fid, channelId } = options
   const recentResponses = await getRecentAnswersForUser(fid, 12, { channelId })
-  console.log('total response: ', recentResponses.length)
-  console.log('recent response channel ids:', recentResponses.map((res) => res.channelId))
 
   const suggestions: SuggestionType[] = []
   const suggestedUserFids: {
@@ -155,11 +153,13 @@ export const getAllSuggestedUsersAndChannels = async (
         continue
       }
 
-      const alreadyFollows = await doesUserAlreadyFollowUser(fid, res.fid)
+      // TEMPORARY: We will still show users that you follow
+      //
+      // const alreadyFollows = await doesUserAlreadyFollowUser(fid, res.fid)
 
-      if (alreadyFollows) {
-        continue
-      }
+      // if (alreadyFollows) {
+      //   continue
+      // }
 
       const alreadySuggested = suggestedUserFids.findIndex(
         (suggestedFid) => suggestedFid.fid === res.fid
