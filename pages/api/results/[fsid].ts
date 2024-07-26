@@ -245,15 +245,15 @@ const getProfileFramePictureImage = async (
   // first reason
   baseImage.print(
     font28white,
-    93,
-    445,
+    104,
+    455,
     {
       text: userSuggestion.reason[0],
       alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
-    581,
-    179
+    557,
+    159
   )
 
   // +N other responses
