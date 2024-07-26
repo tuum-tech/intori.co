@@ -48,18 +48,20 @@ export const determineAllAnswerOffsetsForQuestion = (questionIndex: number, chan
   return answerOffsets
 }
 
-const getNextAnswerOffset = (questionIndex: number, answerOffset: number): number => {
-  const allAnswerOffsets = determineAllAnswerOffsetsForQuestion(questionIndex)
+const getNextAnswerOffset = (questionIndex: number, answerOffset: number, channelId?: string): number => {
+  const allAnswerOffsets = determineAllAnswerOffsetsForQuestion(questionIndex, channelId)
   const currentOffsetIndex = allAnswerOffsets.indexOf(answerOffset)
 
-  return allAnswerOffsets[currentOffsetIndex + 1]
+  const next =  allAnswerOffsets[currentOffsetIndex + 1]
+
+  return next
 }
 
-const getBackAnswerOffset = (questionIndex: number, answerOffset: number): number => {
+const getBackAnswerOffset = (questionIndex: number, answerOffset: number, channelId?: string): number => {
   if (!answerOffset) {
     return answerOffset
   }
-  const allAnswerOffsets = determineAllAnswerOffsetsForQuestion(questionIndex)
+  const allAnswerOffsets = determineAllAnswerOffsetsForQuestion(questionIndex, channelId)
   const currentOffsetIndex = allAnswerOffsets.indexOf(answerOffset)
 
   return allAnswerOffsets[currentOffsetIndex - 1]
@@ -124,7 +126,7 @@ export const getFrameInputsBasedOnAnswerOffset = (
       content: 'More >',
       postUrl: createFrameQuestionUrl({
           questionIndex,
-          answerOffset: getNextAnswerOffset(questionIndex, 0),
+          answerOffset: getNextAnswerOffset(questionIndex, 0, frameSession.channelId),
           frameSessionId
       })
     })
@@ -134,7 +136,7 @@ export const getFrameInputsBasedOnAnswerOffset = (
 
   const isLastFrameOfAnswers = answerOffset + 2 >= question.answers.length
 
-  const previousOffset = getBackAnswerOffset(questionIndex, answerOffset)
+  const previousOffset = getBackAnswerOffset(questionIndex, answerOffset, frameSession.channelId)
   inputs.push({
     type: 'button',
     content: '< Back',
@@ -157,7 +159,7 @@ export const getFrameInputsBasedOnAnswerOffset = (
       content: 'More >',
       postUrl: createFrameQuestionUrl({
         questionIndex,
-        answerOffset: getNextAnswerOffset(questionIndex, answerOffset),
+        answerOffset: getNextAnswerOffset(questionIndex, answerOffset, frameSession.channelId),
         frameSessionId
       })
     })
