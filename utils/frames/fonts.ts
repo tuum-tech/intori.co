@@ -3,7 +3,7 @@ import Jimp from 'jimp'
 
 export const loadFont = async (params: {
   family: 'kumbh_sans'
-  weight: 'regular' | 'medium' | 'light' | 'semibold'
+  weight: 'regular' | 'medium' | 'light' | 'semibold' | 'bold'
   size: number
   color: 'white' | 'black' | 'grey'
 }) => {
