@@ -4,16 +4,26 @@ import * as path from 'path'
 import { getAvailableQuestions, IntoriQuestionType } from './questions'
 import { channelFrames } from './channelFrames'
 import {
-  loadKumbSans46,
-  loadKumbSans26
+  loadFont,
 } from './fonts'
 
 let kumbhSans46: Font
 let kumbhSans26: Font
 
 const loadFonts = async () => {
-  kumbhSans46 = await loadKumbSans46()
-  kumbhSans26 = await loadKumbSans26()
+  kumbhSans46 = await loadFont({
+    family: 'kumbh_sans',
+    size: 46,
+    weight: 'regular',
+    color: 'white'
+  })
+
+  kumbhSans26 = await loadFont({
+    family: 'kumbh_sans',
+    size: 26,
+    weight: 'medium',
+    color: 'white'
+  })
 }
 
 const generateQuestionnaireStepImage = async (
