@@ -7,7 +7,6 @@ import {
 } from '../../../models/userAnswers'
 import { appendQuestionToFrameSession } from '../../../models/frameSession'
 import { getLastSkippedQuestions } from '../../../models/userQuestionSkip'
-import { saveUserFollowings } from '../../../models/userFollowings'
 import { getAvailableQuestions } from '../../../utils/frames/questions'
 import { createFrameSession } from '../../../models/frameSession'
 import { hasUserReachedSixAnswerLimit } from '../../../utils/frames/limitSixAnswersPerDay'
@@ -43,7 +42,6 @@ const newQuestion = async (
   let session = initialSession
   if (!session) {
     session = await createFrameSession({ fid, channelId })
-    // saveUserFollowings(fid)
   }
 
   if (!session) {
