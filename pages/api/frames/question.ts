@@ -43,7 +43,7 @@ const newQuestion = async (
   let session = initialSession
   if (!session) {
     session = await createFrameSession({ fid, channelId })
-    saveUserFollowings(fid)
+    // saveUserFollowings(fid)
   }
 
   if (!session) {
