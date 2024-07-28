@@ -136,7 +136,7 @@ const newQuestion = async (
     console.log('Reached 20 tries to find a new question.')
     return res.redirect(
       307,
-      createLimitReachedUrl({ frameSessionId: session.id })
+      createAnsweredAllQuestionsUrl({ frameSessionId: session.id })
     )
   }
 
