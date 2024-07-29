@@ -23,7 +23,7 @@ export const Section: React.FC<Props> = ({
     )
 }
 
-export const SectionTopActions: React.FC = ({ children }) => {
+export const SectionTopActions: React.FC<Props> = ({ children }) => {
   return (
     <div className={styles.topActions}>
       {children}
