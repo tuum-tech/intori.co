@@ -342,3 +342,19 @@ export const getLastAnsweredQuestionForUser = async (fid: number): Promise<UserA
 
   return querySnapshot.docs[0].data() as UserAnswerType
 }
+
+export const getAllUserResponses = async () => {
+  const collection = getCollection()
+  const querySnapshot = await collection.get()
+
+  return querySnapshot.docs.map(
+    (doc) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { answer, date, ...rest } = doc.data() as UserAnswerType
+      return {
+        ...rest,
+        date: new Date(date.seconds * 1000).toISOString()
+      }
+    }
+  )
+}
