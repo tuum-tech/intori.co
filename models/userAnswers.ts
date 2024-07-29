@@ -356,5 +356,8 @@ export const getAllUserResponses = async () => {
         date: new Date(date.seconds * 1000).toISOString().split('T')[0]
       }
     }
-  )
+  ).sort((a, b) => {
+    // most recent answers first
+    return new Date(b.date).getTime() - new Date(a.date).getTime()
+  })
 }
