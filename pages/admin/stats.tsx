@@ -4,10 +4,11 @@ import { getSession } from "next-auth/react"
 import { AppLayout } from "@/layouts/App"
 import { getUniqueUserFids, countUserResponses } from '@/models/userAnswers'
 import { getAllFrameSessionQuestionCounts } from '@/models/frameSession'
-import { Section } from '../../components/common/Section'
+import { Section, SectionTopActions } from '../../components/common/Section'
 import { StatsCard, StatsContainer } from '../../components/Stats/StatsCard'
 import { countAllUserQuestionSkips } from '../../models/userQuestionSkip'
 import { getAvailableQuestions } from '../../utils/frames/questions'
+import { PrimaryButton } from '../../components/common/Button'
 
 type Props = {
   uniqueUsersCount: number
@@ -82,6 +83,13 @@ const AdminStats: NextPage<Props> = ({
         title="Admin Stats"
         subtitle="Here you can see some stats about the frames."
       >
+        <SectionTopActions>
+          <a href="/api/stats/csv" target="_blank" rel="noopener noreferrer">
+            <PrimaryButton>
+              Download CSV
+            </PrimaryButton>
+          </a>
+        </SectionTopActions>
         <StatsContainer>
           <StatsCard
             title="Unique Users"
