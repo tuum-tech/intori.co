@@ -4,5 +4,8 @@ export const channelFrames = [
   },
   {
     channelId: 'olympics'
+  },
+  {
+    channelId: 'welcome'
   }
 ]
