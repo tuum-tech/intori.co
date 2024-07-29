@@ -353,7 +353,7 @@ export const getAllUserResponses = async () => {
       const { answer, date, ...rest } = doc.data() as UserAnswerType
       return {
         ...rest,
-        date: new Date(date.seconds * 1000).toISOString()
+        date: new Date(date.seconds * 1000).toISOString().split('T')[0]
       }
     }
   )
