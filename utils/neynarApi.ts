@@ -137,5 +137,3 @@ export const getFidsUserIsFollowing = async (fid: number): Promise<number[]> => 
 
   return followingFids
 }
-
-getFidsUserIsFollowing(230238)
