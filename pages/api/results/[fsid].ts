@@ -213,7 +213,8 @@ const getProfileFramePictureImage = async (
   drawText(
     ctx,
     {
-      text: replaceNewlinesWithSpaces(userSuggestion.user.bio || 'No bio'),
+      // text: replaceNewlinesWithSpaces(userSuggestion.user.bio || 'No bio'),
+      text: `This is a test bio 🚀🔥✨✅`,
       x: 107,
       y: 336,
       maxWidth: 552,
