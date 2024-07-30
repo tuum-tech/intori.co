@@ -1,7 +1,7 @@
 import { NeynarAPIClient } from '@neynar/nodejs-sdk'
 
 const neynar = new NeynarAPIClient(
-  '46689088-4A63-4573-9BC8-B74736EE65DC'
+  process.env.NEYNAR_API_KEY || 'please add neynar api key'
 )
 
 export type FarcasterChannelType = {
