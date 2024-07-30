@@ -142,24 +142,24 @@ const getProfileFramePictureImage = async (
   baseImage.print(
     font32black,
     318,
-    162,
+    122,
     {
       text: (userSuggestion.user.displayName
         ? removeEmojis(userSuggestion.user.displayName)
         : userSuggestion.user.username
       ),
       alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
-      alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
+      alignmentY: Jimp.VERTICAL_ALIGN_BOTTOM
     },
     356,
-    26
+    74
   )
 
   // username
   baseImage.print(
     font24grey,
     318,
-    198,
+    208,
     {
       text: `@${userSuggestion.user.username}`,
       alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
@@ -173,7 +173,7 @@ const getProfileFramePictureImage = async (
   baseImage.print(
     font18black,
     318,
-    234,
+    244,
     {
       text: `FID ${userSuggestion.user.fid}`,
       alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
