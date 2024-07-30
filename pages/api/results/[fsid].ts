@@ -23,7 +23,7 @@ async function createAvatar(url: string, baseImage: Jimp): Promise<void> {
     const urlImage = await Jimp.read(url);
 
     const maskImage = await Jimp.read(
-      path.join(process.cwd(), 'public/frame_template_mask.png')
+      path.join(process.cwd(), 'public/assets/templates/circle_mask.png')
     );
 
     const circleImageSize = 192;
