@@ -248,6 +248,7 @@ export const getRecentAnswersForUser = async (
   limit: number = 10,
   filters: {
     channelId?: string
+    noChannel?: boolean
   } = {}
 ) => {
   const collection = getCollection()
@@ -256,7 +257,7 @@ export const getRecentAnswersForUser = async (
 
   if (filters.channelId) {
     query = query.where('channelId', '==', filters.channelId)
-  } else {
+  } else if (filters.noChannel) {
     query = query.where('channelId', '==', null)
   }
 

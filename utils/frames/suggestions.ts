@@ -125,11 +125,18 @@ export const getAllSuggestedUsersAndChannels = async (
   options: {
     fid: number,
     channelId?: string
+    noChannel?: boolean
     usersOnly?: boolean
   }
 ): Promise<SuggestionType[]> => {
-  const { fid, channelId } = options
-  const recentResponses = await getRecentAnswersForUser(fid, 12, { channelId })
+  const { fid, channelId, noChannel } = options
+  const recentResponses = await getRecentAnswersForUser(
+    fid,
+    12,
+    {
+      channelId,
+      noChannel
+    })
 
   const suggestions: SuggestionType[] = []
   const suggestedUserFids: {
