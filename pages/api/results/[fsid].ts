@@ -9,7 +9,7 @@ import {
 } from '../../../utils/frames/generatePageUrls'
 import {
   timeAgo,
-  replaceNewlinesWithSpaces,
+  // replaceNewlinesWithSpaces,
   removeEmojis
 } from '../../../utils/textHelpers'
 import { drawText, addImageToCanvas } from '../../../utils/canvasHelpers'
