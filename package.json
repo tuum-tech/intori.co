@@ -32,6 +32,7 @@
     "@veramo/kms-web3": "^6.0.0",
     "@veramo/selective-disclosure": "^6.0.0",
     "axios": "^1.6.0",
+    "canvas": "^2.11.2",
     "crypto": "^1.0.1",
     "csv-writer": "^1.6.0",
     "date-fns": "^3.6.0",
