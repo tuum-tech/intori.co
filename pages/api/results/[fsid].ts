@@ -1,9 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import Jimp from 'jimp'
+import { createCanvas, loadImage, CanvasRenderingContext2D } from 'canvas';
 import * as path from 'path'
-import {
-  loadFont
-} from '../../../utils/frames/fonts'
 import { getLastCastForUser } from '../../../utils/neynarApi'
 import { countTotalResponsesForUser } from '../../../models/userAnswers'
 import { getFrameSessionFromRequest } from '../../../models/frameSession'
@@ -15,56 +12,53 @@ import {
   replaceNewlinesWithSpaces,
   removeEmojis
 } from '../../../utils/textHelpers'
+import { drawText, addImageToCanvas } from '../../../utils/canvasHelpers'
 
 // Note: This is used to create a circle masked image
 //
-async function createAvatar(url: string, baseImage: Jimp): Promise<void> {
+async function createAvatar(
+  ctx: CanvasRenderingContext2D,
+  url: string,
+  position: {
+    x: number,
+    y: number
+  }
+): Promise<void> {
   try {
-    const urlImage = await Jimp.read(url);
+    const circleSize = 192;
+    const image = await loadImage(url);
 
-    const maskImage = await Jimp.read(
-      path.join(process.cwd(), 'public/frame_template_mask.png')
-    );
+    // Create an off-screen canvas to perform the masking and scaling
+    const offscreenCanvas = createCanvas(circleSize, circleSize);
+    const offscreenCtx = offscreenCanvas.getContext('2d');
 
-    const circleImageSize = 192;
-
-    // Resize the mask to the desired circle size
-    maskImage.resize(circleImageSize, circleImageSize);
-
-    // Calculate the scale to fill the circle mask without stretching
-    const scale = Math.max(circleImageSize / urlImage.bitmap.width, circleImageSize / urlImage.bitmap.height);
+    // Calculate the scale to fill the circle without stretching
+    const scale = Math.max(circleSize / image.width, circleSize / image.height);
 
     // Resize the image proportionally
-    urlImage.scale(scale);
+    const width = image.width * scale;
+    const height = image.height * scale;
 
-    // Calculate the dimensions to crop the image to fit the circle mask
-    const x = (urlImage.bitmap.width - circleImageSize) / 2;
-    const y = (urlImage.bitmap.height - circleImageSize) / 2;
+    // Calculate the dimensions to crop the image to fit the circle
+    const offsetX = (width - circleSize) / 2;
+    const offsetY = (height - circleSize) / 2;
 
-    // Crop the image to ensure it covers the circle mask completely
-    urlImage.crop(x, y, circleImageSize, circleImageSize);
+    // Draw the image on the off-screen canvas
+    offscreenCtx.drawImage(image, -offsetX, -offsetY, width, height);
 
-    // Apply the mask to the cropped image
-    urlImage.mask(maskImage, 0, 0);
+    // Create a circular clipping path
+    offscreenCtx.globalCompositeOperation = 'destination-in';
+    offscreenCtx.beginPath();
+    offscreenCtx.arc(circleSize / 2, circleSize / 2, circleSize / 2, 0, Math.PI * 2);
+    offscreenCtx.closePath();
+    offscreenCtx.fill();
 
-    // Composite the result onto the base image
-    baseImage.composite(urlImage, 93, 119);
+    // Draw the resulting circular image on the main canvas
+    ctx.drawImage(offscreenCanvas, position.x, position.y, circleSize, circleSize);
   } catch (error) {
     console.error('Error creating circular image:', error)
     throw error
   }
-}
-
-async function addPowerBadge(baseImage: Jimp): Promise<void> {
-  const powerBadge = await Jimp.read(
-    path.join(process.cwd(), 'public/assets/templates/powerbadge.png')
-  )
-
-  baseImage.composite(powerBadge, 238, 119, {
-    mode: Jimp.BLEND_SOURCE_OVER,
-    opacitySource: 1,
-    opacityDest: 1
-  })
 }
 
 const getProfileFramePictureImage = async (
@@ -75,9 +69,12 @@ const getProfileFramePictureImage = async (
     return res.status(405).end()
   }
 
-  const baseImage = await Jimp.read(
+  const baseImage = await loadImage(
       path.join(process.cwd(), 'public/assets/templates/results_frame_template.png')
   )
+  const canvas = createCanvas(baseImage.width, baseImage.height)
+  const ctx = canvas.getContext('2d')
+  ctx.drawImage(baseImage, 0, 0)
 
   const session = await getFrameSessionFromRequest(req)
 
@@ -103,176 +100,160 @@ const getProfileFramePictureImage = async (
   const lastCast = await getLastCastForUser(suggestedUserFid)
   const lastCastTimeAgo = lastCast ? `Last cast ${timeAgo(lastCast.timestamp)}` : 'Never casted'
 
-  const font18black = await loadFont({
-    family: 'kumbh_sans',
-    weight: 'regular',
-    size: 18,
-    color: 'black'
-  })
-
-  const font21black = await loadFont({
-    family: 'kumbh_sans',
-    weight: 'regular',
-    size: 21,
-    color: 'black'
-  })
-
-  const font24grey = await loadFont({
-    family: 'kumbh_sans',
-    weight: 'regular',
-    size: 24,
-    color: 'grey'
-  })
-
-  const font32black = await loadFont({
-    family: 'kumbh_sans',
-    weight: 'bold',
-    size: 32,
-    color: 'black'
-  })
-
-  const font28white = await loadFont({
-    family: 'kumbh_sans',
-    weight: 'semibold',
-    size: 28,
-    color: 'white'
-  })
+  const BLACK = '#0B0B15'
+  const WHITE = '#FFFFFF'
+  const GREY = '#393939'
 
   // display name
-  baseImage.print(
-    font32black,
-    318,
-    122,
+  drawText(
+    ctx,
     {
       text: (userSuggestion.user.displayName
-        ? removeEmojis(userSuggestion.user.displayName)
-        : userSuggestion.user.username
+          ? removeEmojis(userSuggestion.user.displayName)
+          : userSuggestion.user.username
       ),
-      alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
-      alignmentY: Jimp.VERTICAL_ALIGN_BOTTOM
-    },
-    356,
-    74
+      x: 318,
+      y: 122,
+      maxWidth: 356,
+      lineHeight: 38,
+      fontSize: '32px',
+      color: BLACK
+    }
   )
 
   // username
-  baseImage.print(
-    font24grey,
-    318,
-    208,
+  drawText(
+    ctx,
     {
       text: `@${userSuggestion.user.username}`,
-      alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
-      alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
-    },
-    356,
-    26
+      x: 318,
+      y: 208,
+      maxWidth: 356,
+      lineHeight: 26,
+      fontSize: '24px',
+      color: GREY
+    }
   )
 
   // fid
-  baseImage.print(
-    font18black,
-    318,
-    244,
+  drawText(
+    ctx,
     {
       text: `FID ${userSuggestion.user.fid}`,
-      alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
-      alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
-    },
-    356,
-    26
+      x: 318,
+      y: 244,
+      maxWidth: 356,
+      lineHeight: 18,
+      fontSize: '18px',
+      color: BLACK
+    }
   )
 
-  const avatar = userSuggestion.user.image ?? path.join(process.cwd(), 'public/assets/templates/avatar_fallback.png')
+  const avatar = (
+    userSuggestion.user.image ??
+    path.join(process.cwd(), 'public/assets/templates/avatar_fallback.png')
+  )
 
   // avatar
   await createAvatar(
+    ctx,
     avatar,
-    baseImage
+    {
+      x: 93,
+      y: 119
+    }
   )
 
   // power badge on avatar
   if (userSuggestion.user.powerBadge) {
-    await addPowerBadge(baseImage)
+    const powerBadgeImagePath = path.join(
+      process.cwd(), 
+      'public/assets/templates/powerbadge.png'
+    )
+
+    await addImageToCanvas(
+      ctx,
+      powerBadgeImagePath,
+      {
+        x: 238,
+        y: 119
+      }
+    )
   }
 
   // total responses
-  baseImage.print(
-    font18black,
-    119,
-    62,
+  drawText(
+    ctx,
     {
       text: `${totalResponses} Response${totalResponses === 1 ? '' : 's'}`,
-      alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
-      alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
-    },
-    118,
-    26
+      x: 119,
+      y: 62,
+      maxWidth: 118,
+      lineHeight: 18,
+      fontSize: '18px',
+      color: BLACK
+    }
   )
 
   // last cast
-  baseImage.print(
-    font18black,
-    415,
-    62,
+  drawText(
+    ctx,
     {
       text: lastCastTimeAgo,
-      alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
-      alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
-    },
-    217,
-    26
+      x: 415,
+      y: 62,
+      maxWidth: 217,
+      lineHeight: 18,
+      fontSize: '18px',
+      color: BLACK
+    }
   )
 
   // bio
-  baseImage.print(
-    font21black,
-    107,
-    336,
+  drawText(
+    ctx,
     {
-      text: (
-        userSuggestion.user.bio
-          ? removeEmojis(replaceNewlinesWithSpaces(userSuggestion.user.bio))
-          : 'No bio'
-      ),
-      alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
-      alignmentY: Jimp.VERTICAL_ALIGN_TOP
-    },
-    552,
-    100
+      text: replaceNewlinesWithSpaces(userSuggestion.user.bio || 'No bio'),
+      x: 107,
+      y: 336,
+      maxWidth: 552,
+      lineHeight: 26,
+      fontSize: '21px',
+      color: BLACK
+    }
   )
 
   // first reason
-  baseImage.print(
-    font28white,
-    104,
-    455,
+  drawText(
+    ctx,
     {
       text: userSuggestion.reason[0],
-      alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
-      alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
-    },
-    557,
-    159
+      x: 104,
+      y: 455,
+      maxWidth: 557,
+      lineHeight: 35,
+      fontSize: '28px',
+      color: WHITE
+    }
   )
 
   // +N other responses
   if (userSuggestion.reason.length > 1) {
-    baseImage.print(
-      font18black,
-      107,
-      630,
+    drawText(
+      ctx,
       {
         text: `+ ${userSuggestion.reason.length - 1} other answer${userSuggestion.reason.length === 2 ? '' : 's'} in common!`,
-        alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
-        alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
-      },
-      356,
-      26
+        x: 107,
+        y: 630,
+        maxWidth: 356,
+        lineHeight: 18,
+        fontSize: '18px',
+        color: BLACK
+      }
     )
   }
 
-  const buffer = await baseImage.getBufferAsync(Jimp.MIME_PNG)
+  const buffer = canvas.toBuffer('image/png')
 
   // cache for 1 hour
   res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate')
