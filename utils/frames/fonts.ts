@@ -13,7 +13,7 @@ const checkFileExists = async (filePath: string): Promise<boolean> => {
 
 const listFolderContents = async (folderPath: string): Promise<void> => {
   try {
-    const files = await fs.readdir(folderPath);
+    await fs.readdir(folderPath);
   } catch (error) {
     console.error(`Error reading directory ${folderPath}:`, error);
   }
@@ -33,10 +33,8 @@ export const loadFont = async (params: {
     fileName
   )
 
-  const exists = await checkFileExists(pathToFont)
-  console.log('cwd:', process.cwd())
-  console.log(fileName, { exists })
-
+  // for some reason, this helps vercel to find the font file
+  await checkFileExists(pathToFont)
   await listFolderContents(process.cwd())
   await listFolderContents(path.join(process.cwd(), 'public/assets/fonts/'))
 
