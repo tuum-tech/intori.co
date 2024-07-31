@@ -9,7 +9,8 @@ import {
 import {
   timeAgo,
   replaceNewlinesWithSpaces,
-  removeEmojis
+  removeEmojis,
+  shortenNumber
 } from '../../../utils/textHelpers'
 import { createFrameResultImage } from '../../../utils/frames/createResultFrameImage'
 
@@ -77,7 +78,7 @@ const createResultsFrameImageOfSuggestion = async (
       displayName: suggestion.channel.name || suggestion.channel.id,
       username: `/${suggestion.channel.id}`,
       avatarUrl: suggestion.channel.imageUrl ?? path.join(process.cwd(), 'public/assets/templates/avatar_fallback.png'),
-      topLeftText: `${suggestion.channel.followCount} Followers`,
+      topLeftText: `${shortenNumber(suggestion.channel.followCount ?? 0)} Followers`,
       topRightText: lastCastTimeAgo,
       bio: suggestion.channel.description || 'No channel description',
       mainReason: `Many users that have similar answers to you follow this channel!`,
