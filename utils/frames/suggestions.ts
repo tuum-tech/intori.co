@@ -8,125 +8,15 @@ import {
 import { doesUserAlreadyFollowUser } from '../../models/userFollowings'
 import {
   fetchUserDetailsByFids,
-  getChannelsThatUserFollows
+  getChannelsThatUserFollows,
+  FarcasterChannelType
 } from '../neynarApi'
 
-// get suggested user for frame sequence
-export const getSuggestedUser = async (
-  frameSession: FrameSessionType
-): Promise<{
-  fid: number
-  user: string
-  reason: string
-}> => {
-  if (
-    !frameSession.questions ||
-    frameSession.questions.length === 0
-  ) {
-    return {
-      fid: 294394,
-      user: 'intori',
-      reason: 'Keep going! Your next suggestions will be sharper.'
-    }
-  }
-
-  const lastQuestionAnswered = frameSession.questions[frameSession.questions.length - 1]
-  const userResponse = await getUserAnswerForQuestion(frameSession.fid, lastQuestionAnswered)
-
-  if (!userResponse) {
-    return {
-      fid: 294394,
-      user: 'intori',
-      reason: 'Keep going! Your next suggestions will be sharper.'
-    }
-  }
-
-  const otherUserResponses = await getResponsesWithAnswerToQuestion({
-    answer: userResponse.answer,
-    question: userResponse.question,
-    limit: 10
-  })
-
-  const suggestedUserFids: number[] = []
-
-  for (let i = 0; i < otherUserResponses.length; i++) {
-    const otherUserResponse = otherUserResponses[i]
-
-    if (otherUserResponse.fid === frameSession.fid) {
-      continue
-    }
-
-    const alreadySuggested = suggestedUserFids.findIndex(
-      (suggestedFid) => suggestedFid === otherUserResponse.fid
-    )
-
-    if (alreadySuggested > -1) {
-      continue
-    }
-
-    suggestedUserFids.push(otherUserResponse.fid)
-  }
-
-  if (!suggestedUserFids.length) {
-    return {
-      fid: 294394,
-      user: 'intori',
-      reason: 'Keep going! Your next suggestions will be sharper.'
-    }
-  }
-
-  const randomUserFid = suggestedUserFids[Math.floor(Math.random() * suggestedUserFids.length)]
-
-  const [userDetails] = await fetchUserDetailsByFids([randomUserFid])
-
-  return {
-    fid: randomUserFid,
-    user: userDetails.username,
-    reason: `You both answered "${userResponse.answer}" for "${userResponse.question}"`
-  }
-}
-
-// get suggested channel for frame sequence
-export const getSuggestedChannel = async (
-  frameSession: FrameSessionType
-): Promise<string> => {
-  const suggestions: string[] = []
-
-  const randomSuggestion = () => {
-    return suggestions[Math.floor(Math.random() * suggestions.length)]
-  }
-
-  if (
-    !frameSession.questions ||
-    frameSession.questions.length === 0
-  ) {
-    suggestions.push('farcaster')
-    suggestions.push('base')
-
-    return randomSuggestion()
-  }
-
-  const lastQuestionAnswered = frameSession.questions[frameSession.questions.length - 1]
-
-  // then, we will get groups from a suggested user
-  const suggestedUser = await getSuggestedUser(frameSession)
-
-  const channelsThatSuggestedUserFollows = await getChannelsThatUserFollows(suggestedUser.fid, 10)
-
-  suggestions.push(
-    ...channelsThatSuggestedUserFollows.map((channel) => channel.name as string)
-  )
-
-  return randomSuggestion()
-}
-
-// The 'reason' text fields here can be different since this is for the frontend app
 export const getAllSuggestedUsersAndChannels = async (
   options: {
     fid: number,
     channelId?: string
     noChannel?: boolean
-    usersOnly?: boolean
   }
 ): Promise<SuggestionType[]> => {
   const { fid, channelId, noChannel } = options
