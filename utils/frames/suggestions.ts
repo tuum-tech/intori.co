@@ -22,7 +22,7 @@ export const getAllSuggestedUsersAndChannels = async (
   const { fid, channelId, noChannel } = options
   const recentResponses = await getRecentAnswersForUser(
     fid,
-    12,
+    24,
     {
       channelId,
       noChannel
@@ -40,7 +40,7 @@ export const getAllSuggestedUsersAndChannels = async (
     const otherUserResponses = await getResponsesWithAnswerToQuestion({
       question: response.question,
       answer: response.answer,
-      limit: 12
+      limit: 4
     })
 
     for (let j = 0; j < otherUserResponses.length; j++) {
