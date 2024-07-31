@@ -8,6 +8,8 @@ export type FarcasterChannelType = {
   id: string
   url: string
 
+  followCount?: number
+  description?: string
   name?: string
   imageUrl?: string
 }
@@ -31,7 +33,10 @@ export const getChannelsThatUserFollows = async (
     id: channel.id,
     url: channel.url,
     name: channel.name,
-    imageUrl: channel.image_url
+    imageUrl: channel.image_url,
+
+    followCount: channel.follower_count,
+    description: channel.description
   }))
 }
 
