@@ -67,7 +67,7 @@ const createResultsFrameImageOfSuggestion = async (
     // cache for 1 hour
     res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate')
     res.setHeader('Content-Type', 'image/png')
-    res.status(200).send(buffer)
+    return res.status(200).send(buffer)
   }
 
   if (suggestion.channel) {
@@ -90,7 +90,7 @@ const createResultsFrameImageOfSuggestion = async (
     // cache for 1 hour
     res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate')
     res.setHeader('Content-Type', 'image/png')
-    res.status(200).send(buffer)
+    return res.status(200).send(buffer)
   }
 
   return res.redirect(
