@@ -17,6 +17,7 @@ export const getAllSuggestedUsersAndChannels = async (
   }
 ): Promise<SuggestionType[]> => {
   console.time('getAllSuggestedUsersAndChannels')
+
   const { fid, channelId, noChannel } = options
   const recentResponses = await getRecentAnswersForUser(
     fid,
@@ -32,47 +33,47 @@ export const getAllSuggestedUsersAndChannels = async (
     reason: string[]
   }[] = []
 
-  for (let i = 0; i < recentResponses.length; i++) {
-    const response = recentResponses[i]
-
-    const otherUserResponses = await getResponsesWithAnswerToQuestion({
-      question: response.question,
-      answer: response.answer,
-      limit: 4
-    })
-
-    for (let j = 0; j < otherUserResponses.length; j++) {
-      const res = otherUserResponses[j]
-
-      if (res.fid === fid) {
-        continue
-      }
-
-      // TEMPORARY: We will still show users that you follow
-      //
-      // const alreadyFollows = await doesUserAlreadyFollowUser(fid, res.fid)
-
-      // if (alreadyFollows) {
-      //   continue
-      // }
-
-      const alreadySuggested = suggestedUserFids.findIndex(
-        (suggestedFid) => suggestedFid.fid === res.fid
-      )
-
-      if (alreadySuggested !== -1) {
-        suggestedUserFids[alreadySuggested].reason.push(
-          `You both answered "${response.answer}" to "${response.question}"`
-        )
-        continue
-      }
-
-      suggestedUserFids.push({
-        fid: res.fid,
-        reason: [`You both answered "${response.answer}" to "${response.question}"`]
+  await Promise.all(
+    recentResponses.map(async (response) => {
+      const otherUserResponses = await getResponsesWithAnswerToQuestion({
+        question: response.question,
+        answer: response.answer,
+        limit: 4
       })
-    }
-  }
+
+      for (let j = 0; j < otherUserResponses.length; j++) {
+        const res = otherUserResponses[j]
+
+        if (res.fid === fid) {
+          continue
+        }
+
+        // TEMPORARY: We will still show users that you follow
+        //
+        // const alreadyFollows = await doesUserAlreadyFollowUser(fid, res.fid)
+
+        // if (alreadyFollows) {
+        //   continue
+        // }
+
+        const alreadySuggested = suggestedUserFids.findIndex(
+          (suggestedFid) => suggestedFid.fid === res.fid
+        )
+
+        if (alreadySuggested !== -1) {
+          suggestedUserFids[alreadySuggested].reason.push(
+            `You both answered "${response.answer}" to "${response.question}"`
+          )
+          continue
+        }
+
+        suggestedUserFids.push({
+          fid: res.fid,
+          reason: [`You both answered "${response.answer}" to "${response.question}"`]
+        })
+      }
+    })
+  )
 
   if (!suggestedUserFids.length) {
     return suggestions
@@ -92,51 +93,44 @@ export const getAllSuggestedUsersAndChannels = async (
 
   suggestions.push(...usersToBeSuggest)
 
-  const channelsToBeSuggested: {
-    channel: FarcasterChannelType
-    count: number
-  }[] = []
+  const channelsToBeSuggested: FarcasterChannelType[] = []
 
-  for (let i = 0; i < suggestedUserFids.length; i++) {
-    const suggestedFid = suggestedUserFids[i]
-    const channels = await getChannelsThatUserFollows(suggestedFid.fid, 5)
+  await Promise.all(
+    suggestedUserFids.map(async (suggestedUser) => {
+      const channels = await getChannelsThatUserFollows(suggestedUser.fid, 5)
 
-    for (let j = 0; j < channels.length; j++) {
-      const channel = channels[j]
+      for (let j = 0; j < channels.length; j++) {
+        const channel = channels[j]
 
-      if (options.channelId && channel.id === options.channelId) {
-        continue
+        if (options.channelId && channel.id === options.channelId) {
+          continue
+        }
+
+        channelsToBeSuggested.push(channel)
       }
-
-      const name = channel.name as string
-
-      const index = channelsToBeSuggested.findIndex((c) => c.channel.name === name)
-
-
-      if (index === -1) {
-        channelsToBeSuggested.push({
-          channel,
-          count: 1
-        })
-
-        continue
-      }
-
-      channelsToBeSuggested[index].count += 1
-    }
-  }
-
-  channelsToBeSuggested.sort((a, b) => b.count - a.count)
-
-  const channelsToSuggest = channelsToBeSuggested.slice(0, 5).map(
-    ({ channel }) => {
-      return {
-        type: 'channel',
-        reason: ['Users that have similar interests follow this channel'],
-        channel
-      } as SuggestionType
-    }
+    })
   )
+
+  const channelCounts: Record<string, { count: number, channel: FarcasterChannelType }> = {};
+
+  channelsToBeSuggested.forEach(channel => {
+      if (channelCounts[channel.id]) {
+          channelCounts[channel.id].count++;
+      } else {
+          channelCounts[channel.id] = { count: 1, channel };
+      }
+  });
+
+  const channelsToSuggest = Object.values(channelCounts)
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5)
+      .map( ({ channel }) => {
+        return {
+          type: 'channel',
+          reason: ['Users that have similar interests follow this channel'],
+          channel
+        } as SuggestionType
+      })
 
   suggestions.push(...channelsToSuggest)
 
