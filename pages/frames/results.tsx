@@ -83,8 +83,7 @@ export const getServerSideProps = (async (context) => {
     const suggestions = await getAllSuggestedUsersAndChannels({
       fid: session.fid,
       channelId: session.channelId,
-      noChannel: session.channelId === undefined,
-      usersOnly: true
+      noChannel: session.channelId === undefined
     })
 
     await saveSuggestionsToFrameSession(session.id, suggestions)
@@ -93,11 +92,11 @@ export const getServerSideProps = (async (context) => {
   }
 
   imageUrlQueryParts.push(`i=${suggestionsRevealed}`)
-  const userSuggestion = session.suggestions[suggestionsRevealed % session.suggestions.length]
+  const suggestionToShow = session.suggestions[suggestionsRevealed % session.suggestions.length]
 
   incrementSuggestionsRevealed(session.id)
 
-  if (!userSuggestion) {
+  if (!suggestionToShow) {
     return {
       redirect: {
         destination: createNoMatchesFoundUrl({ fsid: session.id }),
@@ -109,7 +108,11 @@ export const getServerSideProps = (async (context) => {
   inputs.push({
     type: 'button',
     action: 'link',
-    target: `https://warpcast.com/${userSuggestion.user?.username}`,
+    target: (
+      suggestionToShow.user
+        ? `https://warpcast.com/${suggestionToShow.user?.username}`
+        : suggestionToShow.channel?.url
+    ),
     content: 'Follow'
   })
 
