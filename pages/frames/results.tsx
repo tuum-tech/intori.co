@@ -15,7 +15,7 @@ import {
   getFrameSessionById,
   saveSuggestionsToFrameSession,
   saveIfUserFollowsIntori,
-  incremenetSuggestionsRevealed
+  incrementSuggestionsRevealed
 } from '../../models/frameSession'
 import { getAllSuggestedUsersAndChannels } from '../../utils/frames/suggestions'
 import {
@@ -95,7 +95,7 @@ export const getServerSideProps = (async (context) => {
   imageUrlQueryParts.push(`i=${suggestionsRevealed}`)
   const userSuggestion = session.suggestions[suggestionsRevealed % session.suggestions.length]
 
-  incremenetSuggestionsRevealed(session.id)
+  incrementSuggestionsRevealed(session.id)
 
   if (!userSuggestion) {
     return {
