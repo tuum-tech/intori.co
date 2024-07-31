@@ -3,6 +3,7 @@ import { Font } from '@jimp/plugin-print'
 import * as path from 'path'
 import { getAvailableQuestions, IntoriQuestionType } from './questions'
 import { channelFrames } from './channelFrames'
+import { inPublicFolder } from '../paths'
 import {
   loadFont,
 } from './fonts'
@@ -33,12 +34,7 @@ const generateQuestionnaireStepImage = async (
 
   await loadFonts()
 
-  const image = await Jimp.read(
-    path.join(
-      process.cwd(),
-      'public/assets/templates/question_frame_template.png'
-    )
-  )
+  const image = await Jimp.read(inPublicFolder('/assets/templates/question_frame_template.png'))
 
   image.print(
     kumbhSans46,
@@ -54,7 +50,7 @@ const generateQuestionnaireStepImage = async (
   )
 
   const bullet = await Jimp.read(
-    path.join(process.cwd(), 'public/assets/templates/answer-bullet.png')
+    inPublicFolder('/assets/templates/answer-bullet.png')
   )
 
   const leftColumnX = 129
@@ -88,10 +84,7 @@ const generateQuestionnaireStepImage = async (
 }
 
 export const generateQuestionnaireStepImages = async () => {
-  const questionImagePathPrefix = path.join(
-    process.cwd(),
-    'public/assets/frames/questions'
-  )
+  const questionImagePathPrefix = inPublicFolder('/assets/frames/questions')
 
   const intoriQuestions = getAvailableQuestions()
 

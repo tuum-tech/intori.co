@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import * as path from 'path'
 import { getLastCastForUser, getRecentCastsForChannel } from '../../../utils/neynarApi'
 import { countTotalResponsesForUser } from '../../../models/userAnswers'
 import { getFrameSessionFromRequest } from '../../../models/frameSession'
+import { inPublicFolder } from '../../../utils/paths'
 import {
   createFrameErrorUrl
 } from '../../../utils/frames/generatePageUrls'
@@ -48,7 +48,7 @@ const createResultsFrameImageOfSuggestion = async (
       ),
       username: `@${suggestion.user.username}`,
       underUsernameText: `FID ${suggestion.user.fid}`,
-      avatarUrl: suggestion.user.image ?? path.join(process.cwd(), 'public/assets/templates/avatar_fallback.png'),
+      avatarUrl: suggestion.user.image ?? inPublicFolder('/assets/templates/avatar_fallback.png'),
       powerBadge: suggestion.user.powerBadge,
       topLeftText: `${totalResponses} Response${totalResponses === 1 ? '' : 's'}`,
       topRightText: lastCastTimeAgo,
@@ -77,7 +77,7 @@ const createResultsFrameImageOfSuggestion = async (
     const buffer = await createFrameResultImage({
       displayName: suggestion.channel.name || suggestion.channel.id,
       username: `/${suggestion.channel.id}`,
-      avatarUrl: suggestion.channel.imageUrl ?? path.join(process.cwd(), 'public/assets/templates/avatar_fallback.png'),
+      avatarUrl: suggestion.channel.imageUrl ?? inPublicFolder('/assets/templates/avatar_fallback.png'),
       topLeftText: `${shortenNumber(suggestion.channel.followCount ?? 0)} Followers`,
       topRightText: lastCastTimeAgo,
       bio: suggestion.channel.description || 'No channel description',

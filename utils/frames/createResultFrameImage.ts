@@ -1,5 +1,5 @@
 import Jimp from 'jimp'
-import * as path from 'path'
+import { inPublicFolder } from '../../utils/paths'
 import {
   loadFont
 } from './fonts'
@@ -12,9 +12,7 @@ const createAvatar = async (url: string, baseImage: Jimp): Promise<void> => {
   try {
     const urlImage = await Jimp.read(url);
 
-    const maskImage = await Jimp.read(
-      path.join(process.cwd(), 'public/assets/templates/circle_mask.png')
-    );
+    const maskImage = await Jimp.read(inPublicFolder('/assets/templates/circle_mask.png'))
 
     const circleImageSize = 192;
 
@@ -47,7 +45,7 @@ const createAvatar = async (url: string, baseImage: Jimp): Promise<void> => {
 
 const addPowerBadge = async (baseImage: Jimp): Promise<void> => {
   const powerBadge = await Jimp.read(
-    path.join(process.cwd(), 'public/assets/templates/powerbadge.png')
+    inPublicFolder('/assets/templates/powerbadge.png')
   )
 
   baseImage.composite(powerBadge, 238, 119, {
@@ -105,7 +103,7 @@ export const createFrameResultImage = async (params: {
   })
 
   const baseImage = await Jimp.read(
-      path.join(process.cwd(), 'public/assets/templates/results_frame_template.png')
+      inPublicFolder('/assets/templates/results_frame_template.png')
   )
 
   // display name
