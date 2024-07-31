@@ -94,12 +94,6 @@ export const getAllSuggestedUsersAndChannels = async (
 
   suggestions.push(...usersToBeSuggest)
 
-  if (options.usersOnly) {
-    return suggestions
-  }
-
-  return suggestions
-  /* Channels temporarily removed from suggestions
   const channelsToBeSuggested: {
     channel: FarcasterChannelType
     count: number
@@ -111,9 +105,15 @@ export const getAllSuggestedUsersAndChannels = async (
 
     for (let j = 0; j < channels.length; j++) {
       const channel = channels[j]
+
+      if (options.channelId && channel.id === options.channelId) {
+        continue
+      }
+
       const name = channel.name as string
 
       const index = channelsToBeSuggested.findIndex((c) => c.channel.name === name)
+
 
       if (index === -1) {
         channelsToBeSuggested.push({
@@ -143,5 +143,4 @@ export const getAllSuggestedUsersAndChannels = async (
   suggestions.push(...channelsToSuggest)
 
   return suggestions
-  */
 }
