@@ -1,4 +1,4 @@
-import { NeynarAPIClient } from '@neynar/nodejs-sdk'
+import { NeynarAPIClient, FeedType, FilterType } from '@neynar/nodejs-sdk'
 
 const neynar = new NeynarAPIClient(
   process.env.NEYNAR_API_KEY || 'please add neynar api key'
@@ -33,6 +33,19 @@ export const getChannelsThatUserFollows = async (
     name: channel.name,
     imageUrl: channel.image_url
   }))
+}
+
+export const getRecentCastsForChannel = async (
+  channelId: string,
+  limit: number
+) => {
+  const res = await neynar.fetchFeed(FeedType.Filter, {
+    filterType: FilterType.ChannelId,
+    channelId,
+    limit
+  })
+
+  return res.casts
 }
 
 export const fetchUserDetailsByFids = async (fids: number[]): Promise<FarcasterUserType[]> => {
