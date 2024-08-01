@@ -7,7 +7,6 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import { AppLayout } from "@/layouts/App"
 import { Section, SectionTopActions } from '../../components/common/Section'
-import { StatsCard, StatsContainer } from '../../components/Stats/StatsCard'
 import { PrimaryButton } from '../../components/common/Button'
 import { GeneralStatsSection } from '../../components/Stats/GeneralStatsSection'
 
@@ -75,6 +74,13 @@ const AdminStats: NextPage<Props> = ({
 
           { showSuperAdminTab && (
             <TabPanel>
+              <SectionTopActions>
+                <a href="/api/stats/csv" target="_blank" rel="noopener noreferrer">
+                  <PrimaryButton>
+                    Download CSV
+                  </PrimaryButton>
+                </a>
+              </SectionTopActions>
               <GeneralStatsSection />
             </TabPanel>
           )}
