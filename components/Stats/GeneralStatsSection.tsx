@@ -7,6 +7,7 @@ type Props = {
 }
 
 export const GeneralStatsSection: React.FC<Props> = ({ channelId }) => {
+  const [loading, setLoading] = useState(true)
   const [uniqueUsersCount, setUniqueUsersCount] = useState(0)
   const [totalResponses, setTotalResponses] = useState(0)
 
@@ -30,8 +31,26 @@ export const GeneralStatsSection: React.FC<Props> = ({ channelId }) => {
     }).catch((err) => {
       toast.error('Failed to fetch stats. Please try again later.')
       console.error('Error:', err)
+    }).finally(() => {
+      setLoading(false)
     })
   }, [channelId])
+
+  if (loading) {
+    return (
+      <StatsContainer>
+        <StatsCard
+          title="Unique Users"
+          value="Calculating..."
+        />
+
+        <StatsCard
+          title="Total questions answered"
+          value="Counting..."
+        />
+      </StatsContainer>
+    )
+  }
 
   return (
     <StatsContainer>
