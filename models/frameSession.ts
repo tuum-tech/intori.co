@@ -179,7 +179,7 @@ export const saveIfUserFollowsIntori = async (
   })
 }
 
-export const incremenetSuggestionsRevealed = async (
+export const incrementSuggestionsRevealed = async (
   fsid: string
 ): Promise<number> => {
   const collection = getCollection()

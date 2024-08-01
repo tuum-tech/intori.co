@@ -1,4 +1,5 @@
 import * as path from 'path'
+import { inPublicFolder } from '../paths'
 import { promises as fs } from 'fs'
 import Jimp from 'jimp'
 
@@ -13,7 +14,7 @@ const checkFileExists = async (filePath: string): Promise<boolean> => {
 
 const listFolderContents = async (folderPath: string): Promise<void> => {
   try {
-    const files = await fs.readdir(folderPath);
+    await fs.readdir(folderPath);
   } catch (error) {
     console.error(`Error reading directory ${folderPath}:`, error);
   }
@@ -27,18 +28,14 @@ export const loadFont = async (params: {
 }) => {
   const fileName = `${params.family}_${params.size}_${params.weight}_${params.color}.fnt`
 
-  const pathToFont = path.join(
-    process.cwd(),
-    'public/assets/fonts/',
-    fileName
+  const pathToFont = inPublicFolder(
+    path.join( '/assets/fonts/', fileName)
   )
 
-  const exists = await checkFileExists(pathToFont)
-  console.log('cwd:', process.cwd())
-  console.log(fileName, { exists })
-
+  // for some reason, this helps vercel to find the font file
+  await checkFileExists(pathToFont)
   await listFolderContents(process.cwd())
-  await listFolderContents(path.join(process.cwd(), 'public/assets/fonts/'))
+  await listFolderContents(inPublicFolder('/assets/fonts/'))
 
   // check if file exists with path
 

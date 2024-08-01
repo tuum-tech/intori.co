@@ -1,5 +1,6 @@
 import { readFileSync } from 'fs'
 import * as path from 'path'
+import { inPublicFolder } from '../paths'
 import questions from '../../public/questions/all.json'
 
 export type IntoriQuestionType = {
@@ -16,10 +17,11 @@ export const getAvailableQuestions = (params: {
   }
 
   try {
-    const questionJsonPath = path.join(
-      process.cwd(),
-      'public/questions/channels',
-      `${params.channelId}.json`
+    const questionJsonPath = inPublicFolder(
+      path.join(
+        '/questions/channels',
+        `${params.channelId}.json`
+      )
     )
 
     const contents = readFileSync(questionJsonPath, 'utf8')
