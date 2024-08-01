@@ -362,3 +362,35 @@ export const getAllUserResponses = async () => {
     return new Date(b.date).getTime() - new Date(a.date).getTime()
   })
 }
+
+export const getRecentUserResponseFids = async (
+  filters: {
+    channelId?: string
+    excludeFid?: number
+  },
+  options: {
+    limit: number
+    offset: number
+  }
+): Promise<number[]> => {
+  const collection = getCollection()
+
+  let query = collection.orderBy('date', 'desc')
+
+  if (filters.channelId) {
+    query = query.where('channelId', '==', filters.channelId)
+  }
+
+  if (filters.excludeFid) {
+    query = query.where('fid', '!=', filters.excludeFid)
+  }
+
+  query = query.offset(options.offset).limit(options.limit).select('fid')
+  
+  const querySnapshot = await query.get()
+
+  const fids = querySnapshot.docs.map((doc) => doc.data().fid)
+
+  // remove duplicates
+  return Array.from(new Set(fids))
+}
