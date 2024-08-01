@@ -79,28 +79,54 @@ export const getAllSuggestedUsersAndChannels = async (
   if (neededSuggestionsToFill > 0) {
     console.log('Need to pad', neededSuggestionsToFill, 'more suggestions')
 
-    const recentUserResponseFids = await getRecentUserResponseFids({
-      channelId,
-      excludeFid: fid
-    }, {
-      limit: neededSuggestionsToFill,
-      offset: 0
-    })
+    let offset = 0
+    let filteringChannelId = options.channelId
 
-    const randomReasons = [
-      "We think this account could be a great fit for you—give it a look!",
-      "Explore this account, it could be a great match for your interests!",
-      "Based on your interests, this account might be just what you're looking for.",
-      "We think you'll find this account interesting—check it out!",
-      "Your answers suggest this account might be a good fit—explore it!"
-    ]
-
-    recentUserResponseFids.forEach((fid, index) => {
-      suggestedUserFids.push({
-        fid,
-        reason: [randomReasons[index % randomReasons.length]]
+    while (suggestedUserFids.length < 10) {
+      const recentUserResponseFids = await getRecentUserResponseFids({
+        channelId: filteringChannelId,
+        excludeFid: fid
+      }, {
+        limit: neededSuggestionsToFill,
+        offset
       })
-    })
+
+      if (recentUserResponseFids.length !== neededSuggestionsToFill) {
+        // If we didn't get enough suggestions, try again without filtering by channel
+        filteringChannelId = undefined
+      }
+
+      const uniqueFids = Array.from(new Set(recentUserResponseFids))
+
+      const randomReasons = [
+        "We think this account could be a great fit for you - give it a look!",
+        "Explore this account, it could be a great match for your interests!",
+        "Based on your interests, this account might be just what you're looking for.",
+        "We think you'll find this account interesting - check it out!",
+        "Your answers suggest this account might be a good fit - explore it!"
+      ]
+
+      uniqueFids.forEach((fid, index) => {
+        const alreadySuggested = suggestedUserFids.findIndex(
+          (suggestedFid) => suggestedFid.fid === fid
+        )
+
+        if (alreadySuggested !== -1) {
+          return
+        }
+
+        suggestedUserFids.push({
+          fid,
+          reason: [randomReasons[index % randomReasons.length]]
+        })
+      })
+
+      if (suggestedUserFids.length >= 10) {
+        break
+      }
+
+      offset += recentUserResponseFids.length
+    }
   }
 
   const userDetails = await fetchUserDetailsByFids(

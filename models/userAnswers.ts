@@ -389,8 +389,5 @@ export const getRecentUserResponseFids = async (
   
   const querySnapshot = await query.get()
 
-  const fids = querySnapshot.docs.map((doc) => doc.data().fid)
-
-  // remove duplicates
-  return Array.from(new Set(fids))
+  return querySnapshot.docs.map((doc) => doc.data().fid)
 }
