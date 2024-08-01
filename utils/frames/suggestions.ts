@@ -77,6 +77,8 @@ export const getAllSuggestedUsersAndChannels = async (
   const neededSuggestionsToFill = 10 - suggestedUserFids.length
 
   if (neededSuggestionsToFill > 0) {
+    console.log('Need to pad', neededSuggestionsToFill, 'more suggestions')
+
     const recentUserResponseFids = await getRecentUserResponseFids({
       channelId,
       excludeFid: fid
