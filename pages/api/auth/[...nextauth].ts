@@ -3,6 +3,7 @@ import util from 'util'
 import CredentialsProvider from "next-auth/providers/credentials"
 import { createAppClient, viemConnector } from "@farcaster/auth-kit"
 import { NextApiRequest, NextApiResponse } from "next"
+import { channelFrames } from '../../../utils/frames/channelFrames'
 
 const adminFids = (process.env.ADMIN_FIDS || '').split(',').map((fid) => parseInt(fid, 10))
 
@@ -82,6 +83,9 @@ export const authOptions: (req: NextApiRequest) => NextAuthOptions = (req) => ({
         session.user.fid = token.id as string
 
         session.admin = adminFids.includes(parseInt(token.id as string, 10))
+        session.channelAdmin = channelFrames.filter((channel) => {
+          return channel.adminFid === parseInt(token.id as string, 10)
+        })
         return session;
       }
     }
