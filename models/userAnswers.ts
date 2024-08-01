@@ -6,7 +6,6 @@ import {
     FarcasterChannelType
 } from '../utils/neynarApi'
 import { TransactionType } from '../lib/ethers/registerCredential'
-import { channelFrames } from '../utils/frames/channelFrames'
 
 export type UserAnswerType = {
   fid: number
@@ -375,6 +374,35 @@ export const getAllUserResponses = async () => {
     // most recent answers first
     return new Date(b.date).getTime() - new Date(a.date).getTime()
   })
+}
+
+export const getRecentUserResponseFids = async (
+  filters: {
+    channelId?: string
+    excludeFid?: number
+  },
+  options: {
+    limit: number
+    offset: number
+  }
+): Promise<number[]> => {
+  const collection = getCollection()
+
+  let query = collection.orderBy('date', 'desc')
+
+  if (filters.channelId) {
+    query = query.where('channelId', '==', filters.channelId)
+  }
+
+  if (filters.excludeFid) {
+    query = query.where('fid', '!=', filters.excludeFid)
+  }
+
+  query = query.offset(options.offset).limit(options.limit).select('fid')
+  
+  const querySnapshot = await query.get()
+
+  return querySnapshot.docs.map((doc) => doc.data().fid)
 }
 
 export const getUniqueUsersOverTime = async (options: {
