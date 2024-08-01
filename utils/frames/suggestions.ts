@@ -1,7 +1,8 @@
 import {
   getResponsesWithAnswerToQuestion,
   getRecentAnswersForUser,
-  SuggestionType
+  SuggestionType,
+  getRecentUserResponseFids
 } from '../../models/userAnswers'
 import {
   fetchUserDetailsByFids,
@@ -73,8 +74,31 @@ export const getAllSuggestedUsersAndChannels = async (
     })
   )
 
-  if (!suggestedUserFids.length) {
-    return suggestions
+  const neededSuggestionsToFill = 10 - suggestedUserFids.length
+
+  if (neededSuggestionsToFill > 0) {
+    const recentUserResponseFids = await getRecentUserResponseFids({
+      channelId,
+      excludeFid: fid
+    }, {
+      limit: neededSuggestionsToFill,
+      offset: 0
+    })
+
+    const randomReasons = [
+      "We think this account could be a great fit for you—give it a look!",
+      "Explore this account, it could be a great match for your interests!",
+      "Based on your interests, this account might be just what you're looking for.",
+      "We think you'll find this account interesting—check it out!",
+      "Your answers suggest this account might be a good fit—explore it!"
+    ]
+
+    recentUserResponseFids.forEach((fid, index) => {
+      suggestedUserFids.push({
+        fid,
+        reason: [randomReasons[index % randomReasons.length]]
+      })
+    })
   }
 
   const userDetails = await fetchUserDetailsByFids(
