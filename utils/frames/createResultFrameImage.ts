@@ -166,13 +166,17 @@ export const createFrameResultImage = async (params: {
     26
   )
 
+  const trimmedBio = params.bio.length > 190
+    ? params.bio.slice(0, 190) + '...'
+    : params.bio
+
   // bio
   baseImage.print(
     font21black,
     107,
     336,
     {
-      text: removeEmojis(replaceNewlinesWithSpaces(params.bio)),
+      text: removeEmojis(replaceNewlinesWithSpaces(trimmedBio)),
       alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
       alignmentY: Jimp.VERTICAL_ALIGN_TOP
     },
