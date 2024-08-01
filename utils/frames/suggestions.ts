@@ -16,8 +16,6 @@ export const getAllSuggestedUsersAndChannels = async (
     noChannel?: boolean
   }
 ): Promise<SuggestionType[]> => {
-  console.time('getAllSuggestedUsersAndChannels')
-
   const { fid, channelId, noChannel } = options
   const recentResponses = await getRecentAnswersForUser(
     fid,
@@ -136,8 +134,6 @@ export const getAllSuggestedUsersAndChannels = async (
 
   suggestions.push(...channelsToSuggest)
 
-  console.log(`Time took to get ${suggestions.length} suggestions:`)
-  console.timeEnd('getAllSuggestedUsersAndChannels')
   return suggestions
 }
 
