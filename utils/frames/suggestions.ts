@@ -83,15 +83,17 @@ export const getAllSuggestedUsersAndChannels = async (
     suggestedUserFids.map((s) => s.fid)
   )
 
-  const usersToBeSuggest = suggestedUserFids.map((s) => {
-    return {
+  suggestedUserFids.forEach((s) => {
+    suggestions.push({
       type: 'user',
       user: userDetails.find((u) => u.fid === s.fid),
       reason: s.reason
-    }
-  }) as SuggestionType[]
+    } as SuggestionType)
+  })
 
-  suggestions.push(...usersToBeSuggest)
+  if (channelId && channelId !== 'welcome') {
+    return suggestions
+  }
 
   const channelsToBeSuggested: FarcasterChannelType[] = []
 
