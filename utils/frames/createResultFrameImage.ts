@@ -67,44 +67,21 @@ export const createFrameResultImage = async (params: {
   mainReason: string
   underReasonText: string
 }): Promise<Buffer> => {
-  const font18black = await loadFont({
-    family: 'kumbh_sans',
-    weight: 'regular',
-    size: 18,
-    color: 'black'
-  })
-
-  const font21black = await loadFont({
-    family: 'kumbh_sans',
-    weight: 'regular',
-    size: 21,
-    color: 'black'
-  })
-
-  const font24grey = await loadFont({
-    family: 'kumbh_sans',
-    weight: 'regular',
-    size: 24,
-    color: 'grey'
-  })
-
-  const font32black = await loadFont({
-    family: 'kumbh_sans',
-    weight: 'bold',
-    size: 32,
-    color: 'black'
-  })
-
-  const font28white = await loadFont({
-    family: 'kumbh_sans',
-    weight: 'semibold',
-    size: 28,
-    color: 'white'
-  })
-
-  const baseImage = await Jimp.read(
-      inPublicFolder('/assets/templates/results_frame_template.png')
-  )
+  const [
+    font18black,
+    font21black,
+    font24grey,
+    font28white,
+    font32black,
+    baseImage
+  ] = await Promise.all([
+    loadFont({ family: 'kumbh_sans', weight: 'regular', size: 18, color: 'black' }),
+    loadFont({ family: 'kumbh_sans', weight: 'regular', size: 21, color: 'black' }),
+    loadFont({ family: 'kumbh_sans', weight: 'regular', size: 24, color: 'grey' }),
+    loadFont({ family: 'kumbh_sans', weight: 'semibold', size: 28, color: 'white' }),
+    loadFont({ family: 'kumbh_sans', weight: 'bold', size: 32, color: 'black' }),
+    Jimp.read(inPublicFolder('/assets/templates/results_frame_template.png'))
+  ]);
 
   // display name
   baseImage.print(
