@@ -31,7 +31,7 @@ export const GeneralStatsSection: React.FC<Props> = ({ channelId }) => {
       toast.error('Failed to fetch stats. Please try again later.')
       console.error('Error:', err)
     })
-  }, [])
+  }, [channelId])
 
   return (
     <StatsContainer>
