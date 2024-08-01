@@ -6,7 +6,6 @@ import {
     FarcasterChannelType
 } from '../utils/neynarApi'
 import { TransactionType } from '../lib/ethers/registerCredential'
-import { channelFrames } from '../utils/frames/channelFrames'
 
 export type UserAnswerType = {
   fid: number
@@ -268,9 +267,16 @@ export const getRecentAnswersForUser = async (
   return snapshot.docs.map((doc) => doc.data() as UserAnswerPageType)
 }
 
-export const getUniqueUserFids = async (): Promise<number> => {
+export const getUniqueUserFids = async (channelId?: string): Promise<number> => {
   const collection = getCollection()
-  const querySnapshot = await collection.get()
+
+  let query = collection.select('fid')
+
+  if (channelId) {
+    query = query.where('channelId', '==', channelId)
+  }
+
+  const querySnapshot = await query.get()
 
   const uniqueFids = new Set<number>()
 
@@ -282,9 +288,16 @@ export const getUniqueUserFids = async (): Promise<number> => {
   return Array.from(uniqueFids).length
 }
 
-export const countUserResponses = async (): Promise<number> => {
+export const countUserResponses = async (channelId?: string): Promise<number> => {
   const collection = getCollection()
-  const querySnapshot = await collection.count().get()
+
+  let query = collection.select('fid')
+
+  if (channelId) {
+    query = query.where('channelId', '==', channelId)
+  }
+
+  const querySnapshot = await query.count().get()
 
   return querySnapshot.data().count
 }
@@ -390,4 +403,60 @@ export const getRecentUserResponseFids = async (
   const querySnapshot = await query.get()
 
   return querySnapshot.docs.map((doc) => doc.data().fid)
+}
+
+export const getUniqueUsersOverTime = async (options: {
+  startDate: Date
+  endDate: Date
+  channelId?: string
+}): Promise<Array<{ date: Date, uniqueUsers: number }>> => {
+  const { startDate, endDate, channelId } = options
+  try {
+      const collection = getCollection()
+
+      let query = collection
+          .where('date', '>=', startDate)
+          .where('date', '<=', endDate)
+
+      if (channelId) {
+        query = query.where('channelId', '==', channelId)
+      }
+
+      const snapshot = await query.get()
+      
+      if (snapshot.empty) {
+          return [];
+      }
+
+      // Process the data
+      const dateUserMap = new Map();
+
+      snapshot.forEach(doc => {
+          const data = doc.data() as UserAnswerType
+          const date = data.date.toDate().toISOString().split('T')[0]; // Group by day
+          const fid = data.fid;
+
+          if (!dateUserMap.has(date)) {
+              dateUserMap.set(date, new Set());
+          }
+          
+          dateUserMap.get(date).add(fid);
+      });
+
+      // Prepare data for chart
+      const chartData = Array.from(dateUserMap.entries()).map(([date, userSet]) => {
+          return {
+              date,
+              uniqueUsers: userSet.size
+          };
+      });
+
+      // Sort the data by date
+      chartData.sort((a, b) => a.date.seconds - b.date.seconds)
+
+      return chartData;
+  } catch (error) {
+      console.error('Error querying user answers:', error);
+      throw error;
+  }
 }
