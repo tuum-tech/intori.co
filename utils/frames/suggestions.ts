@@ -138,3 +138,35 @@ export const getAllSuggestedUsersAndChannels = async (
   console.timeEnd('getAllSuggestedUsersAndChannels')
   return suggestions
 }
+
+// This will setup 3 users, then show 1 channel, then another 3 users, 1 channel...and so on
+export const sortSuggestions = (suggestions: SuggestionType[]): SuggestionType[] => {
+    const users: SuggestionType[] = [];
+    const channels: SuggestionType[] = [];
+
+    suggestions.forEach(suggestion => {
+        if (suggestion.user) {
+            users.push(suggestion);
+        } else if (suggestion.channel) {
+            channels.push(suggestion);
+        }
+    });
+
+    const interleaved: SuggestionType[] = [];
+    let userIndex = 0;
+    let channelIndex = 0;
+
+    while (userIndex < users.length || channelIndex < channels.length) {
+        // Add up to 3 users
+        for (let i = 0; i < 3 && userIndex < users.length; i++) {
+            interleaved.push(users[userIndex++]);
+        }
+
+        // Add 1 channel
+        if (channelIndex < channels.length) {
+            interleaved.push(channels[channelIndex++]);
+        }
+    }
+
+    return interleaved;
+}
