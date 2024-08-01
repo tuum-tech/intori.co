@@ -1,11 +1,14 @@
 export const channelFrames = [
   {
-    channelId: 'tabletop'
+    channelId: 'tabletop',
+    adminFid: 9391
   },
   {
-    channelId: 'olympics'
+    channelId: 'olympics',
+    adminFid: 213090
   },
   {
-    channelId: 'welcome'
+    channelId: 'welcome',
+    adminFid: 1593
   }
 ]
