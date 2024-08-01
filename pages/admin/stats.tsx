@@ -1,21 +1,18 @@
 import type { NextPage, GetServerSideProps } from "next";
 import { getSession } from "next-auth/react"
+import { channelFrames } from '../../utils/frames/channelFrames'
 
+// components
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import 'react-tabs/style/react-tabs.css';
 import { AppLayout } from "@/layouts/App"
-import { getUniqueUserFids, countUserResponses } from '@/models/userAnswers'
-import { getAllFrameSessionQuestionCounts } from '@/models/frameSession'
 import { Section, SectionTopActions } from '../../components/common/Section'
-import { StatsCard, StatsContainer } from '../../components/Stats/StatsCard'
-import { countAllUserQuestionSkips } from '../../models/userQuestionSkip'
-import { getAvailableQuestions } from '../../utils/frames/questions'
 import { PrimaryButton } from '../../components/common/Button'
+import { GeneralStatsSection } from '../../components/Stats/GeneralStatsSection'
 
 type Props = {
-  uniqueUsersCount: number
-  frameSessionQuestionCounts: number[]
-  totalResponses: number
-  totalSkips: number
-  totalQuestions: number
+  showSuperAdminTab: boolean
+  channelFramesToShow: string[]
 }
 
 export const getServerSideProps = (async (context) => {
@@ -30,107 +27,70 @@ export const getServerSideProps = (async (context) => {
     }
   }
 
-  const fid = parseInt(session.user.fid, 10)
-  const adminFids = (process.env.ADMIN_FIDS || '').split(',').map((fid) => parseInt(fid, 10))
-
-  if (!adminFids.includes(fid)) {
+  if (!session.admin && !session.channelAdmin?.length) {
     return {
       notFound: true
     }
   }
 
-  try {
-    const uniqueUsersCount = await getUniqueUserFids()
-    const frameSessionQuestionCounts = await getAllFrameSessionQuestionCounts()
-    const totalResponses = await countUserResponses()
-    const totalSkips = await countAllUserQuestionSkips()
-    const totalQuestions = getAvailableQuestions().length
-
+  if (session.admin) {
     return {
       props: {
-        uniqueUsersCount,
-        frameSessionQuestionCounts,
-        totalResponses,
-        totalSkips,
-        totalQuestions
+        showSuperAdminTab: true,
+        channelFramesToShow: channelFrames.map((channel) => channel.channelId)
       }
     }
-  } catch (err) {
-    console.error('Failed to get admin stats', err)
   }
+
+  const channelFramesToShow = channelFrames.filter((channel) => {
+    return channel.adminFid === parseInt(session.user.fid, 10)
+  }).map((channel) => channel.channelId)
 
   return {
     props: {
-      uniqueUsersCount: 0,
-      frameSessionQuestionCounts: [0, 0, 0, 0],
-      totalResponses: 0,
-      totalSkips: 0,
-      totalQuestions: 0
+      showSuperAdminTab: false,
+      channelFramesToShow
     }
   }
 }) satisfies GetServerSideProps<Props>
 
 const AdminStats: NextPage<Props> = ({
-  uniqueUsersCount,
-  frameSessionQuestionCounts,
-  totalResponses,
-  totalSkips,
-  totalQuestions
+  showSuperAdminTab,
+  channelFramesToShow
 }) => {
   return (
     <AppLayout>
       <Section
         title="Admin Stats"
-        subtitle="Here you can see some stats about the frames."
+        subtitle="Here you can see some stats about Intori frames."
       >
-        <SectionTopActions>
-          <a href="/api/stats/csv" target="_blank" rel="noopener noreferrer">
-            <PrimaryButton>
-              Download CSV
-            </PrimaryButton>
-          </a>
-        </SectionTopActions>
-        <StatsContainer>
-          <StatsCard
-            title="Unique Users"
-            value={uniqueUsersCount}
-          />
+        <Tabs forceRenderTabPanel>
+          <TabList>
+            { showSuperAdminTab && <Tab>Super Admin</Tab> }
+            { channelFramesToShow.map((channelId) => (
+              <Tab key={channelId}>{`/${channelId}`}</Tab>
+            ))}
+          </TabList>
 
-          <StatsCard
-            title="Total questions answered"
-            value={totalResponses}
-          />
+          { showSuperAdminTab && (
+            <TabPanel>
+              <SectionTopActions>
+                <a href="/api/stats/csv" target="_blank" rel="noopener noreferrer">
+                  <PrimaryButton>
+                    Download CSV
+                  </PrimaryButton>
+                </a>
+              </SectionTopActions>
+              <GeneralStatsSection />
+            </TabPanel>
+          )}
 
-          <StatsCard
-            title="Users that hit 'Go'"
-            value={frameSessionQuestionCounts[0]} 
-          />
-
-          <StatsCard
-            title="Users that stopped after first question"
-            value={frameSessionQuestionCounts[1]} 
-          />
-
-          <StatsCard
-            title="Users that stopped after second question"
-            value={frameSessionQuestionCounts[2]} 
-          />
-
-          <StatsCard
-            title="Users that answered all 3 questions"
-            value={frameSessionQuestionCounts[3]} 
-          />
-
-          <StatsCard
-            title="Questions Skipped"
-            value={totalSkips}
-          />
-
-          <StatsCard
-            title="Total Questions"
-            value={totalQuestions}
-          />
-        </StatsContainer>
+          { channelFramesToShow.map((channelId) => (
+            <TabPanel key={channelId}>
+              <GeneralStatsSection channelId={channelId} />
+            </TabPanel>
+          ))}
+        </Tabs>
       </Section>
     </AppLayout>
   )
