@@ -148,7 +148,7 @@ export const createFrameResultImage = async (params: {
       alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
-    118,
+    260,
     26
   )
 
@@ -162,7 +162,7 @@ export const createFrameResultImage = async (params: {
       alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
-    217,
+    270,
     26
   )
 
