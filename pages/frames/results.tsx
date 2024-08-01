@@ -38,6 +38,7 @@ type Props = {
  
 export const getServerSideProps = (async (context) => {
   if (!context?.query.fsid) {
+    console.log('Redirecting because no fsid')
     return {
       redirect: {
         destination: createFrameErrorUrl(),
@@ -51,6 +52,7 @@ export const getServerSideProps = (async (context) => {
   const session = await getFrameSessionById(frameSessionId)
 
   if (!session) {
+    console.log('Redirecting because no session')
     return {
       redirect: {
         destination: createFrameErrorUrl(),
@@ -71,6 +73,7 @@ export const getServerSideProps = (async (context) => {
     const followsIntori = await doesUserFollowIntori(session.fid)
 
     if (!followsIntori) {
+      console.log('Redirecting because user does not follow intori')
       return {
         redirect: {
           destination: createFollowIntoriUrl({ fsid: session.id }),
@@ -102,6 +105,13 @@ export const getServerSideProps = (async (context) => {
   incrementSuggestionsRevealed(session.id)
 
   if (!suggestionToShow) {
+    console.log(
+      'Redirecting because no suggestion to show.',
+      suggestionsRevealed,
+      session.suggestions.length,
+      suggestionsRevealed % session.suggestions.length
+    )
+
     return {
       redirect: {
         destination: createNoMatchesFoundUrl({ fsid: session.id }),
@@ -138,6 +148,9 @@ export const getServerSideProps = (async (context) => {
   const frame: IntoriFrameType = {
     inputs
   }
+
+  console.log('inputs:')
+  console.table(inputs)
 
   return {
     props: {
