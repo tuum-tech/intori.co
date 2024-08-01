@@ -126,7 +126,7 @@ export const getServerSideProps = (async (context) => {
     target: (
       suggestionToShow.user
         ? `https://warpcast.com/${suggestionToShow.user?.username}`
-        : suggestionToShow.channel?.url
+        : `https://warpcast.com/~/channel/${suggestionToShow.channel?.id}`
     ),
     content: 'Follow'
   })
