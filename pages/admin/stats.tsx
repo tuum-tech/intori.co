@@ -83,6 +83,7 @@ const AdminStats: NextPage<Props> = ({
                 </a>
               </SectionTopActions>
               <GeneralStatsSection />
+              <UniqueUsersOverTimeChart />
             </TabPanel>
           )}
 

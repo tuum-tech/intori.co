@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react'
-import { getUniqueUserFids, countUserResponses } from '../../../models/userAnswers'
+import { getQuestionsAnsweredOverTime } from '../../../../models/userAnswers'
 
 const getQuestionsOverTimeChart = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -30,12 +30,18 @@ const getQuestionsOverTimeChart = async (req: NextApiRequest, res: NextApiRespon
       }
     }
 
-    const uniqueUsersCount = await getUniqueUserFids(channelId)
-    const totalResponses = await countUserResponses(channelId)
+    const today = new Date()
+    const thirtyDaysAgo = new Date(today)
+    thirtyDaysAgo.setDate(today.getDate() - 30)
+
+    const questionsAnsweredOverTime = await getQuestionsAnsweredOverTime({
+      startDate: thirtyDaysAgo,
+      endDate: today,
+      channelId
+    })
 
     res.status(200).json({
-        uniqueUsersCount,
-        totalResponses
+        questionsAnsweredOverTime
     })
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch documents' })
