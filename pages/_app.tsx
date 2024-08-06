@@ -1,4 +1,6 @@
 import type { AppProps } from 'next/app'
+import Chart from "chart.js/auto"
+import { CategoryScale } from "chart.js"
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { SessionProvider } from "next-auth/react"
@@ -6,6 +8,8 @@ import { WalletProvider } from '../contexts/EthereumWallet'
 import Head from 'next/head'
 import { Fragment } from 'react'
 import './global.css'
+
+Chart.register(CategoryScale)
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
