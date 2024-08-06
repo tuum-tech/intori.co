@@ -14,7 +14,8 @@
   color: #FFF;
 }
 
-.statsCard h6 {
+.statsCard h6,
+.statsChartContainer h6 {
   margin: 0;
   font-size: 20px;
 }
@@ -23,6 +24,15 @@
   margin: 0;
   font-size: 64px;
   font-weight: 600;
+}
+
+.statsChartContainer {
+  margin-top: 24px;
+  padding: 24px;
+  background: #272738;
+  border: 1px solid #2A3042;
+  border-radius: 16px;
+  color: #FFF;
 }
 
 @media only screen and (max-width: 800px) {
