@@ -26,3 +26,14 @@ export const StatsContainer: React.FC<{ children: React.ReactNode }> = ({ childr
     </div>
   )
 }
+
+export const StatsChartContainer: React.FC<{ title: string, children: React.ReactNode }> = ({ title, children }) => {
+  return (
+    <div className={styles.statsChartContainer}>
+      <h6>{title}</h6>
+      <div>
+        {children}
+      </div>
+    </div>
+  )
+}
