@@ -460,3 +460,58 @@ export const getUniqueUsersOverTime = async (options: {
       throw error;
   }
 }
+
+export const getQuestionsAnsweredOverTime = async (options: {
+  startDate: Date
+  endDate: Date
+  channelId?: string
+}) => {
+  const { startDate, endDate, channelId } = options
+  try {
+    const collection = getCollection()
+
+    let query = collection
+      .where('date', '>=', startDate)
+      .where('date', '<=', endDate)
+
+    if (channelId) {
+      query = query.where('channelId', '==', channelId)
+    }
+
+    const snapshot = await query.get()
+
+    if (snapshot.empty) {
+      return [];
+    }
+
+    // Process the data
+    const dateQuestionMap = new Map();
+
+    snapshot.forEach(doc => {
+      const data = doc.data() as UserAnswerType
+      const date = data.date.toDate().toISOString().split('T')[0]; // Group by day
+
+      if (!dateQuestionMap.has(date)) {
+        dateQuestionMap.set(date, 1)
+      }
+
+      dateQuestionMap.set(date, dateQuestionMap.get(date) + 1)
+    });
+
+    // Prepare data for chart
+    const chartData = Array.from(dateQuestionMap.entries()).map(([date, questionCount]) => {
+      return {
+        date,
+        questionsAnswered: questionCount
+      };
+    });
+
+    // Sort the data by date
+    chartData.sort((a, b) => a.date.seconds - b.date.seconds)
+
+    return chartData;
+  } catch (error) {
+    console.error('Error querying user answers:', error);
+    throw error;
+  }
+}
