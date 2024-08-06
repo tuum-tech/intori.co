@@ -9,6 +9,7 @@ import { AppLayout } from "@/layouts/App"
 import { Section, SectionTopActions } from '../../components/common/Section'
 import { PrimaryButton } from '../../components/common/Button'
 import { GeneralStatsSection } from '../../components/Stats/GeneralStatsSection'
+import { UniqueUsersOverTimeChart } from '../../components/Stats/UniqueUsersOverTimeChart'
 
 type Props = {
   showSuperAdminTab: boolean
@@ -88,6 +89,7 @@ const AdminStats: NextPage<Props> = ({
           { channelFramesToShow.map((channelId) => (
             <TabPanel key={channelId}>
               <GeneralStatsSection channelId={channelId} />
+              <UniqueUsersOverTimeChart channelId={channelId} />
             </TabPanel>
           ))}
         </Tabs>
