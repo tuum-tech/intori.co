@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
-import { StatsCard, StatsContainer } from './StatsCard'
+import { LoadingStatsCard, StatsCard, StatsContainer } from './StatsCard'
 
 type Props = {
   channelId?: string
@@ -25,7 +25,6 @@ export const GeneralStatsSection: React.FC<Props> = ({ channelId }) => {
         return res.json()
       }
     }).then((data) => {
-      console.log({ data })
       setUniqueUsersCount(data.uniqueUsersCount)
       setTotalResponses(data.totalResponses)
     }).catch((err) => {
@@ -39,15 +38,9 @@ export const GeneralStatsSection: React.FC<Props> = ({ channelId }) => {
   if (loading) {
     return (
       <StatsContainer>
-        <StatsCard
-          title="Unique Users"
-          value="Calculating..."
-        />
+        <LoadingStatsCard title="Unique Users" />
 
-        <StatsCard
-          title="Total questions answered"
-          value="Counting..."
-        />
+        <LoadingStatsCard title="Total questions answered" />
       </StatsContainer>
     )
   }

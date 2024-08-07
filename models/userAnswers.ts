@@ -515,3 +515,54 @@ export const getQuestionsAnsweredOverTime = async (options: {
     throw error;
   }
 }
+
+export const getMostAnsweredQuestions = async (options: {
+  channelId?: string
+}) => {
+  const { channelId } = options
+  try {
+    const collection = getCollection()
+
+    let query = collection as FirebaseFirestore.Query<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>
+
+    if (channelId) {
+      query = query.where('channelId', '==', channelId)
+    }
+
+    const snapshot = await query.get()
+
+    if (snapshot.empty) {
+      return [];
+    }
+
+    // Process the data
+    const questionCountMap = new Map();
+
+    snapshot.forEach(doc => {
+      const data = doc.data() as UserAnswerType
+      const question = data.question;
+
+      if (!questionCountMap.has(question)) {
+        questionCountMap.set(question, 1)
+      }
+
+      questionCountMap.set(question, questionCountMap.get(question) + 1)
+    });
+
+    // Prepare data for chart
+    const chartData = Array.from(questionCountMap.entries()).map(([question, answerCount]) => {
+      return {
+        question,
+        answers: answerCount
+      };
+    });
+
+    // Sort the data by answer count
+    chartData.sort((a, b) => b.answers - a.answers)
+
+    return chartData.slice(0, 10);
+  } catch (error) {
+    console.error('Error querying user answers:', error);
+    throw error;
+  }
+}

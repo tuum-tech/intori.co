@@ -10,6 +10,7 @@ import { Section, SectionTopActions } from '../../components/common/Section'
 import { PrimaryButton } from '../../components/common/Button'
 import { GeneralStatsSection } from '../../components/Stats/GeneralStatsSection'
 import { UniqueUsersOverTimeChart } from '../../components/Stats/UniqueUsersOverTimeChart'
+import { MostAnsweredQuestionsChart } from '../../components/Stats/MostAnsweredQuestionsChart'
 
 type Props = {
   showSuperAdminTab: boolean
@@ -84,6 +85,7 @@ const AdminStats: NextPage<Props> = ({
               </SectionTopActions>
               <GeneralStatsSection />
               <UniqueUsersOverTimeChart />
+              <MostAnsweredQuestionsChart />
             </TabPanel>
           )}
 
@@ -91,6 +93,7 @@ const AdminStats: NextPage<Props> = ({
             <TabPanel key={channelId}>
               <GeneralStatsSection channelId={channelId} />
               <UniqueUsersOverTimeChart channelId={channelId} />
+              <MostAnsweredQuestionsChart channelId={channelId} />
             </TabPanel>
           ))}
         </Tabs>
