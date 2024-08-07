@@ -566,3 +566,49 @@ export const getMostAnsweredQuestions = async (options: {
     throw error;
   }
 }
+
+//    {
+//      question: string
+//      answerCounts: [
+//        { answer: string, count: number }
+//      ]
+//    }
+export const countUserAnswersForQuestion = async (question: string, options: {
+  channelId: string
+}): Promise<Array<{ answer: string, count: number }>> => {
+  try {
+    const collection = getCollection()
+    let query = collection as FirebaseFirestore.Query<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>
+
+    if (options.channelId) {
+      query = query.where('channelId', '==', options.channelId)
+    }
+
+    query = query.where('question', '==', question)
+
+    const snapshot = await query.get()
+
+    if (snapshot.empty) {
+      return []
+    }
+
+    const answerCountMap = new Map<string, number>()
+    
+    snapshot.forEach(doc => {
+      const data = doc.data() as UserAnswerType
+      const answer = data.answer
+
+      if (!answerCountMap.has(answer)) {
+        answerCountMap.set(answer, 1)
+      }
+
+      answerCountMap.set(answer, (answerCountMap.get(answer) ?? 0) + 1)
+    })
+
+    return Array.from(answerCountMap.entries()).map(([answer, count]) => {
+      return { answer, count }
+    })
+  } catch (error) {
+    return []
+  }
+}

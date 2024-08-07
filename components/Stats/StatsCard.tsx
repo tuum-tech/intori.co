@@ -32,7 +32,6 @@ export const StatsCard: React.FC<Props> = ({
     )
 }
 
-
 export const StatsContainer: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <div className={styles.statsContainer}>
@@ -44,6 +43,17 @@ export const StatsContainer: React.FC<{ children: React.ReactNode }> = ({ childr
 export const StatsChartContainer: React.FC<{ title: string, children: React.ReactNode }> = ({ title, children }) => {
   return (
     <div className={styles.statsChartContainer}>
+      <h6>{title}</h6>
+      <div>
+        {children}
+      </div>
+    </div>
+  )
+}
+
+export const SmallStatsChartContainer: React.FC<{ title: string, children: React.ReactNode }> = ({ title, children }) => {
+  return (
+    <div className={styles.smallStatsChartContainer}>
       <h6>{title}</h6>
       <div>
         {children}
