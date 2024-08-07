@@ -14,15 +14,51 @@
   color: #FFF;
 }
 
-.statsCard h6 {
+.statsCard h6,
+.statsChartContainer h6 {
   margin: 0;
   font-size: 20px;
+}
+
+.statsChartContainer > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 32px;
+  padding-top: 32px;
+}
+.smallStatsChartContainer {
+  flex-basis: calc(50% - 64px);
+  border: 1px solid #444;
+  padding: 32px;
+  border-radius: 16px;
+}
+.smallStatsChartContainer h6 {
+  font-size: 16px;
 }
 
 .statsCard h3 {
   margin: 0;
   font-size: 64px;
   font-weight: 600;
+}
+
+.statsChartContainer {
+  margin-top: 24px;
+  padding: 24px;
+  background: #272738;
+  border: 1px solid #2A3042;
+  border-radius: 16px;
+  color: #FFF;
+}
+@media only screen and (max-width: 1000px) {
+  .statsChartContainer {
+    padding: 24px 12px;
+  }
+  .smallStatsChartContainer {
+    flex-basis: 100%;
+    padding: 24px 12px;
+  }
 }
 
 @media only screen and (max-width: 800px) {

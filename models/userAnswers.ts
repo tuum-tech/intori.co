@@ -460,3 +460,155 @@ export const getUniqueUsersOverTime = async (options: {
       throw error;
   }
 }
+
+export const getQuestionsAnsweredOverTime = async (options: {
+  startDate: Date
+  endDate: Date
+  channelId?: string
+}) => {
+  const { startDate, endDate, channelId } = options
+  try {
+    const collection = getCollection()
+
+    let query = collection
+      .where('date', '>=', startDate)
+      .where('date', '<=', endDate)
+
+    if (channelId) {
+      query = query.where('channelId', '==', channelId)
+    }
+
+    const snapshot = await query.get()
+
+    if (snapshot.empty) {
+      return [];
+    }
+
+    // Process the data
+    const dateQuestionMap = new Map();
+
+    snapshot.forEach(doc => {
+      const data = doc.data() as UserAnswerType
+      const date = data.date.toDate().toISOString().split('T')[0]; // Group by day
+
+      if (!dateQuestionMap.has(date)) {
+        dateQuestionMap.set(date, 1)
+      }
+
+      dateQuestionMap.set(date, dateQuestionMap.get(date) + 1)
+    });
+
+    // Prepare data for chart
+    const chartData = Array.from(dateQuestionMap.entries()).map(([date, questionCount]) => {
+      return {
+        date,
+        questionsAnswered: questionCount
+      };
+    });
+
+    // Sort the data by date
+    chartData.sort((a, b) => a.date.seconds - b.date.seconds)
+
+    return chartData;
+  } catch (error) {
+    console.error('Error querying user answers:', error);
+    throw error;
+  }
+}
+
+export const getMostAnsweredQuestions = async (options: {
+  channelId?: string
+}) => {
+  const { channelId } = options
+  try {
+    const collection = getCollection()
+
+    let query = collection as FirebaseFirestore.Query<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>
+
+    if (channelId) {
+      query = query.where('channelId', '==', channelId)
+    }
+
+    const snapshot = await query.get()
+
+    if (snapshot.empty) {
+      return [];
+    }
+
+    // Process the data
+    const questionCountMap = new Map();
+
+    snapshot.forEach(doc => {
+      const data = doc.data() as UserAnswerType
+      const question = data.question;
+
+      if (!questionCountMap.has(question)) {
+        questionCountMap.set(question, 1)
+      }
+
+      questionCountMap.set(question, questionCountMap.get(question) + 1)
+    });
+
+    // Prepare data for chart
+    const chartData = Array.from(questionCountMap.entries()).map(([question, answerCount]) => {
+      return {
+        question,
+        answers: answerCount
+      };
+    });
+
+    // Sort the data by answer count
+    chartData.sort((a, b) => b.answers - a.answers)
+
+    return chartData.slice(0, 10);
+  } catch (error) {
+    console.error('Error querying user answers:', error);
+    throw error;
+  }
+}
+
+//    {
+//      question: string
+//      answerCounts: [
+//        { answer: string, count: number }
+//      ]
+//    }
+export const countUserAnswersForQuestion = async (question: string, options: {
+  channelId: string
+}): Promise<Array<{ answer: string, count: number }>> => {
+  try {
+    const collection = getCollection()
+    let query = collection as FirebaseFirestore.Query<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>
+
+    if (options.channelId) {
+      query = query.where('channelId', '==', options.channelId)
+    }
+
+    query = query.where('question', '==', question)
+
+    const snapshot = await query.get()
+
+    if (snapshot.empty) {
+      return []
+    }
+
+    const answerCountMap = new Map<string, number>()
+    
+    snapshot.forEach(doc => {
+      const data = doc.data() as UserAnswerType
+      const answer = data.answer
+
+      if (!answerCountMap.has(answer)) {
+        answerCountMap.set(answer, 1)
+      }
+
+      answerCountMap.set(answer, (answerCountMap.get(answer) ?? 0) + 1)
+    })
+
+    return Array.from(answerCountMap.entries()).map(([answer, count]) => {
+      return { answer, count }
+    })
+  } catch (error) {
+    return []
+  }
+}
