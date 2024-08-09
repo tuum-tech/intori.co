@@ -124,17 +124,6 @@ export const getUserAnswerForQuestion = async (
   return null
 }
 
-export const countUserAnswers = async (fid: number): Promise<number> => {
-  try {
-    const collection = getCollection()
-    const snapshot = await collection.where('fid', '==', fid).get()
-
-    return snapshot.size
-  } catch (error) {
-    return -1 // Return -1 to indicate error
-  }
-}
-
 const isConsecutiveDays = (date1: Date, date2: Date): boolean => {
   const oneDay = 24 * 60 * 60 * 1000
   const diffInDays = Math.round(Math.abs((date1.getTime() - date2.getTime()) / oneDay))
