@@ -242,21 +242,22 @@ export const getResponsesWithAnswerToQuestion = async (
   return querySnapshot.docs.map((doc) => doc.data()) as UserAnswerType[]
 }
 
-export const getRecentAnswersForUser = async (
-  fid: number,
-  limit: number = 10,
-  filters: {
-    channelId?: string
-    noChannel?: boolean
-  } = {}
-) => {
+export const getRecentAnswersForUser = async (options: {
+  fid: number
+  limit?: number
+  channelId?: string
+  noChannel?: boolean
+}) => {
+  const { fid, channelId, noChannel } = options
+  const limit = options.limit ?? 10
+
   const collection = getCollection()
 
   let query = collection.where('fid', '==', fid)
 
-  if (filters.channelId) {
-    query = query.where('channelId', '==', filters.channelId)
-  } else if (filters.noChannel) {
+  if (channelId) {
+    query = query.where('channelId', '==', channelId)
+  } else if (noChannel) {
     query = query.where('channelId', '==', null)
   }
 
