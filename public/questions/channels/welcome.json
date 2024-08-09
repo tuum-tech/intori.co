@@ -1,0 +1,283 @@
+[
+  {
+    "question": "What type of people are you looking to connect with?",
+    "answers": [
+      "Professionals",
+      "Creatives",
+      "Entrepreneurs",
+      "Investors",
+      "Students",
+      "Teachers",
+      "Developers",
+      "Artists"
+    ],
+    "categories": ["Welcome", "Networking", "Interests"]
+  },
+  {
+    "question": "What industry do you work in?",
+    "answers": [
+      "Technology",
+      "Finance",
+      "Healthcare",
+      "Education",
+      "Marketing",
+      "Retail",
+      "Manufacturing",
+      "Crypto"
+    ],
+    "categories": ["Welcome", "Professional", "Background"]
+  },
+  {
+    "question": "What genres of music do you prefer?",
+    "answers": [
+      "Pop",
+      "Rock",
+      "Jazz",
+      "Classical",
+      "Hip-Hop",
+      "Country",
+      "Electronic",
+      "Indie"
+    ],
+    "categories": ["Welcome", "Entertainment", "Music"]
+  },
+  {
+    "question": "What type of content do you enjoy the most?",
+    "answers": [
+      "Articles",
+      "Videos",
+      "Podcasts",
+      "Infographics",
+      "News",
+      "Tutorials",
+      "Reviews",
+      "Interviews"
+    ],
+    "categories": ["Welcome", "Content", "Preferences"]
+  },
+  {
+    "question": "How did you hear about Farcaster?",
+    "answers": [
+      "Friend",
+      "Social",
+      "Blog",
+      "News",
+      "Forum",
+      "Podcast",
+      "Ad",
+      "Family"
+    ],
+    "categories": ["Welcome", "Discovery", "Introduction"]
+  },
+  {
+    "question": "What are your hobbies?",
+    "answers": [
+      "Art",
+      "Gaming",
+      "Gardening",
+      "Traveling",
+      "Reading",
+      "Sports",
+      "Cooking",
+      "Music"
+    ],
+    "categories": ["Welcome", "Hobbies", "Interests"]
+  },
+  {
+    "question": "How do you prefer to spend your weekends?",
+    "answers": [
+      "Traveling",
+      "Relaxing",
+      "Sports",
+      "Reading",
+      "Cooking",
+      "Socializing",
+      "Gaming",
+      "Volunteering"
+    ],
+    "categories": ["Welcome", "Lifestyle", "Hobbies"]
+  },
+  {
+    "question": "What kind of games do you like to play?",
+    "answers": [
+      "Video",
+      "Board",
+      "Card",
+      "Puzzles",
+      "Role-playing",
+      "Sports",
+      "Strategy",
+      "Mobile"
+    ],
+    "categories": ["Welcome", "Entertainment", "Games"]
+  },
+  {
+    "question": "What are you looking forward to the most on Farcaster?",
+    "answers": [
+      "Networking",
+      "News",
+      "Discussions",
+      "Events",
+      "Learning",
+      "Entertainment",
+      "Opportunities",
+      "Connections"
+    ],
+    "categories": ["Welcome", "Expectations", "Interests"]
+  },
+  {
+    "question": "How do you prefer to interact with others on social platforms?",
+    "answers": [
+      "Messaging",
+      "Comments",
+      "Groups",
+      "Forums",
+      "Live Chats",
+      "Video Calls",
+      "Collaborations",
+      "Reactions"
+    ],
+    "categories": ["Welcome", "Networking", "Preferences"]
+  },
+  {
+    "question": "What genres of books do you prefer?",
+    "answers": [
+      "Fiction",
+      "Non-Fiction",
+      "Science",
+      "Mystery",
+      "Fantasy",
+      "Biography",
+      "Romance",
+      "History"
+    ],
+    "categories": ["Welcome", "Entertainment", "Reading"]
+  },
+  {
+    "question": "What types of movies do you enjoy the most?",
+    "answers": [
+      "Action",
+      "Comedy",
+      "Drama",
+      "Horror",
+      "Sci-Fi",
+      "Romance",
+      "Documentary",
+      "Animation"
+    ],
+    "categories": ["Welcome", "Entertainment", "Movies"]
+  },
+  {
+    "question": "What is your current job role?",
+    "answers": [
+      "Developer",
+      "Designer",
+      "Manager",
+      "Marketer",
+      "Sales",
+      "Analyst",
+      "Researcher",
+      "HR"
+    ],
+    "categories": ["Welcome", "Professional", "Role"]
+  },
+  {
+    "question": "What sports do you enjoy playing or watching?",
+    "answers": [
+      "Soccer",
+      "Basketball",
+      "Tennis",
+      "Baseball",
+      "Football",
+      "Running",
+      "Cycling",
+      "Golf"
+    ],
+    "categories": ["Welcome", "Sports", "Interests"]
+  },
+  {
+    "question": "How often do you engage with content on social platforms?",
+    "answers": [
+      "Daily",
+      "Often",
+      "Weekly",
+      "Monthly",
+      "Occasionally",
+      "Rarely",
+      "Never",
+      "When tagged"
+    ],
+    "categories": ["Welcome", "Content", "Engagement"]
+  },
+  {
+    "question": "What is your highest level of education?",
+    "answers": [
+      "High School",
+      "Associate",
+      "Bachelor's",
+      "Master's",
+      "Doctorate",
+      "Professional",
+      "Trade School"
+    ],
+    "categories": ["Welcome", "Education", "Background"]
+  },
+  {
+    "question": "What is your favorite type of cuisine?",
+    "answers": [
+      "Italian",
+      "Chinese",
+      "Mexican",
+      "Indian",
+      "Japanese",
+      "Greek",
+      "American",
+      "French",
+      "Korean",
+      "Thai"
+    ],
+    "categories": ["Welcome", "Food", "Preferences"]
+  },
+  {
+    "question": "What are your favorite topics to read about?",
+    "answers": [
+      "Technology",
+      "Finance",
+      "Health",
+      "Education",
+      "Travel",
+      "Sports",
+      "Entertainment",
+      "Science"
+    ],
+    "categories": ["Welcome", "Reading", "Interests"]
+  },
+  {
+    "question": "How many years of experience do you have in your field?",
+    "answers": [
+      "0-2",
+      "3-5",
+      "6-10",
+      "11-15",
+      "16-20",
+      "21-25",
+      "26-30",
+      "30+"
+    ],
+    "categories": ["Welcome", "Professional", "Experience"]
+  },
+  {
+    "question": "What is your favorite way to stay active?",
+    "answers": [
+      "Running",
+      "Cycling",
+      "Gym",
+      "Yoga",
+      "Hiking",
+      "Dancing",
+      "Sports",
+      "Swimming"
+    ],
+    "categories": ["Welcome", "Lifestyle", "Fitness"]
+  }
+]

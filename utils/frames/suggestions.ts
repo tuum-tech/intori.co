@@ -1,242 +1,30 @@
-import { FrameSessionType } from '../../models/frameSession'
 import {
-  getUserAnswerForQuestion,
   getResponsesWithAnswerToQuestion,
   getRecentAnswersForUser,
-  SuggestionType
+  SuggestionType,
+  getRecentUserResponseFids
 } from '../../models/userAnswers'
-import { doesUserAlreadyFollowUser } from '../../models/userFollowings'
 import {
   fetchUserDetailsByFids,
   getChannelsThatUserFollows,
   FarcasterChannelType
 } from '../neynarApi'
-import {
-  intoriQuestions,
-  isInitialQuestion
-} from './intoriFrameForms'
 
-const getSuggestedChannelsForInitialQuestion = (
-  question: string, 
-  answer: string
-): string[] => {
-  const questionIndex = intoriQuestions.findIndex(q => q.question === question)
-  const suggestions: string[] = []
-
-  if (questionIndex >= 3) {
-    return []
-  }
-
-  if (questionIndex === 0) {
-    // always push these for the question
-    suggestions.push('food')
-
-    switch (answer) {
-      case 'Italian':
-        suggestions.push('pizza', 'base-it')
-        break
-      case 'Mexican':
-        suggestions.push('taco-tuesday')
-        break
-      case 'Japanese':
-        suggestions.push('sakura')
-        break
-      case 'Thai':
-        suggestions.push('sakura')
-        break
-      case 'Korean':
-        suggestions.push('sakura')
-        break
-    }
-
-    return suggestions
-  }
-
-  // music
-  if (questionIndex === 1) {
-    suggestions.push('music','spotify', 'albumoftheday')
-
-    switch (answer) {
-      case 'Pop':
-        suggestions.push('kpop', 'audiophile')
-        break
-      case 'Rock':
-        suggestions.push('rock', 'audiophile')
-        break
-      case 'Latin':
-        suggestions.push('latinmusic')
-        break
-      case 'Classical':
-        suggestions.push('classical')
-        break
-      case 'Electronic':
-        suggestions.push('electronic', 'housemusic', 'techno', 'campfire')
-        break
-      case 'Hip-Hop':
-        suggestions.push('rap')
-        break
-      case 'Country':
-        suggestions.push('countrymusic')
-        break
-    }
-
-    return suggestions
-  }
-
-  // movies
-  suggestions.push('movies', 'screens', 'moviefortonight', 'popcorn', 'best-movies')
-
-  switch (answer) {
-    case 'Horror':
-      suggestions.push('horror')
-      break
-    case 'Sci-Fi':
-      suggestions.push('scifi', 'starwars', 'star-trek')
-      break
-    case 'Animation':
-      suggestions.push('disney', 'anime')
-      break
-  }
-
-  return suggestions
-}
-
-// get suggested user for frame sequence
-export const getSuggestedUser = async (
-  frameSession: FrameSessionType
-): Promise<{
-  fid: number
-  user: string
-  reason: string
-}> => {
-  if (
-    !frameSession.questions ||
-    frameSession.questions.length === 0
-  ) {
-    return {
-      fid: 294394,
-      user: 'intori',
-      reason: 'Keep going! Your next suggestions will be sharper.'
-    }
-  }
-
-  const lastQuestionAnswered = frameSession.questions[frameSession.questions.length - 1]
-  const userResponse = await getUserAnswerForQuestion(frameSession.fid, lastQuestionAnswered)
-
-  if (!userResponse) {
-    return {
-      fid: 294394,
-      user: 'intori',
-      reason: 'Keep going! Your next suggestions will be sharper.'
-    }
-  }
-
-  const otherUserResponses = await getResponsesWithAnswerToQuestion({
-    answer: userResponse.answer,
-    question: userResponse.question,
-    limit: 10
-  })
-
-  const suggestedUserFids: number[] = []
-
-  for (let i = 0; i < otherUserResponses.length; i++) {
-    const otherUserResponse = otherUserResponses[i]
-
-    if (otherUserResponse.fid === frameSession.fid) {
-      continue
-    }
-
-    const alreadySuggested = suggestedUserFids.findIndex(
-      (suggestedFid) => suggestedFid === otherUserResponse.fid
-    )
-
-    if (alreadySuggested > -1) {
-      continue
-    }
-
-    suggestedUserFids.push(otherUserResponse.fid)
-  }
-
-  if (!suggestedUserFids.length) {
-    return {
-      fid: 294394,
-      user: 'intori',
-      reason: 'Keep going! Your next suggestions will be sharper.'
-    }
-  }
-
-  const randomUserFid = suggestedUserFids[Math.floor(Math.random() * suggestedUserFids.length)]
-
-  const [userDetails] = await fetchUserDetailsByFids([randomUserFid])
-
-  return {
-    fid: randomUserFid,
-    user: userDetails.username,
-    reason: `You both answered "${userResponse.answer}" for "${userResponse.question}"`
-  }
-}
-
-// get suggested channel for frame sequence
-export const getSuggestedChannel = async (
-  frameSession: FrameSessionType
-): Promise<string> => {
-  const suggestions: string[] = []
-
-  const randomSuggestion = () => {
-    return suggestions[Math.floor(Math.random() * suggestions.length)]
-  }
-
-  if (
-    !frameSession.questions ||
-    frameSession.questions.length === 0
-  ) {
-    suggestions.push('farcaster')
-    suggestions.push('base')
-
-    return randomSuggestion()
-  }
-
-  const lastQuestionAnswered = frameSession.questions[frameSession.questions.length - 1]
-
-  // if one of the initial 3 questions, we want to show different suggestions
-  if (isInitialQuestion(lastQuestionAnswered)) {
-    const userResponse = await getUserAnswerForQuestion(frameSession.fid, lastQuestionAnswered)
-    if (!userResponse) {
-      suggestions.push('farcaster')
-      suggestions.push('base')
-
-      return randomSuggestion()
-    }
-
-    const { answer } = userResponse
-    const initialQuestionSuggestions = getSuggestedChannelsForInitialQuestion(lastQuestionAnswered, answer)
-
-    suggestions.push(...initialQuestionSuggestions)
-
-    return randomSuggestion()
-  }
-
-  // then, we will get groups from a suggested user
-  const suggestedUser = await getSuggestedUser(frameSession)
-
-  const channelsThatSuggestedUserFollows = await getChannelsThatUserFollows(suggestedUser.fid, 10)
-
-  suggestions.push(
-    ...channelsThatSuggestedUserFollows.map((channel) => channel.name as string)
-  )
-
-  return randomSuggestion()
-}
-
-// The 'reason' text fields here can be different since this is for the frontend app
 export const getAllSuggestedUsersAndChannels = async (
   options: {
     fid: number,
-    usersOnly?: boolean
+    channelId?: string
+    noChannel?: boolean
   }
 ): Promise<SuggestionType[]> => {
-  const { fid } = options
-  const recentResponses = await getRecentAnswersForUser(fid, 12)
+  const { fid, channelId, noChannel } = options
+  const recentResponses = await getRecentAnswersForUser(
+    fid,
+    24,
+    {
+      channelId,
+      noChannel
+    })
 
   const suggestions: SuggestionType[] = []
   const suggestedUserFids: {
@@ -244,112 +32,191 @@ export const getAllSuggestedUsersAndChannels = async (
     reason: string[]
   }[] = []
 
-  for (let i = 0; i < recentResponses.length; i++) {
-    const response = recentResponses[i]
-
-    const otherUserResponses = await getResponsesWithAnswerToQuestion({
-      question: response.question,
-      answer: response.answer,
-      limit: 12
-    })
-
-    for (let j = 0; j < otherUserResponses.length; j++) {
-      const res = otherUserResponses[j]
-
-      if (res.fid === fid) {
-        continue
-      }
-
-      const alreadyFollows = await doesUserAlreadyFollowUser(fid, res.fid)
-
-      if (alreadyFollows) {
-        continue
-      }
-
-      const alreadySuggested = suggestedUserFids.findIndex(
-        (suggestedFid) => suggestedFid.fid === res.fid
-      )
-
-      if (alreadySuggested !== -1) {
-        suggestedUserFids[alreadySuggested].reason.push(
-          `You both answered "${response.answer}" to "${response.question}"`
-        )
-        continue
-      }
-
-      suggestedUserFids.push({
-        fid: res.fid,
-        reason: [`You both answered "${response.answer}" to "${response.question}"`]
+  await Promise.all(
+    recentResponses.map(async (response) => {
+      const otherUserResponses = await getResponsesWithAnswerToQuestion({
+        question: response.question,
+        answer: response.answer,
+        limit: 4
       })
-    }
-  }
 
-  if (!suggestedUserFids.length) {
-    return suggestions
+      for (let j = 0; j < otherUserResponses.length; j++) {
+        const res = otherUserResponses[j]
+
+        if (res.fid === fid) {
+          continue
+        }
+
+        // TEMPORARY: We will still show users that you follow
+        //
+        // const alreadyFollows = await doesUserAlreadyFollowUser(fid, res.fid)
+
+        // if (alreadyFollows) {
+        //   continue
+        // }
+
+        const alreadySuggested = suggestedUserFids.findIndex(
+          (suggestedFid) => suggestedFid.fid === res.fid
+        )
+
+        if (alreadySuggested !== -1) {
+          suggestedUserFids[alreadySuggested].reason.push(
+            `You both answered "${response.answer}" to "${response.question}"`
+          )
+          continue
+        }
+
+        suggestedUserFids.push({
+          fid: res.fid,
+          reason: [`You both answered "${response.answer}" to "${response.question}"`]
+        })
+      }
+    })
+  )
+
+  const neededSuggestionsToFill = 10 - suggestedUserFids.length
+
+  if (neededSuggestionsToFill > 0) {
+    console.log('Need to pad', neededSuggestionsToFill, 'more suggestions')
+
+    let offset = 0
+    let filteringChannelId = options.channelId
+
+    while (suggestedUserFids.length < 10) {
+      const recentUserResponseFids = await getRecentUserResponseFids({
+        channelId: filteringChannelId,
+        excludeFid: fid
+      }, {
+        limit: neededSuggestionsToFill,
+        offset
+      })
+
+      if (recentUserResponseFids.length !== neededSuggestionsToFill) {
+        // If we didn't get enough suggestions, try again without filtering by channel
+        filteringChannelId = undefined
+      }
+
+      const uniqueFids = Array.from(new Set(recentUserResponseFids))
+
+      const randomReasons = [
+        "We think this account could be a great fit for you - give it a look!",
+        "Explore this account, it could be a great match for your interests!",
+        "Based on your interests, this account might be just what you're looking for.",
+        "We think you'll find this account interesting - check it out!",
+        "Your answers suggest this account might be a good fit - explore it!"
+      ]
+
+      uniqueFids.forEach((fid, index) => {
+        const alreadySuggested = suggestedUserFids.findIndex(
+          (suggestedFid) => suggestedFid.fid === fid
+        )
+
+        if (alreadySuggested !== -1) {
+          return
+        }
+
+        suggestedUserFids.push({
+          fid,
+          reason: [randomReasons[index % randomReasons.length]]
+        })
+      })
+
+      if (suggestedUserFids.length >= 10) {
+        break
+      }
+
+      offset += recentUserResponseFids.length
+    }
   }
 
   const userDetails = await fetchUserDetailsByFids(
     suggestedUserFids.map((s) => s.fid)
   )
 
-  const usersToBeSuggest = suggestedUserFids.map((s) => {
-    return {
+  suggestedUserFids.forEach((s) => {
+    suggestions.push({
       type: 'user',
       user: userDetails.find((u) => u.fid === s.fid),
       reason: s.reason
-    }
-  }) as SuggestionType[]
+    } as SuggestionType)
+  })
 
-  suggestions.push(...usersToBeSuggest)
-
-  if (options.usersOnly) {
+  if (channelId && channelId !== 'welcome') {
     return suggestions
   }
 
-  return suggestions
-  /* Channels temporarily removed from suggestions
-  const channelsToBeSuggested: {
-    channel: FarcasterChannelType
-    count: number
-  }[] = []
+  const channelsToBeSuggested: FarcasterChannelType[] = []
 
-  for (let i = 0; i < suggestedUserFids.length; i++) {
-    const suggestedFid = suggestedUserFids[i]
-    const channels = await getChannelsThatUserFollows(suggestedFid.fid, 5)
+  await Promise.all(
+    suggestedUserFids.map(async (suggestedUser) => {
+      const channels = await getChannelsThatUserFollows(suggestedUser.fid, 5)
 
-    for (let j = 0; j < channels.length; j++) {
-      const channel = channels[j]
-      const name = channel.name as string
+      for (let j = 0; j < channels.length; j++) {
+        const channel = channels[j]
 
-      const index = channelsToBeSuggested.findIndex((c) => c.channel.name === name)
+        if (options.channelId && channel.id === options.channelId) {
+          continue
+        }
 
-      if (index === -1) {
-        channelsToBeSuggested.push({
-          channel,
-          count: 1
-        })
-
-        continue
+        channelsToBeSuggested.push(channel)
       }
-
-      channelsToBeSuggested[index].count += 1
-    }
-  }
-
-  channelsToBeSuggested.sort((a, b) => b.count - a.count)
-
-  const channelsToSuggest = channelsToBeSuggested.slice(0, 5).map(
-    ({ channel }) => {
-      return {
-        type: 'channel',
-        reason: ['Users that have similar interests follow this channel'],
-        channel
-      } as SuggestionType
-    }
+    })
   )
+
+  const channelCounts: Record<string, { count: number, channel: FarcasterChannelType }> = {};
+
+  channelsToBeSuggested.forEach(channel => {
+      if (channelCounts[channel.id]) {
+          channelCounts[channel.id].count++;
+      } else {
+          channelCounts[channel.id] = { count: 1, channel };
+      }
+  });
+
+  const channelsToSuggest = Object.values(channelCounts)
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5)
+      .map( ({ channel }) => {
+        return {
+          type: 'channel',
+          reason: ['Users that have similar interests follow this channel'],
+          channel
+        } as SuggestionType
+      })
 
   suggestions.push(...channelsToSuggest)
 
   return suggestions
-  */
+}
+
+// This will setup 3 users, then show 1 channel, then another 3 users, 1 channel...and so on
+export const sortSuggestions = (suggestions: SuggestionType[]): SuggestionType[] => {
+    const users: SuggestionType[] = [];
+    const channels: SuggestionType[] = [];
+
+    suggestions.forEach(suggestion => {
+        if (suggestion.user) {
+            users.push(suggestion);
+        } else if (suggestion.channel) {
+            channels.push(suggestion);
+        }
+    });
+
+    const interleaved: SuggestionType[] = [];
+    let userIndex = 0;
+    let channelIndex = 0;
+
+    while (userIndex < users.length || channelIndex < channels.length) {
+        // Add up to 3 users
+        for (let i = 0; i < 3 && userIndex < users.length; i++) {
+            interleaved.push(users[userIndex++]);
+        }
+
+        // Add 1 channel
+        if (channelIndex < channels.length) {
+            interleaved.push(channels[channelIndex++]);
+        }
+    }
+
+    return interleaved;
 }

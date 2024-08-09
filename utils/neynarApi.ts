@@ -1,13 +1,15 @@
-import { NeynarAPIClient } from '@neynar/nodejs-sdk'
+import { NeynarAPIClient, FeedType, FilterType } from '@neynar/nodejs-sdk'
 
 const neynar = new NeynarAPIClient(
-  '46689088-4A63-4573-9BC8-B74736EE65DC'
+  process.env.NEYNAR_API_KEY || 'please add neynar api key'
 )
 
 export type FarcasterChannelType = {
   id: string
   url: string
 
+  followCount?: number
+  description?: string
   name?: string
   imageUrl?: string
 }
@@ -31,8 +33,24 @@ export const getChannelsThatUserFollows = async (
     id: channel.id,
     url: channel.url,
     name: channel.name,
-    imageUrl: channel.image_url
+    imageUrl: channel.image_url,
+
+    followCount: channel.follower_count,
+    description: channel.description
   }))
+}
+
+export const getRecentCastsForChannel = async (
+  channelId: string,
+  limit: number
+) => {
+  const res = await neynar.fetchFeed(FeedType.Filter, {
+    filterType: FilterType.ChannelId,
+    channelId,
+    limit
+  })
+
+  return res.casts
 }
 
 export const fetchUserDetailsByFids = async (fids: number[]): Promise<FarcasterUserType[]> => {
@@ -137,5 +155,3 @@ export const getFidsUserIsFollowing = async (fid: number): Promise<number[]> => 
 
   return followingFids
 }
-
-getFidsUserIsFollowing(230238)

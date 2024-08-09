@@ -7,15 +7,15 @@ import {
 } from '../../../models/userAnswers'
 import { appendQuestionToFrameSession } from '../../../models/frameSession'
 import { getLastSkippedQuestions } from '../../../models/userQuestionSkip'
-import { saveUserFollowings } from '../../../models/userFollowings'
-import { intoriQuestions } from '../../../utils/frames/intoriFrameForms'
-import { getFrameSessionFromRequest, createFrameSession } from '../../../models/frameSession'
+import { getAvailableQuestions } from '../../../utils/frames/questions'
+import { createFrameSession } from '../../../models/frameSession'
 import { hasUserReachedSixAnswerLimit } from '../../../utils/frames/limitSixAnswersPerDay'
 import {
   createFrameQuestionUrl,
   createFrameErrorUrl,
   createFrameResultsUrl,
-  createLimitReachedUrl
+  createLimitReachedUrl,
+  createAnsweredAllQuestionsUrl
 } from '../../../utils/frames/generatePageUrls'
 
 // User is requesting a new question
@@ -36,13 +36,12 @@ const newQuestion = async (
     )
   }
 
-  const { fid } = frameSubmissionHelpers(req)
+  const { fid, channelId, session: initialSession } = await frameSubmissionHelpers(req)
 
-  let session = await getFrameSessionFromRequest(req)
-
+  // If no session, create new frame session
+  let session = initialSession
   if (!session) {
-    session = await createFrameSession({ fid })
-    saveUserFollowings(fid)
+    session = await createFrameSession({ fid, channelId })
   }
 
   if (!session) {
@@ -59,6 +58,8 @@ const newQuestion = async (
     )
   }
 
+  const availableQuestions = getAvailableQuestions({ channelId: session.channelId })
+
   // getting next answer offset to see more answers of an already given question
   if (req.query.qi && req.query.ioff) {
     const currentQuestionIndex = parseInt(req.query.qi as string, 10)
@@ -74,44 +75,51 @@ const newQuestion = async (
     )
   }
 
-  const reachedLimit = await hasUserReachedSixAnswerLimit(fid)
-  if (reachedLimit) {
-    return res.redirect(
-      307,
-      createLimitReachedUrl()
-    )
+  if (!session.channelId) {
+    const reachedLimit = await hasUserReachedSixAnswerLimit(fid)
+    if (reachedLimit) {
+      return res.redirect(
+        307,
+        createLimitReachedUrl({ frameSessionId: session.id })
+      )
+    }
   }
 
   let indexOfLastAnsweredQuestion = -1
   const lastAnsweredQuestion = await getLastAnsweredQuestionForUser(fid)
 
   if (lastAnsweredQuestion) {
-    indexOfLastAnsweredQuestion = intoriQuestions.findIndex(
+    indexOfLastAnsweredQuestion = availableQuestions.findIndex(
       (question) => question.question === lastAnsweredQuestion.question
     )
   }
 
-  let nextQuestionIndex = (
-    indexOfLastAnsweredQuestion === intoriQuestions.length - 1
-      ? 0
-      : indexOfLastAnsweredQuestion
-  )
+  if (indexOfLastAnsweredQuestion === availableQuestions.length - 1) {
+      return res.redirect(
+        307,
+        createAnsweredAllQuestionsUrl({ frameSessionId: session.id })
+      )
+  }
 
-  let nextQuestion = intoriQuestions[nextQuestionIndex]
+  let nextQuestionIndex = indexOfLastAnsweredQuestion
+  let nextQuestion = availableQuestions[nextQuestionIndex]
 
   const skippedQuestions = await getLastSkippedQuestions(fid, 5)
   let tries = 0;
 
-  while (tries < 10) {
+  while (tries < 20) {
     tries += 1
 
-    nextQuestionIndex = (
-      nextQuestionIndex + 1 === intoriQuestions.length
-       ? 0
-       : nextQuestionIndex + 1
-    )
+    nextQuestionIndex = nextQuestionIndex + 1
 
-    nextQuestion = intoriQuestions[nextQuestionIndex]
+    if (nextQuestionIndex === availableQuestions.length - 1) {
+      return res.redirect(
+        307,
+        createAnsweredAllQuestionsUrl({ frameSessionId: session.id })
+      )
+    }
+
+    nextQuestion = availableQuestions[nextQuestionIndex]
 
     if (skippedQuestions.includes(nextQuestion.question)) {
       continue
@@ -124,10 +132,11 @@ const newQuestion = async (
     }
   }
 
-  if (tries === 10) {
+  if (tries === 20) {
+    console.log('Reached 20 tries to find a new question.')
     return res.redirect(
       307,
-      createLimitReachedUrl()
+      createAnsweredAllQuestionsUrl({ frameSessionId: session.id })
     )
   }
 

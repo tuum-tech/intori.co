@@ -1,18 +1,30 @@
 import Jimp from 'jimp'
 import { Font } from '@jimp/plugin-print'
 import * as path from 'path'
-import { intoriQuestions, IntoriQuestionType } from './intoriFrameForms'
+import { getAvailableQuestions, IntoriQuestionType } from './questions'
+import { channelFrames } from './channelFrames'
+import { inPublicFolder } from '../paths'
 import {
-  loadKumbSans46,
-  loadKumbSans26
+  loadFont,
 } from './fonts'
 
 let kumbhSans46: Font
 let kumbhSans26: Font
 
 const loadFonts = async () => {
-  kumbhSans46 = await loadKumbSans46()
-  kumbhSans26 = await loadKumbSans26()
+  kumbhSans46 = await loadFont({
+    family: 'kumbh_sans',
+    size: 46,
+    weight: 'regular',
+    color: 'white'
+  })
+
+  kumbhSans26 = await loadFont({
+    family: 'kumbh_sans',
+    size: 26,
+    weight: 'medium',
+    color: 'white'
+  })
 }
 
 const generateQuestionnaireStepImage = async (
@@ -22,12 +34,7 @@ const generateQuestionnaireStepImage = async (
 
   await loadFonts()
 
-  const image = await Jimp.read(
-    path.join(
-      process.cwd(),
-      'public/assets/templates/question_frame_template.png'
-    )
-  )
+  const image = await Jimp.read(inPublicFolder('/assets/templates/question_frame_template.png'))
 
   image.print(
     kumbhSans46,
@@ -43,7 +50,7 @@ const generateQuestionnaireStepImage = async (
   )
 
   const bullet = await Jimp.read(
-    path.join(process.cwd(), 'public/assets/templates/answer-bullet.png')
+    inPublicFolder('/assets/templates/answer-bullet.png')
   )
 
   const leftColumnX = 129
@@ -77,10 +84,9 @@ const generateQuestionnaireStepImage = async (
 }
 
 export const generateQuestionnaireStepImages = async () => {
-  const questionImagePathPrefix = path.join(
-    process.cwd(),
-    'public/assets/frames/questions'
-  )
+  const questionImagePathPrefix = inPublicFolder('/assets/frames/questions')
+
+  const intoriQuestions = getAvailableQuestions()
 
   for (let i = 0; i < intoriQuestions.length; i++) {
     const questionIndex = i
@@ -95,6 +101,30 @@ export const generateQuestionnaireStepImages = async () => {
     const image = await generateQuestionnaireStepImage(intoriQuestion)
 
     image.write(questionImagePath)
+  }
+
+  for (let i = 0; i < channelFrames.length; i++) {
+    const channelQuestions = getAvailableQuestions({
+      channelId: channelFrames[i].channelId
+    })
+
+    const channelQuestionImagePathPrefix = path.join(
+      questionImagePathPrefix,
+      channelFrames[i].channelId
+    )
+
+    for (let channelQuestionIndex = 0; channelQuestionIndex < channelQuestions.length; channelQuestionIndex++) {
+      const channelQuestion = channelQuestions[channelQuestionIndex]
+
+      const channelQuestionImagePath = path.join(
+        channelQuestionImagePathPrefix,
+        channelQuestionIndex.toString() + '.png'
+      )
+
+      const image = await generateQuestionnaireStepImage(channelQuestion)
+
+      image.write(channelQuestionImagePath)
+    }
   }
 
   console.log('Done generating question frame images.')
