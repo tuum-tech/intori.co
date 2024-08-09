@@ -5,7 +5,10 @@ const convertSecondsToDate = (seconds: number): Date => {
 }
 
 export const hasUserReachedSixAnswerLimit = async (fid: number): Promise<boolean> => {
-  const pastSixAnswers = await getRecentAnswersForUser(fid, 6)
+  const pastSixAnswers = await getRecentAnswersForUser({
+    fid, 
+    limit: 6
+  })
 
   if (pastSixAnswers.length < 6) {
     return false

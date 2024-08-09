@@ -13,15 +13,11 @@ import { PrimaryButton } from '../../components/common/Button'
 import styles from './FramePage.module.css'
 import {
   getFrameSessionById,
-  saveSuggestionsToFrameSession,
-  saveIfUserFollowsIntori,
-  incrementSuggestionsRevealed
+  saveSuggestionsToFrameSession
 } from '../../models/frameSession'
 import { getOneSuggestion } from '../../utils/frames/suggestions'
 import {
-  createNextRevealUrl,
   createFrameErrorUrl,
-  createStartNewFrameQuestionUrl,
   createNoMatchesFoundUrl,
   createMessageUserUrl
 } from '../../utils/frames/generatePageUrls'
