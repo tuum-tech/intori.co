@@ -84,3 +84,12 @@ export const createNoMatchesFoundUrl = (params: {
   const { fsid } = params
   return `${process.env.NEXTAUTH_URL}/frames/no-matches?fsid=${fsid}`
 }
+
+export const createMessageUserUrl = (params: {
+  fid: number
+  message: string
+}): string => {
+  const { message, fid } = params
+  const safeMessageText = encodeURIComponent(message)
+  return `https://warpcast.com/~/inbox/create/${fid}?text=${safeMessageText}`
+}

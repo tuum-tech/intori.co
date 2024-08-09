@@ -7,7 +7,8 @@ import {
 import {
   fetchUserDetailsByFids,
   getChannelsThatUserFollows,
-  FarcasterChannelType
+  FarcasterChannelType,
+  getRecentCastsForChannel
 } from '../neynarApi'
 
 export const getAllSuggestedUsersAndChannels = async (
@@ -18,13 +19,12 @@ export const getAllSuggestedUsersAndChannels = async (
   }
 ): Promise<SuggestionType[]> => {
   const { fid, channelId, noChannel } = options
-  const recentResponses = await getRecentAnswersForUser(
+  const recentResponses = await getRecentAnswersForUser({
     fid,
-    24,
-    {
-      channelId,
-      noChannel
-    })
+    limit: 24,
+    channelId,
+    noChannel
+  })
 
   const suggestions: SuggestionType[] = []
   const suggestedUserFids: {
@@ -219,4 +219,103 @@ export const sortSuggestions = (suggestions: SuggestionType[]): SuggestionType[]
     }
 
     return interleaved;
+}
+
+export const getOneSuggestion = async (options: {
+  fid: number
+  channelId?: string
+}): Promise<SuggestionType|null> => {
+  const { fid, channelId } = options
+  const recentResponses = await getRecentAnswersForUser({
+    fid,
+    limit: 24,
+    channelId
+  })
+
+  const suggestedUserFids: {
+    fid: number
+    reason: string[]
+  }[] = []
+
+  await Promise.all(
+    recentResponses.map(async (response) => {
+      const otherUserResponses = await getResponsesWithAnswerToQuestion({
+        question: response.question,
+        answer: response.answer,
+        limit: 4
+      })
+
+      for (let j = 0; j < otherUserResponses.length; j++) {
+        const res = otherUserResponses[j]
+
+        if (res.fid === fid) {
+          continue
+        }
+
+        // TEMPORARY: We will still show users that you follow
+        //
+        // const alreadyFollows = await doesUserAlreadyFollowUser(fid, res.fid)
+
+        // if (alreadyFollows) {
+        //   continue
+        // }
+
+        const alreadySuggested = suggestedUserFids.findIndex(
+          (suggestedFid) => suggestedFid.fid === res.fid
+        )
+
+        if (alreadySuggested !== -1) {
+          suggestedUserFids[alreadySuggested].reason.push(
+            `You both answered "${response.answer}" to "${response.question}"`
+          )
+          continue
+        }
+
+        suggestedUserFids.push({
+          fid: res.fid,
+          reason: [`You both answered "${response.answer}" to "${response.question}"`]
+        })
+      }
+    })
+  )
+
+  if (suggestedUserFids.length) {
+    // sort so most reasons is first
+    suggestedUserFids.sort((a, b) => b.reason.length - a.reason.length)
+
+    const toBeSuggested = suggestedUserFids[0]
+    const fidToSuggest = toBeSuggested.fid
+    const userDetails = await fetchUserDetailsByFids([fidToSuggest])
+
+    return {
+      type: 'user',
+      user: userDetails[0],
+      reason: toBeSuggested.reason
+    }
+  }
+
+  if (channelId) {
+    const randomReasons = [
+      "We think this account could be a great fit for you - give it a look!",
+      "Explore this account, it could be a great match for your interests!",
+      "Based on your interests, this account might be just what you're looking for.",
+      "We think you'll find this account interesting - check it out!",
+      "Your answers suggest this account might be a good fit - explore it!"
+    ]
+
+    const recentCasts = await getRecentCastsForChannel(channelId, 10)
+    const authorFids = recentCasts.map((cast) => cast.author.fid)
+    authorFids.sort((a, b) => a - b)
+
+    const fidToSuggest = authorFids[0]
+    const userDetails = await fetchUserDetailsByFids([fidToSuggest])
+
+    return {
+      type: 'user',
+      user: userDetails[0],
+      reason: [randomReasons[Math.floor(Math.random() * randomReasons.length)]]
+    }
+  }
+
+  return null
 }

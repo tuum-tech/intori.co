@@ -17,18 +17,14 @@ import {
   saveIfUserFollowsIntori,
   incrementSuggestionsRevealed
 } from '../../models/frameSession'
-import {
-  getAllSuggestedUsersAndChannels,
-  sortSuggestions
-} from '../../utils/frames/suggestions'
+import { getOneSuggestion } from '../../utils/frames/suggestions'
 import {
   createNextRevealUrl,
-  createFollowIntoriUrl,
   createFrameErrorUrl,
+  createStartNewFrameQuestionUrl,
   createNoMatchesFoundUrl,
-  createStartNewFrameQuestionUrl
+  createMessageUserUrl
 } from '../../utils/frames/generatePageUrls'
-import { doesUserFollowIntori } from '../../utils/neynarApi'
  
 type Props = {
   imageUrl: string
@@ -61,47 +57,15 @@ export const getServerSideProps = (async (context) => {
 
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/begin`
   const imageUrl = `${process.env.NEXTAUTH_URL}/api/results/${session.id}`
-  const imageUrlQueryParts: string[] = []
 
   const inputs: IntoriFrameInputType[] = []
 
-  const suggestionsRevealed = session.suggestionsRevealed ?? 0
+  const suggestion = await getOneSuggestion({
+    fid: session.fid,
+    channelId: session.channelId
+  })
 
-  if (suggestionsRevealed > 3 && !session.followsIntori) {
-    const followsIntori = await doesUserFollowIntori(session.fid)
-
-    if (!followsIntori) {
-      return {
-        redirect: {
-          destination: createFollowIntoriUrl({ fsid: session.id }),
-          permanent: false
-        }
-      }
-    }
-
-    await saveIfUserFollowsIntori(session.id, followsIntori)
-  }
-
-  if (!session.suggestions.length) {
-    const unsortedSuggestions = await getAllSuggestedUsersAndChannels({
-      fid: session.fid,
-      channelId: session.channelId,
-      noChannel: session.channelId === undefined
-    })
-
-    const suggestions = sortSuggestions(unsortedSuggestions)
-
-    await saveSuggestionsToFrameSession(session.id, suggestions)
-
-    session.suggestions = suggestions
-  }
-
-  imageUrlQueryParts.push(`i=${suggestionsRevealed}`)
-  const suggestionToShow = session.suggestions[suggestionsRevealed % session.suggestions.length]
-
-  incrementSuggestionsRevealed(session.id)
-
-  if (!suggestionToShow) {
+  if (!suggestion?.user) {
     return {
       redirect: {
         destination: createNoMatchesFoundUrl({ fsid: session.id }),
@@ -110,29 +74,25 @@ export const getServerSideProps = (async (context) => {
     }
   }
 
+  if (suggestion) {
+    await saveSuggestionsToFrameSession(session.id, [suggestion])
+  }
+
   inputs.push({
     type: 'button',
     action: 'link',
-    target: (
-      suggestionToShow.user
-        ? `https://warpcast.com/${suggestionToShow.user?.username}`
-        : `https://warpcast.com/~/channel/${suggestionToShow.channel?.id}`
-    ),
+    target: `https://warpcast.com/${suggestion.user.username}`,
     content: 'Follow'
   })
 
   inputs.push({
     type: 'button',
-    postUrl: createNextRevealUrl({ fsid: session.id }),
-    content: '✨ Reveal'
-  })
-
-  inputs.push({
-    type: 'button',
-    postUrl: createStartNewFrameQuestionUrl({
-      frameSessionId: session.id
+    action: 'link',
+    target: createMessageUserUrl({
+      fid: suggestion.user.fid,
+      message: `Hey!\n\nYou were suggested to me by Intori.\n\nWhat's up?`
     }),
-    content: 'Next Question'
+    content: 'Message'
   })
 
   const frame: IntoriFrameType = {
@@ -141,7 +101,7 @@ export const getServerSideProps = (async (context) => {
 
   return {
     props: {
-      imageUrl: imageUrl + '?' + imageUrlQueryParts.join('&'),
+      imageUrl,
       frameUrl,
       frame
     }
