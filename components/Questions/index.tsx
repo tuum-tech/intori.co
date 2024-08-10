@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { toast } from 'react-toastify'
 import { useFormik, FormikProvider, FieldArray} from 'formik'
 import { QuestionType } from '../../models/questions'
@@ -27,8 +27,6 @@ const OneQuestion: React.FC<{
   initialQuestion,
   onQuestionDeleted
 }) => {
-  const isNew = initialQuestion.id.startsWith('new-')
-
   const formik = useFormik({
     initialValues: {
       ...initialQuestion
@@ -38,9 +36,10 @@ const OneQuestion: React.FC<{
         if (isNew) {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { id, ...body } = values
-          await createQuestion(body)
+          const res = await createQuestion(body)
+          formik.setValues(res.data)
         } else {
-          await updateQuestion(initialQuestion.id, values)
+          await updateQuestion(values.id, values)
         }
         toast.success('Question saved.')
       } catch (err) {
@@ -48,6 +47,10 @@ const OneQuestion: React.FC<{
       }
     }
   })
+
+  const isNew = useMemo(() => {
+    return formik.values.id.startsWith('new-')
+  }, [formik])
 
   const onDelete = async () => {
     try {
