@@ -55,8 +55,9 @@ const deleteEditAddQuestion = async (
     }).validate(req.body, { stripUnknown: true })
 
     if (req.method === "POST" && id === "new") {
-      await createQuestion(validBody as QuestionType)
-      return res.status(201).end()
+      const newQuestion = await createQuestion(validBody as QuestionType)
+      console.log('returning:', { newQuestion })
+      return res.status(201).json(newQuestion)
     }
 
     if (req.method === "PUT") {
