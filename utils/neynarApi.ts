@@ -12,6 +12,7 @@ export type FarcasterChannelType = {
   description?: string
   name?: string
   imageUrl?: string
+  adminFid?: number
 }
 
 export type FarcasterUserType = {
@@ -154,4 +155,22 @@ export const getFidsUserIsFollowing = async (fid: number): Promise<number[]> => 
   } while (cursor)
 
   return followingFids
+}
+
+export const getChannelDetails = async (channelId: string) => {
+  try {
+    const { channel } = await neynar.lookupChannel(channelId)
+
+    return {
+      id: channel.id,
+      url: channel.url,
+      name: channel.name,
+      imageUrl: channel.image_url,
+      description: channel.description,
+      followCount: channel.follower_count,
+      adminFid: channel.lead?.fid
+    }
+  } catch (err) {
+    return null
+  }
 }
