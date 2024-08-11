@@ -17,6 +17,9 @@
   display: block;
   max-width: 600px;
 }
+.inputContainer input:read-only {
+  cursor: pointer;
+}
 .inputContainer input::placeholder,
 .inputContainer input:placeholder {
   color: #666;

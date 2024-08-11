@@ -6,7 +6,7 @@ type Props = {
   label?: string
   placeholder?: string
   value: string
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
   onClick?: React.MouseEventHandler<HTMLInputElement>
   readOnly?: boolean
   required?: boolean
