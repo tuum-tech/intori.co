@@ -1,7 +1,7 @@
 import type { NextPage, GetServerSideProps } from "next";
 import Link from 'next/link'
 import { getSession } from "next-auth/react"
-import { channelFrames } from '../../utils/frames/channelFrames'
+import { ChannelFrameType, getAllChannelFrames } from '../../models/channelFrames'
 
 // components
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
@@ -13,11 +13,12 @@ import { GeneralStatsSection } from '../../components/Stats/GeneralStatsSection'
 import { UniqueUsersOverTimeChart } from '../../components/Stats/UniqueUsersOverTimeChart'
 import { MostAnsweredQuestionsChart } from '../../components/Stats/MostAnsweredQuestionsChart'
 import { TopResponsesForTopQuestions } from '../../components/Stats/TopResponsesForTopQuestions'
+import Input from "../../components/common/Input";
 import { Empty } from '../../components/common/Empty'
 
 type Props = {
   showSuperAdminTab: boolean
-  channelFramesToShow: string[]
+  channelFramesToShow: ChannelFrameType[]
 }
 
 export const getServerSideProps = (async (context) => {
@@ -32,23 +33,13 @@ export const getServerSideProps = (async (context) => {
     }
   }
 
-  if (session.admin) {
-    return {
-      props: {
-        showSuperAdminTab: true,
-        channelFramesToShow: channelFrames.map((channel) => channel.channelId)
-      }
-    }
-  }
-
-  // TODO: check against channel frames model
-  const channelFramesToShow = channelFrames.filter((channel) => {
-    return channel.adminFid === parseInt(session.user.fid, 10)
-  }).map((channel) => channel.channelId)
+  const channelFramesToShow = await getAllChannelFrames({
+    adminFid: session.admin ? undefined : parseInt(session.user.fid, 10)
+  })
 
   return {
     props: {
-      showSuperAdminTab: false,
+      showSuperAdminTab: !!session.admin,
       channelFramesToShow
     }
   }
@@ -74,8 +65,8 @@ const AdminStats: NextPage<Props> = ({
         <Tabs forceRenderTabPanel>
           <TabList>
             { showSuperAdminTab && <Tab>Super Admin</Tab> }
-            { channelFramesToShow.map((channelId) => (
-              <Tab key={channelId}>{`/${channelId}`}</Tab>
+            { channelFramesToShow.map((channel) => (
+              <Tab key={channel.channelId}>{`/${channel.channelId}`}</Tab>
             ))}
           </TabList>
 
@@ -95,8 +86,23 @@ const AdminStats: NextPage<Props> = ({
             </TabPanel>
           )}
 
-          { channelFramesToShow.map((channelId) => (
+          { channelFramesToShow.map(({ channelId, postSchedule }) => (
             <TabPanel key={channelId}>
+              <Input
+                value={`${process.env.NEXTAUTH_URL ?? window.location.origin}/frames/channels/${channelId}`}
+                label="Intro Frame URL"
+                note="Share this frame anytime to start getting users familiar with Intori"
+                readOnly
+              />
+
+              <Input
+                value={postSchedule}
+                onChange={console.log}
+                label="Post Schedule"
+                readOnly
+              />
+
+              <hr />
               <GeneralStatsSection channelId={channelId} />
               <UniqueUsersOverTimeChart channelId={channelId} />
               <MostAnsweredQuestionsChart channelId={channelId} />
