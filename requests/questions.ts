@@ -14,3 +14,11 @@ export const createQuestion = async (
 ): Promise<AxiosResponse<QuestionType>> => {
   return axios.post(`/api/questions/new`, body)
 }
+
+export const getQuestionCategories = async (): Promise<AxiosResponse<string[]>> => {
+  return axios.get(`/api/questions/categories`)
+}
+
+export const getQuestionsByCategory = async (category: string): Promise<AxiosResponse<QuestionType[]>> => {
+  return axios.get(`/api/questions?category=${category}`)
+}
