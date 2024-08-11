@@ -2,13 +2,8 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '../auth/[...nextauth]'
 import * as yup from 'yup'
-import {
-  QuestionType,
-  getQuestionById,
-  deleteQuestionById,
-  updateQuestionById,
-  createQuestion
-} from '../../../models/questions'
+import { getChannelDetails } from '../../../utils/neynarApi'
+import { ChannelFrameType, getChannelFrame, createChannelFrame } from '../../../models/channelFrames'
 
 const createGetChannelFrames = async (
   req: NextApiRequest,
@@ -21,54 +16,50 @@ const createGetChannelFrames = async (
   }
 
   const fid = parseInt(session.user.fid, 10)
-  const adminFids = (process.env.ADMIN_FIDS || '').split(',').map((fid) => parseInt(fid, 10))
 
-  if (!adminFids.includes(fid)) {
-    return res.status(404).end()
-  }
+  if (req.method === 'POST') {
+    try {
+      const validBody = await yup.object().shape({
+        channelId: yup.string().required(),
+        category: yup.string().required(),
+        introQuestions: yup.array().of(yup.string()).required(),
+        postSchedule: yup.string().oneOf(['biweekly', 'weekly', 'bimonthly', 'monthly']).required()
+      }).validate(req.body, { stripUnknown: true })
 
-  const id = req.query.id
+      if (validBody.channelId.startsWith('/')) {
+        validBody.channelId = validBody.channelId.slice(1)
+      }
 
-  if (!['POST', 'PUT', 'DELETE'].includes(req.method as string) || !id) {
-    return res.status(405).end()
-  }
+      const channel = await getChannelDetails(validBody.channelId)
 
-  if (req.method === 'DELETE') {
-    const question = await getQuestionById(id as string)
+      if (!channel) {
+        return res.status(400).json({ error: 'Channel does not exist.' })
+      }
 
-    if (!question) {
-      return res.status(404).end()
+      const channelFrameExists = await getChannelFrame(validBody.channelId)
+
+      if (channelFrameExists) {
+        return res.status(400).json({ error: 'Channel frame is not available.' })
+      }
+
+      if (!session.admin && channel.adminFid !== fid) {
+        return res.status(403).json({
+          error: 'Sorry, you must be the owner of the channel to create an Intori channel frame.'
+        })
+      }
+
+      const channelFrame = await createChannelFrame({
+        ...validBody,
+        adminFid: channel.adminFid as number
+      } as ChannelFrameType)
+
+      return res.status(201).json(channelFrame)
+    } catch (err) {
+      return res.status(400).json({ error: (err as Error).message })
     }
-
-    await deleteQuestionById(id as string)
-
-    return res.status(204).end()
   }
 
-  try {
-    const validBody = await yup.object().shape({
-      id: yup.string().optional(),
-      question: yup.string().required(),
-      answers: yup.array().of(yup.string()).required(),
-      categories: yup.array().of(yup.string()).required(),
-      order: yup.number().required()
-    }).validate(req.body, { stripUnknown: true })
-
-    if (req.method === "POST" && id === "new") {
-      const newQuestion = await createQuestion(validBody as QuestionType)
-      console.log('returning:', { newQuestion })
-      return res.status(201).json(newQuestion)
-    }
-
-    if (req.method === "PUT") {
-      await updateQuestionById(id as string, validBody as QuestionType)
-      return res.status(200).end()
-    }
-  } catch (err) {
-    return res.status(400).json({ error: (err as Error).message })
-  }
-
-  return res.status(405).end()
+  return res.status(404).end()
 }
 
 export default createGetChannelFrames
