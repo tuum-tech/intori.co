@@ -3,6 +3,7 @@
   justify-content: flex-start;
   gap: 16px;
   flex-wrap: wrap;
+  margin-top: 24px;
 }
 .statsCard {
   display: inline-block;
