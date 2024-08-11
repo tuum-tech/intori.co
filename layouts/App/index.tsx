@@ -38,7 +38,7 @@ export const AppLayout: React.FC<Props> = ({ children }) => {
       return false
     }
 
-    return pathname === href
+    return pathname === href || pathname.startsWith(href)
   }
 
   const dropdownItems = useMemo(() => {
@@ -46,13 +46,8 @@ export const AppLayout: React.FC<Props> = ({ children }) => {
       { label: 'Dashboard', href: '/dashboard' },
       { label: 'Suggestions', href: '/suggestions' },
       { label: 'Responses', href: '/responses' },
+      { label: 'Channels', href: '/channels' }
     ]
-
-    if (session?.data?.admin || session?.data?.channelAdmin?.length) {
-      items.push(
-        { label: 'Admin', href: '/admin/stats' }
-      )
-    }
 
     items.push(
       { label: signer ? formattedAddress : 'Connect Wallet', onClick: attemptToConnectWallet }
@@ -63,7 +58,7 @@ export const AppLayout: React.FC<Props> = ({ children }) => {
     )
 
     return items
-  }, [session, signer, attemptToConnectWallet, formattedAddress])
+  }, [signer, attemptToConnectWallet, formattedAddress])
 
   const redirectUrl = useMemo(() => {
     if (typeof window === 'undefined') {
@@ -120,16 +115,12 @@ export const AppLayout: React.FC<Props> = ({ children }) => {
               </span>
               Responses
             </Link>
-            {
-              (session.data.admin || session.data.channelAdmin?.length) && (
-                <Link href="/admin/stats" title="Admin Stats" className={isNavLinkActive('/admin/stats') ? styles.selected : ''}>
-                  <span className={styles.icon}>
-                    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M7.57107 4.35294H14.4289M11 1V9.94118M6.4281 15.5294L4.77422 16.3386C4.58439 16.4313 4.42472 16.5739 4.31308 16.7504C4.20145 16.9269 4.14226 17.1303 4.14215 17.3378V20H17.8578V17.3378C17.8577 17.1303 17.7985 16.9269 17.6869 16.7504C17.5753 16.5739 17.4156 16.4313 17.2258 16.3386L15.5719 15.5294H6.4281ZM6.99959 15.5294C6.28372 15.5293 5.581 15.3413 4.96475 14.9851C4.34849 14.6289 3.84128 14.1175 3.49602 13.5043C3.15075 12.8911 2.9801 12.1985 3.00185 11.4988C3.0236 10.7991 3.23696 10.118 3.61967 9.52638C4.00238 8.9348 4.54042 8.45449 5.17766 8.13554C5.81491 7.81658 6.528 7.67068 7.24256 7.71306C7.95712 7.75543 8.64696 7.98452 9.24011 8.37643C9.83327 8.76834 10.308 9.30871 10.6148 9.94118H11.3852C11.692 9.30871 12.1667 8.76834 12.7599 8.37643C13.353 7.98452 14.0429 7.75543 14.7574 7.71306C15.472 7.67068 16.1851 7.81658 16.8223 8.13554C17.4596 8.45449 17.9976 8.9348 18.3803 9.52638C18.763 10.118 18.9764 10.7991 18.9982 11.4988C19.0199 12.1985 18.8492 12.8911 18.504 13.5043C18.1587 14.1175 17.6515 14.6289 17.0353 14.9851C16.419 15.3413 15.7163 15.5293 15.0004 15.5294H6.99959Z" stroke="white" stroke-linecap="round" stroke-linejoin="round"/> </svg>
-                  </span>
-                  Admin
-                </Link>
-              )
-            }
+              <Link href="/channels" title="Channels" className={isNavLinkActive('/channels') ? styles.selected : ''}>
+                <span className={styles.icon}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="#ffffff" viewBox="0 0 256 256"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,16V88H40V56Zm0,144H40V104H216v96Z"></path></svg>
+                </span>
+                Channels
+              </Link>
           </nav>
         </div>
         <ConnectWalletButton />

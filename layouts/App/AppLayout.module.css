@@ -1,5 +1,7 @@
 .appLayout {
   padding: 24px;
+  max-width: 1400px;
+  margin: auto;
 }
 
 .header {
@@ -39,7 +41,7 @@
   align-items: center;
   justify-content: center;
   background: #2A304200;
-  margin-right: 10px;
+  margin-right: 6px;
   transition: background 0.3s;
 }
 .selected {
