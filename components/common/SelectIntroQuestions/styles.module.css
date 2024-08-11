@@ -1,0 +1,11 @@
+.introQuestionsContainer {
+  display: flex;
+  flex-direction: column;
+}
+.introQuestionsContainer ol {
+  min-height: 86px;
+}
+.introQuestionsContainer ol li {
+  color: #FFF;
+  margin-bottom: 10px;
+}
