@@ -1,4 +1,5 @@
 import type { NextPage, GetServerSideProps } from "next";
+import Link from 'next/link'
 import { getSession } from "next-auth/react"
 import { channelFrames } from '../../utils/frames/channelFrames'
 
@@ -12,6 +13,7 @@ import { GeneralStatsSection } from '../../components/Stats/GeneralStatsSection'
 import { UniqueUsersOverTimeChart } from '../../components/Stats/UniqueUsersOverTimeChart'
 import { MostAnsweredQuestionsChart } from '../../components/Stats/MostAnsweredQuestionsChart'
 import { TopResponsesForTopQuestions } from '../../components/Stats/TopResponsesForTopQuestions'
+import { Empty } from '../../components/common/Empty'
 
 type Props = {
   showSuperAdminTab: boolean
@@ -30,12 +32,6 @@ export const getServerSideProps = (async (context) => {
     }
   }
 
-  if (!session.admin && !session.channelAdmin?.length) {
-    return {
-      notFound: true
-    }
-  }
-
   if (session.admin) {
     return {
       props: {
@@ -45,6 +41,7 @@ export const getServerSideProps = (async (context) => {
     }
   }
 
+  // TODO: check against channel frames model
   const channelFramesToShow = channelFrames.filter((channel) => {
     return channel.adminFid === parseInt(session.user.fid, 10)
   }).map((channel) => channel.channelId)
@@ -64,9 +61,16 @@ const AdminStats: NextPage<Props> = ({
   return (
     <AppLayout>
       <Section
-        title="Admin Stats"
-        subtitle="Here you can see some stats about Intori frames."
+        title="Channel Frames & Stats"
+        subtitle="Here you can create Intori frames for your channel and view stats."
       >
+        <SectionTopActions>
+          <Link href="/channels/create">
+            <PrimaryButton>
+              Create Channel Frame
+            </PrimaryButton>
+          </Link>
+        </SectionTopActions>
         <Tabs forceRenderTabPanel>
           <TabList>
             { showSuperAdminTab && <Tab>Super Admin</Tab> }
@@ -100,6 +104,9 @@ const AdminStats: NextPage<Props> = ({
             </TabPanel>
           ))}
         </Tabs>
+        { !showSuperAdminTab && !channelFramesToShow.length && (
+          <Empty>You don&apos;t have any channel frames yet. Create one now!</Empty>
+        )}
       </Section>
     </AppLayout>
   )
