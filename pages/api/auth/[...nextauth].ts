@@ -83,9 +83,9 @@ export const authOptions: (req: NextApiRequest) => NextAuthOptions = (req) => ({
         session.user.fid = token.id as string
 
         session.admin = adminFids.includes(parseInt(token.id as string, 10))
-        session.channelAdmin = channelFrames.filter((channel) => {
-          return channel.adminFid === parseInt(token.id as string, 10)
-        })
+        // session.channelAdmin = channelFrames.filter((channel) => {
+        //   return channel.adminFid === parseInt(token.id as string, 10)
+        // })
         return session;
       }
     }
