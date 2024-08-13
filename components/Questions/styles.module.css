@@ -12,20 +12,17 @@
   color: #FFF;
   margin-bottom: 24px;
 }
-.orderUpDown {
-  text-align: right;
-}
-.orderUpDown button {
-  background: none;
-  border: none;
-  cursor: pointer;
-}
 .question details summary {
   cursor: pointer;
   margin-bottom: 24px;
 }
 .columns {
   display: flex;
+}
+.indexNumber {
+  font-size: 14px;
+  color: #999;
+  margin-bottom: 24px;
 }
 .questionInput {
   flex-basis: 100%;
