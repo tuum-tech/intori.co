@@ -76,7 +76,7 @@ const OneQuestion: React.FC<{
             required
           />
         </div>
-        <details>
+        <details open={isNew}>
           <summary>Edit Question</summary>
           <div className={styles.columns}>
             <div className={styles.inputGroup}>
@@ -99,9 +99,12 @@ const OneQuestion: React.FC<{
                         </div>
                       ))
                     }
-                    <SecondaryButton onClick={() => push('')}>
-                      Add Answer
-                    </SecondaryButton>
+
+                    { formik.values.answers.length < 10 && (
+                      <SecondaryButton onClick={() => push('')}>
+                        Add Answer
+                      </SecondaryButton>
+                    )}
                   </>
                 )}
               </FieldArray>
@@ -147,7 +150,7 @@ const OneQuestion: React.FC<{
               Delete
             </DangerButton>
 
-            <PrimaryButton onClick={() => formik.submitForm()}>
+            <PrimaryButton type="submit">
               Save
             </PrimaryButton>
           </div>
@@ -170,6 +173,7 @@ export const DisplayQuestions: React.FC<Props> = ({
     return (
       <div className={styles.container}>
         {
+          /* TODO reverse the questions so the newest ones show at top. Order not important right now */
           questions.map((question) => (
             <OneQuestion
               key={question.id}

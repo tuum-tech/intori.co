@@ -36,7 +36,7 @@ export const getServerSideProps = (async (context) => {
   const questions = await getAllQuestions()
 
   return {
-    props: { questions }
+    props: { questions: questions.reverse() }
   }
 }) satisfies GetServerSideProps<Props>
 
@@ -46,7 +46,6 @@ const AdminStats: NextPage<Props> = ({ questions: inQuestions }) => {
   const addNewQuestion = async () => {
     const id = `new-` + Date.now().toString()
     setQuestions([
-      ...questions,
       {
         question: '',
         answers: [],
@@ -54,13 +53,8 @@ const AdminStats: NextPage<Props> = ({ questions: inQuestions }) => {
         order: questions.length,
         id
       },
+      ...questions,
     ])
-
-    window.scrollTo({
-      top: document.body.scrollHeight,
-      behavior: 'smooth'
-    })
-
   }
 
   return (
