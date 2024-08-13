@@ -73,6 +73,11 @@ const AdminStats: NextPage<Props> = ({
           { showSuperAdminTab && (
             <TabPanel>
               <SectionTopActions>
+                <Link href="/channels/questions">
+                  <PrimaryButton>
+                    Edit Questions
+                  </PrimaryButton>
+                </Link>
                 <a href="/api/stats/csv" target="_blank" rel="noopener noreferrer">
                   <PrimaryButton>
                     Download CSV
