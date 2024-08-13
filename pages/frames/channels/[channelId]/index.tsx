@@ -1,16 +1,18 @@
 import React, { useState } from 'react'
 import { toast } from 'react-toastify'
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
-import { FrameGenerator } from '../../../components/farcaster/FrameGenerator'
-import { AppLayout } from "@/layouts/App"
-import { Section } from '../../../components/common/Section'
+import { FrameGenerator } from '../../../../components/farcaster/FrameGenerator'
+import { AppLayout } from "../../../../layouts/App"
+import { Section } from '../../../../components/common/Section'
 import {
     IntoriFrameType,
     createIntroductionStep
-} from '../../../utils/frames/intoriFrameForms'
-import Input from '../../../components/common/Input'
-import { PrimaryButton } from '../../../components/common/Button'
+} from '../../../../utils/frames/intoriFrameForms'
+import Input from '../../../../components/common/Input'
+import { PrimaryButton } from '../../../../components/common/Button'
 import styles from '../FramePage.module.css'
+
+// TODO: show intro questions from channel frame model based on :channelId
  
 type Props = {
   imageUrl: string
