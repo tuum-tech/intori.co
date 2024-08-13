@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import { toast } from 'react-toastify'
 import { useFormik, FormikProvider, FieldArray} from 'formik'
 import { QuestionType } from '../../models/questions'
@@ -23,9 +23,11 @@ import styles from './styles.module.css'
 const OneQuestion: React.FC<{
   initialQuestion: QuestionType
   onQuestionDeleted: (questionId: string) => void
+  index: number
 }> = ({
   initialQuestion,
-  onQuestionDeleted
+  onQuestionDeleted,
+  index
 }) => {
   const formik = useFormik({
     initialValues: {
@@ -67,6 +69,7 @@ const OneQuestion: React.FC<{
   return (
     <FormikProvider value={formik}>
       <form className={styles.question} onSubmit={formik.handleSubmit}>
+        <div className={styles.indexNumber}>#{index}</div>
         <div className={styles.questionInput}>
           <Input
             label="Question"
@@ -170,19 +173,35 @@ export const DisplayQuestions: React.FC<Props> = ({
   questions,
   onQuestionDeleted
 }) => {
-    return (
-      <div className={styles.container}>
-        {
-          /* TODO reverse the questions so the newest ones show at top. Order not important right now */
-          questions.map((question) => (
+  const [searchTerm, setSearchTerm] = useState('')
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.searchContainer}>
+        <Input
+          value={searchTerm}
+          name="search"
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search questions"
+        />
+      </div>
+      {
+        questions.map((question, index) => {
+          if (searchTerm && question.question.toLowerCase().indexOf(searchTerm.toLowerCase()) === -1) {
+            return null
+          }
+
+          return (
             <OneQuestion
               key={question.id}
               initialQuestion={question}
               onQuestionDeleted={onQuestionDeleted}
+              index={questions.length - index}
             />
-          ))
-        }
-      </div>
-    )
+          )
+        })
+      }
+    </div>
+  )
 }
 
