@@ -43,7 +43,7 @@ export const createQuestion = async (newQuestion: QuestionType) => {
 
 export const getAllQuestions = async (params: {
   category?: string
-}): Promise<QuestionType[]> => {
+} = {}): Promise<QuestionType[]> => {
   const collection = getCollection()
 
   let query = collection as FirebaseFirestore.Query<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>
