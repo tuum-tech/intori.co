@@ -12,7 +12,7 @@ import Input from '../../../../components/common/Input'
 import { PrimaryButton } from '../../../../components/common/Button'
 import styles from '../FramePage.module.css'
 
-// TODO: get channelId param and expect questionId query.
+// TODO: get channelId param and expect questionId query. ( qid )
 // check if question by question id exists
 // create image url that will include question text and channel branding
  
@@ -24,14 +24,17 @@ type Props = {
  
 export const getServerSideProps = (async (context) => {
   const channelId = context.params?.channelId?.toString()
+  const questionId = context.query.qid?.toString()
 
-  if (!channelId) {
+  if (!channelId || !questionId) {
     return {
       notFound: true
     }
   }
 
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/channels/${channelId}`
+
+  // TODO: image will be of the question, but white labed for channel. Should point to an api handler
   const imageUrl = `${process.env.NEXTAUTH_URL}/assets/frames/channels/${channelId}/intro.png`
 
   return {

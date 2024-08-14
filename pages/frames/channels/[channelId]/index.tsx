@@ -10,6 +10,7 @@ import {
 } from '../../../../utils/frames/intoriFrameForms'
 import Input from '../../../../components/common/Input'
 import { PrimaryButton } from '../../../../components/common/Button'
+import { getChannelFrame } from '../../../../models/channelFrames'
 import styles from '../FramePage.module.css'
 
 // TODO: show intro questions from channel frame model based on :channelId
@@ -29,8 +30,19 @@ export const getServerSideProps = (async (context) => {
     }
   }
 
+  const channelFrame = await getChannelFrame(channelId)
+  if (!channelId) {
+    return {
+      notFound: true
+    }
+  }
+
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/channels/${channelId}`
+
+  // TODO: pass intro questions from channel frame model
   const imageUrl = `${process.env.NEXTAUTH_URL}/assets/frames/channels/${channelId}/intro.png`
+
+  // TODO:  will have to manage question number index state
 
   return {
     props: {
