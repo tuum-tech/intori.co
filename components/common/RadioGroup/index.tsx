@@ -5,7 +5,10 @@ import styles from './styles.module.css'
 type Props = {
     options: { value: string | boolean | number, label: string }[]
     label: string
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     formik: FormikContextType<any>
+
     name: string
 }
 
