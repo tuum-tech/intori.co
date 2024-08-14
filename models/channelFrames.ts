@@ -2,17 +2,13 @@ import { createDb } from '../pages/api/utils/firestore'
 
 export type ChannelFrameType = {
   channelId: string
-  category: string
-  introQuestions: string[] // question ids
-  postSchedule: 'biweekly' | 'weekly' | 'bimonthly' | 'monthly'
+  introQuestionIds: string[] // question ids
   adminFid: number
 }
 
 export type CreateChannelFrameType = {
   channelId: string
-  category: string
-  introQuestions: string[] // question ids
-  postSchedule: 'biweekly' | 'weekly' | 'bimonthly' | 'monthly'
+  introQuestionIds: string[] // question ids
 }
 
 let channelFrameCollection: FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData>
