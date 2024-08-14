@@ -31,18 +31,14 @@ export const getServerSideProps = (async (context) => {
   }
 
   const channelFrame = await getChannelFrame(channelId)
-  if (!channelId) {
+  if (!channelFrame) {
     return {
       notFound: true
     }
   }
 
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/channels/${channelId}`
-
-  // TODO: pass intro questions from channel frame model
-  const imageUrl = `${process.env.NEXTAUTH_URL}/assets/frames/channels/${channelId}/intro.png`
-
-  // TODO:  will have to manage question number index state
+  const imageUrl = `${process.env.NEXTAUTH_URL}/api/frames/channels/${channelId}/intro`
 
   return {
     props: {
