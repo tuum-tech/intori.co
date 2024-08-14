@@ -1,76 +1,85 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { toast } from 'react-toastify'
 import { FormikContextType } from 'formik'
 import { CreateChannelFrameType } from '../../../models/channelFrames'
 import { QuestionType } from '../../../models/questions'
-import { getQuestionsByCategory } from '../../../requests/questions'
+import { Select } from '../Select'
 import styles from './styles.module.css'
-import selectStyles from '../Select/styles.module.css'
 
 type Props = {
   formik: FormikContextType<CreateChannelFrameType>
+  allQuestions: QuestionType[]
 }
 
 export const SelectIntroQuestions: React.FC<Props> = ({
-  formik
+  formik,
+  allQuestions
 }) => {
-  const [availableQuestions, setAvailableQuestions] = useState<QuestionType[]>([])
-
   const handleQuestionSelected = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedQuestion = availableQuestions.find((question) => question.id === e.target.value)
+    const selectedQuestionId = e.target.value
+    const selectedQuestion = allQuestions.find((question) => question.id === selectedQuestionId)
+
     if (selectedQuestion) {
-      formik.setFieldValue('introQuestions', [...formik.values.introQuestions, selectedQuestion.question])
-      setAvailableQuestions(availableQuestions.filter((question) => question.id !== e.target.value))
+      formik.setFieldValue(
+        'introQuestionIds',
+        [...formik.values.introQuestionIds, selectedQuestionId]
+      )
     }
   }
 
-  useEffect(() => {
-    setAvailableQuestions([])
-    formik.setFieldValue('introQuestions', [])
-
-    const fetchQuestions = async () => {
-      try {
-        const res = await getQuestionsByCategory(formik.values.category)
-        setAvailableQuestions(res.data)
-      } catch (err) {
-        toast.error('Failed to fetch questions for this category. Please try again later.')
-        setAvailableQuestions([])
-      }
+  const placeholderMesage = useMemo(() => {
+    if (formik.values.introQuestionIds.length === 3) {
+      return 'You can have up to 3 intro questions'
     }
 
-    fetchQuestions()
-  }, [formik.values.category])
+    if (allQuestions.length === 0) {
+      return 'No questions to choose from'
+    }
+
+    return 'Select question...'
+  }, [formik.values.introQuestionIds, allQuestions])
+
+  const removeQuestion = (questionId: string) => {
+    formik.setFieldValue('introQuestionIds', formik.values.introQuestionIds.filter((qid) => qid !== questionId))
+    toast.success('Question removed')
+  }
+
+  const questionOptions = useMemo(() => {
+    return allQuestions.map((question) => ({
+      label: question.question,
+      value: question.id
+    })).filter((question) => !formik.values.introQuestionIds.includes(question.value))
+  }, [allQuestions, formik.values.introQuestionIds])
+
+  const questionText = useCallback((questionId: string) => {
+    return allQuestions.find(
+      (question) => question.id === questionId
+    )?.question || 'Invalid question.'
+  }, [allQuestions])
 
   return (
     <div className={styles.introQuestionsContainer}>
-      {formik.values.introQuestions.length < 3 && (
-        <div className={selectStyles.selectContainer}>
-          <label htmlFor="selectQuestion">
-            Select up to three questions for the intro frame
-          </label>
-          <select value="" onChange={handleQuestionSelected} name="selectQuestion">
-              <option value="" disabled selected>
-                { availableQuestions.length === 0
-                  ? 'No questions to choose from'
-                  : 'Select question...'
-                }
-              </option>
-              {availableQuestions.map((option) => (
-                <option key={option.id} value={option.id}>
-                  {option.question}
-                </option>
-              ))}
-          </select>
-        </div>
-      )}
+      <Select
+        name="selectQuestion"
+        label="Select up to three questions for the intro frame"
+        options={questionOptions}
+        placeholder={placeholderMesage}
+        onChange={handleQuestionSelected}
+        disabled={formik.values.introQuestionIds.length === 3}
+        value=""
+      />
       <ol>
         {
-          formik.values.introQuestions.map((question) => (
-            <li key={question}>{question}</li>
+          formik.values.introQuestionIds.map((questionId) => (
+            <li key={questionId}>
+              <span>{questionText(questionId)}</span>
+              <button type="button" title="Remove Question" onClick={() => removeQuestion(questionId)}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#AAAAAA" viewBox="0 0 256 256"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"></path></svg>
+              </button>
+            </li>
           ))
         }
       </ol>
     </div>
   )
 }
-
