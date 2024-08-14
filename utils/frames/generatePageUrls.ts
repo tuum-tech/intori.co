@@ -84,3 +84,11 @@ export const createNoMatchesFoundUrl = (params: {
   const { fsid } = params
   return `${process.env.NEXTAUTH_URL}/frames/no-matches?fsid=${fsid}`
 }
+
+export const createChannelQuestionFrameUrl = (params: {
+  channelId: string
+  questionId: string
+}) => {
+  const { channelId, questionId } = params
+  return `${process.env.NEXTAUTH_URL ?? window.location.origin}/frames/channels/${channelId}/question?qid=${questionId}`
+}
