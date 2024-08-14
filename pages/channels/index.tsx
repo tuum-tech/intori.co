@@ -14,11 +14,14 @@ import { UniqueUsersOverTimeChart } from '../../components/Stats/UniqueUsersOver
 import { MostAnsweredQuestionsChart } from '../../components/Stats/MostAnsweredQuestionsChart'
 import { TopResponsesForTopQuestions } from '../../components/Stats/TopResponsesForTopQuestions'
 import Input from "../../components/common/Input";
+import { SelectQuestion } from '../../components/common/SelectQuestion'
 import { Empty } from '../../components/common/Empty'
+import { QuestionType, getAllQuestions } from '../../models/questions'
 
 type Props = {
   showSuperAdminTab: boolean
   channelFramesToShow: ChannelFrameType[]
+  allQuestions: QuestionType[]
 }
 
 export const getServerSideProps = (async (context) => {
@@ -37,9 +40,16 @@ export const getServerSideProps = (async (context) => {
     adminFid: session.admin ? undefined : parseInt(session.user.fid, 10)
   })
 
+  const allQuestions = await getAllQuestions()
+
+  allQuestions.sort((a, b) => {
+    return a.question.localeCompare(b.question)
+  })
+
   return {
     props: {
       showSuperAdminTab: !!session.admin,
+      allQuestions,
       channelFramesToShow
     }
   }
@@ -47,6 +57,7 @@ export const getServerSideProps = (async (context) => {
 
 const AdminStats: NextPage<Props> = ({
   showSuperAdminTab,
+  allQuestions,
   channelFramesToShow
 }) => {
   return (
@@ -91,7 +102,7 @@ const AdminStats: NextPage<Props> = ({
             </TabPanel>
           )}
 
-          { channelFramesToShow.map(({ channelId, postSchedule }) => (
+          { channelFramesToShow.map(({ channelId }) => (
             <TabPanel key={channelId}>
               <Input
                 value={`${process.env.NEXTAUTH_URL ?? window.location.origin}/frames/channels/${channelId}`}
@@ -100,12 +111,7 @@ const AdminStats: NextPage<Props> = ({
                 readOnly
               />
 
-              <Input
-                value={postSchedule}
-                onChange={console.log}
-                label="Post Schedule"
-                readOnly
-              />
+              <SelectQuestion channelId={channelId} questions={allQuestions} />
 
               <hr />
               <GeneralStatsSection channelId={channelId} />
