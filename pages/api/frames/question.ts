@@ -3,7 +3,8 @@ import { frameSubmissionHelpers } from '../../../utils/frames/frameSubmissionHel
 import { validateFarcasterPacketMessage } from '../utils/farcasterServer'
 import {
   getUserAnswerForQuestion,
-  getLastAnsweredQuestionForUser
+  getLastAnsweredQuestionForUser,
+  countUserAnswers
 } from '../../../models/userAnswers'
 import { appendQuestionToFrameSession } from '../../../models/frameSession'
 import { getLastSkippedQuestions } from '../../../models/userQuestionSkip'
@@ -15,10 +16,14 @@ import {
   createFrameErrorUrl,
   createFrameResultsUrl,
   createLimitReachedUrl,
-  createAnsweredAllQuestionsUrl
+  createAnsweredAllQuestionsUrl,
+  createTutorialFrameUrl
 } from '../../../utils/frames/generatePageUrls'
 
 // User is requesting a new question
+// TODO: check if user has no responses at all with intori
+//          - if no responses, redirect to new frame page with gif tutorial
+// TODO: need to determine if user is on intro frame or a single question frame.
 const newQuestion = async (
   req: NextApiRequest,
   res: NextApiResponse
@@ -38,16 +43,33 @@ const newQuestion = async (
 
   const { fid, channelId, session: initialSession } = await frameSubmissionHelpers(req)
 
+  // TODO: check if user has no responses at all with intori
+  // if no responses, redirect to new frame page with gif tutorial
+
   // If no session, create new frame session
   let session = initialSession
   if (!session) {
-    session = await createFrameSession({ fid, channelId })
+    const numberOfIntoriResponses = await countUserAnswers(fid)
+    session = await createFrameSession({
+      fid,
+      channelId,
+      showTutorialFrame: numberOfIntoriResponses === 0
+    })
   }
 
   if (!session) {
     return res.redirect(
       307,
       createFrameErrorUrl()
+    )
+  }
+
+  if (session.showTutorialFrame) {
+    return res.redirect(
+      307,
+      createTutorialFrameUrl({
+        fsid: session.id
+      })
     )
   }
 
