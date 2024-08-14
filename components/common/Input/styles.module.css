@@ -24,23 +24,3 @@
 .inputContainer input:placeholder {
   color: #666;
 }
-
-.note {
-  color: #888;
-  font-size: 12px;
-  margin-top: 6px;
-  line-height: 14px;
-  bottom: 0;
-}
-.note,
-.error {
-  display: block;
-  padding-left: 6px;
-}
-.error {
-  height: 14px;
-  line-height: 14px;
-  color: #FF4D4F;
-  font-size: 12px;
-  margin-top: 2px;
-}

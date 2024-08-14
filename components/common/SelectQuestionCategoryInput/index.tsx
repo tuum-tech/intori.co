@@ -42,7 +42,7 @@ export const SelectQuestionCategoryInput: React.FC<Props> = ({ formik }) => {
   return (
     <Select
       formik={formik}
-      label="Question Category"
+      label="Filter Questions by Category"
       name="category"
       options={options}
       placeholder={loadingCategories ? 'Loading categories...' : 'Select a question category...'}

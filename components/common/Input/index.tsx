@@ -1,6 +1,8 @@
 import { NextPage } from 'next'
 import React from 'react'
 import styles from './styles.module.css'
+import { Note } from '../Note'
+import { InputError } from '../InputError'
 
 type Props = {
   label?: string
@@ -47,14 +49,10 @@ const Input: NextPage<Props> = ({
         onBlur={onBlur}
         name={name}
       />
-      {note?.length && (
-          <sub className={styles.note}>
-            {note}
-          </sub>
-      )}
-      <sub className={styles.error}>
-         {error ?? ''}
-      </sub>
+
+      <Note note={note} />
+
+      <InputError error={error} />
     </div>
   )
 }
