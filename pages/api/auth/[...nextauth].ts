@@ -3,7 +3,6 @@ import util from 'util'
 import CredentialsProvider from "next-auth/providers/credentials"
 import { createAppClient, viemConnector } from "@farcaster/auth-kit"
 import { NextApiRequest, NextApiResponse } from "next"
-import { channelFrames } from '../../../utils/frames/channelFrames'
 
 const adminFids = (process.env.ADMIN_FIDS || '').split(',').map((fid) => parseInt(fid, 10))
 
