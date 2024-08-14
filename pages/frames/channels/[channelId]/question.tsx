@@ -10,7 +10,7 @@ import {
 } from '../../../../utils/frames/intoriFrameForms'
 import Input from '../../../../components/common/Input'
 import { PrimaryButton } from '../../../../components/common/Button'
-import styles from '../FramePage.module.css'
+import styles from '../../FramePage.module.css'
 
 // TODO: get channelId param and expect questionId query. ( qid )
 // check if question by question id exists
