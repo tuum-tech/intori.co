@@ -11,7 +11,7 @@ import {
 import Input from '../../../../components/common/Input'
 import { PrimaryButton } from '../../../../components/common/Button'
 import { getChannelFrame } from '../../../../models/channelFrames'
-import styles from '../FramePage.module.css'
+import styles from '../../FramePage.module.css'
 
 // TODO: show intro questions from channel frame model based on :channelId
  
