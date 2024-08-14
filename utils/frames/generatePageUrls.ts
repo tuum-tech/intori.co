@@ -92,3 +92,10 @@ export const createChannelQuestionFrameUrl = (params: {
   const { channelId, questionId } = params
   return `${process.env.NEXTAUTH_URL ?? window.location.origin}/frames/channels/${channelId}/question?qid=${questionId}`
 }
+
+export const createTutorialFrameUrl = (params: {
+  fsid: string
+}) => {
+  const { fsid } = params
+  return `${process.env.NEXTAUTH_URL}/frames/tutorial?fsid=${fsid}`
+}
