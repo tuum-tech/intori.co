@@ -4,17 +4,14 @@ import {
   loadFont
 } from './fonts'
 import {
-  replaceNewlinesWithSpaces,
   removeEmojis,
   shortenNumber
 } from '../textHelpers'
 
 const addChannelImage = async (
   baseImage: Jimp,
-  channelImageUrl: string
+  channelImage: Jimp
 ) => {
-  const channelImage = await Jimp.read(channelImageUrl)
-
   channelImage.contain(244, 198, Jimp.HORIZONTAL_ALIGN_CENTER | Jimp.VERTICAL_ALIGN_MIDDLE)
 
   // area where channel image will be within
@@ -38,11 +35,13 @@ export const createChannelFrameIntroImage = async (params: {
   const [
     font14regularGrey,
     font24semiboldGrey,
-    baseImage
+    baseImage,
+    channelImage
   ] = await Promise.all([
     loadFont({ family: 'kumbh_sans', weight: 'regular', size: 14, color: 'grey' }),
     loadFont({ family: 'kumbh_sans', weight: 'semibold', size: 24, color: 'grey' }),
-    Jimp.read(inPublicFolder('/assets/templates/channel_intro_template.png'))
+    Jimp.read(inPublicFolder('/assets/templates/channel_intro_template.png')),
+    Jimp.read(params.imageUrl)
   ]);
 
   // followers amount
@@ -59,8 +58,7 @@ export const createChannelFrameIntroImage = async (params: {
     18
   )
 
-  // channel image
-  await addChannelImage(baseImage, params.imageUrl)
+  await addChannelImage(baseImage, channelImage)
 
   // Channel name
   baseImage.print(
