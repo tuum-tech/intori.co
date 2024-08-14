@@ -21,9 +21,7 @@ const createGetChannelFrames = async (
     try {
       const validBody = await yup.object().shape({
         channelId: yup.string().required(),
-        category: yup.string().required(),
-        introQuestions: yup.array().of(yup.string()).required(),
-        postSchedule: yup.string().oneOf(['biweekly', 'weekly', 'bimonthly', 'monthly']).required()
+        introQuestionIds: yup.array().of(yup.string()).max(3).required()
       }).validate(req.body, { stripUnknown: true })
 
       if (validBody.channelId.startsWith('/')) {
