@@ -12,6 +12,7 @@ export type FrameSessionType = {
   fid: number
   channelId?: string // the channel id that this frame session is for
   showTutorialFrame: boolean
+  isIntroFrame: boolean
 
   suggestions: SuggestionType[]
   suggestionsRevealed: number
@@ -22,6 +23,7 @@ export type CreateFrameSessionType = {
   fid: number
   channelId?: string
   showTutorialFrame: boolean
+  isIntroFrame: boolean
 }
 
 let frameSessionsCollection: FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData>
