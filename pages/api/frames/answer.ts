@@ -7,7 +7,13 @@ import { createUserAnswer, updateUserAnswerWithBlockchainMetadata } from '../../
 import { getBlockchainSettingsForUser } from '../../../models/userBlockchainSettings'
 import { createVerifiableCredential } from '../veramo/createVerifiableCredential'
 import { registerCredential } from '../../../lib/ethers/registerCredential'
-import { createFrameErrorUrl, createFrameResultsUrl } from '../../../utils/frames/generatePageUrls'
+import {
+  createFrameErrorUrl,
+  createFrameResultsUrl,
+  createFrameQuestionUrl
+} from '../../../utils/frames/generatePageUrls'
+import { getChannelFrame } from '../../../models/channelFrames'
+import { incrementSessionQuestion } from '../../../models/frameSession'
 
 const answeredQuestion = async (
   req: NextApiRequest,
@@ -71,6 +77,37 @@ const answeredQuestion = async (
     } catch (err) {
       console.error('Failed to publish to blockchain:', err)
     }
+  }
+
+  if (session.isIntroFrame && session.channelId) {
+    const channelFrame = await getChannelFrame(session.channelId)
+
+    if (!channelFrame) {
+      return res.redirect(
+        307,
+        createFrameErrorUrl()
+      )
+    }
+
+    await incrementSessionQuestion(session.id)
+    session.questionNumber += 1
+
+    if (session.questionNumber === channelFrame?.introQuestionIds.length) {
+      return res.redirect(
+        307,
+        createFrameResultsUrl({
+          frameSessionId: session.id
+        })
+      )
+    }
+
+    return res.redirect(
+      307,
+      createFrameQuestionUrl({
+        questionId: channelFrame.introQuestionIds[session.questionNumber],
+        frameSessionId: session.id
+      })
+    )
   }
 
   return res.redirect(
