@@ -26,6 +26,7 @@ const newQuestion = async (
   const validFarcasterPacket = await validateFarcasterPacketMessage(req.body)
 
   if (!validFarcasterPacket) {
+    console.log('invalid farcaster packet')
     return res.redirect(
       307,
       createFrameErrorUrl()
@@ -49,6 +50,7 @@ const newQuestion = async (
   }
 
   if (!session || !channelId) {
+    console.log('invalid session or channel id', session, channelId)
     return res.redirect(
       307,
       createFrameErrorUrl()
@@ -58,6 +60,7 @@ const newQuestion = async (
   const channelFrame = await getChannelFrame(channelId)
 
   if (!channelFrame) {
+    console.log('Channel frame not found.')
     return res.redirect(
       307,
       createFrameErrorUrl()
@@ -99,6 +102,8 @@ const newQuestion = async (
       })
     )
   }
+
+  console.log(' no qi and isIntroFrame')
 
   // TODO: need to think about what to do with skipped question for single question frames
   // const skippedQuestions = await getLastSkippedQuestions(fid, 5)
