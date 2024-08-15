@@ -1,4 +1,5 @@
 import type { NextPage, GetServerSideProps } from "next";
+import { toast } from 'react-toastify'
 import Link from 'next/link'
 import { getSession } from "next-auth/react"
 import { ChannelFrameType, getAllChannelFrames } from '../../models/channelFrames'
@@ -60,6 +61,12 @@ const AdminStats: NextPage<Props> = ({
   allQuestions,
   channelFramesToShow
 }) => {
+  const copyIntroFrameUrlToClipboard = (channelId: string) => {
+    const url = `${process.env.NEXTAUTH_URL ?? window.location.origin}/frames/channels/${channelId}`
+    navigator.clipboard.writeText(url)
+    toast.success('Frame link copied to clipboard 😎')
+  }
+
   return (
     <AppLayout>
       <Section
@@ -108,6 +115,7 @@ const AdminStats: NextPage<Props> = ({
                 value={`${process.env.NEXTAUTH_URL ?? window.location.origin}/frames/channels/${channelId}`}
                 label="Intro Frame URL"
                 note="Share this frame anytime to start getting users familiar with Intori"
+                onClick={() => copyIntroFrameUrlToClipboard(channelId)}
                 readOnly
               />
 
