@@ -23,7 +23,7 @@ const addChannelImage = async (
 
     channelImage.mask(circleMask, 0, 0)
 
-    baseImage.composite(channelImage, 93, 119)
+    baseImage.composite(channelImage, 346, 39)
 }
 
 export const createChannelQuestionFrameImage = async (params: {
@@ -79,7 +79,7 @@ export const createChannelQuestionFrameImage = async (params: {
     // answer text
     baseImage.print(
       font24regularWhite,
-      bulletXPosition + 11,
+      bulletXPosition + 28,
       bulletYPosition - 9,
       {
         text: answer,
