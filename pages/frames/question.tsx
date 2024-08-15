@@ -5,7 +5,7 @@ import { FrameGenerator } from '../../components/farcaster/FrameGenerator'
 import { AppLayout } from "@/layouts/App"
 import { Section } from '../../components/common/Section'
 import { IntoriFrameType } from '../../utils/frames/intoriFrameForms'
-import { getAvailableQuestions } from '../../utils/frames/questions'
+import { getQuestionById } from '../../models/questions'
 import {
   getFrameInputsBasedOnAnswerOffset
 } from '../../utils/frames/frameSubmissionHelpers'
@@ -31,14 +31,23 @@ export const getServerSideProps = (async (context) => {
     }
   }
 
-  const questionIndex = parseInt(context.query.qi as string, 10)
+  const questionId = context.query.qi as string
   const answerOffset = parseInt(context.query.ioff as string, 10) || 0
   const frameSessionId = context.query.fsid?.toString() as string
   const session = await getFrameSessionById(frameSessionId)
-  const availableQuestions = getAvailableQuestions({ channelId: session?.channelId })
-  const question = availableQuestions[questionIndex]
 
-  if (!question || !session) {
+  if (!session) {
+    return {
+      redirect: {
+        destination: createFrameErrorUrl(),
+        permanent: false
+      }
+    }
+  }
+
+  const question = await getQuestionById(questionId)
+
+  if (!question) {
     return {
       redirect: {
         destination: createFrameErrorUrl(),
@@ -48,23 +57,21 @@ export const getServerSideProps = (async (context) => {
   }
 
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/begin`
+
   const imageUrlParts = [
     process.env.NEXTAUTH_URL,
-    '/assets/frames/questions/'
+    '/api/frames/channels/',
+    session.channelId,
+    '/images/question',
+    `?qid=${questionId}`,
   ]
-
-  if (session.channelId) {
-    imageUrlParts.push(`${session.channelId}/`)
-  }
-
-  imageUrlParts.push(`${questionIndex}.png`)
 
   const imageUrl = imageUrlParts.join('')
 
   const frame: IntoriFrameType = {
     question: question.question,
     inputs: getFrameInputsBasedOnAnswerOffset(
-      questionIndex,
+      question,
       answerOffset,
       session
     )

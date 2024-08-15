@@ -35,7 +35,7 @@ export const getServerSideProps = (async (context) => {
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/channels/${channelId}`
 
   // TODO: image will be of the question, but white labed for channel. Should point to an api handler
-  const imageUrl = `${process.env.NEXTAUTH_URL}/assets/frames/channels/${channelId}/intro.png`
+  const imageUrl = `${process.env.NEXTAUTH_URL}/api/frames/channels/${channelId}/images/question?qid=${questionId}`
 
   return {
     props: {
