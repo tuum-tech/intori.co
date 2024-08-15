@@ -182,7 +182,7 @@ export const frameSubmissionHelpers = async (req: NextApiRequest) => {
   let question: QuestionType | null = null
   let buttonClicked = ''
   const questionId = (req.query.qi ?? '').toString()
-  const channelId = req.query.channelId ? req.query.channelId.toString() : undefined
+  const channelId = (req.query.channelId ?? session?.channelId ?? '').toString() || undefined
 
   if (req.query.qi && buttonIndexClicked && session) {
     question = await getQuestionById(questionId)
