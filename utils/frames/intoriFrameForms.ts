@@ -15,6 +15,7 @@ export type IntoriFrameType = {
 
 export const createIntroductionStep = (params: {
   channelId?: string
+  isIntroFrame?: boolean
 } = {}): IntoriFrameType => {
   return {
     inputs: [

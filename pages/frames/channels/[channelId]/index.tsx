@@ -44,7 +44,10 @@ export const getServerSideProps = (async (context) => {
     props: {
       imageUrl,
       frameUrl,
-      frame: createIntroductionStep({ channelId })
+      frame: createIntroductionStep({
+        channelId,
+        isIntroFrame: true
+      })
     }
   }
 }) satisfies GetServerSideProps<Props>
