@@ -109,7 +109,7 @@ const AdminStats: NextPage<Props> = ({
             </TabPanel>
           )}
 
-          { channelFramesToShow.map(({ channelId }) => (
+          { channelFramesToShow.map(({ channelId, introQuestionIds }) => (
             <TabPanel key={channelId}>
               <Input
                 value={`${process.env.NEXTAUTH_URL ?? window.location.origin}/frames/channels/${channelId}`}
@@ -120,6 +120,21 @@ const AdminStats: NextPage<Props> = ({
               />
 
               <SelectQuestion channelId={channelId} questions={allQuestions} />
+
+              <h2>Intro Questions</h2>
+              <ol>
+                {
+                  introQuestionIds?.map((questionId) => {
+                    const question = allQuestions.find(q => q.id === questionId)
+                    return (
+                      <li key={questionId}>
+                        {question?.question}
+                      </li>
+                    )
+                  })
+                }
+              </ol>
+              <br />
 
               <hr />
               <GeneralStatsSection channelId={channelId} />
