@@ -4,7 +4,8 @@ import {
   SuggestionType
 } from '../../models/userAnswers'
 import {
-  fetchUserDetailsByFids
+  fetchUserDetailsByFids,
+  getFollowersOfChannel
 } from '../neynarApi'
 
 export const getAllSuggestedUsersAndChannels = async (
@@ -61,13 +62,21 @@ export const getAllSuggestedUsersAndChannels = async (
     })
   )
 
-  if (suggestedUserFids.length < 3) {
-    // TODO: find users that have answered intori in the past
-  }
 
   const userDetails = await fetchUserDetailsByFids(
     suggestedUserFids.map((s) => s.fid)
   )
+
+  if (suggestedUserFids.length < 3 && channelId) {
+    const suggestionsNeeded = 3 - suggestedUserFids.length
+
+    const channelFollowers = await getFollowersOfChannel({
+      channelId,
+      limit: suggestionsNeeded * 3
+    })
+
+    userDetails.push(...channelFollowers)
+  }
 
   // based on user details, sort power users toward the top
   userDetails.sort((a, b) => {
