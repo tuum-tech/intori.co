@@ -22,6 +22,7 @@ type Props = {
 }
  
 export const getServerSideProps = (async (context) => {
+  console.log('============================= HERE?')
   if (!context?.query?.qi || !context?.query?.fsid) {
     return {
       redirect: {
@@ -31,10 +32,13 @@ export const getServerSideProps = (async (context) => {
     }
   }
 
+  console.log('queries:', context.query)
   const questionId = context.query.qi as string
-  const answerOffset = parseInt(context.query.ioff as string, 10) || 0
+  const answerOffset = parseInt(context.query.ioff as string ?? '0', 10)
   const frameSessionId = context.query.fsid?.toString() as string
   const session = await getFrameSessionById(frameSessionId)
+
+  console.log('here')
 
   if (!session) {
     console.log('frame/question – no session.')
@@ -46,6 +50,7 @@ export const getServerSideProps = (async (context) => {
     }
   }
 
+  console.log('about to fetch question')
   const question = await getQuestionById(questionId)
 
   if (!question) {
@@ -69,6 +74,8 @@ export const getServerSideProps = (async (context) => {
   ]
 
   const imageUrl = imageUrlParts.join('')
+
+  console.log('image url:', imageUrl)
 
   const frame: IntoriFrameType = {
     question: question.question,

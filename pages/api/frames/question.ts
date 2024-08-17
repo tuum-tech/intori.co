@@ -68,6 +68,7 @@ const newQuestion = async (
   }
 
   if (session.showTutorialFrame) {
+    console.log('show tutorial frame')
     return res.redirect(
       307,
       createTutorialFrameUrl({
@@ -93,9 +94,13 @@ const newQuestion = async (
 
   if (session.isIntroFrame) {
     const introQuestionIdToShow = channelFrame.introQuestionIds[session.questionNumber]
+    console.log('going to:', createFrameQuestionUrl({
+      questionId: introQuestionIdToShow,
+      frameSessionId: session.id
+    }))
 
-    return res.redirect(
-      307,
+    // why is this not fucking redirecting
+    res.redirect(
       createFrameQuestionUrl({
         questionId: introQuestionIdToShow,
         frameSessionId: session.id
@@ -103,15 +108,15 @@ const newQuestion = async (
     )
   }
 
-  console.log(' no qi and isIntroFrame')
+  // console.log(' no qi and isIntroFrame')
 
-  // TODO: need to think about what to do with skipped question for single question frames
-  // const skippedQuestions = await getLastSkippedQuestions(fid, 5)
+  // // TODO: need to think about what to do with skipped question for single question frames
+  // // const skippedQuestions = await getLastSkippedQuestions(fid, 5)
 
-  return res.redirect(
-    307,
-    createFrameErrorUrl()
-  )
+  // return res.redirect(
+  //   307,
+  //   createFrameErrorUrl()
+  // )
 }
 
 export default newQuestion

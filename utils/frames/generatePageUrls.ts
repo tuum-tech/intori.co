@@ -14,8 +14,16 @@ export const createFrameQuestionUrl = (params: {
   answerOffset?: number
   frameSessionId: string
 }) => {
-  const { questionId, answerOffset, frameSessionId } = params
-  return `${process.env.NEXTAUTH_URL}/frames/question?qi=${questionId}&ioff=${answerOffset}&fsid=${frameSessionId}`
+  const queryParts: string[] = [
+    `qi=${params.questionId}`,
+    `fsid=${params.frameSessionId}`
+  ]
+
+  if (params.answerOffset) {
+    queryParts.push(`ioff=${params.answerOffset}`)
+  }
+
+  return `${process.env.NEXTAUTH_URL}/frames/question?${queryParts.join('&')}`
 }
 
 export const createStartNewFrameQuestionUrl = (params: {
