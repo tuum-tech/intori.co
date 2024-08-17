@@ -33,12 +33,12 @@ type Props = {
  
 // TODO:
 // New order of suggestions ( show 3 suggestions ):
-//         - Channel Power User & Multiple Matching Responses; or
-//         - Channel Power User & Matching Response; or
-//         - Multiple Matching Responses; or
-//         - Channel Power User & has used intori; or
-//         - Matching Response & Followed by Power User; or
-//         - Channel Power User
+//         - [x] Channel Power User & Multiple Matching Responses; or
+//         - [x] Channel Power User & Matching Response; or
+//         - [ ] Multiple Matching Responses; or
+//         - [ ] Channel Power User & has used intori; or
+//         - [ ] Matching Response & Followed by Power User; or
+//         - [x] Channel Power User
 export const getServerSideProps = (async (context) => {
   if (!context?.query.fsid) {
     return {
