@@ -37,6 +37,7 @@ export const getServerSideProps = (async (context) => {
   const session = await getFrameSessionById(frameSessionId)
 
   if (!session) {
+    console.log('frame/question – no session.')
     return {
       redirect: {
         destination: createFrameErrorUrl(),
@@ -48,6 +49,7 @@ export const getServerSideProps = (async (context) => {
   const question = await getQuestionById(questionId)
 
   if (!question) {
+    console.log('frame/question – question not found.')
     return {
       redirect: {
         destination: createFrameErrorUrl(),
