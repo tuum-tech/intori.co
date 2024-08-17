@@ -107,25 +107,25 @@ export const getAllSuggestedUsersAndChannels = async (
     userDetails.push(...channelFollowers)
   }
 
-  // based on user details, sort power users toward the top
-  userDetails.sort((a, b) => {
-    if (a.powerBadge && !b.powerBadge) {
-      return -1
-    }
-
-    if (!a.powerBadge && b.powerBadge) {
-      return 1
-    }
-
-    return 0
-  })
-
   suggestedUserFids.forEach((s) => {
     suggestions.push({
       type: 'user',
       user: userDetails.find((u) => u.fid === s.fid),
       reason: s.reason
     } as SuggestionType)
+  })
+
+  // sort power users toward the top
+  suggestions.sort((a, b) => {
+    if (a.user?.powerBadge && !b.user?.powerBadge) {
+      return -1
+    }
+
+    if (!a.user?.powerBadge && b.user?.powerBadge) {
+      return 1
+    }
+
+    return 0
   })
 
   return suggestions.slice(0, 3)
