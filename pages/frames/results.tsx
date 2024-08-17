@@ -22,8 +22,7 @@ import {
 import {
   createNextRevealUrl,
   createFrameErrorUrl,
-  createNoMatchesFoundUrl,
-  createStartNewFrameQuestionUrl
+  createNoMatchesFoundUrl
 } from '../../utils/frames/generatePageUrls'
  
 type Props = {
