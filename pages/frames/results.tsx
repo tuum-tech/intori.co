@@ -14,21 +14,17 @@ import styles from './FramePage.module.css'
 import {
   getFrameSessionById,
   saveSuggestionsToFrameSession,
-  saveIfUserFollowsIntori,
   incrementSuggestionsRevealed
 } from '../../models/frameSession'
 import {
-  getAllSuggestedUsersAndChannels,
-  sortSuggestions
+  getAllSuggestedUsersAndChannels
 } from '../../utils/frames/suggestions'
 import {
   createNextRevealUrl,
-  createFollowIntoriUrl,
   createFrameErrorUrl,
   createNoMatchesFoundUrl,
   createStartNewFrameQuestionUrl
 } from '../../utils/frames/generatePageUrls'
-import { doesUserFollowIntori } from '../../utils/neynarApi'
  
 type Props = {
   imageUrl: string
@@ -36,6 +32,14 @@ type Props = {
   frame: IntoriFrameType
 }
  
+// TODO:
+// New order of suggestions ( show 3 suggestions ):
+//         - Channel Power User & Multiple Matching Responses; or
+//         - Channel Power User & Matching Response; or
+//         - Multiple Matching Responses; or
+//         - Channel Power User & has used intori; or
+//         - Matching Response & Followed by Power User; or
+//         - Channel Power User
 export const getServerSideProps = (async (context) => {
   if (!context?.query.fsid) {
     return {
@@ -67,29 +71,28 @@ export const getServerSideProps = (async (context) => {
 
   const suggestionsRevealed = session.suggestionsRevealed ?? 0
 
-  if (suggestionsRevealed > 3 && !session.followsIntori) {
-    const followsIntori = await doesUserFollowIntori(session.fid)
+  // TODO: need to think about when/if to show this.
+  // if (!session.followsIntori) {
+  //   const followsIntori = await doesUserFollowIntori(session.fid)
 
-    if (!followsIntori) {
-      return {
-        redirect: {
-          destination: createFollowIntoriUrl({ fsid: session.id }),
-          permanent: false
-        }
-      }
-    }
+  //   if (!followsIntori) {
+  //     return {
+  //       redirect: {
+  //         destination: createFollowIntoriUrl({ fsid: session.id }),
+  //         permanent: false
+  //       }
+  //     }
+  //   }
 
-    await saveIfUserFollowsIntori(session.id, followsIntori)
-  }
+  //   await saveIfUserFollowsIntori(session.id, followsIntori)
+  // }
 
+  // TODO: show only 3 suggestions
   if (!session.suggestions.length) {
-    const unsortedSuggestions = await getAllSuggestedUsersAndChannels({
+    const suggestions = await getAllSuggestedUsersAndChannels({
       fid: session.fid,
-      channelId: session.channelId,
-      noChannel: session.channelId === undefined
+      channelId: session.channelId
     })
-
-    const suggestions = sortSuggestions(unsortedSuggestions)
 
     await saveSuggestionsToFrameSession(session.id, suggestions)
 
