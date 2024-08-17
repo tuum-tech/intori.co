@@ -130,14 +130,6 @@ export const getServerSideProps = (async (context) => {
     content: '✨ Reveal'
   })
 
-  inputs.push({
-    type: 'button',
-    postUrl: createStartNewFrameQuestionUrl({
-      frameSessionId: session.id
-    }),
-    content: 'Next Question'
-  })
-
   const frame: IntoriFrameType = {
     inputs
   }
