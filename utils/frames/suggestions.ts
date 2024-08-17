@@ -66,7 +66,7 @@ export const getAllSuggestedUsersAndChannels = async (
   }
 
   const userDetails = await fetchUserDetailsByFids(
-    suggestedUserFids.map((s) => s.fid)
+    suggestedUserFids.map((s) => s.fid).slice(0, 3)
   )
 
   // based on user details, sort power users toward the top
