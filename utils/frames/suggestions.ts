@@ -75,6 +75,35 @@ export const getAllSuggestedUsersAndChannels = async (
       limit: suggestionsNeeded * 3
     })
 
+    const randomReasons = [
+      "We think this account could be a great fit for you - give it a look!",
+      "Explore this account, it could be a great match for your interests!",
+      "Based on your interests, this account might be just what you're looking for.",
+      "We think you'll find this account interesting - check it out!",
+      "Your answers suggest this account might be a good fit - explore it!"
+    ]
+
+    for (let i = 0; i < channelFollowers.length; i++) {
+      const follower = channelFollowers[i]
+
+      if (follower.fid === fid) {
+        continue
+      }
+
+      const alreadySuggested = suggestedUserFids.findIndex(
+        (suggestedFid) => suggestedFid.fid === follower.fid
+      )
+
+      if (alreadySuggested === -1) {
+        continue
+      }
+      
+      suggestedUserFids.push({
+          fid: follower.fid,
+          reason: [randomReasons[i % randomReasons.length]]
+      })
+    }
+
     userDetails.push(...channelFollowers)
   }
 
