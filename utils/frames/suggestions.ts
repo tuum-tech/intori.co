@@ -66,7 +66,7 @@ export const getAllSuggestedUsersAndChannels = async (
   }
 
   const userDetails = await fetchUserDetailsByFids(
-    suggestedUserFids.map((s) => s.fid).slice(0, 3)
+    suggestedUserFids.map((s) => s.fid)
   )
 
   // based on user details, sort power users toward the top
@@ -90,7 +90,7 @@ export const getAllSuggestedUsersAndChannels = async (
     } as SuggestionType)
   })
 
-  return suggestions
+  return suggestions.slice(0, 3)
 
   // code to get channel suggestions below:
   // if (channelId && channelId !== 'welcome') {
