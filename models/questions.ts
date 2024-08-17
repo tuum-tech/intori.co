@@ -65,13 +65,13 @@ export const getAllQuestions = async (params: {
 export const getQuestionById = async (id: string) => {
   const collection = getCollection()
 
-  const doc = await collection.doc(id).get()
+  const query = await collection.where('id', '==', id).limit(1).get()
 
-  if (!doc.exists) {
+  if (!query.size) {
     return null
   }
 
-  return { id: doc.id, ...doc.data() } as QuestionType
+  return query.docs[0].data() as QuestionType
 }
 
 export const updateQuestionById = async (
