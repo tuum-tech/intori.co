@@ -5,7 +5,7 @@ import {
   createFrameResultsUrl,
   createFrameErrorUrl
 } from '../../../utils/frames/generatePageUrls'
-import { incrementSessionQuestion } from '../../../models/frameSession'
+import { incrementSuggestionsRevealed } from '../../../models/frameSession'
 import { updateSuggestionRating } from '../../../models/suggestionRating'
 
 // User is requesting a new question
@@ -54,7 +54,7 @@ const revealNextSuggestion = async (
     )
   }
 
-  await incrementSessionQuestion(session.id)
+  await incrementSuggestionsRevealed(session.id)
 
   return res.redirect(
     307,
