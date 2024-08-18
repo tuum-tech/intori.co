@@ -6,7 +6,7 @@ import { AppLayout } from "../../../../layouts/App"
 import { Section } from '../../../../components/common/Section'
 import {
     IntoriFrameType,
-    createIntroductionStep
+    createStartNewFrameQuestionUrl
 } from '../../../../utils/frames/intoriFrameForms'
 import Input from '../../../../components/common/Input'
 import { PrimaryButton } from '../../../../components/common/Button'
@@ -41,7 +41,21 @@ export const getServerSideProps = (async (context) => {
     props: {
       imageUrl,
       frameUrl,
-      frame: createIntroductionStep({ channelId })
+      frame: {
+        inputs: [
+          {
+            type: 'button',
+            content: 'Learn More',
+            action: 'link',
+            target: 'https://www.intori.co/'
+          },
+          {
+            type: 'button',
+            content: '🌟 Begin',
+            postUrl: createStartNewFrameQuestionUrl({ questionId, channelId })
+          }
+        ]
+      }
     }
   }
 }) satisfies GetServerSideProps<Props>

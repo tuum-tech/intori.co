@@ -91,7 +91,7 @@ const newQuestion = async (
   if (session.isIntroFrame) {
     const introQuestionIdToShow = channelFrame.introQuestionIds[session.questionNumber]
 
-    res.redirect(
+    return res.redirect(
       createFrameQuestionUrl({
         questionId: introQuestionIdToShow,
         frameSessionId: session.id
