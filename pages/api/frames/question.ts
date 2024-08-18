@@ -74,9 +74,9 @@ const newQuestion = async (
   }
 
   // getting next answer offset to see more answers of an already given question
-  if (req.query.qi && req.query.ioff) {
+  if (req.query.qi) {
     const currentQuestionId = req.query.qi as string
-    const requestedAnswerOffset = parseInt(req.query.ioff as string, 10)
+    const requestedAnswerOffset = parseInt(req.query.ioff as string || '0', 10)
 
     return res.redirect(
       307,
