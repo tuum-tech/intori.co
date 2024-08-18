@@ -84,7 +84,7 @@ export const createSkipQuestionUrl = (params: {
 
 export const createNextRevealUrl = (params: {
   fsid: string,
-  rating: 'good' | 'bad'
+  rating?: 'good' | 'bad'
 }) => {
   const { fsid, rating } = params
 
