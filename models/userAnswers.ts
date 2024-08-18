@@ -47,10 +47,10 @@ export type CreateUserAnswerType = {
 }
 
 export type SuggestionType = {
-  type: 'user' | 'channel'
-  user?: FarcasterUserType
-  channel?: FarcasterChannelType
+  type: 'user'
+  user: FarcasterUserType
   reason: string[]
+  rating: number
 }
 
 export type ChannelSuggestionType = {

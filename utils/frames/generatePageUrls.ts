@@ -82,9 +82,10 @@ export const createSkipQuestionUrl = (params: {
   return `${process.env.NEXTAUTH_URL}/api/frames/skip?qi=${questionId}&fsid=${frameSessionId}`
 }
 
+// TODO: need to figure how to prevent abusing rating of other user fids
 export const createNextRevealUrl = (params: {
   fsid: string,
-  rating?: 'good' | 'bad'
+  rating?: number
 }) => {
   const { fsid, rating } = params
 

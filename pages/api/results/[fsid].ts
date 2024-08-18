@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { getLastCastForUser, getRecentCastsForChannel } from '../../../utils/neynarApi'
+import { getLastCastForUser } from '../../../utils/neynarApi'
 import { countTotalResponsesForUser } from '../../../models/userAnswers'
 import { getFrameSessionFromRequest } from '../../../models/frameSession'
 import { inPublicFolder } from '../../../utils/paths'
@@ -9,8 +9,7 @@ import {
 import {
   timeAgo,
   replaceNewlinesWithSpaces,
-  removeEmojis,
-  shortenNumber
+  removeEmojis
 } from '../../../utils/textHelpers'
 import { createFrameResultImage } from '../../../utils/frames/createResultFrameImage'
 
@@ -70,28 +69,28 @@ const createResultsFrameImageOfSuggestion = async (
     return res.status(200).send(buffer)
   }
 
-  if (suggestion.channel) {
-    const lastCast = await getRecentCastsForChannel(suggestion.channel.id, 1)
-    const lastCastTimeAgo = lastCast ? `Last cast ${timeAgo(lastCast[0].timestamp)}` : 'Never casted'
+  // if (suggestion.channel) {
+  //   const lastCast = await getRecentCastsForChannel(suggestion.channel.id, 1)
+  //   const lastCastTimeAgo = lastCast ? `Last cast ${timeAgo(lastCast[0].timestamp)}` : 'Never casted'
 
-    const buffer = await createFrameResultImage({
-      displayName: suggestion.channel.name || suggestion.channel.id,
-      username: `/${suggestion.channel.id}`,
-      avatarUrl: suggestion.channel.imageUrl ?? inPublicFolder('/assets/templates/avatar_fallback.png'),
-      topLeftText: `${shortenNumber(suggestion.channel.followCount ?? 0)} Followers`,
-      topRightText: lastCastTimeAgo,
-      bio: suggestion.channel.description || 'No channel description',
-      mainReason: `Many users that have similar answers to you follow this channel!`,
-      underReasonText: '',
-      underUsernameText: '',
-      powerBadge: false,
-    })
+  //   const buffer = await createFrameResultImage({
+  //     displayName: suggestion.channel.name || suggestion.channel.id,
+  //     username: `/${suggestion.channel.id}`,
+  //     avatarUrl: suggestion.channel.imageUrl ?? inPublicFolder('/assets/templates/avatar_fallback.png'),
+  //     topLeftText: `${shortenNumber(suggestion.channel.followCount ?? 0)} Followers`,
+  //     topRightText: lastCastTimeAgo,
+  //     bio: suggestion.channel.description || 'No channel description',
+  //     mainReason: `Many users that have similar answers to you follow this channel!`,
+  //     underReasonText: '',
+  //     underUsernameText: '',
+  //     powerBadge: false,
+  //   })
 
-    // cache for 1 hour
-    res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate')
-    res.setHeader('Content-Type', 'image/png')
-    return res.status(200).send(buffer)
-  }
+  //   // cache for 1 hour
+  //   res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate')
+  //   res.setHeader('Content-Type', 'image/png')
+  //   return res.status(200).send(buffer)
+  // }
 
   return res.redirect(
     307,

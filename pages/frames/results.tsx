@@ -117,7 +117,7 @@ export const getServerSideProps = (async (context) => {
     type: 'button',
     postUrl: createNextRevealUrl({
       fsid: session.id,
-      rating: 'bad'
+      rating: -1
     }),
     content: '❌'
   })
@@ -126,7 +126,7 @@ export const getServerSideProps = (async (context) => {
     type: 'button',
     postUrl: createNextRevealUrl({
       fsid: session.id,
-      rating: 'good'
+      rating: 1
     }),
     content: '✅'
   })
