@@ -30,6 +30,7 @@ export const createStartNewFrameQuestionUrl = (params: {
   frameSessionId?: string
   channelId?: string
   isIntroFrame?: boolean
+  questionId?: string
 } = {}): string => {
   const queryParts: string[] = []
 
@@ -43,6 +44,10 @@ export const createStartNewFrameQuestionUrl = (params: {
 
   if (params.isIntroFrame) {
     queryParts.push('intro=true')
+  }
+
+  if (params.questionId) {
+    queryParts.push(`qi=${params.questionId}`)
   }
 
   return `${process.env.NEXTAUTH_URL}/api/frames/question?${queryParts.join('&')}`
