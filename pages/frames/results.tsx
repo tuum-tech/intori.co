@@ -86,7 +86,6 @@ export const getServerSideProps = (async (context) => {
   //   await saveIfUserFollowsIntori(session.id, followsIntori)
   // }
 
-  // TODO: show only 3 suggestions
   if (!session.suggestions.length) {
     const suggestions = await getAllSuggestedUsersAndChannels({
       fid: session.fid,
@@ -99,7 +98,7 @@ export const getServerSideProps = (async (context) => {
   }
 
   imageUrlQueryParts.push(`i=${suggestionsRevealed}`)
-  const suggestionToShow = session.suggestions[suggestionsRevealed % session.suggestions.length]
+  const suggestionToShow = session.suggestions[suggestionsRevealed]
 
   if (!suggestionToShow?.user) {
     return {
