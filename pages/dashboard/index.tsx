@@ -66,10 +66,6 @@ const Dashboard: NextPage<Props> = ({ answers }) => {
     return suggestions.filter(suggestion => suggestion.user)
   }, [suggestions])
 
-  const suggestedChannels = useMemo(() => {
-    return suggestions.filter(suggestion => suggestion.channel)
-  }, [suggestions])
-
   useEffect(() => {
     if (session.status === 'unauthenticated') {
       router.push('/')
@@ -156,7 +152,7 @@ const Dashboard: NextPage<Props> = ({ answers }) => {
           <div className={styles.welcomeMessage}>
             <CallToActionCard title="Suggestions">
               <div><span>{suggestedUsers?.length || 0}</span> Users</div>
-              <div><span>{suggestedChannels?.length || 0}</span> Channels</div>
+              <div><span>0</span> Channels</div>
             </CallToActionCard>
           </div>
 
