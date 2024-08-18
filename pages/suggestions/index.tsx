@@ -70,12 +70,6 @@ const Suggestions: NextPage = () => {
       .sort((a, b) => b.reason.length - a.reason.length)
   }, [suggestions])
 
-  const channelSuggestions = useMemo(() => {
-    return suggestions
-      .filter((suggestion) => suggestion.channel)
-      .sort((a, b) => b.reason.length - a.reason.length)
-  }, [suggestions])
-
   if (loading || !session?.data?.user) {
     return (
       <AppLayout>
@@ -105,7 +99,7 @@ const Suggestions: NextPage = () => {
         <Tabs>
           <TabList>
             <Tab>Users ({userSuggestions.length})</Tab>
-            <Tab>Channels ({channelSuggestions.length})</Tab>
+            <Tab>Channels (0)</Tab>
           </TabList>
 
           <TabPanel>
@@ -113,7 +107,7 @@ const Suggestions: NextPage = () => {
           </TabPanel>
 
           <TabPanel>
-            <SuggestionsTable suggestions={channelSuggestions} />
+            <SuggestionsTable suggestions={[]} />
           </TabPanel>
         </Tabs>
       </Section>
