@@ -14,7 +14,6 @@ import styles from './FramePage.module.css'
 import {
   getFrameSessionById,
   saveSuggestionsToFrameSession,
-  incrementSuggestionsRevealed
 } from '../../models/frameSession'
 import {
   getAllSuggestedUsersAndChannels
@@ -101,8 +100,6 @@ export const getServerSideProps = (async (context) => {
 
   imageUrlQueryParts.push(`i=${suggestionsRevealed}`)
   const suggestionToShow = session.suggestions[suggestionsRevealed % session.suggestions.length]
-
-  incrementSuggestionsRevealed(session.id)
 
   if (!suggestionToShow?.user) {
     return {
