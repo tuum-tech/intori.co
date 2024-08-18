@@ -83,10 +83,22 @@ export const createSkipQuestionUrl = (params: {
 }
 
 export const createNextRevealUrl = (params: {
-  fsid: string
+  fsid: string,
+  rating: 'good' | 'bad'
 }) => {
-  const { fsid } = params
-  return `${process.env.NEXTAUTH_URL}/api/frames/reveal?fsid=${fsid}`
+  const { fsid, rating } = params
+
+  const queryParts: string[] = []
+
+  if (params.fsid) {
+    queryParts.push(`fsid=${fsid}`)
+  }
+
+  if (params.rating) {
+    queryParts.push(`rating=${rating}`)
+  }
+
+  return `${process.env.NEXTAUTH_URL}/api/frames/reveal?${queryParts.join('&')}`
 }
 
 export const createFollowIntoriUrl = (params: {
@@ -116,4 +128,13 @@ export const createTutorialFrameUrl = (params: {
 }) => {
   const { fsid } = params
   return `${process.env.NEXTAUTH_URL}/frames/tutorial?fsid=${fsid}`
+}
+
+export const createMessageUserUrl = (params: {
+  fid: number
+  message: string
+}): string => {
+  const { message, fid } = params
+  const safeMessageText = encodeURIComponent(message)
+  return `https://warpcast.com/~/inbox/create/${fid}?text=${safeMessageText}`
 }
