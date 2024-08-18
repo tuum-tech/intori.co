@@ -140,6 +140,8 @@ export const getAllSuggestedUsersAndChannels = async (
     return b.rating - a.rating
   })
 
+  console.log('Total suggestions before slicing:', suggestions.length)
+
   return suggestions.slice(0, 3)
 
   // code to get channel suggestions below:
