@@ -5,6 +5,8 @@ import {
   createFrameResultsUrl,
   createFrameErrorUrl
 } from '../../../utils/frames/generatePageUrls'
+import { incrementSessionQuestion } from '../../../models/frameSession'
+import { updateSuggestionRating } from '../../../models/suggestionRating'
 
 // User is requesting a new question
 const revealNextSuggestion = async (
@@ -32,6 +34,27 @@ const revealNextSuggestion = async (
       createFrameErrorUrl()
     )
   }
+
+  if (req.query.rating) {
+    const suggestionShown = session.suggestions[session.suggestionsRevealed]
+
+    if (suggestionShown.user?.fid) {
+      await updateSuggestionRating({
+        fid: suggestionShown.user.fid,
+        rating: Number(req.query.rating)
+      })
+    }
+  }
+
+  if (session.suggestionsRevealed + 1 === 3) {
+    // TODO: go to 'check out these other intori channels'
+    return res.redirect(
+      307,
+      createFrameResultsUrl({ frameSessionId: session.id })
+    )
+  }
+
+  await incrementSessionQuestion(session.id)
 
   return res.redirect(
     307,
