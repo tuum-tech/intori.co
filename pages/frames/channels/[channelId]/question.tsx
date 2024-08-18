@@ -5,12 +5,12 @@ import { FrameGenerator } from '../../../../components/farcaster/FrameGenerator'
 import { AppLayout } from "../../../../layouts/App"
 import { Section } from '../../../../components/common/Section'
 import {
-    IntoriFrameType,
-    createStartNewFrameQuestionUrl
+    IntoriFrameType
 } from '../../../../utils/frames/intoriFrameForms'
 import Input from '../../../../components/common/Input'
 import { PrimaryButton } from '../../../../components/common/Button'
 import styles from '../../FramePage.module.css'
+import { createStartNewFrameQuestionUrl } from '../../../../utils/frames/generatePageUrls'
 
 // TODO: get channelId param and expect questionId query. ( qid )
 // check if question by question id exists
