@@ -1,0 +1,19 @@
+.radioGroup > label:first-child {
+  display: block;
+  color: #fff;
+  font-size: 16px;
+  margin-bottom: 16px;
+  display: block;
+  font-weight: 500;
+}
+.oneRadio {
+  display: block;
+  margin-bottom: 12px;
+  color: #AAA;
+  padding-left: 12px;
+}
+.oneRadio input {
+  margin-right: 8px;
+  width: 12px;
+  height: 12px;
+}

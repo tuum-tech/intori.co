@@ -70,6 +70,22 @@ const getCollection = () => {
   return db.collection('userAnswers')
 }
 
+const deleteUserResponsesForQuestion = async (
+  fid: number,
+  question: string
+) => {
+  const collection = getCollection()
+
+  const querySnapshot = await collection
+    .where('fid', '==', fid)
+    .where('question', '==', question)
+    .get()
+
+  querySnapshot.forEach((doc) => {
+    doc.ref.delete()
+  })
+}
+
 export const createUserAnswer = async (newUserAnswer: CreateUserAnswerType) => {
   const collection = getCollection()
 
@@ -77,6 +93,11 @@ export const createUserAnswer = async (newUserAnswer: CreateUserAnswerType) => {
     ...newUserAnswer,
     date: new Date()
   }
+
+  await deleteUserResponsesForQuestion(
+    newUserAnswer.fid,
+    newUserAnswer.question
+  )
 
   // force channelId to be null in the db
   if (!newUserAnswer.channelId) {

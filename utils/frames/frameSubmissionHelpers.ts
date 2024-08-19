@@ -1,7 +1,7 @@
 import type { NextApiRequest } from 'next'
 import { IntoriFrameInputType } from './intoriFrameForms'
-import { getAvailableQuestions, IntoriQuestionType } from './questions' 
 import { getFrameSessionFromRequest, FrameSessionType } from '../../models/frameSession'
+import { QuestionType, getQuestionById } from '../..//models/questions'
 import {
   createFrameQuestionUrl,
   createSubmitAnswerUrl,
@@ -23,9 +23,7 @@ export type FarcasterFrameSubmitBodyType = {
   }
 }
 
-export const determineAllAnswerOffsetsForQuestion = (questionIndex: number, channelId?: string): number[] => {
-  const questions = getAvailableQuestions({ channelId })
-  const question = questions[questionIndex]
+export const determineAllAnswerOffsetsForQuestion = (question: QuestionType, channelId?: string): number[] => {
   const answerOffsets: number[] = [0]
 
   if (question.answers.length <= 3) {
@@ -48,8 +46,8 @@ export const determineAllAnswerOffsetsForQuestion = (questionIndex: number, chan
   return answerOffsets
 }
 
-const getNextAnswerOffset = (questionIndex: number, answerOffset: number, channelId?: string): number => {
-  const allAnswerOffsets = determineAllAnswerOffsetsForQuestion(questionIndex, channelId)
+const getNextAnswerOffset = (question: QuestionType, answerOffset: number, channelId?: string): number => {
+  const allAnswerOffsets = determineAllAnswerOffsetsForQuestion(question, channelId)
   const currentOffsetIndex = allAnswerOffsets.indexOf(answerOffset)
 
   const next =  allAnswerOffsets[currentOffsetIndex + 1]
@@ -57,11 +55,11 @@ const getNextAnswerOffset = (questionIndex: number, answerOffset: number, channe
   return next
 }
 
-const getBackAnswerOffset = (questionIndex: number, answerOffset: number, channelId?: string): number => {
+const getBackAnswerOffset = (question: QuestionType, answerOffset: number, channelId?: string): number => {
   if (!answerOffset) {
     return answerOffset
   }
-  const allAnswerOffsets = determineAllAnswerOffsetsForQuestion(questionIndex, channelId)
+  const allAnswerOffsets = determineAllAnswerOffsetsForQuestion(question, channelId)
   const currentOffsetIndex = allAnswerOffsets.indexOf(answerOffset)
 
   return allAnswerOffsets[currentOffsetIndex - 1]
@@ -69,7 +67,7 @@ const getBackAnswerOffset = (questionIndex: number, answerOffset: number, channe
 
 const convertAnswersToInputs = (
   answers: string[],
-  questionIndex: number, 
+  questionId: string, 
   answerOffset: number,
   frameSessionId: string
 ): IntoriFrameInputType[] => {
@@ -77,7 +75,7 @@ const convertAnswersToInputs = (
     type: 'button',
     content: answer,
     postUrl: createSubmitAnswerUrl({
-      questionIndex,
+      questionId,
       answerOffset,
       frameSessionId
     })
@@ -85,15 +83,11 @@ const convertAnswersToInputs = (
 }
 
 export const getFrameInputsBasedOnAnswerOffset = (
-  questionIndex: number,
+  question: QuestionType,
   answerOffset: number,
   frameSession: FrameSessionType
 ): IntoriFrameInputType[] => {
   const frameSessionId = frameSession.id
-
-  const question = getAvailableQuestions({
-    channelId: frameSession.channelId
-  })[questionIndex]
 
   const inputs: IntoriFrameInputType[] = []
 
@@ -101,7 +95,7 @@ export const getFrameInputsBasedOnAnswerOffset = (
     type: 'button',
     content: 'Skip',
     postUrl: createSkipQuestionUrl({
-      questionIndex,
+      questionId: question.id,
       frameSessionId
     })
   }
@@ -109,7 +103,7 @@ export const getFrameInputsBasedOnAnswerOffset = (
   if (!answerOffset) {
     if (question.answers.length <= 3) {
       inputs.push(
-        ...convertAnswersToInputs(question.answers, questionIndex, 0, frameSessionId)
+        ...convertAnswersToInputs(question.answers, question.id, 0, frameSessionId)
       )
 
       return inputs
@@ -118,15 +112,15 @@ export const getFrameInputsBasedOnAnswerOffset = (
     const firstThreeAnswers = question.answers.slice(0, 3)
 
     inputs.push(
-      ...convertAnswersToInputs(firstThreeAnswers, questionIndex, 0, frameSessionId)
+      ...convertAnswersToInputs(firstThreeAnswers, question.id, 0, frameSessionId)
     )
 
     inputs.push({
       type: 'button',
       content: 'More >',
       postUrl: createFrameQuestionUrl({
-          questionIndex,
-          answerOffset: getNextAnswerOffset(questionIndex, 0, frameSession.channelId),
+          questionId: question.id,
+          answerOffset: getNextAnswerOffset(question, 0, frameSession.channelId),
           frameSessionId
       })
     })
@@ -136,12 +130,12 @@ export const getFrameInputsBasedOnAnswerOffset = (
 
   const isLastFrameOfAnswers = answerOffset + 2 >= question.answers.length
 
-  const previousOffset = getBackAnswerOffset(questionIndex, answerOffset, frameSession.channelId)
+  const previousOffset = getBackAnswerOffset(question, answerOffset, frameSession.channelId)
   inputs.push({
     type: 'button',
     content: '< Back',
     postUrl: createFrameQuestionUrl({
-      questionIndex,
+      questionId: question.id,
       answerOffset: previousOffset,
       frameSessionId
     })
@@ -151,15 +145,15 @@ export const getFrameInputsBasedOnAnswerOffset = (
     const nextTwoAnswers = question.answers.slice(answerOffset, answerOffset + 2)
 
     inputs.push(
-      ...convertAnswersToInputs(nextTwoAnswers, questionIndex, answerOffset, frameSessionId)
+      ...convertAnswersToInputs(nextTwoAnswers, question.id, answerOffset, frameSessionId)
     )
 
     inputs.push({
       type: 'button',
       content: 'More >',
       postUrl: createFrameQuestionUrl({
-        questionIndex,
-        answerOffset: getNextAnswerOffset(questionIndex, answerOffset, frameSession.channelId),
+        questionId: question.id,
+        answerOffset: getNextAnswerOffset(question, answerOffset, frameSession.channelId),
         frameSessionId
       })
     })
@@ -170,7 +164,7 @@ export const getFrameInputsBasedOnAnswerOffset = (
   const lastAnswers = question.answers.slice(answerOffset)
 
   inputs.push(
-    ...convertAnswersToInputs(lastAnswers, questionIndex, answerOffset, frameSessionId)
+    ...convertAnswersToInputs(lastAnswers, question.id, answerOffset, frameSessionId)
   )
 
   inputs.push(skipButton)
@@ -185,23 +179,23 @@ export const frameSubmissionHelpers = async (req: NextApiRequest) => {
   const buttonIndexClicked = req.body.untrustedData.buttonIndex
   const session = await getFrameSessionFromRequest(req)
 
-  let question: IntoriQuestionType | undefined = undefined
+  let question: QuestionType | null = null
   let buttonClicked = ''
-  const questionIndex = parseInt(req.query.qi?.toString() || '0') ?? 0
-  const channelId = req.query.channelId ? req.query.channelId.toString() : undefined
+  const questionId = (req.query.qi ?? '').toString()
+  const channelId = (req.query.channelId ?? session?.channelId ?? '').toString() || undefined
 
   if (req.query.qi && buttonIndexClicked && session) {
-    const availableQuestions = getAvailableQuestions({ channelId: session?.channelId })
+    question = await getQuestionById(questionId)
 
-    question = availableQuestions[questionIndex]
+    if (question) {
+      const inputs = getFrameInputsBasedOnAnswerOffset(
+        question, 
+        answerOffset,
+        session
+      )
 
-    const inputs = getFrameInputsBasedOnAnswerOffset(
-      questionIndex, 
-      answerOffset,
-      session
-    )
-
-    buttonClicked = inputs[buttonIndexClicked - 1].content
+      buttonClicked = inputs[buttonIndexClicked - 1].content
+    }
   }
 
   return {

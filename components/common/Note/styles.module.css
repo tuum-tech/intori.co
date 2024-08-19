@@ -1,0 +1,9 @@
+.note {
+  display: block;
+  padding-left: 6px;
+  color: #888;
+  font-size: 12px;
+  margin-top: 6px;
+  line-height: 14px;
+  bottom: 0;
+}

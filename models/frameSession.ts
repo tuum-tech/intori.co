@@ -5,12 +5,14 @@ import { SuggestionType } from './userAnswers'
 
 export type FrameSessionType = {
   id: string
-  fid: number
   questionNumber: number
   createdAt: Timestamp
   questions: string[] // questions given in this session
 
+  fid: number
   channelId?: string // the channel id that this frame session is for
+  showTutorialFrame: boolean
+  isIntroFrame: boolean
 
   suggestions: SuggestionType[]
   suggestionsRevealed: number
@@ -20,6 +22,8 @@ export type FrameSessionType = {
 export type CreateFrameSessionType = {
   fid: number
   channelId?: string
+  showTutorialFrame: boolean
+  isIntroFrame: boolean
 }
 
 let frameSessionsCollection: FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData>
@@ -198,4 +202,16 @@ export const incrementSuggestionsRevealed = async (
   })
 
   return currentDocumentState.suggestionsRevealed + 1
+}
+
+export const updateTutorialNoLongerNeeded = async (
+  fsid: string
+): Promise<void> => {
+  const collection = getCollection()
+
+  const docRef = collection.doc(fsid)
+
+  await docRef.update({
+    showTutorialFrame: false
+  })
 }
