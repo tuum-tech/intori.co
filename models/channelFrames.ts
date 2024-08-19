@@ -45,7 +45,7 @@ export const getChannelFrame = async (channelId: string) => {
 
 export const getAllChannelFrames = async (params: {
   adminFid?: number
-}) => {
+} = {}) => {
   const collection = getCollection()
 
   let query = collection as FirebaseFirestore.Query<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>

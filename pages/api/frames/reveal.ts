@@ -3,7 +3,8 @@ import { frameSubmissionHelpers } from '../../../utils/frames/frameSubmissionHel
 import { validateFarcasterPacketMessage } from '../utils/farcasterServer'
 import {
   createFrameResultsUrl,
-  createFrameErrorUrl
+  createFrameErrorUrl,
+  createCheckoutTheseChannelsUrl
 } from '../../../utils/frames/generatePageUrls'
 import { incrementSuggestionsRevealed } from '../../../models/frameSession'
 import { updateSuggestionRating } from '../../../models/suggestionRating'
@@ -47,10 +48,9 @@ const revealNextSuggestion = async (
   }
 
   if (session.suggestionsRevealed + 1 === 3) {
-    // TODO: go to 'check out these other intori channels'
     return res.redirect(
       307,
-      createFrameResultsUrl({ frameSessionId: session.id })
+      createCheckoutTheseChannelsUrl()
     )
   }
 
