@@ -89,7 +89,8 @@ export const getServerSideProps = (async (context) => {
   if (!session.suggestions.length) {
     const suggestions = await getAllSuggestedUsersAndChannels({
       fid: session.fid,
-      channelId: session.channelId
+      channelId: session.channelId,
+      limit: 3
     })
 
     await saveSuggestionsToFrameSession(session.id, suggestions)

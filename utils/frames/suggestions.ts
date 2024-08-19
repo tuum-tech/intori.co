@@ -13,9 +13,10 @@ export const getAllSuggestedUsersAndChannels = async (
   options: {
     fid: number,
     channelId?: string
-  }
+    limit: number
+  },
 ): Promise<SuggestionType[]> => {
-  const { fid, channelId } = options
+  const { fid, channelId, limit } = options
   const recentResponses = await getRecentAnswersForUser(
     fid,
     9,
@@ -68,8 +69,8 @@ export const getAllSuggestedUsersAndChannels = async (
     suggestedUserFids.map((s) => s.fid)
   )
 
-  if (suggestedUserFids.length < 3 && channelId) {
-    const suggestionsNeeded = 3 - suggestedUserFids.length
+  if (suggestedUserFids.length < limit && channelId) {
+    const suggestionsNeeded = limit - suggestedUserFids.length
 
     const channelFollowers = await getFollowersOfChannel({
       channelId,
@@ -142,7 +143,7 @@ export const getAllSuggestedUsersAndChannels = async (
 
   console.log('Total suggestions before slicing:', suggestions.length)
 
-  return suggestions.slice(0, 3)
+  return suggestions.slice(0, limit)
 
   // code to get channel suggestions below:
   // if (channelId && channelId !== 'welcome') {
