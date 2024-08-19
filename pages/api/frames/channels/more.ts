@@ -67,8 +67,8 @@ const createIntoriChannelsInfoFrame = async (
 
   const buffer = await baseImage.getBufferAsync(Jimp.MIME_PNG)
 
-  // cache for 7 days
-  res.setHeader('Cache-Control', 'public, max-age=604800, immutable')
+  // cache for 3 days
+  res.setHeader('Cache-Control', 'public, max-age=259200, immutable')
   res.setHeader('Content-Type', 'image/png')
 
   return res.status(200).send(buffer)
