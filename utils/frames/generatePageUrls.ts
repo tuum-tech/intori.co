@@ -149,5 +149,5 @@ export const createMessageUserUrl = (params: {
 }
 
   export const createCheckoutTheseChannelsUrl = () => {
-    return `${process.env.NEXTAUTH_URL}/frames/channels/more`
+    return `${process.env.NEXTAUTH_URL}/frames/channels/more?v=2`
   }
