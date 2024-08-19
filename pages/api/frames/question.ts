@@ -65,10 +65,12 @@ const newQuestion = async (
   }
 
   if (session.showTutorialFrame) {
+    // if not intro frame, tutorial frame needs to know which question id to go to next
     return res.redirect(
       307,
       createTutorialFrameUrl({
-        fsid: session.id
+        fsid: session.id,
+        questionId: session.isIntroFrame ? undefined : req.query.qid as string
       })
     )
   }
