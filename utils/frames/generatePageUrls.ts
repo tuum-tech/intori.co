@@ -147,3 +147,7 @@ export const createMessageUserUrl = (params: {
   const safeMessageText = encodeURIComponent(message)
   return `https://warpcast.com/~/inbox/create/${fid}?text=${safeMessageText}`
 }
+
+  export const createCheckoutTheseChannelsUrl = () => {
+    return `${process.env.NEXTAUTH_URL}/frames/channels/more`
+  }
