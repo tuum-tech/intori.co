@@ -72,7 +72,7 @@ const newQuestion = async (
       307,
       createTutorialFrameUrl({
         fsid: session.id,
-        questionId: session.isIntroFrame ? undefined : req.query.qid as string
+        questionId: session.isIntroFrame ? undefined : req.query.qi as string
       })
     )
   }
