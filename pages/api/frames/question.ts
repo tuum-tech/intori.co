@@ -49,6 +49,7 @@ const newQuestion = async (
   }
 
   if (!session || !channelId) {
+    console.log('no session or channel id', channelId)
     return res.redirect(
       307,
       createFrameErrorUrl()
@@ -58,6 +59,7 @@ const newQuestion = async (
   const channelFrame = await getChannelFrame(channelId)
 
   if (!channelFrame) {
+    console.log('no channel frame', channelId)
     return res.redirect(
       307,
       createFrameErrorUrl()
@@ -65,10 +67,12 @@ const newQuestion = async (
   }
 
   if (session.showTutorialFrame) {
+    // if not intro frame, tutorial frame needs to know which question id to go to next
     return res.redirect(
       307,
       createTutorialFrameUrl({
-        fsid: session.id
+        fsid: session.id,
+        questionId: session.isIntroFrame ? undefined : req.query.qi as string
       })
     )
   }
@@ -98,6 +102,8 @@ const newQuestion = async (
       })
     )
   }
+
+  console.log('here, no qi query given')
 
   // TODO: need to think about what to do with skipped question for single question frames
   // const skippedQuestions = await getLastSkippedQuestions(fid, 5)

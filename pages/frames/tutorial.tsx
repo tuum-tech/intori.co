@@ -28,7 +28,6 @@ export const getServerSideProps = (async (context) => {
   const imageUrl = `${process.env.NEXTAUTH_URL}/assets/frames/tutorial_frame.gif`
 
   if (!context?.query.fsid) {
-    console.log('no fsid for tutorial frame')
     return {
       redirect: {
         destination: createFrameErrorUrl(),
@@ -38,13 +37,11 @@ export const getServerSideProps = (async (context) => {
   }
 
   const frameSessionId = context.query.fsid?.toString() as string
+  const questionId = context.query.qi
 
-  console.log('about to get sessoin')
   const session = await getFrameSessionById(frameSessionId)
-  console.log('got session:', session)
 
   if (!session) {
-    console.log('no session for tutorial frame')
     return {
       redirect: {
         destination: createFrameErrorUrl(),
@@ -53,7 +50,6 @@ export const getServerSideProps = (async (context) => {
     }
   }
 
-  console.log('here')
   await updateTutorialNoLongerNeeded(frameSessionId)
 
   const inputs: IntoriFrameInputType[] = []
@@ -62,14 +58,14 @@ export const getServerSideProps = (async (context) => {
     content: 'Got it!',
     type: 'button',
     postUrl: createStartNewFrameQuestionUrl({
-      frameSessionId: session.id
+      frameSessionId: session.id,
+      questionId: questionId ? questionId.toString() : undefined
     }),
   })
 
   const frame: IntoriFrameType = {
     inputs
   }
-  console.log('showing tutorial frame:', frame)
 
   return {
     props: {

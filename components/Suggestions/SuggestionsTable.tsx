@@ -62,7 +62,7 @@ export const SuggestionsTable: React.FC<Props> = ({ suggestions }) => {
       <tbody>
         {suggestions.map((suggestion, index) => (
           <SuggestionRow
-            key={suggestion.user?.fid || suggestion?.channel?.id || index}
+            key={suggestion.user?.fid || index}
             suggestion={suggestion}
           />
         ))}

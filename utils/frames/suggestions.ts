@@ -7,6 +7,7 @@ import {
   fetchUserDetailsByFids,
   getFollowersOfChannel
 } from '../neynarApi'
+import { getSuggestionRating } from '../../models/suggestionRating'
 
 export const getAllSuggestedUsersAndChannels = async (
   options: {
@@ -94,7 +95,7 @@ export const getAllSuggestedUsersAndChannels = async (
         (suggestedFid) => suggestedFid.fid === follower.fid
       )
 
-      if (alreadySuggested === -1) {
+      if (alreadySuggested !== -1) {
         continue
       }
       
@@ -115,18 +116,31 @@ export const getAllSuggestedUsersAndChannels = async (
     } as SuggestionType)
   })
 
-  // sort power users toward the top
+
+  await Promise.all(
+    suggestions.map(async (suggestion) => {
+      const rating = await getSuggestionRating(suggestion.user.fid)
+      suggestion.rating = rating.rating
+    })
+  )
+
   suggestions.sort((a, b) => {
-    if (a.user?.powerBadge && !b.user?.powerBadge) {
-      return -1
+    if (a.user.powerBadge && !b.user.powerBadge) {
+        return -1
     }
 
-    if (!a.user?.powerBadge && b.user?.powerBadge) {
-      return 1
+    if (!a.user.powerBadge && b.user.powerBadge) {
+        return 1
     }
 
-    return 0
+    if (a.reason.length !== b.reason.length) {
+        return b.reason.length - a.reason.length
+    }
+
+    return b.rating - a.rating
   })
+
+  console.log('Total suggestions before slicing:', suggestions.length)
 
   return suggestions.slice(0, 3)
 
