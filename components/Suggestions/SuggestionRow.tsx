@@ -10,54 +10,7 @@ type Props = {
 export const SuggestionRow: React.FC<Props> = ({
   suggestion
 }) => {
-  const { user, channel } = suggestion
-
-  if (channel) {
-    return (
-      <tr>
-        <td>
-          { !!channel.imageUrl && (
-            <span
-              className={styles.avatar}
-              style={{ backgroundImage: `url(${channel.imageUrl})` }}
-            />
-          )}
-          { !channel.imageUrl && (
-            <span
-              className={styles.avatar}
-              style={{ backgroundColor: 'grey' }}
-            />
-          )}
-        </td>
-        <td className={styles.name}>
-          <span>{channel.name}</span>
-        </td>
-        <td className={styles.type}>
-          <span>Channel</span>
-        </td>
-        <td className={styles.reasons}>
-          <ul>
-            {
-              suggestion.reason.map((reason) => (
-                <li className={styles.reason} key={reason}>{reason}</li>
-              ))
-            }
-          </ul>
-        </td>
-        <td>
-          <a href={`https://warpcast.com/~/channel/${channel.name}`}>
-            <PrimaryButton>
-              View Channel
-            </PrimaryButton>
-          </a>
-        </td>
-      </tr>
-    )
-  }
-
-  if (!user) {
-    return null
-  }
+  const { user } = suggestion
 
   return (
       <tr>

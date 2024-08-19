@@ -14,7 +14,6 @@ import styles from './FramePage.module.css'
 import {
   getFrameSessionById,
   saveSuggestionsToFrameSession,
-  incrementSuggestionsRevealed
 } from '../../models/frameSession'
 import {
   getAllSuggestedUsersAndChannels
@@ -22,7 +21,8 @@ import {
 import {
   createNextRevealUrl,
   createFrameErrorUrl,
-  createNoMatchesFoundUrl
+  createNoMatchesFoundUrl,
+  createMessageUserUrl
 } from '../../utils/frames/generatePageUrls'
  
 type Props = {
@@ -86,7 +86,6 @@ export const getServerSideProps = (async (context) => {
   //   await saveIfUserFollowsIntori(session.id, followsIntori)
   // }
 
-  // TODO: show only 3 suggestions
   if (!session.suggestions.length) {
     const suggestions = await getAllSuggestedUsersAndChannels({
       fid: session.fid,
@@ -99,11 +98,9 @@ export const getServerSideProps = (async (context) => {
   }
 
   imageUrlQueryParts.push(`i=${suggestionsRevealed}`)
-  const suggestionToShow = session.suggestions[suggestionsRevealed % session.suggestions.length]
+  const suggestionToShow = session.suggestions[suggestionsRevealed]
 
-  incrementSuggestionsRevealed(session.id)
-
-  if (!suggestionToShow) {
+  if (!suggestionToShow?.user) {
     return {
       redirect: {
         destination: createNoMatchesFoundUrl({ fsid: session.id }),
@@ -114,20 +111,39 @@ export const getServerSideProps = (async (context) => {
 
   inputs.push({
     type: 'button',
+    postUrl: createNextRevealUrl({
+      fsid: session.id,
+      rating: -1
+    }),
+    content: '❌'
+  })
+
+  inputs.push({
+    type: 'button',
+    postUrl: createNextRevealUrl({
+      fsid: session.id,
+      rating: 1
+    }),
+    content: '✅'
+  })
+
+  inputs.push({
+    type: 'button',
     action: 'link',
-    target: (
-      suggestionToShow.user
-        ? `https://warpcast.com/${suggestionToShow.user?.username}`
-        : `https://warpcast.com/~/channel/${suggestionToShow.channel?.id}`
-    ),
+    target: `https://warpcast.com/${suggestionToShow.user.username}`,
     content: 'Follow'
   })
 
   inputs.push({
     type: 'button',
-    postUrl: createNextRevealUrl({ fsid: session.id }),
-    content: '✨ Reveal'
+    action: 'link',
+    target: createMessageUserUrl({
+      fid: suggestionToShow.user.fid,
+      message: `Hey!\n\nYou were suggested to me by Intori.\n\nWhat's up?`
+    }),
+    content: 'Message'
   })
+
 
   const frame: IntoriFrameType = {
     inputs

@@ -65,6 +65,10 @@ export const getRecentCastsForChannel = async (
 }
 
 export const fetchUserDetailsByFids = async (fids: number[]): Promise<FarcasterUserType[]> => {
+  if (!fids.length) {
+    return []
+  }
+
   const { users } = await neynar.fetchBulkUsers(fids)
 
   const invalidUsernameRegex = /^!\d+$/;
