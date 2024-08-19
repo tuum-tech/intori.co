@@ -17,7 +17,8 @@ const getSuggestions = async (
   }
 
   const suggestions = await getAllSuggestedUsersAndChannels({
-    fid: parseInt(session.user.fid, 10)
+    fid: parseInt(session.user.fid, 10),
+    limit: 24
   })
 
   res.status(200).json(suggestions)
