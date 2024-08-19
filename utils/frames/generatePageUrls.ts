@@ -126,9 +126,17 @@ export const createChannelQuestionFrameUrl = (params: {
 
 export const createTutorialFrameUrl = (params: {
   fsid: string
+  questionId?: string
 }) => {
-  const { fsid } = params
-  return `${process.env.NEXTAUTH_URL}/frames/tutorial?fsid=${fsid}`
+  const queryParts: string[] = [
+    `fsid=${params.fsid}`
+  ]
+
+  if (params.questionId) {
+    queryParts.push(`qi=${params.questionId}`)
+  }
+
+  return `${process.env.NEXTAUTH_URL}/frames/tutorial?${queryParts.join('&')}`
 }
 
 export const createMessageUserUrl = (params: {
