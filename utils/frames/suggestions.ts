@@ -95,7 +95,7 @@ export const getAllSuggestedUsersAndChannels = async (
         (suggestedFid) => suggestedFid.fid === follower.fid
       )
 
-      if (alreadySuggested === -1) {
+      if (alreadySuggested !== -1) {
         continue
       }
       
