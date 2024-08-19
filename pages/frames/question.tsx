@@ -31,7 +31,7 @@ export const getServerSideProps = (async (context) => {
     }
   }
 
-  const questionId = context.query.qi as string
+  const questionId = (context.query.qi as string).toString()
   const answerOffset = parseInt(context.query.ioff as string ?? '0', 10)
   const frameSessionId = context.query.fsid?.toString() as string
   const session = await getFrameSessionById(frameSessionId)
@@ -46,10 +46,10 @@ export const getServerSideProps = (async (context) => {
     }
   }
 
-  const question = await getQuestionById(questionId)
+  const question = await getQuestionById(questionId.toString())
 
   if (!question) {
-    console.log('question not found.')
+    console.log('question not found.', questionId)
     return {
       redirect: {
         destination: createFrameErrorUrl(),

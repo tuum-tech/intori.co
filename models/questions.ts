@@ -1,3 +1,4 @@
+import { v4 as uuid } from 'uuid'
 import { createDb } from '../pages/api/utils/firestore'
 import { syncCategories } from './categories'
 
@@ -27,18 +28,19 @@ const getCollection = () => {
   return db.collection('questions')
 }
 
-export const createQuestion = async (newQuestion: QuestionType) => {
+export const createQuestion = async (newQuestion: CreateQuestionType) => {
   const collection = getCollection()
 
   const doc = await collection.add({
+    id: uuid(),
     ...newQuestion
   })
 
   const ref = await doc.get()
 
   await syncCategories(newQuestion.categories)
-  return { id: ref.id, ...ref.data() } as QuestionType
 
+  return ref.data() as QuestionType
 }
 
 export const getAllQuestions = async (params: {
