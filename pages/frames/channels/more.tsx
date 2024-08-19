@@ -21,7 +21,7 @@ type Props = {
  
 export const getServerSideProps = (async () => {
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/channels/more`
-  const imageUrl = `${process.env.NEXTAUTH_URL}/api/frames/channels/more`
+  const imageUrl = `${process.env.NEXTAUTH_URL}/api/frames/channels/more?v=2`
 
   const allChannelFrames = await getAllChannelFrames()
 
