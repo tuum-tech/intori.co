@@ -17,6 +17,7 @@ body {
   background-repeat: no-repeat;
   background-color: #000;
   background-attachment: fixed;
+  color: #fff;
 }
 
 .react-tabs__tab-list {

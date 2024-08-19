@@ -10,17 +10,27 @@ export const createFrameResultsUrl = (params: {
 }
 
 export const createFrameQuestionUrl = (params: {
-  questionIndex: number
+  questionId: string
   answerOffset?: number
   frameSessionId: string
 }) => {
-  const { questionIndex, answerOffset, frameSessionId } = params
-  return `${process.env.NEXTAUTH_URL}/frames/question?qi=${questionIndex}&ioff=${answerOffset}&fsid=${frameSessionId}`
+  const queryParts: string[] = [
+    `qi=${params.questionId}`,
+    `fsid=${params.frameSessionId}`
+  ]
+
+  if (params.answerOffset) {
+    queryParts.push(`ioff=${params.answerOffset}`)
+  }
+
+  return `${process.env.NEXTAUTH_URL}/frames/question?${queryParts.join('&')}`
 }
 
 export const createStartNewFrameQuestionUrl = (params: {
   frameSessionId?: string
   channelId?: string
+  isIntroFrame?: boolean
+  questionId?: string
 } = {}): string => {
   const queryParts: string[] = []
 
@@ -32,16 +42,24 @@ export const createStartNewFrameQuestionUrl = (params: {
     queryParts.push(`channelId=${params.channelId}`)
   }
 
+  if (params.isIntroFrame) {
+    queryParts.push('intro=true')
+  }
+
+  if (params.questionId) {
+    queryParts.push(`qi=${params.questionId}`)
+  }
+
   return `${process.env.NEXTAUTH_URL}/api/frames/question?${queryParts.join('&')}`
 }
 
 export const createSubmitAnswerUrl = (params: {
-  questionIndex: number
+  questionId: string
   answerOffset: number
   frameSessionId: string
 }): string => {
-  const { questionIndex, answerOffset, frameSessionId } = params
-  return `${process.env.NEXTAUTH_URL}/api/frames/answer?qi=${questionIndex}&ioff=${answerOffset}&fsid=${frameSessionId}`
+  const { questionId, answerOffset, frameSessionId } = params
+  return `${process.env.NEXTAUTH_URL}/api/frames/answer?qi=${questionId}&ioff=${answerOffset}&fsid=${frameSessionId}`
 }
 
 export const createLimitReachedUrl = (params: {
@@ -57,11 +75,11 @@ export const createAnsweredAllQuestionsUrl = (params: {
 }
 
 export const createSkipQuestionUrl = (params: {
-  questionIndex: number
+  questionId: string
   frameSessionId: string
 }): string => {
-  const { questionIndex, frameSessionId } = params
-  return `${process.env.NEXTAUTH_URL}/api/frames/skip?qi=${questionIndex}&fsid=${frameSessionId}`
+  const { questionId, frameSessionId } = params
+  return `${process.env.NEXTAUTH_URL}/api/frames/skip?qi=${questionId}&fsid=${frameSessionId}`
 }
 
 export const createNextRevealUrl = (params: {
@@ -83,4 +101,19 @@ export const createNoMatchesFoundUrl = (params: {
 }) => {
   const { fsid } = params
   return `${process.env.NEXTAUTH_URL}/frames/no-matches?fsid=${fsid}`
+}
+
+export const createChannelQuestionFrameUrl = (params: {
+  channelId: string
+  questionId: string
+}) => {
+  const { channelId, questionId } = params
+  return `${process.env.NEXTAUTH_URL ?? window.location.origin}/frames/channels/${channelId}/question?qid=${questionId}`
+}
+
+export const createTutorialFrameUrl = (params: {
+  fsid: string
+}) => {
+  const { fsid } = params
+  return `${process.env.NEXTAUTH_URL}/frames/tutorial?fsid=${fsid}`
 }

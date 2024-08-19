@@ -1,4 +1,5 @@
 import { NeynarAPIClient, FeedType, FilterType } from '@neynar/nodejs-sdk'
+import { User } from '@neynar/nodejs-sdk/build/neynar-api/v2/openapi-farcaster/models/user'
 
 const neynar = new NeynarAPIClient(
   process.env.NEYNAR_API_KEY || 'please add neynar api key'
@@ -12,6 +13,7 @@ export type FarcasterChannelType = {
   description?: string
   name?: string
   imageUrl?: string
+  adminFid?: number
 }
 
 export type FarcasterUserType = {
@@ -22,6 +24,15 @@ export type FarcasterUserType = {
   bio?: string
   powerBadge: boolean
 }
+
+const serializeUser = (user: User): FarcasterUserType => ({
+    username: user.username,
+    displayName: user.display_name,
+    bio: user.profile.bio.text,
+    fid: user.fid,
+    image: user.pfp_url,
+    powerBadge: user.power_badge ?? false
+})
 
 export const getChannelsThatUserFollows = async (
   fid: number,
@@ -60,14 +71,7 @@ export const fetchUserDetailsByFids = async (fids: number[]): Promise<FarcasterU
 
   return users.filter((user) => {
     return !invalidUsernameRegex.test(user.username)
-  }).map((user) => ({
-    username: user.username,
-    displayName: user.display_name,
-    bio: user.profile.bio.text,
-    fid: user.fid,
-    image: user.pfp_url,
-    powerBadge: user.power_badge ?? false
-  }))
+  }).map((user) => serializeUser(user))
 }
 
 export const fetchVerifiedEthereumAddressesForUser = async (
@@ -154,4 +158,35 @@ export const getFidsUserIsFollowing = async (fid: number): Promise<number[]> => 
   } while (cursor)
 
   return followingFids
+}
+
+export const getChannelDetails = async (channelId: string) => {
+  try {
+    const { channel } = await neynar.lookupChannel(channelId)
+
+    return {
+      id: channel.id,
+      url: channel.url,
+      name: channel.name,
+      imageUrl: channel.image_url,
+      description: channel.description,
+      followCount: channel.follower_count,
+      adminFid: channel.lead?.fid
+    }
+  } catch (err) {
+    return null
+  }
+}
+
+export const getFollowersOfChannel = async (params: {
+  channelId: string
+  limit: number
+}) => {
+  const { channelId, limit } = params
+
+  const res = await neynar.fetchFollowersForAChannel(channelId, {
+    limit
+  })
+
+  return res.users.map((follower) => serializeUser(follower))
 }

@@ -42,6 +42,7 @@
     "ethr-did-resolver": "^10.1.5",
     "firebase": "^10.11.1",
     "firebase-admin": "^12.1.0",
+    "formik": "^2.4.6",
     "jimp": "^0.22.12",
     "jsonpath": "^1.1.1",
     "lodash.clonedeep": "^4.5.0",
@@ -62,7 +63,8 @@
     "tsx": "^4.9.3",
     "uuid": "^9.0.1",
     "viem": "^2.9.20",
-    "web-did-resolver": "^2.0.27"
+    "web-did-resolver": "^2.0.27",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",

@@ -1,16 +1,19 @@
 import React, { useState } from 'react'
 import { toast } from 'react-toastify'
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
-import { FrameGenerator } from '../../../components/farcaster/FrameGenerator'
-import { AppLayout } from "@/layouts/App"
-import { Section } from '../../../components/common/Section'
+import { FrameGenerator } from '../../../../components/farcaster/FrameGenerator'
+import { AppLayout } from "../../../../layouts/App"
+import { Section } from '../../../../components/common/Section'
 import {
     IntoriFrameType,
     createIntroductionStep
-} from '../../../utils/frames/intoriFrameForms'
-import Input from '../../../components/common/Input'
-import { PrimaryButton } from '../../../components/common/Button'
-import styles from '../FramePage.module.css'
+} from '../../../../utils/frames/intoriFrameForms'
+import Input from '../../../../components/common/Input'
+import { PrimaryButton } from '../../../../components/common/Button'
+import { getChannelFrame } from '../../../../models/channelFrames'
+import styles from '../../FramePage.module.css'
+
+// TODO: show intro questions from channel frame model based on :channelId
  
 type Props = {
   imageUrl: string
@@ -27,14 +30,24 @@ export const getServerSideProps = (async (context) => {
     }
   }
 
+  const channelFrame = await getChannelFrame(channelId)
+  if (!channelFrame) {
+    return {
+      notFound: true
+    }
+  }
+
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/channels/${channelId}`
-  const imageUrl = `${process.env.NEXTAUTH_URL}/assets/frames/channels/${channelId}/intro.png`
+  const imageUrl = `${process.env.NEXTAUTH_URL}/api/frames/channels/${channelId}/images/intro`
 
   return {
     props: {
       imageUrl,
       frameUrl,
-      frame: createIntroductionStep({ channelId })
+      frame: createIntroductionStep({
+        channelId,
+        isIntroFrame: true
+      })
     }
   }
 }) satisfies GetServerSideProps<Props>

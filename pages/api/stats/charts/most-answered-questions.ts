@@ -14,20 +14,12 @@ const getMostAnsweredQuestionStats = async (req: NextApiRequest, res: NextApiRes
       return res.status(404).end()
     }
 
-    if (!session.admin && !session.channelAdmin?.length) {
-      return res.status(404).end()
-    }
-
     if (!channelId && !session.admin) {
       return res.status(404).end()
     }
 
     if (channelId) {
-      const channelsImAdminOf = session.channelAdmin.map((channel) => channel.channelId)
-
-      if (!session.admin && !channelsImAdminOf.includes(channelId.toString())) {
-        return res.status(404).end()
-      }
+      // TODO: check if getting stats about a channel i am admin for
     }
 
     const mostAnsweredQuestions = await getMostAnsweredQuestions({

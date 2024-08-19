@@ -1,0 +1,26 @@
+.inputContainer {
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.inputContainer label {
+  color: #fff;
+}
+.inputContainer input {
+  width: 100%;
+  background: #20202F;
+  border: 1px solid #9664FA;
+  border-radius: 12px;
+  padding: 10px 0px 10px 16px;
+  color: #FFF;
+  margin: 4px 0 0 0;
+  display: block;
+  max-width: 600px;
+}
+.inputContainer input:read-only {
+  cursor: pointer;
+}
+.inputContainer input::placeholder,
+.inputContainer input:placeholder {
+  color: #666;
+}

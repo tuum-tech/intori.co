@@ -15,9 +15,6 @@ declare module "next-auth" {
   interface Session extends NextAuth.Session {
     user: User
     admin: boolean
-
-    // i am of admin of these channels
-    channelAdmin: { channelId: string, adminFid: number }[]
   }
 }
 

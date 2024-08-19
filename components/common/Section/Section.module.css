@@ -9,6 +9,9 @@
   text-align: right;
   margin-bottom: 32px;
 }
+.topActions > a {
+  margin-left: 18px;
+}
 .section + .section {
   margin-top: 48px;
 }
