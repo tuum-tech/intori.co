@@ -119,8 +119,6 @@ const AdminStats: NextPage<Props> = ({
                 readOnly
               />
 
-              <SelectQuestion channelId={channelId} questions={allQuestions} />
-
               <h2>Intro Questions</h2>
               <ol>
                 {
@@ -135,6 +133,8 @@ const AdminStats: NextPage<Props> = ({
                 }
               </ol>
               <br />
+
+              <SelectQuestion channelId={channelId} questions={allQuestions} />
 
               <hr />
               <GeneralStatsSection channelId={channelId} />
