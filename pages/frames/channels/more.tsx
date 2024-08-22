@@ -33,6 +33,7 @@ export const getServerSideProps = (async (context) => {
       // show first 3 channel button, then more
     }
 
+    const isLastGroup = inputOffset + 2 >= allChannelFrames.length
     if (inputOffset > 0) {
       // if inputOffset + 3 is equal or greater than channels length, this is last group.
     }
