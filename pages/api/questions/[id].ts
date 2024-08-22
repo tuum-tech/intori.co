@@ -41,6 +41,7 @@ const deleteEditAddQuestion = async (
       return res.status(404).end()
     }
 
+    console.log('here deleting', id)
     await deleteQuestionById(id as string)
 
     return res.status(204).end()
