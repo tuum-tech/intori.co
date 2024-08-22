@@ -34,6 +34,12 @@ export const getServerSideProps = (async (context) => {
   }
 
   const questions = await getAllQuestions()
+  console.table(
+                  questions.map((q) => ({
+                    question: q.question,
+                    deleted: q.deleted
+                  }))
+  )
 
   return {
     props: { questions: questions.reverse() }
@@ -51,6 +57,7 @@ const AdminStats: NextPage<Props> = ({ questions: inQuestions }) => {
         answers: [],
         categories: [],
         order: questions.length,
+        deleted: false,
         id
       },
       ...questions,
