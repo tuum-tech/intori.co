@@ -7,7 +7,8 @@ import {
   getQuestionById,
   deleteQuestionById,
   updateQuestionById,
-  createQuestion
+  createQuestion,
+  questionAlreadyExists
 } from '../../../models/questions'
 
 const deleteEditAddQuestion = async (
@@ -54,7 +55,19 @@ const deleteEditAddQuestion = async (
       order: yup.number().required()
     }).validate(req.body, { stripUnknown: true })
 
+    const alreadyExists = await questionAlreadyExists({
+      question: validBody.question,
+      excludeQuestionId: id === 'new' ? undefined : id as string
+    })
+
+    if (alreadyExists) {
+      return res.status(400).json({
+        error: 'Question already exists'
+      })
+    }
+
     if (req.method === "POST" && id === "new") {
+      // TODO: check if question already exists
       const newQuestion = await createQuestion(validBody as QuestionType)
       console.log('returning:', { newQuestion })
       return res.status(201).json(newQuestion)
@@ -65,6 +78,7 @@ const deleteEditAddQuestion = async (
       return res.status(200).end()
     }
   } catch (err) {
+    console.error(err)
     return res.status(400).json({ error: (err as Error).message })
   }
 

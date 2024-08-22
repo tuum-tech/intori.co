@@ -86,8 +86,28 @@ export const updateQuestionById = async (
   return collection.doc(id).set(body, { merge: true })
 }
 
+// TODO: mark as deleted
 export const deleteQuestionById = async (id: string) => {
   const collection = getCollection()
 
   await collection.doc(id).delete()
+}
+
+export const questionAlreadyExists = async (params: {
+  question: string
+  excludeQuestionId?: string
+}): Promise<boolean> => {
+  const { question, excludeQuestionId } = params
+
+  const collection = getCollection()
+
+  let query = collection.where('question', '==', question)
+
+  if (excludeQuestionId) {
+    query = query.where('id', '!=', excludeQuestionId)
+  }
+
+  const ref = await query.limit(1).get()
+
+  return !!ref.size
 }
