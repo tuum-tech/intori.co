@@ -11,6 +11,12 @@ import {
 import Input from '../../../components/common/Input'
 import { PrimaryButton } from '../../../components/common/Button'
 import { getAllChannelFrames } from '../../../models/channelFrames'
+import {
+  paginateInputs
+} from '../../../utils/frames/paginateInputs'
+import {
+  createCheckoutTheseChannelsUrl
+} from '../../../utils/frames/generatePageUrls'
 import styles from '../FramePage.module.css'
 
 type Props = {
@@ -19,29 +25,39 @@ type Props = {
   frame: IntoriFrameType
 }
  
-export const getServerSideProps = (async () => {
+export const getServerSideProps = (async (context) => {
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/channels/more`
-  const imageUrl = `${process.env.NEXTAUTH_URL}/api/frames/channels/more?v=2`
+
+  const dailyCacheBust = new Date().toISOString().split('T')[0]
+  const imageUrl = `${process.env.NEXTAUTH_URL}/api/frames/channels/more?v=${dailyCacheBust}`
 
   const allChannelFrames = await getAllChannelFrames()
+  const inputOffset = context.query?.ioff ? parseInt(context.query.ioff as string) : 0
 
-  const inputs: IntoriFrameInputType[] = []
+  const allChannelInputs: IntoriFrameInputType[] = allChannelFrames.map((channel) => ({
+    type: 'button',
+    action: 'link',
+    content: `/${channel.channelId}`,
+    target: `https://warpcast.com/~/channel/${channel.channelId}`
+  }))
 
-  if (allChannelFrames.length > 5) {
-    // TODO: if more than 4 channels to show, we need to 'paginate' the buttons
-    // TODO: get 'input offset', show 'more' and 'back' buttons
-  }
+  const inputs = paginateInputs({
+    inputs: allChannelInputs,
 
-  for (let i = 0; i < allChannelFrames.length; i++) {
-    const channel = allChannelFrames[i]
+    currentInputOffset: inputOffset,
 
-    inputs.push({
+    moreButtonInput: (nextInputOffset) => ({
       type: 'button',
-      action: 'link',
-      content: `/${channel.channelId}`,
-      target: `https://warpcast.com/~/channel/${channel.channelId}`
-    })
-  }
+      content: 'More >',
+      postUrl: createCheckoutTheseChannelsUrl({ inputOffset: nextInputOffset })
+    }),
+
+    backButtonInput: (previousInputOffset) => ({
+      type: 'button',
+      content: '< Back',
+      postUrl: createCheckoutTheseChannelsUrl({ inputOffset: previousInputOffset })
+    }),
+  })
 
   return {
     props: {
