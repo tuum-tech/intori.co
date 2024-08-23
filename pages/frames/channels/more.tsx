@@ -11,6 +11,12 @@ import {
 import Input from '../../../components/common/Input'
 import { PrimaryButton } from '../../../components/common/Button'
 import { getAllChannelFrames } from '../../../models/channelFrames'
+import {
+  paginateInputs
+} from '../../../utils/frames/paginateInputs'
+import {
+  createCheckoutTheseChannelsUrl
+} from '../../../utils/frames/generatePageUrls'
 import styles from '../FramePage.module.css'
 
 type Props = {
@@ -21,38 +27,35 @@ type Props = {
  
 export const getServerSideProps = (async (context) => {
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/channels/more`
-  const imageUrl = `${process.env.NEXTAUTH_URL}/api/frames/channels/more?v=2`
+  const imageUrl = `${process.env.NEXTAUTH_URL}/api/frames/channels/more?v=3`
 
   const allChannelFrames = await getAllChannelFrames()
   const inputOffset = context.query?.ioff ? parseInt(context.query.ioff as string) : 0
 
-  const inputs: IntoriFrameInputType[] = []
+  const allChannelInputs: IntoriFrameInputType[] = allChannelFrames.map((channel) => ({
+    type: 'button',
+    action: 'link',
+    content: `/${channel.channelId}`,
+    target: `https://warpcast.com/~/channel/${channel.channelId}`
+  }))
 
-  if (allChannelFrames.length > 5) {
-    if (inputOffset === 0) {
-      // show first 3 channel button, then more
-    }
+  const inputs = paginateInputs({
+    inputs: allChannelInputs,
 
-    const isLastGroup = inputOffset + 2 >= allChannelFrames.length
-    if (inputOffset > 0) {
-      // if inputOffset + 3 is equal or greater than channels length, this is last group.
-    }
+    currentInputOffset: inputOffset,
 
-    // show back button, then 3 channel buttons, then more
-    // TODO: if more than 4 channels to show, we need to 'paginate' the buttons
-    // TODO: get 'input offset', show 'more' and 'back' buttons
-  }
-
-  for (let i = 0; i < allChannelFrames.length; i++) {
-    const channel = allChannelFrames[i]
-
-    inputs.push({
+    moreButtonInput: (nextInputOffset) => ({
       type: 'button',
-      action: 'link',
-      content: `/${channel.channelId}`,
-      target: `https://warpcast.com/~/channel/${channel.channelId}`
-    })
-  }
+      content: 'More >',
+      postUrl: createCheckoutTheseChannelsUrl({ inputOffset: nextInputOffset })
+    }),
+
+    backButtonInput: (previousInputOffset) => ({
+      type: 'button',
+      content: '< Back',
+      postUrl: createCheckoutTheseChannelsUrl({ inputOffset: previousInputOffset })
+    }),
+  })
 
   return {
     props: {
