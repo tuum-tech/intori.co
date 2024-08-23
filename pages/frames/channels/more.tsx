@@ -27,7 +27,9 @@ type Props = {
  
 export const getServerSideProps = (async (context) => {
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/channels/more`
-  const imageUrl = `${process.env.NEXTAUTH_URL}/api/frames/channels/more?v=${Math.random()}`
+
+  const dailyCacheBust = new Date().toISOString().split('T')[0]
+  const imageUrl = `${process.env.NEXTAUTH_URL}/api/frames/channels/more?v=${dailyCacheBust}`
 
   const allChannelFrames = await getAllChannelFrames()
   const inputOffset = context.query?.ioff ? parseInt(context.query.ioff as string) : 0
