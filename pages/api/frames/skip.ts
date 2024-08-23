@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { validateFarcasterPacketMessage } from '../utils/farcasterServer'
-import { getAvailableQuestions } from '../../../utils/frames/questions'
+import { getQuestionById } from '../../../models/questions'
 import { getFrameSessionFromRequest } from '../../../models/frameSession'
 import { createUserQuestionSkip } from '../../../models/userQuestionSkip'
 import {
@@ -8,8 +8,7 @@ import {
 } from '../../../utils/frames/generatePageUrls'
 import giveNewQuestion from './question'
 
-// User is requesting a new question
-const newQuestion = async (
+const skipQuestion = async (
   req: NextApiRequest,
   res: NextApiResponse
 ) => {
@@ -36,8 +35,16 @@ const newQuestion = async (
   }
 
   if (req.query.qi) {
-    const questionIndex = parseInt(req.query.qi as string, 10)
-    const questionToSkip = getAvailableQuestions({ channelId: session.channelId })[questionIndex]
+    const questionId = req.query.qi
+    const questionToSkip = await getQuestionById(questionId.toString())
+
+    if (!questionToSkip) {
+      console.error('Failed to skip question:', questionId)
+      return res.redirect(
+        307,
+        createFrameErrorUrl()
+      )
+    }
 
     await createUserQuestionSkip({
       fid: session.fid,
@@ -48,4 +55,4 @@ const newQuestion = async (
   return giveNewQuestion(req, res)
 }
 
-export default newQuestion
+export default skipQuestion
