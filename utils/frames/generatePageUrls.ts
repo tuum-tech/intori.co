@@ -148,6 +148,18 @@ export const createMessageUserUrl = (params: {
   return `https://warpcast.com/~/inbox/create/${fid}?text=${safeMessageText}`
 }
 
-  export const createCheckoutTheseChannelsUrl = () => {
-    return `${process.env.NEXTAUTH_URL}/frames/channels/more?v=2`
+  export const createCheckoutTheseChannelsUrl = (params: {
+    inputOffset?: number
+  } = {
+    inputOffset: 0
+  }) => {
+    const queryParts: string[] = [
+      `v=3`,
+    ]
+
+    if (params.inputOffset) {
+      queryParts.push(`ioff=${params.inputOffset}`)
+    }
+
+    return `${process.env.NEXTAUTH_URL}/frames/channels/more?${queryParts.join('&')}`
   }
