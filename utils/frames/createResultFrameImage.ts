@@ -9,12 +9,22 @@ import {
 } from '../textHelpers'
 
 const createAvatar = async (url: string, baseImage: Jimp): Promise<void> => {
-  try {
-    const urlImage = await Jimp.read(url);
+  let urlImage: Jimp 
 
+  try {
+    urlImage = await Jimp.read(url)
+  } catch (error) {
+    console.error('Failed to load user avatar: ', url)
+
+    urlImage = await Jimp.read(
+      inPublicFolder('/assets/templates/avatar_fallback.png')
+    )
+  }
+
+  try {
     const maskImage = await Jimp.read(inPublicFolder('/assets/templates/circle_mask.png'))
 
-    const circleImageSize = 192;
+    const circleImageSize = 192
 
     // Resize the mask to the desired circle size
     maskImage.resize(circleImageSize, circleImageSize);

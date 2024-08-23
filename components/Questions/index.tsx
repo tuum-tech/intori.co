@@ -175,6 +175,13 @@ export const DisplayQuestions: React.FC<Props> = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState('')
 
+  const filterSearch = (question: QuestionType) => {
+    if (searchTerm) {
+      return question.question.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
+    }
+    return true
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.searchContainer}>
@@ -186,20 +193,14 @@ export const DisplayQuestions: React.FC<Props> = ({
         />
       </div>
       {
-        questions.map((question, index) => {
-          if (searchTerm && question.question.toLowerCase().indexOf(searchTerm.toLowerCase()) === -1) {
-            return null
-          }
-
-          return (
-            <OneQuestion
-              key={question.id}
-              initialQuestion={question}
-              onQuestionDeleted={onQuestionDeleted}
-              index={questions.length - index}
-            />
-          )
-        })
+        questions.filter(filterSearch).map((question, index) => (
+          <OneQuestion
+            key={question.id}
+            initialQuestion={question}
+            onQuestionDeleted={onQuestionDeleted}
+            index={questions.length - index}
+          />
+        ))
       }
     </div>
   )
