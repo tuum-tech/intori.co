@@ -7,26 +7,31 @@ import { errorFrame } from '../../utils/frames/intoriFrameForms'
  
 type Props = {
   imageUrl: string
+  frameUrl: string
 }
  
 export const getServerSideProps = (async () => {
   const imageUrl = `${process.env.NEXTAUTH_URL}/assets/templates/error_frame.png`
+  const frameUrl = `${process.env.NEXTAUTH_URL}/frames/error`
 
   return {
     props: {
-      imageUrl
+      imageUrl,
+      frameUrl
     }
   }
 }) satisfies GetServerSideProps<Props>
  
 export default function Page({
-  imageUrl
+  imageUrl,
+  frameUrl
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <PageWrapper title="Profile">
       <FrameGenerator
         frame={errorFrame}
         imageUrl={imageUrl}
+        frameUrl={frameUrl}
       />
 
       <div className="text-center">
