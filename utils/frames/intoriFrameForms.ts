@@ -1,4 +1,4 @@
-import { createStartNewFrameQuestionUrl } from './generatePageUrls'
+import { createStartNewFrameQuestionUrl } from '../urls'
 
 export type IntoriFrameInputType = {
     type: 'button'

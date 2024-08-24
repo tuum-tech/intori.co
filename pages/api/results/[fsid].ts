@@ -5,7 +5,7 @@ import { getFrameSessionFromRequest } from '../../../models/frameSession'
 import { inPublicFolder } from '../../../utils/paths'
 import {
   createFrameErrorUrl
-} from '../../../utils/frames/generatePageUrls'
+} from '../../../utils/urls'
 import {
   timeAgo,
   replaceNewlinesWithSpaces,

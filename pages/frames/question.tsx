@@ -12,7 +12,7 @@ import {
 import Input from '../../components/common/Input'
 import { PrimaryButton } from '../../components/common/Button'
 import styles from './FramePage.module.css'
-import { createFrameErrorUrl } from '../../utils/frames/generatePageUrls'
+import { createFrameErrorUrl } from '../../utils/urls'
 import { getFrameSessionById } from '../../models/frameSession'
  
 type Props = {

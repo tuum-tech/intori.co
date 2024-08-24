@@ -12,7 +12,7 @@ import Input from '../../components/common/Input'
 import { PrimaryButton } from '../../components/common/Button'
 import styles from './FramePage.module.css'
 import { getFrameSessionById } from '../../models/frameSession'
-import { createStartNewFrameQuestionUrl, createFrameErrorUrl } from '../../utils/frames/generatePageUrls'
+import { createStartNewFrameQuestionUrl, createFrameErrorUrl } from '../../utils/urls'
  
 type Props = {
   imageUrl: string

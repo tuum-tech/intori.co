@@ -14,7 +14,7 @@ import styles from './FramePage.module.css'
 import {
   createFrameErrorUrl,
   createStartNewFrameQuestionUrl
-} from '../../utils/frames/generatePageUrls'
+} from '../../utils/urls'
 import { getFrameSessionById, updateTutorialNoLongerNeeded } from '../../models/frameSession'
  
 type Props = {

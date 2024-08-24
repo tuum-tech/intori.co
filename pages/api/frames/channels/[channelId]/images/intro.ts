@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import {
   createFrameErrorUrl
-} from '@/utils/frames/generatePageUrls'
+} from '@/utils/urls'
 import { getChannelFrame } from '@/models/channelFrames'
 import { getChannelDetails } from '@/utils/neynarApi'
 import { createChannelFrameIntroImage } from '@/utils/frames/createChannelFrameIntroImage'
