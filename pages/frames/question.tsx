@@ -1,17 +1,11 @@
-import React, { useState } from 'react'
-import { toast } from 'react-toastify'
+import React from 'react'
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
 import { FrameGenerator } from '../../components/farcaster/FrameGenerator'
-import { AppLayout } from "@/layouts/App"
-import { Section } from '../../components/common/Section'
 import { IntoriFrameType } from '../../utils/frames/intoriFrameForms'
 import { getQuestionById } from '../../models/questions'
 import {
   getFrameInputsBasedOnAnswerOffset
 } from '../../utils/frames/frameSubmissionHelpers'
-import Input from '../../components/common/Input'
-import { PrimaryButton } from '../../components/common/Button'
-import styles from './FramePage.module.css'
 import { createFrameErrorUrl } from '../../utils/urls'
 import { getFrameSessionById } from '../../models/frameSession'
  
@@ -93,48 +87,12 @@ export default function Page({
   frameUrl,
   frame
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const [copyButtonText, setCopyButtonText] = useState('Copy Frame Link')
-
-  const copyUrlToClipboard = () => {
-    navigator.clipboard.writeText(frameUrl)
-    toast.success('Frame link copied to clipboard 😎')
-    setCopyButtonText('Copied!')
-    setTimeout(() => {
-      setCopyButtonText('Copy Frame Link')
-    }, 2000)
-  }
-
   return (
-    <>
-      <FrameGenerator
-        frame={frame}
-        imageUrl={imageUrl}
-        frameUrl={frameUrl}
-        frameImageAspectRatio='1:1'
-      />
-      <AppLayout>
-        <Section>
-          <div className={styles.shareFrameContainer}>
-            <div className="text-center">
-              <h1>Your data, connected.</h1>
-
-              <div className={styles.inputContainer}>
-                <Input
-                  label="Share this frame with others and gain points!"
-                  value={frameUrl}
-                  onChange={console.log}
-                  placeholder="Frame URL"
-                  onClick={copyUrlToClipboard}
-                  readOnly
-                />
-                <PrimaryButton onClick={copyUrlToClipboard}>
-                  {copyButtonText}
-                </PrimaryButton>
-              </div>
-            </div>
-          </div>
-        </Section>
-      </AppLayout>
-    </>
+    <FrameGenerator
+      frame={frame}
+      imageUrl={imageUrl}
+      frameUrl={frameUrl}
+      frameImageAspectRatio='1:1'
+    />
   )
 }
