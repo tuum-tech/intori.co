@@ -5,7 +5,7 @@ import {
   createFrameResultsUrl,
   createFrameErrorUrl,
   createCheckoutTheseChannelsUrl
-} from '../../../utils/frames/generatePageUrls'
+} from '../../../utils/urls'
 import { incrementSuggestionsRevealed } from '../../../models/frameSession'
 import { updateSuggestionRating } from '../../../models/suggestionRating'
 

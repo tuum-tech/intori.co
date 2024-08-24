@@ -7,7 +7,7 @@ import {
   createFrameQuestionUrl,
   createSubmitAnswerUrl,
   createSkipQuestionUrl
-} from './generatePageUrls'
+} from '../urls'
 
 export type FarcasterFrameSubmitBodyType = {
   untrustedData: {

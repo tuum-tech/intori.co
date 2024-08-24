@@ -11,7 +11,7 @@ import {
   createFrameErrorUrl,
   createFrameResultsUrl,
   createFrameQuestionUrl
-} from '../../../utils/frames/generatePageUrls'
+} from '../../../utils/urls'
 import { getChannelFrame } from '../../../models/channelFrames'
 import { incrementSessionQuestion } from '../../../models/frameSession'
 

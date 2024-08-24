@@ -14,7 +14,7 @@ import { PrimaryButton } from '../../components/common/Button'
 import {
   createFrameResultsUrl,
   createFrameErrorUrl
-} from '../../utils/frames/generatePageUrls'
+} from '../../utils/urls'
 import styles from './FramePage.module.css'
 
 type Props = {

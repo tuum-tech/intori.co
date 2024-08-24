@@ -10,7 +10,7 @@ import {
   createFrameQuestionUrl,
   createFrameErrorUrl,
   createTutorialFrameUrl
-} from '../../../utils/frames/generatePageUrls'
+} from '../../../utils/urls'
 
 // User is requesting a new question
 // TODO: need to determine if user is on intro frame or a single question frame.

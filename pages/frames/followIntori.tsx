@@ -11,7 +11,7 @@ import {
 import Input from '../../components/common/Input'
 import { PrimaryButton } from '../../components/common/Button'
 import styles from './FramePage.module.css'
-import { createNextRevealUrl } from '../../utils/frames/generatePageUrls'
+import { createNextRevealUrl } from '../../utils/urls'
 import {
   getFrameSessionById
 } from '../../models/frameSession'

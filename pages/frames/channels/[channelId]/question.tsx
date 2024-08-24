@@ -10,7 +10,7 @@ import {
 import Input from '../../../../components/common/Input'
 import { PrimaryButton } from '../../../../components/common/Button'
 import styles from '../../FramePage.module.css'
-import { createStartNewFrameQuestionUrl } from '../../../../utils/frames/generatePageUrls'
+import { createStartNewFrameQuestionUrl } from '../../../../utils/urls'
 
 // TODO: get channelId param and expect questionId query. ( qid )
 // check if question by question id exists

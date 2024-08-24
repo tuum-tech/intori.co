@@ -5,7 +5,7 @@ import { getFrameSessionFromRequest } from '../../../models/frameSession'
 import { createUserQuestionSkip } from '../../../models/userQuestionSkip'
 import {
   createFrameErrorUrl,
-} from '../../../utils/frames/generatePageUrls'
+} from '../../../utils/urls'
 import giveNewQuestion from './question'
 
 const skipQuestion = async (

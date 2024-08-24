@@ -23,7 +23,7 @@ import {
   createFrameErrorUrl,
   createNoMatchesFoundUrl,
   createMessageUserUrl
-} from '../../utils/frames/generatePageUrls'
+} from '../../utils/urls'
  
 type Props = {
   imageUrl: string

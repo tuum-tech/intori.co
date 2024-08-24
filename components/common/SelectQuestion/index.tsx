@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react'
 import { toast } from 'react-toastify'
 import Input from '../Input'
 import { QuestionType } from '../../../models/questions'
-import { createChannelQuestionFrameUrl } from '../../../utils/frames/generatePageUrls'
+import { createChannelQuestionFrameUrl } from '../../../utils/urls'
 import { Select } from '../Select'
 
 type Props = {

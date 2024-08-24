@@ -16,7 +16,7 @@ import {
 } from '../../../utils/frames/paginateInputs'
 import {
   createCheckoutTheseChannelsUrl
-} from '../../../utils/frames/generatePageUrls'
+} from '../../../utils/urls'
 import styles from '../FramePage.module.css'
 
 type Props = {
