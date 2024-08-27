@@ -16,6 +16,7 @@ type Props = {
   onBlur?: React.FocusEventHandler<HTMLInputElement>
   error?: string
   note?: string
+  spellCheck?: boolean
 }
 
 const Input: NextPage<Props> = ({
@@ -29,7 +30,8 @@ const Input: NextPage<Props> = ({
   name,
   onBlur,
   error,
-  note
+  note,
+  spellCheck
 }) => {
   return (
     <div className={styles.inputContainer}>
@@ -48,6 +50,7 @@ const Input: NextPage<Props> = ({
         required={required}
         onBlur={onBlur}
         name={name}
+        spellCheck={spellCheck}
       />
 
       <Note note={note} />
