@@ -95,7 +95,6 @@ const CreateChannelFrame: NextPage<Props> = ({ allQuestions }) => {
             required
           />
 
-          { /* <SelectQuestionCategoryInput formik={formik} /> */ }
           <SelectIntroQuestions formik={formik} allQuestions={allQuestions} />
 
           <FormActions>
