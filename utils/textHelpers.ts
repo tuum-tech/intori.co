@@ -63,3 +63,5 @@ export const shortenNumber = (num: number): string => {
 
   return num.toString();
 };
+
+export const capitalizeFirstLetter = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
