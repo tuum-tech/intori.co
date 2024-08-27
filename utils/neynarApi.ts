@@ -194,3 +194,20 @@ export const getFollowersOfChannel = async (params: {
 
   return res.users.map((follower) => serializeUser(follower))
 }
+
+// https://docs.neynar.com/reference/cast-search
+export const getCastOfFrameInChannel = async (params: {
+  channelId: string
+  frameUrl: string
+}) => {
+  const { channelId, frameUrl } = params
+
+  const res = await neynar.searchCasts(
+    frameUrl,
+    {
+      channelId
+    }
+  )
+
+  return res
+}
