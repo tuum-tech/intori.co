@@ -125,25 +125,29 @@ export const getAllSuggestedUsersAndChannels = async (
     })
   )
 
-  suggestions.sort((a, b) => {
-    if (a.user.powerBadge && !b.user.powerBadge) {
-        return -1
-    }
+  suggestions
+    .filter((suggestion) => {
+      return suggestion.rating > -4
+    })
+    .sort((a, b) => {
+      if (a.user.powerBadge && !b.user.powerBadge) {
+          return -1
+      }
 
-    if (!a.user.powerBadge && b.user.powerBadge) {
-        return 1
-    }
+      if (!a.user.powerBadge && b.user.powerBadge) {
+          return 1
+      }
 
-    if (a.reason.length !== b.reason.length) {
-        return b.reason.length - a.reason.length
-    }
+      if (a.reason.length !== b.reason.length) {
+          return b.reason.length - a.reason.length
+      }
 
-    return b.rating - a.rating
-  })
+      return b.rating - a.rating
+    })
 
   console.log('Total suggestions before slicing:', suggestions.length)
 
-  return suggestions.slice(0, limit)
+  return suggestions.sort(() => 0.5 - Math.random()).slice(0, limit);
 
   // code to get channel suggestions below:
   // if (channelId && channelId !== 'welcome') {
