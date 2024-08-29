@@ -110,7 +110,7 @@ export const getServerSideProps = (async (context) => {
       fsid: session.id,
       rating: -1
     }),
-    content: '👎'
+    content: '👎 Not for me'
   })
 
   inputs.push({
@@ -119,7 +119,7 @@ export const getServerSideProps = (async (context) => {
       fsid: session.id,
       rating: 1
     }),
-    content: '👍'
+    content: '👍 Good Match'
   })
 
   inputs.push({
