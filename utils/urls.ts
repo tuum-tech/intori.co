@@ -102,11 +102,8 @@ export const createNextRevealUrl = (params: {
   return `${process.env.NEXTAUTH_URL}/api/frames/reveal?${queryParts.join('&')}`
 }
 
-export const createFollowIntoriUrl = (params: {
-  fsid: string
-}) => {
-  const { fsid } = params
-  return `${process.env.NEXTAUTH_URL}/frames/followIntori?fsid=${fsid}`
+export const createFollowIntoriUrl = () => {
+  return `${process.env.NEXTAUTH_URL}/frames/followIntori`
 }
 
 export const createNoMatchesFoundUrl = (params: {

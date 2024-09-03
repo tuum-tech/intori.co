@@ -5,10 +5,6 @@ import {
     IntoriFrameType,
     IntoriFrameInputType
 } from '../../utils/frames/intoriFrameForms'
-import { createNextRevealUrl } from '../../utils/urls'
-import {
-  getFrameSessionById
-} from '../../models/frameSession'
  
 type Props = {
   imageUrl: string
@@ -16,28 +12,7 @@ type Props = {
   frame: IntoriFrameType
 }
  
-export const getServerSideProps = (async (context) => {
-  if (!context?.query.fsid) {
-    return {
-      redirect: {
-        destination: '/frames/error',
-        permanent: false
-      }
-    }
-  }
-
-  const frameSessionId = context.query.fsid?.toString() as string
-
-  const session = await getFrameSessionById(frameSessionId)
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/frames/error',
-        permanent: false
-      }
-    }
-  }
+export const getServerSideProps = (async () => {
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/begin`
   const imageUrl = `${process.env.NEXTAUTH_URL}/assets/templates/follow_required.png`
 
@@ -47,13 +22,14 @@ export const getServerSideProps = (async (context) => {
     type: 'button',
     action: 'link',
     target: `https://warpcast.com/intori`,
-    content: '@intori'
+    content: 'Follow @intori'
   })
 
   inputs.push({
     type: 'button',
-    postUrl: createNextRevealUrl({ fsid: session.id }),
-    content: '✨ Reveal'
+    action: 'link',
+    target: `https://warpcast.com/~/channel/intori`,
+    content: 'Visit /intori'
   })
 
   const frame: IntoriFrameType = {
