@@ -16,7 +16,7 @@ import {
   createNextRevealUrl,
   createFrameErrorUrl,
   createNoMatchesFoundUrl,
-  createMessageUserUrl
+  createCastToChannelUrl
 } from '../../utils/urls'
  
 type Props = {
@@ -132,11 +132,12 @@ export const getServerSideProps = (async (context) => {
   inputs.push({
     type: 'button',
     action: 'link',
-    target: createMessageUserUrl({
-      fid: suggestionToShow.user.fid,
-      message: `Hey!\n\nYou were suggested to me by Intori.\n\nWhat's up?`
+    target: createCastToChannelUrl({
+      channelId: session.channelId,
+      userNameToTag: suggestionToShow.user.username,
+      reason: suggestionToShow.reason[0]
     }),
-    content: 'Message'
+    content: 'Say Hi'
   })
 
 
