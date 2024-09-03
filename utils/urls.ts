@@ -163,3 +163,27 @@ export const createMessageUserUrl = (params: {
 
     return `${process.env.NEXTAUTH_URL}/frames/channels/more?${queryParts.join('&')}`
   }
+
+  export const createCastToChannelUrl = (params: {
+    channelId?: string
+    userNameToTag: string
+    reason: string
+  }): string => {
+    const queryParts: string[] = []
+
+    if (params.channelId) {
+      queryParts.push(
+        `channelKey=${encodeURIComponent(params.channelId)}`
+      )
+    }
+
+    const introText = `Hey everyone!
+
+I matched with @${params.userNameToTag} thanks to the introduction from @intori. Super excited to engage with all the amazing people here! 🌟`
+
+    queryParts.push(
+      `text=${encodeURIComponent(introText)}`
+    )
+
+    return `https://warpcast.com/~/compose?${queryParts.join('&')}`
+  }
