@@ -4,7 +4,7 @@ import { validateFarcasterPacketMessage } from '../utils/farcasterServer'
 import {
   createFrameResultsUrl,
   createFrameErrorUrl,
-  createCheckoutTheseChannelsUrl
+  createFollowIntoriUrl
 } from '../../../utils/urls'
 import { incrementSuggestionsRevealed } from '../../../models/frameSession'
 import { updateSuggestionRating } from '../../../models/suggestionRating'
@@ -50,7 +50,7 @@ const revealNextSuggestion = async (
   if (session.suggestionsRevealed + 1 === 3) {
     return res.redirect(
       307,
-      createCheckoutTheseChannelsUrl()
+      createFollowIntoriUrl()
     )
   }
 
