@@ -32,6 +32,8 @@ export const createChannelQuestionFrameImage = async (params: {
 }): Promise<Buffer> => {
   const { question, channelImageUrl } = params
 
+  console.time(question.question + ' ' + channelImageUrl)
+
   const [
     font24regularWhite,
     font40mediumBlack, // TODO: create fnt
@@ -91,5 +93,6 @@ export const createChannelQuestionFrameImage = async (params: {
     )
   }
 
+  console.timeEnd(question.question + ' ' + channelImageUrl)
   return baseImage.getBufferAsync(Jimp.MIME_PNG)
 }
