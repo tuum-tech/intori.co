@@ -147,7 +147,7 @@ export const getAllSuggestedUsersAndChannels = async (
 
   console.log('Total suggestions before slicing:', suggestions.length)
 
-  return suggestions.sort(() => 0.5 - Math.random()).slice(0, limit);
+  return suggestions.slice(0, limit);
 
   // code to get channel suggestions below:
   // if (channelId && channelId !== 'welcome') {
