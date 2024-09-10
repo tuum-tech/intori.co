@@ -6,6 +6,7 @@ import {
 } from '../../../models/userAnswers'
 import { createFrameSession } from '../../../models/frameSession'
 import { getChannelFrame } from '../../../models/channelFrames'
+import { saveUserFollowings } from '../../../models/userFollowings'
 import {
   createFrameQuestionUrl,
   createFrameErrorUrl,
@@ -46,6 +47,8 @@ const newQuestion = async (
       showTutorialFrame: numberOfIntoriResponses === 0,
       isIntroFrame: req.query.intro === 'true'
     })
+
+    saveUserFollowings(fid)
   }
 
   if (!session || !channelId) {
