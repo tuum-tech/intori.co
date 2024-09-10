@@ -8,7 +8,7 @@ import {
   getFollowersOfChannel
 } from '../neynarApi'
 import { getSuggestionRating } from '../../models/suggestionRating'
-import { getSuggestionDislikes } from '../../models/SuggestionDislikes'
+import { getSuggestionDislikes } from '../../models/suggestionDislikes'
 import { doesUserAlreadyFollowUser } from '../../models/userFollowings'
 
 export const getAllSuggestedUsersAndChannels = async (
