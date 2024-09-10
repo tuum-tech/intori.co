@@ -2,10 +2,10 @@ import React from 'react'
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
 import { FrameGenerator } from '../../../../components/farcaster/FrameGenerator'
 import {
-    IntoriFrameType,
-    createIntroductionStep
+    IntoriFrameType
 } from '../../../../utils/frames/intoriFrameForms'
 import { getChannelFrame } from '../../../../models/channelFrames'
+import { createStartNewFrameQuestionUrl } from '../../../../utils/urls'
 
 type Props = {
   imageUrl: string
@@ -36,10 +36,18 @@ export const getServerSideProps = (async (context) => {
     props: {
       imageUrl,
       frameUrl,
-      frame: createIntroductionStep({
-        channelId,
-        isIntroFrame: true
-      })
+      frame: {
+        inputs: [
+          {
+            type: 'button',
+            content: '🌟 Begin',
+            postUrl: createStartNewFrameQuestionUrl({
+              isIntroFrame: true,
+              channelId
+            })
+          }
+        ]
+      }
     }
   }
 }) satisfies GetServerSideProps<Props>
