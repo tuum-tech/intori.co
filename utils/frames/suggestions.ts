@@ -9,6 +9,7 @@ import {
 } from '../neynarApi'
 import { getSuggestionRating } from '../../models/suggestionRating'
 import { getSuggestionDislikes } from '../../models/SuggestionDislikes'
+import { doesUserAlreadyFollowUser } from '../../models/userFollowings'
 
 export const getAllSuggestedUsersAndChannels = async (
   options: {
@@ -51,6 +52,11 @@ export const getAllSuggestedUsersAndChannels = async (
         }
 
         if (dislikedFids.includes(res.fid)) {
+          continue
+        }
+
+        const alreadyFollowing = await doesUserAlreadyFollowUser(fid, res.fid)
+        if (alreadyFollowing) {
           continue
         }
 
@@ -101,6 +107,11 @@ export const getAllSuggestedUsersAndChannels = async (
       }
 
       if (dislikedFids.includes(follower.fid)) {
+        continue
+      }
+
+      const alreadyFollowing = await doesUserAlreadyFollowUser(fid, follower.fid)
+      if (alreadyFollowing) {
         continue
       }
 
