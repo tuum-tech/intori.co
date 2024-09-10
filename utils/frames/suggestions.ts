@@ -5,11 +5,40 @@ import {
 } from '../../models/userAnswers'
 import {
   fetchUserDetailsByFids,
-  getFollowersOfChannel
+  getRecentCastsInChannel,
+  serializeUser
 } from '../neynarApi'
 import { getSuggestionRating } from '../../models/suggestionRating'
 import { getSuggestionDislikes } from '../../models/suggestionDislikes'
 import { doesUserAlreadyFollowUser } from '../../models/userFollowings'
+
+const getRecentlyCastedFidsInChannel = async (params: {
+  channelId: string
+  limit: number
+}) => {
+  const { channelId, limit } = params
+
+  const recentCasts = await getRecentCastsInChannel({
+    channelId,
+    limit: 50
+  })
+
+  recentCasts.sort((a, b) => {
+      if (a.author.power_badge && !b.author.power_badge) {
+          return -1
+      }
+
+      if (!a.author.power_badge && b.author.power_badge) {
+          return 1
+      }
+
+      return 0
+  })
+
+  return recentCasts.slice(0, limit).map((cast) => {
+    return serializeUser(cast.author)
+  })
+}
 
 export const getAllSuggestedUsersAndChannels = async (
   options: {
@@ -86,9 +115,9 @@ export const getAllSuggestedUsersAndChannels = async (
   if (suggestedUserFids.length < limit && channelId) {
     const suggestionsNeeded = limit - suggestedUserFids.length
 
-    const channelFollowers = await getFollowersOfChannel({
+    const usersWhoCastedRecently = await getRecentlyCastedFidsInChannel({
       channelId,
-      limit: suggestionsNeeded * 3
+      limit: suggestionsNeeded * 4
     })
 
     const randomReasons = [
@@ -99,8 +128,8 @@ export const getAllSuggestedUsersAndChannels = async (
       "Your answers suggest this account might be a good fit - explore it!"
     ]
 
-    for (let i = 0; i < channelFollowers.length; i++) {
-      const follower = channelFollowers[i]
+    for (let i = 0; i < usersWhoCastedRecently.length; i++) {
+      const follower = usersWhoCastedRecently[i]
 
       if (follower.fid === fid) {
         continue
@@ -129,7 +158,7 @@ export const getAllSuggestedUsersAndChannels = async (
       })
     }
 
-    userDetails.push(...channelFollowers)
+    userDetails.push(...usersWhoCastedRecently)
   }
 
   suggestedUserFids.forEach((s) => {
