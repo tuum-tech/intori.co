@@ -33,12 +33,6 @@ export const getServerSideProps = (async (context) => {
         inputs: [
           {
             type: 'button',
-            content: 'Learn More',
-            action: 'link',
-            target: 'https://www.intori.co/'
-          },
-          {
-            type: 'button',
             content: '🌟 Begin',
             postUrl: createStartNewFrameQuestionUrl({ questionId, channelId })
           }
