@@ -28,7 +28,7 @@ export const getAllSuggestedUsersAndChannels = async (
     })
 
   const dislikedSuggestions = await getSuggestionDislikes(fid)
-  const dislikedFids = dislikedSuggestions.map((s) => s.fid)
+  const dislikedFids = dislikedSuggestions.map((s) => s.dislikesFid)
 
   const suggestions: SuggestionType[] = []
   const suggestedUserFids: {
