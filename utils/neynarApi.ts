@@ -166,7 +166,7 @@ export const getFidsUserIsFollowing = async (fid: number): Promise<number[]> => 
         'Got an error getting followings for user',
         fid,
         'Total followings so far',
-        followingFids.length,
+        followingFids.length
       )
       attempts++
     }
