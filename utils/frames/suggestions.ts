@@ -8,6 +8,7 @@ import {
   getFollowersOfChannel
 } from '../neynarApi'
 import { getSuggestionRating } from '../../models/suggestionRating'
+import { getSuggestionDislikes } from '../../models/SuggestionDislikes'
 
 export const getAllSuggestedUsersAndChannels = async (
   options: {
@@ -17,12 +18,16 @@ export const getAllSuggestedUsersAndChannels = async (
   },
 ): Promise<SuggestionType[]> => {
   const { fid, channelId, limit } = options
+
   const recentResponses = await getRecentAnswersForUser(
     fid,
     9,
     {
       channelId
     })
+
+  const dislikedSuggestions = await getSuggestionDislikes(fid)
+  const dislikedFids = dislikedSuggestions.map((s) => s.fid)
 
   const suggestions: SuggestionType[] = []
   const suggestedUserFids: {
@@ -45,6 +50,10 @@ export const getAllSuggestedUsersAndChannels = async (
           continue
         }
 
+        if (dislikedFids.includes(res.fid)) {
+          continue
+        }
+
         const alreadySuggested = suggestedUserFids.findIndex(
           (suggestedFid) => suggestedFid.fid === res.fid
         )
@@ -63,7 +72,6 @@ export const getAllSuggestedUsersAndChannels = async (
       }
     })
   )
-
 
   const userDetails = await fetchUserDetailsByFids(
     suggestedUserFids.map((s) => s.fid)
@@ -89,6 +97,10 @@ export const getAllSuggestedUsersAndChannels = async (
       const follower = channelFollowers[i]
 
       if (follower.fid === fid) {
+        continue
+      }
+
+      if (dislikedFids.includes(follower.fid)) {
         continue
       }
 
