@@ -25,7 +25,7 @@ export type FarcasterUserType = {
   powerBadge: boolean
 }
 
-const serializeUser = (user: User): FarcasterUserType => ({
+export const serializeUser = (user: User): FarcasterUserType => ({
     username: user.username,
     displayName: user.display_name,
     bio: user.profile.bio.text,
@@ -137,29 +137,40 @@ export const doesUserFollowIntori = async (fid: number): Promise<boolean> => {
 export const getFidsUserIsFollowing = async (fid: number): Promise<number[]> => {
   const followingFids: number[] = []
   let cursor: string | null = ''
+  let attempts = 0
 
   do {
-    const following = await neynar.fetchUserFollowingV2(
-      fid,
-      {
-        limit: 100,
-        sortType: 'desc_chron',
-        cursor: cursor || undefined
+    try {
+      const following = await neynar.fetchUserFollowingV2(
+        fid,
+        {
+          limit: 100,
+          sortType: 'desc_chron',
+          cursor: cursor || undefined
+        }
+      )
+
+      // @ts-expect-error because type definitions are not correct.
+      const fids = following.users.map((user) => user.user.fid)
+
+      followingFids.push(...fids)
+
+      if (!following.next.cursor) {
+        break
       }
-    )
 
-    // @ts-expect-error because type definitions are not correct.
-    const fids = following.users.map((user) => user.user.fid)
-
-    followingFids.push(...fids)
-
-    if (!following.next.cursor) {
-      break
+      cursor = following.next.cursor
+      await new Promise((resolve) => setTimeout(resolve, 400))
+    } catch (err) {
+      console.error(
+        'Got an error getting followings for user',
+        fid,
+        'Total followings so far',
+        followingFids.length
+      )
+      attempts++
     }
-
-    cursor = following.next.cursor
-    await new Promise((resolve) => setTimeout(resolve, 400))
-  } while (cursor)
+  } while (cursor && attempts < 3)
 
   return followingFids
 }
@@ -193,4 +204,19 @@ export const getFollowersOfChannel = async (params: {
   })
 
   return res.users.map((follower) => serializeUser(follower))
+}
+
+export const getRecentCastsInChannel = async (params: {
+  channelId: string
+  limit: number
+}) => {
+
+  const { channelId, limit } = params
+
+  const res = await neynar.fetchFeedByChannelIds([channelId], {
+    shouldModerate: true,
+    limit
+  })
+
+  return res.casts
 }

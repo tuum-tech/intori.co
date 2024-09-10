@@ -13,27 +13,6 @@ export type IntoriFrameType = {
   inputs: IntoriFrameInputType[]
 }
 
-export const createIntroductionStep = (params: {
-  channelId?: string
-  isIntroFrame?: boolean
-} = {}): IntoriFrameType => {
-  return {
-    inputs: [
-      {
-        type: 'button',
-        content: 'Learn More',
-        action: 'link',
-        target: 'https://www.intori.co/'
-      },
-      {
-        type: 'button',
-        content: '🌟 Discover',
-        postUrl: createStartNewFrameQuestionUrl(params)
-      }
-    ]
-  }
-}
-
 export const errorFrame: IntoriFrameType = {
     inputs: [
       {

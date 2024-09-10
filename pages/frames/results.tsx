@@ -106,24 +106,6 @@ export const getServerSideProps = (async (context) => {
 
   inputs.push({
     type: 'button',
-    postUrl: createNextRevealUrl({
-      fsid: session.id,
-      rating: -1
-    }),
-    content: '👎 Not for me'
-  })
-
-  inputs.push({
-    type: 'button',
-    postUrl: createNextRevealUrl({
-      fsid: session.id,
-      rating: 1
-    }),
-    content: '👍 Good Match'
-  })
-
-  inputs.push({
-    type: 'button',
     action: 'link',
     target: `https://warpcast.com/${suggestionToShow.user.username}`,
     content: 'Follow'
@@ -138,6 +120,15 @@ export const getServerSideProps = (async (context) => {
       reason: suggestionToShow.reason[0]
     }),
     content: 'Say Hi'
+  })
+
+  inputs.push({
+    type: 'button',
+    postUrl: createNextRevealUrl({
+      fsid: session.id,
+      rating: -1
+    }),
+    content: '👎 Not for me'
   })
 
 

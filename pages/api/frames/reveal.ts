@@ -8,6 +8,7 @@ import {
 } from '../../../utils/urls'
 import { incrementSuggestionsRevealed } from '../../../models/frameSession'
 import { updateSuggestionRating } from '../../../models/suggestionRating'
+import { createSuggestionDislike } from '../../../models/suggestionDislikes'
 
 // User is requesting a new question
 const revealNextSuggestion = async (
@@ -40,6 +41,13 @@ const revealNextSuggestion = async (
     const suggestionShown = session.suggestions[session.suggestionsRevealed]
 
     if (suggestionShown.user?.fid) {
+      if (Number(req.query.rating) < 0) {
+        await createSuggestionDislike({
+          fid: session.fid,
+          dislikesFid: suggestionShown.user.fid
+        })
+      }
+
       await updateSuggestionRating({
         fid: suggestionShown.user.fid,
         rating: Number(req.query.rating)
