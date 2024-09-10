@@ -25,7 +25,7 @@ export type FarcasterUserType = {
   powerBadge: boolean
 }
 
-const serializeUser = (user: User): FarcasterUserType => ({
+export const serializeUser = (user: User): FarcasterUserType => ({
     username: user.username,
     displayName: user.display_name,
     bio: user.profile.bio.text,
@@ -204,4 +204,19 @@ export const getFollowersOfChannel = async (params: {
   })
 
   return res.users.map((follower) => serializeUser(follower))
+}
+
+export const getRecentCastsInChannel = async (params: {
+  channelId: string
+  limit: number
+}) => {
+
+  const { channelId, limit } = params
+
+  const res = await neynar.fetchFeedByChannelIds([channelId], {
+    shouldModerate: true,
+    limit
+  })
+
+  return res.casts
 }
