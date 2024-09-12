@@ -107,12 +107,10 @@ export const getAllSuggestedUsersAndChannels = async (
     suggestedUserFids.map((s) => s.fid)
   )
 
-  if (suggestedUserFids.length < limit && channelId) {
-    const suggestionsNeeded = limit - suggestedUserFids.length
-
+  if (suggestedUserFids.length < 10 && channelId) {
     const usersWhoCastedRecently = await getRecentlyCastedFidsInChannel({
       channelId,
-      limit: suggestionsNeeded * 4
+      limit: 20
     })
 
     const randomReasons = [
