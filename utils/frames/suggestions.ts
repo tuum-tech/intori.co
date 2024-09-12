@@ -151,6 +151,8 @@ export const getAllSuggestedUsersAndChannels = async (
     userDetails.push(...usersWhoCastedRecently)
   }
 
+  console.log('Total suggestions before filtering:', suggestedUserFids.length)
+
   const userFollowingStatuses = await Promise.all(
     suggestedUserFids.map(async (suggestedUser) => {
       const alreadyFollows = await doesUserAlreadyFollowUser(fid, suggestedUser.fid)
@@ -165,6 +167,8 @@ export const getAllSuggestedUsersAndChannels = async (
   )
 
   const usersNotFollowed = userFollowingStatuses.filter((u) => !u.alreadyFollows)
+
+  console.log('Suggestions user is not following: ', usersNotFollowed.length)
 
   usersNotFollowed.forEach((s) => {
     suggestions.push({
