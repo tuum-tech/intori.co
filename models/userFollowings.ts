@@ -35,7 +35,6 @@ export const saveUserFollowings = async (fid: number) => {
   try {
     const collection = getCollection()
 
-    await resetUserFollowings(fid)
     const fids = await getFidsUserIsFollowing(fid)
 
     const batch = createDb().batch()
@@ -60,8 +59,8 @@ export const doesUserAlreadyFollowUser = async (fid: number, followingFid: numbe
   const collection = getCollection()
 
   const querySnapshot = await collection
-    .where('fid', '==', fid)
-    .where('followingFid', '==', followingFid)
+    .where('fid', '==', Number(fid))
+    .where('followingFid', '==', Number(followingFid))
     .get()
 
   return !querySnapshot.empty
