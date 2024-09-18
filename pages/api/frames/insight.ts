@@ -21,7 +21,7 @@ const getLastResponseFromFrameSession = async (
       continue
     }
 
-    const userAnswer = await getUserAnswerForQuestion(session.fid, question.id)
+    const userAnswer = await getUserAnswerForQuestion(session.fid, question.question)
 
     if (!userAnswer) {
       continue
