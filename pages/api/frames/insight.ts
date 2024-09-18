@@ -15,6 +15,7 @@ const getLastResponseFromFrameSession = async (
 
   for (let i = 0; i < questionIds.length; i++) {
     const questionId = questionIds[i]
+    console.log('Checking question id', questionId, 'for ', session.fid)
     const userAnswer = await getUserAnswerForQuestion(session.fid, questionId)
 
     if (!userAnswer) {
