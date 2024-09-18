@@ -1,6 +1,7 @@
 import { createDb } from '../pages/api/utils/firestore'
 
 export type CategoryType = {
+  id: string
   category: string
 }
 
@@ -12,30 +13,21 @@ const getCollection = () => {
   }
 
   const db = createDb()
-  return db.collection('questionCategories')
+  return db.collection('categories')
 }
 
-export const syncCategories = async (categories: string[]) => {
-  const batch = createDb().batch()
-  const collection = getCollection()
-
-  const existingCategoriesSnapshot = await collection.get()
-  const existingCategories = new Set(
-    existingCategoriesSnapshot.docs.map(doc => doc.data().category)
-  )
-
-  categories.forEach(category => {
-    if (!existingCategories.has(category)) {
-      const categoryRef = collection.doc(category)
-      batch.set(categoryRef, { category })
-    }
-  })
-
-  await batch.commit()
-}
-
-export const getAllCategories = async (): Promise<string[]> => {
+export const getAllCategories = async (): Promise<CategoryType[]> => {
   const collection = getCollection()
   const snapshot = await collection.get()
-  return snapshot.docs.map(doc => (doc.data() as CategoryType).category)
+
+  return snapshot.docs.map(doc => ({
+    id: doc.id,
+    category: doc.data().category
+  }))
 }
+
+// TODO: Create Category
+
+// TODO: Update Category
+
+// TODO: Delete Category
