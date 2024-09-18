@@ -51,7 +51,7 @@ export const createUnlockedInsightFrame = async (params: {
   baseImage.print(
     font21regularWhite,
     161,
-    189,
+    195,
     {
       text: question,
       alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
@@ -65,13 +65,13 @@ export const createUnlockedInsightFrame = async (params: {
   baseImage.print(
     font21regularWhite,
     161,
-    239,
+    249,
     {
       text: answer,
       alignmentX: Jimp.HORIZONTAL_ALIGN_RIGHT,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
-    485,
+    494,
     33
   )
 
