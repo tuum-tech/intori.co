@@ -7,7 +7,7 @@ export type FrameSessionType = {
   id: string
   questionNumber: number
   createdAt: Timestamp
-  questions: string[] // questions given in this session
+  questionIds: string[] // question ids given in this session
 
   fid: number
   channelId?: string // the channel id that this frame session is for
@@ -24,6 +24,7 @@ export type CreateFrameSessionType = {
   channelId?: string
   showTutorialFrame: boolean
   isIntroFrame: boolean
+  questionIds: string[]
 }
 
 let frameSessionsCollection: FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData>
@@ -43,7 +44,6 @@ export const createFrameSession = async (newFrameSession: CreateFrameSessionType
   const body = {
     ...newFrameSession,
     questionNumber: 0,
-    questions: [],
     createdAt: new Date(),
     suggestions: [],
     suggestionsRevealed: 0
@@ -118,29 +118,6 @@ export const getFrameSessionFromRequest = async (
   }
 
   return await getFrameSessionById(frameSessionId as string)
-}
-
-export const appendQuestionToFrameSession = async (
-  frameSessionId: string,
-  question: string
-): Promise<void> => {
-  const collection = getCollection()
-
-  const docRef = collection.doc(frameSessionId)
-  const doc = await docRef.get()
-
-  if (!doc.exists) {
-    return
-  }
-
-  const currentDocumentState = doc.data() as FrameSessionType
-
-  await docRef.update({
-    questions: [
-      ...(currentDocumentState.questions || []),
-      question
-    ]
-  })
 }
 
 export const getAllFrameSessionQuestionCounts = async (): Promise<number[]> => {
