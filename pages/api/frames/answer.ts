@@ -9,7 +9,7 @@ import { createVerifiableCredential } from '../veramo/createVerifiableCredential
 import { registerCredential } from '../../../lib/ethers/registerCredential'
 import {
   createFrameErrorUrl,
-  createFrameResultsUrl,
+  createUnlockedInsightsUrl,
   createFrameQuestionUrl
 } from '../../../utils/urls'
 import { getChannelFrame } from '../../../models/channelFrames'
@@ -95,7 +95,7 @@ const answeredQuestion = async (
     if (session.questionNumber === channelFrame?.introQuestionIds.length) {
       return res.redirect(
         307,
-        createFrameResultsUrl({
+        createUnlockedInsightsUrl({
           frameSessionId: session.id
         })
       )
@@ -112,7 +112,7 @@ const answeredQuestion = async (
 
   return res.redirect(
     307,
-    createFrameResultsUrl({
+    createUnlockedInsightsUrl({
       frameSessionId: session.id
     })
   )
