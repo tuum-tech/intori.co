@@ -35,24 +35,7 @@ const newQuestion = async (
 
   const { fid, channelId, session: initialSession } = await frameSubmissionHelpers(req)
 
-  // If no session, create new frame session
-  let session = initialSession
-
-  if (!session) {
-    const numberOfIntoriResponses = await countUserAnswers(fid)
-
-    session = await createFrameSession({
-      fid,
-      channelId,
-      showTutorialFrame: numberOfIntoriResponses === 0,
-      isIntroFrame: req.query.intro === 'true'
-    })
-
-    saveUserFollowings(fid)
-  }
-
-  if (!session || !channelId) {
-    console.log('no session or channel id', channelId)
+  if (!channelId) {
     return res.redirect(
       307,
       createFrameErrorUrl()
@@ -68,6 +51,47 @@ const newQuestion = async (
       createFrameErrorUrl()
     )
   }
+
+  // If no session, create new frame session
+  let session = initialSession
+
+  if (!session) {
+    const numberOfIntoriResponses = await countUserAnswers(fid)
+
+    const sessionQuestionIds = []
+
+    const isIntroFrame = req.query.intro === 'true'
+
+    if (isIntroFrame) {
+      sessionQuestionIds.push(...channelFrame.introQuestionIds)
+    } else if (req.query.qi) {
+      sessionQuestionIds.push(req.query.qi.toString())
+    } else {
+      console.error('Not an intro frame or question id given')
+      return res.redirect(
+        307,
+        createFrameErrorUrl()
+      )
+    }
+
+    session = await createFrameSession({
+      fid,
+      channelId,
+      isIntroFrame,
+      showTutorialFrame: numberOfIntoriResponses === 0,
+      questionIds: sessionQuestionIds
+    })
+
+    saveUserFollowings(fid)
+  }
+
+  if (!session) {
+    return res.redirect(
+      307,
+      createFrameErrorUrl()
+    )
+  }
+
 
   if (session.showTutorialFrame) {
     // if not intro frame, tutorial frame needs to know which question id to go to next
