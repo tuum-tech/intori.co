@@ -36,7 +36,7 @@ export const createChannelQuestionFrameImage = async (params: {
 
   const [
     font24regularWhite,
-    font40mediumBlack, // TODO: create fnt
+    font40mediumBlack,
     baseImage,
     channelImage,
     answerBulletPoint,
