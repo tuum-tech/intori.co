@@ -4,6 +4,7 @@ import {
 } from '../../../utils/urls'
 import { FrameSessionType, getFrameSessionById } from '../../../models/frameSession'
 import { UserAnswerType, getUserAnswerForQuestion } from '../../../models/userAnswers'
+import { getQuestionById } from '../../../models/questions'
 import { getChannelDetails } from '@/utils/neynarApi'
 import { createUnlockedInsightFrame } from '@/utils/frames/createUnlockedInsightFrame'
 
@@ -14,13 +15,18 @@ const getLastResponseFromFrameSession = async (
   questionIds.reverse()
 
   for (let i = 0; i < questionIds.length; i++) {
-    const questionId = questionIds[i]
-    console.log('Checking question id', questionId, 'for ', session.fid)
-    const userAnswer = await getUserAnswerForQuestion(session.fid, questionId)
+    const question = await getQuestionById(questionIds[i])
+
+    if (!question) {
+      continue
+    }
+
+    const userAnswer = await getUserAnswerForQuestion(session.fid, question.id)
 
     if (!userAnswer) {
       continue
     }
+
     return userAnswer
   }
 
