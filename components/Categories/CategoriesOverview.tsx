@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 import { useCategories } from '@/contexts/useCategories'
 import { QuestionType } from '@/models/questions'
 import { CategoryType } from '@/models/categories'
