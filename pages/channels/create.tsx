@@ -95,7 +95,11 @@ const CreateChannelFrame: NextPage<Props> = ({ allQuestions }) => {
             required
           />
 
+          { /* TODO: Select categories of questions to use for channel */ }
+          { /* TODO: Add back auto schedule */ }
           <SelectIntroQuestions formik={formik} allQuestions={allQuestions} />
+
+          { /* TODO: Submit New Question */ }
 
           <FormActions>
             <PrimaryButton type="submit">Create Channel Frame</PrimaryButton>

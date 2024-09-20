@@ -24,3 +24,6 @@
 .modalFooter {
   text-align: right;
 }
+.modalFooter > button {
+  margin-left: 24px;
+}

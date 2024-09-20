@@ -75,3 +75,12 @@ export const deleteCategory = async (categoryId: string): Promise<void> => {
 
   await collection.doc(categoryId).delete()
 }
+
+export const deleteAllCategories = async (): Promise<void> => {
+  const collection = getCollection()
+
+  const snapshot = await collection.get()
+  snapshot.forEach(async (doc) => {
+    await doc.ref.delete()
+  })
+}

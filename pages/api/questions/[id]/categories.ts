@@ -4,7 +4,9 @@ import { authOptions } from '../../auth/[...nextauth]'
 import {
   deleteQuestionCategory,
   addQuestionCategory,
-  getQuestionCategories
+  getQuestionCategories,
+  getQuestionsOfCategory,
+  getAllQuestionCategories
 } from '../../../../models/questionCategories'
 
 const getAddDeleteQuestionCategories = async (
@@ -30,18 +32,29 @@ const getAddDeleteQuestionCategories = async (
 
   const questionId = req.query.id.toString()
 
-  if (req.method === 'GET') {
+  if (req.method === 'GET' && questionId !== 'all') {
     const questionCategories = await getQuestionCategories(questionId)
     return res.status(200).json(questionCategories)
   }
 
   const givenCategoryId = req.query.categoryId?.toString()
 
+  if (req.method === 'GET' && questionId === 'all' && givenCategoryId) {
+    const questionCategories = await getQuestionsOfCategory(givenCategoryId)
+    return res.status(200).json(questionCategories)
+  }
+
+  if (req.method === 'GET' && questionId === 'all') {
+    const questionCategories = await getAllQuestionCategories()
+    return res.status(200).json(questionCategories)
+  }
+
   if (!givenCategoryId) {
     return res.status(400).json({
       message: 'categoryId is required'
     })
   }
+
 
   if (req.method === 'DELETE') {
     await deleteQuestionCategory({
