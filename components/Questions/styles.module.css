@@ -27,7 +27,7 @@
 .questionInput {
   flex-basis: 100%;
 }
-.questionInput, .answers,.categories {
+.answers {
   margin-bottom: 18px;
 }
 .inputGroup {

@@ -96,6 +96,11 @@ const AdminStats: NextPage<Props> = ({
                     Edit Questions
                   </PrimaryButton>
                 </Link>
+                <Link href="/channels/categories">
+                  <PrimaryButton>
+                    Edit Categories
+                  </PrimaryButton>
+                </Link>
                 <a href="/api/stats/csv" target="_blank" rel="noopener noreferrer">
                   <PrimaryButton>
                     Download CSV
