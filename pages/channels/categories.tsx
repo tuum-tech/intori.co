@@ -6,7 +6,7 @@ import { Section } from '../../components/common/Section'
 import { QuestionType, getAllQuestions } from '../../models/questions'
 import { PrimaryButton } from '../../components/common/Button'
 import { CategoriesProvider, useCategories } from '../../contexts/useCategories'
-import { QuestionCategoriesProvider, useQuestionCategories } from '../../contexts/useQuestionCategories'
+import { QuestionCategoriesProvider } from '../../contexts/useQuestionCategories'
 import { CategoriesOverview } from '../../components/Categories/CategoriesOverview'
 
 type Props = {

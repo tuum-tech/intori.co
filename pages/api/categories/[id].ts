@@ -36,7 +36,7 @@ const deleteEditAddCategory = async (
   if (req.method === 'DELETE') {
     await deleteCategory(id as string)
 
-    await deleteQuestionCategoriesByCategoryId({ categoryId: id as string })
+    await deleteQuestionCategoriesByCategoryId(id as string)
 
     return res.status(204).end()
   }
