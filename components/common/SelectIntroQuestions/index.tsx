@@ -1,10 +1,12 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useEffect, useCallback, useMemo, useState } from 'react'
 import { toast } from 'react-toastify'
 import { FormikContextType } from 'formik'
 import { CreateChannelFrameType } from '../../../models/channelFrames'
 import { QuestionType } from '../../../models/questions'
-import { capitalizeFirstLetter } from '../../../utils/textHelpers'
+import { QuestionCategoryType } from '../../../models/questionCategories'
 import { Select } from '../Select'
+import { useCategories } from '../../../contexts/useCategories'
+import { getAllQuestionsOfCategory } from '../../../requests/questionCategories'
 import styles from './styles.module.css'
 
 type Props = {
@@ -16,20 +18,40 @@ export const SelectIntroQuestions: React.FC<Props> = ({
   formik,
   allQuestions
 }) => {
-  const [selectedCategory, setSelectedCategory] = useState<string>('')
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>('')
+  const [questionCategories, setQuestionCategories] = useState<QuestionCategoryType[]>([])
+  const [loadingQuestions, setLoadingQuestions] = useState(false)
 
-  const questionCategories = useMemo(() => {
-      return (
-        Array.from(
-          new Set(
-            allQuestions
-            .flatMap((question) => question.categories)
-            .map((category) => category.toLowerCase())
-          )
-        )
-        .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
-      )
-  }, [allQuestions])
+  const { allCategories } = useCategories()
+
+  const fetchQuestionCategoriesForSelectedCategory = useCallback(async () => {
+    if (!selectedCategoryId) {
+      return
+    }
+
+    setLoadingQuestions(true)
+
+    try {
+      const res = await getAllQuestionsOfCategory(selectedCategoryId)
+      setQuestionCategories(res.data)
+    } catch (err) {
+      setQuestionCategories([])
+      toast.error('Failed to load questions for the selected category')
+    }
+
+    setLoadingQuestions(false)
+  },[selectedCategoryId])
+
+  useEffect(() => {
+    fetchQuestionCategoriesForSelectedCategory()
+  }, [fetchQuestionCategoriesForSelectedCategory])
+
+  const categoryOptions = useMemo(() => {
+    return allCategories.map(({ category, id }) => ({
+      label: category,
+      value: id
+    }))
+  }, [allCategories])
 
   const handleQuestionSelected = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedQuestionId = e.target.value
@@ -49,24 +71,33 @@ export const SelectIntroQuestions: React.FC<Props> = ({
   }
 
   const questionOptions = useMemo(() => {
+    const questionIds = questionCategories
+      .filter((qc) => qc.questionId)
+      .map((qc) => qc.questionId)
+
     return allQuestions
-    .filter((question) => {
-      const categories = question.categories.map((category) => category.toLowerCase())
-      return categories.includes(selectedCategory.toLowerCase())
-    })
-    .map((question) => ({
-      label: question.question,
-      value: question.id
-    }))
-    .filter((question) => !formik.values.introQuestionIds.includes(question.value))
-  }, [allQuestions, selectedCategory, formik.values.introQuestionIds])
+      .filter((question) => {
+        return questionIds.includes(question.id)
+      }).filter((question) => {
+        return !formik.values.introQuestionIds.includes(question.id)
+      }).map((question) => {
+        return {
+          value: question.id,
+          label: question.question
+        }
+      })
+  }, [allQuestions, questionCategories, formik.values.introQuestionIds])
 
   const placeholderMessage = useMemo(() => {
+    if (loadingQuestions) {
+      return 'Loading questions...'
+    }
+
     if (formik.values.introQuestionIds.length === 3) {
       return 'You can have up to 3 intro questions'
     }
 
-    if (!selectedCategory) {
+    if (!selectedCategoryId) {
       return 'Select a category first'
     }
 
@@ -75,7 +106,7 @@ export const SelectIntroQuestions: React.FC<Props> = ({
     }
 
     return 'Select question...'
-  }, [formik.values.introQuestionIds, questionOptions, selectedCategory])
+  }, [formik.values.introQuestionIds, questionOptions, selectedCategoryId, loadingQuestions])
 
   const questionText = useCallback((questionId: string) => {
     return allQuestions.find(
@@ -88,10 +119,10 @@ export const SelectIntroQuestions: React.FC<Props> = ({
       <Select
         name="selectCategory"
         label="What category of questions would you like to see?"
-        options={questionCategories.map((category) => ({ label: capitalizeFirstLetter(category), value: category }))}
+        options={categoryOptions}
         placeholder="Select category..."
-        onChange={(e) => setSelectedCategory(e.target.value)}
-        value={selectedCategory}
+        onChange={(e) => setSelectedCategoryId(e.target.value)}
+        value={selectedCategoryId}
       />
       <Select
         name="selectQuestion"

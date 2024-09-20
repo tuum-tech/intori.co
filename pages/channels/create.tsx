@@ -16,6 +16,7 @@ import { SelectIntroQuestions } from '../../components/common/SelectIntroQuestio
 import { FormActions } from '../../components/common/Form'
 import { createChannelFrame } from '../../requests/channelFrames'
 import { QuestionType, getAllQuestions } from '../../models/questions'
+import { CategoriesProvider } from '../../contexts/useCategories'
 
 type Props = {
   allQuestions: QuestionType[]
@@ -45,7 +46,7 @@ export const getServerSideProps = (async (context) => {
   }
 }) satisfies GetServerSideProps<Props>
 
-const CreateChannelFrame: NextPage<Props> = ({ allQuestions }) => {
+const CreateChannelFrame: React.FC<Props> = ({ allQuestions }) => {
   const router = useRouter()
 
   const formik = useFormik({
@@ -95,7 +96,11 @@ const CreateChannelFrame: NextPage<Props> = ({ allQuestions }) => {
             required
           />
 
+          { /* TODO: Select categories of questions to use for channel */ }
+          { /* TODO: Add back auto schedule */ }
           <SelectIntroQuestions formik={formik} allQuestions={allQuestions} />
+
+          { /* TODO: Submit New Question */ }
 
           <FormActions>
             <PrimaryButton type="submit">Create Channel Frame</PrimaryButton>
@@ -106,4 +111,12 @@ const CreateChannelFrame: NextPage<Props> = ({ allQuestions }) => {
   )
 }
 
-export default CreateChannelFrame
+const Page: NextPage<Props> = ({ allQuestions }) => {
+  return (
+    <CategoriesProvider>
+      <CreateChannelFrame allQuestions={allQuestions} />
+    </CategoriesProvider>
+  )
+}
+
+export default Page

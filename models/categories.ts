@@ -1,6 +1,7 @@
 import { createDb } from '../pages/api/utils/firestore'
 
 export type CategoryType = {
+  id: string
   category: string
 }
 
@@ -12,30 +13,74 @@ const getCollection = () => {
   }
 
   const db = createDb()
-  return db.collection('questionCategories')
+  return db.collection('categories')
 }
 
-export const syncCategories = async (categories: string[]) => {
-  const batch = createDb().batch()
-  const collection = getCollection()
-
-  const existingCategoriesSnapshot = await collection.get()
-  const existingCategories = new Set(
-    existingCategoriesSnapshot.docs.map(doc => doc.data().category)
-  )
-
-  categories.forEach(category => {
-    if (!existingCategories.has(category)) {
-      const categoryRef = collection.doc(category)
-      batch.set(categoryRef, { category })
-    }
-  })
-
-  await batch.commit()
-}
-
-export const getAllCategories = async (): Promise<string[]> => {
+export const getAllCategories = async (): Promise<CategoryType[]> => {
   const collection = getCollection()
   const snapshot = await collection.get()
-  return snapshot.docs.map(doc => (doc.data() as CategoryType).category)
+
+  return snapshot.docs.map(doc => ({
+    id: doc.id,
+    category: doc.data().category
+  }))
+}
+
+export const getCategoryById = async (categoryId: string): Promise<CategoryType> => {
+  const collection = getCollection()
+  const doc = await collection.doc(categoryId).get()
+
+  return {
+    id: doc.id,
+    category: (doc.data() as CategoryType).category
+  }
+}
+
+export const getCategoryByName = async (category: string): Promise<CategoryType> => {
+  const collection = getCollection()
+  const snapshot = await collection.where('category', '==', category).get()
+
+  if (snapshot.empty) {
+    throw new Error('Category not found')
+  }
+  
+  const doc = snapshot.docs[0]
+  return {
+    id: doc.id,
+    category: (doc.data() as CategoryType).category
+  }
+}
+
+export const createCategory = async (category: string): Promise<CategoryType> => {
+  const collection = getCollection()
+
+  // check if category already exists
+  const snapshot = await collection.where('category', '==', category).get()
+  if (!snapshot.empty) {
+    throw new Error('Category already exists')
+  }
+
+  const doc = await collection.add({ category })
+
+  const ref = await doc.get()
+
+  return {
+    id: doc.id,
+    category: (ref.data() as CategoryType).category
+  }
+}
+
+export const deleteCategory = async (categoryId: string): Promise<void> => {
+  const collection = getCollection()
+
+  await collection.doc(categoryId).delete()
+}
+
+export const deleteAllCategories = async (): Promise<void> => {
+  const collection = getCollection()
+
+  const snapshot = await collection.get()
+  snapshot.forEach(async (doc) => {
+    await doc.ref.delete()
+  })
 }

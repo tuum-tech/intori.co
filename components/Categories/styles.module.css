@@ -1,0 +1,57 @@
+.category {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #9664FA;
+  background: #9664FA;
+  padding: 10px;
+  border-radius: 12px;
+  color: #FFF;
+  margin-right: 16px;
+  margin-bottom: 16px;
+
+}
+
+.category > button {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  margin-left: 12px;
+  cursor: pointer;
+}
+.oneCategoryOverview {
+  width: 100%;
+  background: #131722;
+  border-radius: 12px;
+  padding: 24px;
+  color: #FFF;
+  margin-bottom: 32px;
+}
+.oneCategoryOverview > h2 {
+  margin-top: 0;
+}
+.oneCategoryOverview > details > summary {
+  cursor: pointer;
+}
+.question {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 32px;
+}
+.question > button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 16px;
+}
+
+.actions {
+  flex-basis: 100%;
+  text-align: right;
+}
+.actions > button {
+  margin-left: 18px;
+}

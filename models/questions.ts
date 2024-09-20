@@ -1,21 +1,18 @@
-import { v4 as uuid } from 'uuid'
 import { createDb } from '../pages/api/utils/firestore'
-import { syncCategories } from './categories'
 import { getAllChannelFrames } from './channelFrames'
 
 export type QuestionType = {
   id: string
   question: string
   answers: string[]
-  categories: string[]
   order: number
   deleted: boolean
 }
 
 export type CreateQuestionType = {
+  id: string
   question: string
   answers: string[]
-  categories: string[]
   order: number
 }
 
@@ -34,29 +31,19 @@ export const createQuestion = async (newQuestion: CreateQuestionType) => {
   const collection = getCollection()
 
   const doc = await collection.add({
-    id: uuid(),
     deleted: false,
     ...newQuestion
   })
 
   const ref = await doc.get()
 
-  await syncCategories(newQuestion.categories)
-
-  return ref.data() as QuestionType
+  return { id: ref.id, ...ref.data() } as QuestionType
 }
 
-export const getAllQuestions = async (params: {
-  category?: string
-} = {}): Promise<QuestionType[]> => {
+export const getAllQuestions = async (): Promise<QuestionType[]> => {
   const collection = getCollection()
 
   let query = collection as FirebaseFirestore.Query<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>
-
-  if (params.category) {
-    query = query.where('categories', 'array-contains', params.category)
-  }
-
   query = query.where('deleted', '==', false)
 
   const ref = await query.get()
@@ -87,7 +74,6 @@ export const updateQuestionById = async (
 ) => {
   const collection = getCollection()
 
-  await syncCategories(body.categories)
   return collection.doc(id).set(body, { merge: true })
 }
 

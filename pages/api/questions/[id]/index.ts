@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth'
-import { authOptions } from '../auth/[...nextauth]'
+import { authOptions } from '../../auth/[...nextauth]'
 import * as yup from 'yup'
 import {
   QuestionType,
@@ -9,7 +9,7 @@ import {
   updateQuestionById,
   createQuestion,
   questionAlreadyExists
-} from '../../../models/questions'
+} from '../../../../models/questions'
 
 const deleteEditAddQuestion = async (
   req: NextApiRequest,
@@ -49,10 +49,9 @@ const deleteEditAddQuestion = async (
 
   try {
     const validBody = await yup.object().shape({
-      id: yup.string().optional(),
+      id: yup.string().uuid().required(),
       question: yup.string().required(),
       answers: yup.array().of(yup.string()).required(),
-      categories: yup.array().of(yup.string()).required(),
       order: yup.number().required()
     }).validate(req.body, { stripUnknown: true })
 
@@ -68,7 +67,6 @@ const deleteEditAddQuestion = async (
     }
 
     if (req.method === "POST" && id === "new") {
-      // TODO: check if question already exists
       const newQuestion = await createQuestion(validBody as QuestionType)
       console.log('returning:', { newQuestion })
       return res.status(201).json(newQuestion)

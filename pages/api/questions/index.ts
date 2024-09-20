@@ -14,18 +14,10 @@ const getQuestions = async (
   }
 
   if (req.method !== 'GET') {
-    return res.status(404).end()
+    return res.status(405).end()
   }
 
-  if (!req.query.category) {
-    return res.status(400).json({
-      error: 'Category is required'
-    })
-  }
-
-  const questions = await getAllQuestions({
-    category: (req.query.category).toString()
-  })
+  const questions = await getAllQuestions()
 
   return res.status(200).json(questions)
 }
