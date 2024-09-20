@@ -5,7 +5,7 @@ type Props = {
   label: string
   placeholder?: string
   value: string
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 const CopyTextInput: NextPage<Props> = ({ label, placeholder, value, onChange }) => {

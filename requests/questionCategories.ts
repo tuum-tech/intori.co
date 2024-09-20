@@ -13,6 +13,10 @@ export const getAllQuestionsOfCategory = async(
   return axios.get(`/api/questions/all/categories?categoryId=${categoryId}`)
 }
 
+export const getAllQuestionCategories = async (): Promise<AxiosResponse<QuestionCategoryType[]>> => {
+  return axios.get('/api/questions/all/categories')
+}
+
 export const addQuestionCategory = async (params: {
   questionId: string
   categoryId: string

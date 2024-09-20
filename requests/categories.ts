@@ -10,3 +10,7 @@ export const createCategory = (body: {
 export const deleteCategory = (categoryId: string): Promise<AxiosResponse<void>> => {
   return axios.delete(`/api/categories/${categoryId}`)
 }
+
+export const getAllCategories = (): Promise<AxiosResponse<CategoryType[]>> => {
+  return axios.get('/api/categories')
+}

@@ -1,12 +1,15 @@
 import { useState } from "react"
 import type { NextPage, GetServerSideProps } from "next";
 import { getSession } from "next-auth/react"
+import { v4 as uuid } from 'uuid'
 
 import { AppLayout } from "@/layouts/App"
 import { Section } from '../../components/common/Section'
 import { QuestionType, getAllQuestions } from '../../models/questions'
 import { DisplayQuestions } from '../../components/Questions'
 import { PrimaryButton } from '../../components/common/Button'
+import { CategoriesProvider } from '../../contexts/useCategories'
+import { QuestionCategoriesProvider } from '../../contexts/useQuestionCategories'
 
 type Props = {
   questions: QuestionType[]
@@ -50,12 +53,11 @@ const AdminStats: NextPage<Props> = ({ questions: inQuestions }) => {
   const [questions, setQuestions] = useState<QuestionType[]>(inQuestions)
 
   const addNewQuestion = async () => {
-    const id = `new-` + Date.now().toString()
+    const id = `new-` + uuid()
     setQuestions([
       {
         question: '',
         answers: [],
-        categories: [],
         order: questions.length,
         deleted: false,
         id
@@ -66,22 +68,26 @@ const AdminStats: NextPage<Props> = ({ questions: inQuestions }) => {
 
   return (
     <AppLayout>
-      <Section
-        title="All Questions"
-        subtitle="Here you can view all frame questions."
-      >
-        <PrimaryButton onClick={addNewQuestion}>
-          Add Question
-        </PrimaryButton>
-        <br />
-        <br />
-        <DisplayQuestions
-          questions={questions}
-          onQuestionDeleted={(questionId) => {
-            setQuestions(questions.filter((question) => question.id !== questionId))
-          }}
-        />
-      </Section>
+      <QuestionCategoriesProvider>
+        <CategoriesProvider>
+          <Section
+            title={`All Questions (${questions.length})`}
+            subtitle="Here you can view all frame questions."
+          >
+            <PrimaryButton onClick={addNewQuestion}>
+              Add Question
+            </PrimaryButton>
+            <br />
+            <br />
+            <DisplayQuestions
+              questions={questions}
+              onQuestionDeleted={(questionId) => {
+                setQuestions(questions.filter((question) => question.id !== questionId))
+              }}
+            />
+          </Section>
+        </CategoriesProvider>
+      </QuestionCategoriesProvider>
     </AppLayout>
   )
 }

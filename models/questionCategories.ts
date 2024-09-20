@@ -31,7 +31,9 @@ export const addQuestionCategory = async (body: QuestionCategoryType) => {
   const collection = getCollection()
 
   // check if already exists
-  const query = collection.where('questionId', '==', body.questionId).where('categoryId', '==', body.categoryId)
+  const query = collection
+    .where('questionId', '==', body.questionId)
+    .where('categoryId', '==', body.categoryId)
   const snapshot = await query.get()
   if (!snapshot.empty) {
     throw new Error('Question category already exists')
@@ -74,4 +76,25 @@ export const deleteQuestionCategoriesByCategoryId = async (categoryId: string): 
   snapshot.forEach(async (doc) => {
     await doc.ref.delete()
   })
+}
+
+export const getQuestionsOfCategory = async (categoryId: string) => {
+  const collection = getCollection()
+
+  const query = collection.where('categoryId', '==', categoryId)
+  const snapshot = await query.get()
+
+  const questionCategories = snapshot.docs.map((doc) => doc.data() as QuestionCategoryType)
+
+  return questionCategories
+}
+
+export const getAllQuestionCategories = async (): Promise<QuestionCategoryType[]> => {
+  const collection = getCollection()
+
+  const snapshot = await collection.get()
+
+  const questionCategories = snapshot.docs.map((doc) => doc.data() as QuestionCategoryType)
+
+  return questionCategories
 }
