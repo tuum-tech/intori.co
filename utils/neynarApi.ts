@@ -220,3 +220,14 @@ export const getRecentCastsInChannel = async (params: {
 
   return res.casts
 }
+
+export const acceptChannelInvite = async (params: {
+  channelId: string
+}) => {
+  return neynar.respondChannelInvite(
+    'signer uuid',
+    params.channelId,
+    'moderator',
+    true
+  )
+}
