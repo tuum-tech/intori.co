@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build:frames": "npx tsx ./utils/frames/generateFrameImages.ts",
     "build": "next build",
-    "start": "next start",
+    "start": "PORT=6868 next start",
     "lint": "next lint",
     "cronjobs": "npx tsx ./cronjobs/startCronJobs.ts"
   },
