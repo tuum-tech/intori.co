@@ -1,5 +1,12 @@
 import { NeynarAPIClient, FeedType, FilterType } from '@neynar/nodejs-sdk'
 import { User } from '@neynar/nodejs-sdk/build/neynar-api/v2/openapi-farcaster/models/user'
+import config from '../config'
+
+// Nextjs has it's own way of handling environment variables
+// so if not running through nextjs, like cronjobs, we need to load the env vars
+if (!process.env.NEYNAR_API_KEY) {
+  config()
+}
 
 const neynar = new NeynarAPIClient(
   process.env.NEYNAR_API_KEY || 'please add neynar api key'
@@ -225,7 +232,7 @@ export const acceptChannelInvite = async (params: {
   channelId: string
 }) => {
   return neynar.respondChannelInvite(
-    'signer uuid',
+    process.env.NEYNAR_SIGNER_UUID ?? 'signer uuid',
     params.channelId,
     'moderator',
     true
