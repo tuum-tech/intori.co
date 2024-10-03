@@ -7,12 +7,14 @@
     "build:frames": "npx tsx ./utils/frames/generateFrameImages.ts",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "cronjobs": "npx tsx ./cronjobs/startCronJobs.ts"
   },
   "dependencies": {
     "@farcaster/auth-kit": "^0.2.1",
     "@farcaster/hub-nodejs": "^0.11.10",
     "@neynar/nodejs-sdk": "^1.55.0",
+    "@types/dotenv-safe": "^8.1.6",
     "@veramo/core": "^6.0.0",
     "@veramo/credential-eip712": "^6.0.0",
     "@veramo/credential-ld": "^6.0.0",
@@ -39,6 +41,7 @@
     "date-fns": "^3.6.0",
     "did-jwt-vc": "^3.2.13",
     "did-resolver": "^4.1.0",
+    "dotenv-safe": "^9.1.0",
     "ethers": "5.7.2",
     "ethr-did-resolver": "^10.1.5",
     "firebase": "^10.11.1",
