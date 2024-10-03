@@ -51,7 +51,7 @@ export const startCheckForChannelInvitesJob = (): CronJob => new CronJob(
           await createChannelFrame(newChannelFrame)
         }
       } catch (err) {
-        console.error(err.message)
+        console.error(err)
       }
     },
     null, // onComplete function handler
