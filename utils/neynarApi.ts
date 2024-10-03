@@ -1,7 +1,14 @@
 import { NeynarAPIClient, FeedType, FilterType } from '@neynar/nodejs-sdk'
 import { User } from '@neynar/nodejs-sdk/build/neynar-api/v2/openapi-farcaster/models/user'
+import config from '../config'
 
-const neynar = new NeynarAPIClient(
+// Nextjs has it's own way of handling environment variables
+// so if not running through nextjs, like cronjobs, we need to load the env vars
+if (!process.env.NEYNAR_API_KEY) {
+  config()
+}
+
+export const neynar = new NeynarAPIClient(
   process.env.NEYNAR_API_KEY || 'please add neynar api key'
 )
 
@@ -219,4 +226,32 @@ export const getRecentCastsInChannel = async (params: {
   })
 
   return res.casts
+}
+
+export const acceptChannelInvite = async (params: {
+  channelId: string
+}) => {
+  return neynar.respondChannelInvite(
+    process.env.NEYNAR_SIGNER_UUID ?? 'missing signer uuid',
+    params.channelId,
+    'moderator',
+    true
+  )
+}
+
+export const getUserReactionsToCommentsInChannel = async (params: {
+  channelId: string
+  fid: number
+}) => {
+  const res = await neynar.fetchUserReactions(
+    params.fid,
+    'likes',
+    { limit: 50 }
+  )
+
+  return res.reactions.filter((reaction) => {
+    const isCommentReply = !!reaction.cast.parent_url
+
+    return isCommentReply && reaction.cast.channel.id === params.channelId
+  })
 }
