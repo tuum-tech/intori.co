@@ -7,6 +7,7 @@ import {
 import { createFrameSession } from '../../../models/frameSession'
 import { getChannelFrame } from '../../../models/channelFrames'
 import { saveUserFollowings } from '../../../models/userFollowings'
+import { getUserCaptchaResponse } from '../../../models/userCaptchaResponses'
 import {
   createFrameQuestionUrl,
   createFrameErrorUrl,
@@ -82,6 +83,10 @@ const newQuestion = async (
       questionIds: sessionQuestionIds
     })
 
+    const pastCaptchaResponse = await getUserCaptchaResponse(fid)
+    if (!pastCaptchaResponse?.isLikelyBot) {
+      session.showCaptcha = true
+    }
     saveUserFollowings(fid)
   }
 
@@ -92,17 +97,26 @@ const newQuestion = async (
     )
   }
 
-
-  if (session.showTutorialFrame) {
-    // if not intro frame, tutorial frame needs to know which question id to go to next
+  if (session.showCaptcha) {
     return res.redirect(
       307,
-      createTutorialFrameUrl({
-        fsid: session.id,
-        questionId: session.isIntroFrame ? undefined : req.query.qi as string
-      })
+      createFrameErrorUrl()
     )
   }
+
+
+  // TODO: we will have to update language in gif, change what to show
+  //
+  // if (session.showTutorialFrame) {
+  //   // if not intro frame, tutorial frame needs to know which question id to go to next
+  //   return res.redirect(
+  //     307,
+  //     createTutorialFrameUrl({
+  //       fsid: session.id,
+  //       questionId: session.isIntroFrame ? undefined : req.query.qi as string
+  //     })
+  //   )
+  // }
 
   // getting next answer offset to see more answers of an already given question
   if (req.query.qi) {

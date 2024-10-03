@@ -62,6 +62,7 @@ export const FrameGenerator: React.FC<Props> = ({
           frame.inputs.map((button, index) => (
             <React.Fragment key={button.content}>
               <meta
+                // TODO: update to show input:text
                 name={`fc:frame:button:${index + 1}`}
                 content={button.content}
               />

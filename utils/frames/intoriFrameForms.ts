@@ -1,7 +1,7 @@
 import { createStartNewFrameQuestionUrl } from '../urls'
 
 export type IntoriFrameInputType = {
-    type: 'button'
+    type: 'button' | 'input'
     content: string
     action?: 'link'
     target?: string

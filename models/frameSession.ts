@@ -13,6 +13,7 @@ export type FrameSessionType = {
   channelId?: string // the channel id that this frame session is for
   showTutorialFrame: boolean
   isIntroFrame: boolean
+  showCaptcha: boolean
 
   suggestions: SuggestionType[]
   suggestionsRevealed: number
