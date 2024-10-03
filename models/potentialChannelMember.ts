@@ -37,7 +37,7 @@ export const deletePotentialChannelMember = async (params: {
   const snapshot = await collection.where('fid', '==', params.fid).where('channelId', '==', params.channelId).get()
 
   if (snapshot.empty) {
-    throw new Error('Potential channel member not found')
+    return
   }
 
   const doc = snapshot.docs[0]
