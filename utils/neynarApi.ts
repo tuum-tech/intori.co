@@ -8,7 +8,7 @@ if (!process.env.NEYNAR_API_KEY) {
   config()
 }
 
-const neynar = new NeynarAPIClient(
+export const neynar = new NeynarAPIClient(
   process.env.NEYNAR_API_KEY || 'please add neynar api key'
 )
 
@@ -232,9 +232,26 @@ export const acceptChannelInvite = async (params: {
   channelId: string
 }) => {
   return neynar.respondChannelInvite(
-    process.env.NEYNAR_SIGNER_UUID ?? 'signer uuid',
+    process.env.NEYNAR_SIGNER_UUID ?? 'missing signer uuid',
     params.channelId,
     'moderator',
     true
   )
+}
+
+export const getUserReactionsToCommentsInChannel = async (params: {
+  channelId: string
+  fid: number
+}) => {
+  const res = await neynar.fetchUserReactions(
+    params.fid,
+    'likes',
+    { limit: 50 }
+  )
+
+  return res.reactions.filter((reaction) => {
+    const isCommentReply = !!reaction.cast.parent_url
+
+    return isCommentReply && reaction.cast.channel.id === params.channelId
+  })
 }
