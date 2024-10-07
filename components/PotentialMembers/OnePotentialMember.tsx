@@ -24,6 +24,38 @@ export const OnePotentialMember: React.FC<Props> = ({
   const [userDetails, setUserDetails] = useState<FarcasterUserType>()
   const [castDetails, setCastDetails] = useState<FarcasterCastType>()
 
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const res = await getFarcasterUserDetails(potentialMember.fid)
+        setUserDetails(res.data)
+      } catch (err) {
+        toast.error('Something went wrong while fetching user details')
+      }
+    }
+
+    fetchUserDetails()
+  }, [potentialMember.fid])
+
+  useEffect(() => {
+    const fetchCastDetails = async () => {
+      try {
+        const res = await getFarcasterCastDetails(potentialMember.castHash)
+        setCastDetails(res.data)
+      } catch (err) {
+        toast.error('Something went wrong while fetching cast details')
+      }
+    }
+
+    fetchCastDetails()
+  }, [potentialMember.castHash])
+
+  useEffect(() => {
+    if (userDetails && castDetails) {
+      setLoading(false)
+    }
+  }, [userDetails, castDetails])
+
   if (loading || !userDetails || !castDetails) {
     return (
       <div className={styles.onePotentialMember}>
