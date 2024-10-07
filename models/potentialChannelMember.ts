@@ -3,6 +3,8 @@ import { createDb } from '../pages/api/utils/firestore'
 export type PotentialChannelMemberType = {
   fid: number
   channelId: string
+  castHash: string
+  parentCastHash: string
 }
 
 type CreatePotentialChannelMemberType = {
@@ -37,11 +39,8 @@ export const getPotentialChannelMembers = async (params: {
 
   return snapshot.docs.map(doc => {
     const data = doc.data()
-    return {
-      fid: data.fid,
-      channelId: data.channelId
-    }
-  })
+    return data
+  }) as PotentialChannelMemberType[]
 }
 
 export const createPotentialChannelMember = async (
@@ -52,18 +51,12 @@ export const createPotentialChannelMember = async (
   // check if already exists by unique cast hash
   const snapshot = await collection.where('castHash', '==', body.castHash).get()
   if (!snapshot.empty) {
-    return {
-      fid: body.fid,
-      channelId: body.channelId
-    }
+    return body
   }
 
   await collection.add(body)
 
-  return {
-    fid: body.fid,
-    channelId: body.channelId
-  }
+  return body
 }
 
 export const deletePotentialChannelMember = async (params: {
