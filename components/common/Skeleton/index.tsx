@@ -19,3 +19,15 @@ export const Skeleton: React.FC<Props> = ({ width, inline }) => {
     )
 }
 
+
+export const SkeletonCircle: React.FC<Props> = ({ width, inline }) => {
+  return (
+    <ReactSkeleton
+      className={styles.skeleton}
+      width={width}
+      inline={inline}
+      circle
+      duration={0.5}
+    />
+  )
+}
