@@ -23,8 +23,12 @@ export const startCheckForChannelInvitesJob = (): CronJob => new CronJob(
         console.table(invites)
 
         for (let i = 0; i < invites.length; i++) {
-          const { channelId } = invites[i]
-          const acceptResponse = await acceptChannelInvite({ channelId })
+          const { channelId, role } = invites[i]
+
+          const acceptResponse = await acceptChannelInvite({
+            channelId,
+            role
+          })
 
           if (!acceptResponse.success) {
             continue
