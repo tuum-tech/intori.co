@@ -3,6 +3,7 @@ import { toast } from 'react-toastify'
 import { getPotentialMembers } from '../../requests/potentialChannelMembers'
 import { PotentialChannelMemberType } from '../../models/potentialChannelMember'
 import { PrimaryButton } from '../common/Button'
+import { OnePotentialMember } from './OnePotentialMember'
 import styles from './styles.module.css'
 
 type Props = {
@@ -40,8 +41,11 @@ export const ListPotentialMembers: React.FC<Props> = ({
             loading && <p>Loading...</p>
           }
           {
-            potentialMembers.map((member) => (
-              <OnePotentialMember member={member} />
+            potentialMembers.map((potentialMember) => (
+              <OnePotentialMember
+                key={potentialMember.fid}
+                potentialMember={potentialMember}
+              />
             ))
           }
         </div>
