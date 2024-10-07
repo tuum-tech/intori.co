@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { getPotentialMembers } from '../../requests/potentialChannelMembers'
 import { PotentialChannelMemberType } from '../../models/potentialChannelMember'
-import { PrimaryButton } from '../common/Button'
 import { OnePotentialMember } from './OnePotentialMember'
 import styles from './styles.module.css'
 
