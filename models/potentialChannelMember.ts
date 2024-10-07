@@ -5,6 +5,13 @@ export type PotentialChannelMemberType = {
   channelId: string
 }
 
+type CreatePotentialChannelMemberType = {
+  fid: number
+  channelId: string
+  castHash: string
+  parentCastHash: string
+}
+
 let collection: FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData>
 
 const getCollection = () => {
@@ -37,10 +44,9 @@ export const getPotentialChannelMembers = async (params: {
   })
 }
 
-export const createPotentialChannelMember = async (body: {
-  fid: number
-  channelId: string
-}): Promise<PotentialChannelMemberType> => {
+export const createPotentialChannelMember = async (
+  body: CreatePotentialChannelMemberType
+): Promise<PotentialChannelMemberType> => {
   const collection = getCollection()
 
   // check if already exists
