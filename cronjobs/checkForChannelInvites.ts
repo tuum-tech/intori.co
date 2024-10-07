@@ -33,6 +33,8 @@ export const startCheckForChannelInvitesJob = (): CronJob => new CronJob(
           })
 
           if (!acceptResponse.success) {
+            console.log('ERROR: Failed to accept channel invite')
+            console.log('ERROR:', acceptResponse.message)
             continue
           }
 
