@@ -42,6 +42,16 @@ export const createPotentialChannelMember = async (body: {
   channelId: string
 }): Promise<PotentialChannelMemberType> => {
   const collection = getCollection()
+
+  // check if already exists
+  const snapshot = await collection.where('fid', '==', body.fid).where('channelId', '==', body.channelId).get()
+  if (!snapshot.empty) {
+    return {
+      fid: body.fid,
+      channelId: body.channelId
+    }
+  }
+
   await collection.add(body)
 
   return {
