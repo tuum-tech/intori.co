@@ -73,14 +73,8 @@ export const OnePotentialMember: React.FC<Props> = ({
           <Skeleton width={150} />
         </div>
         <div className={styles.castStats}>
-          <div>
-            <span><Skeleton width={25} /> </span>
-            <sub>Likes</sub>
-          </div>
-          <div>
-            <span><Skeleton width={25} /> </span>
-            <sub>Replies</sub>
-          </div>
+          <div><Skeleton width={200} /> </div>
+          <div><Skeleton width={230} /> </div>
         </div>
       </div>
     )
@@ -88,28 +82,44 @@ export const OnePotentialMember: React.FC<Props> = ({
 
   return (
     <div className={styles.onePotentialMember}>
-      <sub>{userDetails.fid}</sub>
-      <div className={styles.imageContainer}>
-        <img src={userDetails.image} alt={userDetails.username} width={60} height={60} />
-      </div>
-      <h4>{userDetails.username}</h4>
-      <a href={`https://warpcast.com/${userDetails.username}`}>
-        <PrimaryButton>
-          View Profile
-        </PrimaryButton>
+      <div className={styles.fid}>FID {userDetails.fid}</div>
+
+      <a
+        href={`https://warpcast.com/${userDetails.username}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <div className={styles.imageContainer}>
+          <img src={userDetails.image} alt={userDetails.username} width={40} height={40} />
+        </div>
+        <h4>{userDetails.username}</h4>
       </a>
       <div className={styles.cast}>
-        &quot;{ castDetails.text }&quot;
+        <p>&quot;{ castDetails.text }&quot;</p>
+        <div className={styles.castStats}>
+          <div> {castDetails.reactions.likes_count} Like{castDetails.reactions.likes_count === 1 ? '' : 's'} </div>
+          •
+          <div> {castDetails.replies.count} Replies </div>
+          •
+          <a
+            href={`https://warpcast.com/${userDetails.username}/${castDetails.hash}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View Cast
+          </a>
+        </div>
       </div>
-      <div className={styles.castStats}>
-        <div>
-          <span>{castDetails.reactions.likes_count}</span>
-          <sub>Likes</sub>
-        </div>
-        <div>
-          <span>{castDetails.replies.count}</span>
-          <sub>Replies</sub>
-        </div>
+      <div className={styles.actions}>
+        <a
+          href={`https://warpcast.com/~/channel/${potentialMember.channelId}/settings/invite`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <PrimaryButton>
+            Invite...
+          </PrimaryButton>
+        </a>
       </div>
     </div>
   )
