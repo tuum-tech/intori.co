@@ -1,7 +1,7 @@
 import { CronJob } from 'cron'
 import util from 'util'
 import { isAxiosError } from 'axios'
-import { everyMinute } from './cronJobHelpers'
+import { everyFiveMinutes } from './cronJobHelpers'
 import { getIntoriChannelInvites } from '../utils/warpcast'
 import {
   acceptChannelInvite,
@@ -13,7 +13,7 @@ import {
 } from '../models/channelFrames'
 
 export const startCheckForChannelInvitesJob = (): CronJob => new CronJob(
-    everyMinute,
+    everyFiveMinutes,
     async () => {
       try {
         const invites = await getIntoriChannelInvites()
@@ -31,6 +31,10 @@ export const startCheckForChannelInvitesJob = (): CronJob => new CronJob(
             channelId,
             role
           })
+
+          console.log(acceptResponse)
+          console.log('Message:', acceptResponse.message)
+          console.log('Success:', acceptResponse.success)
 
           if (!acceptResponse.success) {
             console.log('ERROR: Failed to accept channel invite')

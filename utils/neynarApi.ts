@@ -232,6 +232,7 @@ export const acceptChannelInvite = async (params: {
   channelId: string
   role: 'moderator' | 'member'
 }) => {
+  console.log('Accepting channel invite', params)
   return neynar.respondChannelInvite(
     process.env.NEYNAR_SIGNER_UUID ?? 'missing signer uuid',
     params.channelId,
