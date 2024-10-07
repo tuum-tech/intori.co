@@ -6,14 +6,14 @@
     "dev": "next dev",
     "build:frames": "npx tsx ./utils/frames/generateFrameImages.ts",
     "build": "next build",
-    "start": "next start",
+    "start": "PORT=6868 next start",
     "lint": "next lint",
     "cronjobs": "npx tsx ./cronjobs/startCronJobs.ts"
   },
   "dependencies": {
     "@farcaster/auth-kit": "^0.2.1",
     "@farcaster/hub-nodejs": "^0.11.10",
-    "@neynar/nodejs-sdk": "^1.55.0",
+    "@neynar/nodejs-sdk": "^1.58.0",
     "@types/dotenv-safe": "^8.1.6",
     "@veramo/core": "^6.0.0",
     "@veramo/credential-eip712": "^6.0.0",
