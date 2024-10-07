@@ -20,11 +20,6 @@ const getAddDeleteQuestionCategories = async (
   }
 
   const fid = parseInt(session.user.fid, 10)
-  const adminFids = (process.env.ADMIN_FIDS || '').split(',').map((fid) => parseInt(fid, 10))
-
-  if (!adminFids.includes(fid)) {
-    return res.status(404).end()
-  }
 
   if (!req.query.id?.toString()) {
     return res.status(404).end()
@@ -55,6 +50,11 @@ const getAddDeleteQuestionCategories = async (
     })
   }
 
+  const adminFids = (process.env.ADMIN_FIDS || '').split(',').map((fid) => parseInt(fid, 10))
+
+  if (!adminFids.includes(fid)) {
+    return res.status(404).end()
+  }
 
   if (req.method === 'DELETE') {
     await deleteQuestionCategory({
