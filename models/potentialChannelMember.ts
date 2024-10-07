@@ -16,6 +16,27 @@ const getCollection = () => {
   return db.collection('potentialChannelMembers')
 }
 
+export const getPotentialChannelMembers = async (params: {
+  channelId?: string
+}): Promise<PotentialChannelMemberType[]> => {
+  const collection = getCollection()
+  let query = collection as FirebaseFirestore.Query<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>
+
+  if (params.channelId) {
+    query = collection.where('channelId', '==', params.channelId)
+  }
+
+  const snapshot = await query.get()
+
+  return snapshot.docs.map(doc => {
+    const data = doc.data()
+    return {
+      fid: data.fid,
+      channelId: data.channelId
+    }
+  })
+}
+
 export const createPotentialChannelMember = async (body: {
   fid: number
   channelId: string
