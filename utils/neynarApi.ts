@@ -32,6 +32,57 @@ export type FarcasterUserType = {
   powerBadge: boolean
 }
 
+export type FarcasterCastType = {
+  object: string;
+  hash: string;
+  thread_hash: string;
+  parent_hash: string;
+  parent_url: string | null;
+  root_parent_url: string | null;
+  parent_author: {
+    fid: number;
+  };
+  author: {
+    object: string;
+    fid: number;
+    custody_address: string;
+    username: string;
+    display_name: string;
+    pfp_url: string;
+    profile: {
+      bio: {
+        text: string;
+      };
+    };
+    follower_count: number;
+    following_count: number;
+    verifications: string[];
+    verified_addresses: {
+      eth_addresses: string[];
+      sol_addresses: string[];
+    };
+    active_status: string;
+    power_badge: boolean;
+  };
+  text: string;
+  timestamp: string;
+  embeds: any[]; // Assuming it's an array, but you can replace `any[]` with the exact type if known
+  reactions: {
+    likes_count: number;
+    recasts_count: number;
+    likes: {
+      fid: number;
+      fname: string;
+    }[];
+    recasts: any[]; // Assuming it's an array, but replace with the correct type if necessary
+  };
+  replies: {
+    count: number;
+  };
+  channel: string | null;
+  mentioned_profiles: any[]; // Assuming it's an array, but replace `any[]` with the exact type if known
+}
+
 export const serializeUser = (user: User): FarcasterUserType => ({
     username: user.username,
     displayName: user.display_name,
@@ -254,4 +305,9 @@ export const getUserReactionsToCommentsInChannel = async (params: {
 
     return isCommentReply && reaction.cast.channel.id === params.channelId
   })
+}
+
+export const fetchCastDetails = async (castHash: string) => {
+  const res = await neynar.lookUpCastByHashOrWarpcastUrl(castHash, 'hash')
+  return res.cast
 }
