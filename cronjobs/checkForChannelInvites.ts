@@ -15,17 +15,15 @@ export const startCheckForChannelInvitesJob = (): CronJob => new CronJob(
     async () => {
       try {
         const invites = await getIntoriChannelInvites()
-        const moderatorInvites = invites.filter(({ role }) => role === 'moderator')
 
-        if (moderatorInvites.length === 0) {
-          console.log('no invites')
+        if (invites.length === 0) {
           return
         }
 
-        console.table(moderatorInvites)
+        console.table(invites)
 
-        for (let i = 0; i < moderatorInvites.length; i++) {
-          const { channelId } = moderatorInvites[i]
+        for (let i = 0; i < invites.length; i++) {
+          const { channelId } = invites[i]
           const acceptResponse = await acceptChannelInvite({ channelId })
 
           if (!acceptResponse.success) {
@@ -51,6 +49,7 @@ export const startCheckForChannelInvitesJob = (): CronJob => new CronJob(
           await createChannelFrame(newChannelFrame)
         }
       } catch (err) {
+        console.error('Check for channel invites error:')
         console.error(err)
       }
     },
