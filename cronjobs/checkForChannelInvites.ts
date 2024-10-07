@@ -1,4 +1,6 @@
 import { CronJob } from 'cron'
+import util from 'util'
+import { isAxiosError } from 'axios'
 import { everyMinute } from './cronJobHelpers'
 import { getIntoriChannelInvites } from '../utils/warpcast'
 import {
@@ -54,7 +56,10 @@ export const startCheckForChannelInvitesJob = (): CronJob => new CronJob(
         }
       } catch (err) {
         console.error('Check for channel invites error:')
-        console.error(err)
+        if (isAxiosError(err)) {
+          console.log(err.response?.status)
+          console.log(util.inspect(err?.response?.data, false, null, true))
+        }
       }
     },
     null, // onComplete function handler
