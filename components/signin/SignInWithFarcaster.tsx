@@ -40,7 +40,7 @@ export const SignInWithFarcasterButton: React.FC<Props> = ({ redirect }) => {
                 redirect: false,
             })
 
-          window.location.href = redirect ?? "/dashboard"
+          window.location.href = redirect ?? "/channels"
         },
         [redirect]
     )

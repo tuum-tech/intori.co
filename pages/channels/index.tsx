@@ -5,8 +5,6 @@ import { getSession } from "next-auth/react"
 import { ChannelFrameType, getAllChannelFrames } from '../../models/channelFrames'
 
 // components
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import 'react-tabs/style/react-tabs.css';
 import { AppLayout } from "@/layouts/App"
 import { Section, SectionTopActions } from '../../components/common/Section'
 import { PrimaryButton } from '../../components/common/Button'
@@ -14,16 +12,12 @@ import { GeneralStatsSection } from '../../components/Stats/GeneralStatsSection'
 import { UniqueUsersOverTimeChart } from '../../components/Stats/UniqueUsersOverTimeChart'
 import { MostAnsweredQuestionsChart } from '../../components/Stats/MostAnsweredQuestionsChart'
 import { TopResponsesForTopQuestions } from '../../components/Stats/TopResponsesForTopQuestions'
-import Input from "../../components/common/Input";
-import { SelectQuestion } from '../../components/common/SelectQuestion'
 import { Empty } from '../../components/common/Empty'
-import { QuestionType, getAllQuestions } from '../../models/questions'
-import { ListPotentialMembers } from '../../components/PotentialMembers'
+import { ChannelCardsContainer, ChannelCardLink } from '../../components/Channels/ChannelCardLink'
 
 type Props = {
   showSuperAdminTab: boolean
   channelFramesToShow: ChannelFrameType[]
-  allQuestions: QuestionType[]
 }
 
 export const getServerSideProps = (async (context) => {
@@ -42,36 +36,23 @@ export const getServerSideProps = (async (context) => {
     adminFid: session.admin ? undefined : parseInt(session.user.fid, 10)
   })
 
-  const allQuestions = await getAllQuestions()
-
-  allQuestions.sort((a, b) => {
-    return a.question.localeCompare(b.question)
-  })
-
   return {
     props: {
       showSuperAdminTab: !!session.admin,
-      allQuestions,
       channelFramesToShow
     }
   }
 }) satisfies GetServerSideProps<Props>
 
-const AdminStats: NextPage<Props> = ({
+const Channels: NextPage<Props> = ({
   showSuperAdminTab,
-  allQuestions,
   channelFramesToShow
 }) => {
-  const copyIntroFrameUrlToClipboard = (channelId: string) => {
-    const url = `${process.env.NEXTAUTH_URL ?? window.location.origin}/frames/channels/${channelId}`
-    navigator.clipboard.writeText(url)
-    toast.success('Frame link copied to clipboard 😎')
-  }
 
   return (
     <AppLayout>
       <Section
-        title="Channel Frames & Stats"
+        title="Channel Frames"
         subtitle="Here you can create Intori frames for your channel and view stats."
       >
         <SectionTopActions>
@@ -81,83 +62,48 @@ const AdminStats: NextPage<Props> = ({
             </PrimaryButton>
           </Link>
         </SectionTopActions>
-        <Tabs forceRenderTabPanel>
-          <TabList>
-            { showSuperAdminTab && <Tab>Super Admin</Tab> }
-            { channelFramesToShow.map((channel) => (
-              <Tab key={channel.channelId}>{`/${channel.channelId}`}</Tab>
-            ))}
-          </TabList>
 
-          { showSuperAdminTab && (
-            <TabPanel>
-              <SectionTopActions>
-                <Link href="/channels/questions">
-                  <PrimaryButton>
-                    Edit Questions
-                  </PrimaryButton>
-                </Link>
-                <Link href="/channels/categories">
-                  <PrimaryButton>
-                    Edit Categories
-                  </PrimaryButton>
-                </Link>
-                <a href="/api/stats/csv" target="_blank" rel="noopener noreferrer">
-                  <PrimaryButton>
-                    Download CSV
-                  </PrimaryButton>
-                </a>
-              </SectionTopActions>
-              <GeneralStatsSection />
-              <UniqueUsersOverTimeChart />
-              <MostAnsweredQuestionsChart />
-              <TopResponsesForTopQuestions />
-            </TabPanel>
-          )}
+        { showSuperAdminTab && (
+          <SectionTopActions>
+            <Link href="/channels/questions">
+              <PrimaryButton>
+                Edit Questions
+              </PrimaryButton>
+            </Link>
+            <Link href="/channels/categories">
+              <PrimaryButton>
+                Edit Categories
+              </PrimaryButton>
+            </Link>
+            <a href="/api/stats/csv" target="_blank" rel="noopener noreferrer">
+              <PrimaryButton>
+                Download CSV
+              </PrimaryButton>
+            </a>
+          </SectionTopActions>
+        )}
 
-          { channelFramesToShow.map(({ channelId, introQuestionIds }) => (
-            <TabPanel key={channelId}>
-              <ListPotentialMembers channelId={channelId} />
-
-              <Input
-                value={`${process.env.NEXTAUTH_URL ?? window.location.origin}/frames/channels/${channelId}`}
-                label="Intro Frame URL"
-                note="Share this frame anytime to start getting users familiar with Intori"
-                onClick={() => copyIntroFrameUrlToClipboard(channelId)}
-                readOnly
-              />
-
-              <h2>Intro Questions</h2>
-              <ol>
-                {
-                  introQuestionIds?.map((questionId) => {
-                    const question = allQuestions.find(q => q.id === questionId)
-                    return (
-                      <li key={questionId}>
-                        {question?.question}
-                      </li>
-                    )
-                  })
-                }
-              </ol>
-              <br />
-
-              <SelectQuestion channelId={channelId} questions={allQuestions} />
-
-              <hr />
-              <GeneralStatsSection channelId={channelId} />
-              <UniqueUsersOverTimeChart channelId={channelId} />
-              <MostAnsweredQuestionsChart channelId={channelId} />
-              <TopResponsesForTopQuestions channelId={channelId} />
-            </TabPanel>
+        <ChannelCardsContainer>
+          { channelFramesToShow.map((channelFrame) => (
+            <ChannelCardLink key={channelFrame.channelId} channelFrame={channelFrame} />
           ))}
-        </Tabs>
+        </ChannelCardsContainer>
+
         { !showSuperAdminTab && !channelFramesToShow.length && (
           <Empty>You don&apos;t have any channel frames yet. Create one now!</Empty>
         )}
       </Section>
+
+      { showSuperAdminTab && (
+        <Section title="Overal Stats">
+          <GeneralStatsSection />
+          <UniqueUsersOverTimeChart />
+          <MostAnsweredQuestionsChart />
+          <TopResponsesForTopQuestions />
+        </Section>
+      )}
     </AppLayout>
   )
 }
 
-export default AdminStats
+export default Channels

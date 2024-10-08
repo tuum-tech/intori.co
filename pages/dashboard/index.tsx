@@ -22,6 +22,14 @@ type Props = {
 
 
 export const getServerSideProps = (async (context) => {
+  // TEMPORARY - until we decide what to do with dashboard
+  return {
+    redirect: {
+        permanent: false,
+        destination: '/channels'
+    }
+  }
+
   const session = await getSession(context)
 
   if (!session?.user?.fid) {
