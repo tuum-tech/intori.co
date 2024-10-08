@@ -58,10 +58,10 @@ export const ChannelCardLink: React.FC<Props> = ({
         { `/${channelFrame.channelId}` }
       </h4>
       <div className={styles.stats}>
-        <span>53 Members</span> • <span>{channelDetails.followCount} Followers</span>
+        <span>0 Members</span> • <span>{channelDetails.followCount} Followers</span>
       </div>
       <h3>
-        5 Potential Members
+        0 Potential Members
       </h3>
     </a>
   )
