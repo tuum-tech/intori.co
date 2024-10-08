@@ -43,7 +43,7 @@ export const ListPotentialMembers: React.FC<Props> = ({
           {
             !loading && potentialMembers.length === 0 && (
               <Empty>
-                No potential channel members members yet!
+                No potential channel members yet!
               </Empty>
             )
           }
