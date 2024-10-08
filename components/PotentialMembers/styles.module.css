@@ -1,3 +1,6 @@
+.container {
+  min-height: 200px;
+}
 .onePotentialMember {
   background: #272738;
   padding: 24px;
