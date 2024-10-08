@@ -1,7 +1,14 @@
 import { NeynarAPIClient, FeedType, FilterType } from '@neynar/nodejs-sdk'
 import { User } from '@neynar/nodejs-sdk/build/neynar-api/v2/openapi-farcaster/models/user'
+import config from '../config'
 
-const neynar = new NeynarAPIClient(
+// Nextjs has it's own way of handling environment variables
+// so if not running through nextjs, like cronjobs, we need to load the env vars
+if (!process.env.NEYNAR_API_KEY) {
+  config()
+}
+
+export const neynar = new NeynarAPIClient(
   process.env.NEYNAR_API_KEY || 'please add neynar api key'
 )
 
@@ -23,6 +30,57 @@ export type FarcasterUserType = {
   displayName?: string
   bio?: string
   powerBadge: boolean
+}
+
+export type FarcasterCastType = {
+  object: string;
+  hash: string;
+  thread_hash: string;
+  parent_hash: string;
+  parent_url: string | null;
+  root_parent_url: string | null;
+  parent_author: {
+    fid: number;
+  };
+  author: {
+    object: string;
+    fid: number;
+    custody_address: string;
+    username: string;
+    display_name: string;
+    pfp_url: string;
+    profile: {
+      bio: {
+        text: string;
+      };
+    };
+    follower_count: number;
+    following_count: number;
+    verifications: string[];
+    verified_addresses: {
+      eth_addresses: string[];
+      sol_addresses: string[];
+    };
+    active_status: string;
+    power_badge: boolean;
+  };
+  text: string;
+  timestamp: string;
+  embeds: any[]; // Assuming it's an array, but you can replace `any[]` with the exact type if known
+  reactions: {
+    likes_count: number;
+    recasts_count: number;
+    likes: {
+      fid: number;
+      fname: string;
+    }[];
+    recasts: any[]; // Assuming it's an array, but replace with the correct type if necessary
+  };
+  replies: {
+    count: number;
+  };
+  channel: string | null;
+  mentioned_profiles: any[]; // Assuming it's an array, but replace `any[]` with the exact type if known
 }
 
 export const serializeUser = (user: User): FarcasterUserType => ({
@@ -219,4 +277,39 @@ export const getRecentCastsInChannel = async (params: {
   })
 
   return res.casts
+}
+
+export const acceptChannelInvite = async (params: {
+  channelId: string
+  role: 'moderator' | 'member'
+}) => {
+  console.log('Accepting channel invite', params)
+  return neynar.respondChannelInvite(
+    process.env.NEYNAR_SIGNER_UUID ?? 'missing signer uuid',
+    params.channelId,
+    params.role,
+    true
+  )
+}
+
+export const getUserReactionsToCommentsInChannel = async (params: {
+  channelId: string
+  fid: number
+}) => {
+  const res = await neynar.fetchUserReactions(
+    params.fid,
+    'likes',
+    { limit: 50 }
+  )
+
+  return res.reactions.filter((reaction) => {
+    const isCommentReply = !!reaction.cast.parent_url
+
+    return isCommentReply && reaction.cast.channel.id === params.channelId
+  })
+}
+
+export const fetchCastDetails = async (castHash: string) => {
+  const res = await neynar.lookUpCastByHashOrWarpcastUrl(castHash, 'hash')
+  return res.cast
 }

@@ -18,6 +18,7 @@ import Input from "../../components/common/Input";
 import { SelectQuestion } from '../../components/common/SelectQuestion'
 import { Empty } from '../../components/common/Empty'
 import { QuestionType, getAllQuestions } from '../../models/questions'
+import { ListPotentialMembers } from '../../components/PotentialMembers'
 
 type Props = {
   showSuperAdminTab: boolean
@@ -116,6 +117,8 @@ const AdminStats: NextPage<Props> = ({
 
           { channelFramesToShow.map(({ channelId, introQuestionIds }) => (
             <TabPanel key={channelId}>
+              <ListPotentialMembers channelId={channelId} />
+
               <Input
                 value={`${process.env.NEXTAUTH_URL ?? window.location.origin}/frames/channels/${channelId}`}
                 label="Intro Frame URL"
