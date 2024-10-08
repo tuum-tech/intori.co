@@ -3,6 +3,15 @@ import { createDb } from '../pages/api/utils/firestore'
 export type PotentialChannelMemberType = {
   fid: number
   channelId: string
+  castHash: string
+  parentCastHash: string
+}
+
+type CreatePotentialChannelMemberType = {
+  fid: number
+  channelId: string
+  castHash: string
+  parentCastHash: string
 }
 
 let collection: FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData>
@@ -16,17 +25,38 @@ const getCollection = () => {
   return db.collection('potentialChannelMembers')
 }
 
-export const createPotentialChannelMember = async (body: {
-  fid: number
-  channelId: string
-}): Promise<PotentialChannelMemberType> => {
+export const getPotentialChannelMembers = async (params: {
+  channelId?: string
+}): Promise<PotentialChannelMemberType[]> => {
   const collection = getCollection()
+  let query = collection as FirebaseFirestore.Query<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>
+
+  if (params.channelId) {
+    query = collection.where('channelId', '==', params.channelId)
+  }
+
+  const snapshot = await query.get()
+
+  return snapshot.docs.map(doc => {
+    const data = doc.data()
+    return data
+  }) as PotentialChannelMemberType[]
+}
+
+export const createPotentialChannelMember = async (
+  body: CreatePotentialChannelMemberType
+): Promise<PotentialChannelMemberType> => {
+  const collection = getCollection()
+
+  // check if already exists by unique cast hash
+  const snapshot = await collection.where('castHash', '==', body.castHash).get()
+  if (!snapshot.empty) {
+    return body
+  }
+
   await collection.add(body)
 
-  return {
-    fid: body.fid,
-    channelId: body.channelId
-  }
+  return body
 }
 
 export const deletePotentialChannelMember = async (params: {

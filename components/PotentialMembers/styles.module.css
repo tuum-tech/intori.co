@@ -1,0 +1,45 @@
+.onePotentialMember {
+  background: #272738;
+  padding: 24px;
+  border: 1px solid #2A3042;
+  border-radius: 16px;
+  margin-bottom: 16px;
+}
+.fid {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: #666;
+}
+.onePotentialMember > a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  margin-bottom: 10px;
+}
+.onePotentialMember > a h4 {
+  margin: 0 0 0 12px;
+  font-size: 18px;
+  color: #FFF;
+}
+.imageContainer img {
+  border-radius: 50%;
+}
+.cast {
+  border: 1px solid #2A3042;
+  padding: 16px;
+  border-radius: 16px;
+  margin-bottom: 10px;
+}
+.cast p {
+  margin-top: 0;
+}
+.castStats {
+  display: flex;
+  gap: 12px;
+  color: #666;
+}
+.castStats a {
+  color: #9664FA;
+  display: inline-flex;
+}
