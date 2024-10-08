@@ -107,8 +107,9 @@ const Channel: NextPage<Props> = ({
         <br />
 
         <SelectQuestion channelId={channelFrame.channelId} questions={allQuestions} />
+      </Section>
 
-        <hr />
+      <Section title={`Stats for /${channelFrame.channelId}`}>
         <GeneralStatsSection          channelId={channelFrame.channelId} />
         <UniqueUsersOverTimeChart     channelId={channelFrame.channelId} />
         <MostAnsweredQuestionsChart   channelId={channelFrame.channelId} />
