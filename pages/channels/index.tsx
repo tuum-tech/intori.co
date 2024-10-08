@@ -1,5 +1,4 @@
 import type { NextPage, GetServerSideProps } from "next";
-import { toast } from 'react-toastify'
 import Link from 'next/link'
 import { getSession } from "next-auth/react"
 import { ChannelFrameType, getAllChannelFrames } from '../../models/channelFrames'
