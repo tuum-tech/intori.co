@@ -25,15 +25,28 @@ export const startCheckForPotentialChannelMembersJob = (): CronJob => new CronJo
           fid: adminFid
         })
 
-        const reactionFids = reactionsFromAdminInChannel.map((reaction) => reaction.cast.author.fid)
-
         await Promise.all(
-          reactionFids.map(async (fid) => {
+          reactionsFromAdminInChannel.map(async (reaction) => {
+            const { fid } = reaction.cast.author
+            const channelId = reaction.cast.channel.id
+
             const isMember = await isUserMemberOfChannel({ fid, channelId })
             if (isMember) {
               await deletePotentialChannelMember({ fid, channelId })
             } else {
-              await createPotentialChannelMember({ fid, channelId })
+              const castHash = reaction.cast.hash
+              const parentCastHash = reaction.cast.parent_hash
+
+              if (!parentCastHash) {
+                return
+              }
+
+              await createPotentialChannelMember({
+                fid,
+                channelId,
+                castHash,
+                parentCastHash
+              })
             }
           })
         )
