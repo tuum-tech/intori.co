@@ -3,6 +3,7 @@ import { toast } from 'react-toastify'
 import { getPotentialMembers } from '../../requests/potentialChannelMembers'
 import { PotentialChannelMemberType } from '../../models/potentialChannelMember'
 import { OnePotentialMember } from './OnePotentialMember'
+import { Empty } from '../common/Empty'
 import styles from './styles.module.css'
 
 type Props = {
@@ -38,6 +39,13 @@ export const ListPotentialMembers: React.FC<Props> = ({
         <div>
           {
             loading && <p>Loading...</p>
+          }
+          {
+            !loading && potentialMembers.length === 0 && (
+              <Empty>
+                No potential channel members members yet!
+              </Empty>
+            )
           }
           {
             potentialMembers.map((potentialMember) => (

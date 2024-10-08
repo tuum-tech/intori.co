@@ -43,10 +43,10 @@ export const AppLayout: React.FC<Props> = ({ children }) => {
 
   const dropdownItems = useMemo(() => {
     const items: DropdownItemType[] = [
-      { label: 'Dashboard', href: '/dashboard' },
+      // { label: 'Dashboard', href: '/dashboard' },
+      { label: 'Channels', href: '/channels' },
       { label: 'Suggestions', href: '/suggestions' },
-      { label: 'Responses', href: '/responses' },
-      { label: 'Channels', href: '/channels' }
+      { label: 'Responses', href: '/responses' }
     ]
 
     items.push(
@@ -62,7 +62,7 @@ export const AppLayout: React.FC<Props> = ({ children }) => {
 
   const redirectUrl = useMemo(() => {
     if (typeof window === 'undefined') {
-      return '/dashboard'
+      return '/channels'
     }
 
     return window.location.pathname
@@ -97,11 +97,18 @@ export const AppLayout: React.FC<Props> = ({ children }) => {
         <div className={styles.headerLeft}>
           <Image src="/intorilogomark.svg" alt="Intori" width={26} height={35} />
           <nav>
-            <Link href="/dashboard" title="Dashboard" className={isNavLinkActive('/dashboard') ? styles.selected : ''}>
+            { /* <Link href="/dashboard" title="Dashboard" className={isNavLinkActive('/dashboard') ? styles.selected : ''}>
               <span className={styles.icon}>
                 <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M8.53127 18.2364V15.7064C8.53125 15.0628 9.0835 14.5399 9.76772 14.5356H12.2741C12.9615 14.5356 13.5189 15.0598 13.5189 15.7064V18.2443C13.5187 18.7906 13.9824 19.2372 14.5632 19.25H16.2341C17.8997 19.25 19.25 17.9801 19.25 16.4135V9.21621C19.2411 8.59993 18.9334 8.02121 18.4146 7.64475L12.7001 3.31537C11.699 2.56154 10.2759 2.56154 9.27481 3.31537L3.58544 7.65261C3.06459 8.02754 2.75641 8.60722 2.75 9.22407V16.4135C2.75 17.9801 4.10029 19.25 5.76595 19.25H7.43684C8.03204 19.25 8.51456 18.7962 8.51456 18.2364" stroke="#F6F4FE" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>
               </span>
               Dashboard
+              </Link> */ }
+
+            <Link href="/channels" title="Channels" className={isNavLinkActive('/channels') ? styles.selected : ''}>
+              <span className={styles.icon}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="#ffffff" viewBox="0 0 256 256"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,16V88H40V56Zm0,144H40V104H216v96Z"></path></svg>
+              </span>
+              Channels
             </Link>
             <Link href="/suggestions" title="Suggestions" className={isNavLinkActive('/suggestions') ? styles.selected : ''}>
               <span className={styles.icon}>
@@ -115,12 +122,6 @@ export const AppLayout: React.FC<Props> = ({ children }) => {
               </span>
               Responses
             </Link>
-              <Link href="/channels" title="Channels" className={isNavLinkActive('/channels') ? styles.selected : ''}>
-                <span className={styles.icon}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="#ffffff" viewBox="0 0 256 256"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,16V88H40V56Zm0,144H40V104H216v96Z"></path></svg>
-                </span>
-                Channels
-              </Link>
           </nav>
         </div>
         <ConnectWalletButton />
