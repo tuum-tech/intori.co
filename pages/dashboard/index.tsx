@@ -2,11 +2,11 @@ import type { NextPage, GetServerSideProps } from "next";
 import Link from 'next/link'
 import { toast } from "react-toastify";
 import { useRouter } from "next/router"
-import { useSession, getSession } from "next-auth/react"
+import { useSession } from "next-auth/react"
 import { useEffect, useMemo, useState } from "react";
 
 import { AppLayout } from "@/layouts/App"
-import { UserAnswerPageType, getUserAnswersByFid } from '@/models/userAnswers'
+import { UserAnswerPageType } from '@/models/userAnswers'
 import { WelcomeCard } from './WelcomeCard'
 import { CallToActionCard } from './CallToActionCard'
 import { PrimaryButton } from '../../components/common/Button'
@@ -21,7 +21,7 @@ type Props = {
 }
 
 
-export const getServerSideProps = (async (context) => {
+export const getServerSideProps = (async () => {
   // TEMPORARY - until we decide what to do with dashboard
   return {
     redirect: {
@@ -30,37 +30,37 @@ export const getServerSideProps = (async (context) => {
     }
   }
 
-  const session = await getSession(context)
+  // const session = await getSession(context)
 
-  if (!session?.user?.fid) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: '/'
-      }
-    }
-  }
+  // if (!session?.user?.fid) {
+  //   return {
+  //     redirect: {
+  //       permanent: false,
+  //       destination: '/'
+  //     }
+  //   }
+  // }
 
-  const answers = await getUserAnswersByFid(
-    parseInt(session.user.fid, 10)
-  )
+  // const answers = await getUserAnswersByFid(
+  //   parseInt(session.user.fid, 10)
+  // )
 
-  return {
-    props: {
-      answers: answers
-        .filter(answer => answer.date)
-        .filter(answer => !['more', '< back', 'back', 'next'].includes(answer.answer.toLowerCase()))
-        .map((answer) => {
-          return {
-            ...answer,
-            date: {
-              seconds: answer.date.seconds,
-              nanoseconds: answer.date.nanoseconds
-            }
-          }
-      })
-    }
-  }
+  // return {
+  //   props: {
+  //     answers: answers
+  //       .filter(answer => answer.date)
+  //       .filter(answer => !['more', '< back', 'back', 'next'].includes(answer.answer.toLowerCase()))
+  //       .map((answer) => {
+  //         return {
+  //           ...answer,
+  //           date: {
+  //             seconds: answer.date.seconds,
+  //             nanoseconds: answer.date.nanoseconds
+  //           }
+  //         }
+  //     })
+  //   }
+  // }
 }) satisfies GetServerSideProps<Props>
 
 const Dashboard: NextPage<Props> = ({ answers }) => {
