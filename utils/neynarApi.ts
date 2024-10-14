@@ -83,6 +83,16 @@ export type FarcasterCastType = {
   mentioned_profiles: any[]; // Assuming it's an array, but replace `any[]` with the exact type if known
 }
 
+export type FarcasterChannelMemberType = {
+  channel_id: string
+  role: 'member' | 'moderator'
+  user: {
+    fid: number
+    username: string
+    pfp_url: string
+  }
+}
+
 export const serializeUser = (user: User): FarcasterUserType => ({
     username: user.username,
     displayName: user.display_name,
@@ -312,4 +322,25 @@ export const getUserReactionsToCommentsInChannel = async (params: {
 export const fetchCastDetails = async (castHash: string) => {
   const res = await neynar.lookUpCastByHashOrWarpcastUrl(castHash, 'hash')
   return res.cast
+}
+
+export const getMembersOfChannel = async (params: {
+  channelId: string
+}) => {
+  const members = []
+  let cursor: string | null | undefined = null
+
+  do {
+    const res = await neynar.fetchChannelMembers(params.channelId, {
+      limit: 100,
+      cursor: cursor || undefined
+    })
+
+    cursor = res.next?.cursor
+    members.push(...res.members)
+
+    await new Promise((resolve) => setTimeout(resolve, 500))
+  } while (cursor)
+
+  return members
 }
