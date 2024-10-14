@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback, useMemo, useState } from 'react'
 import { toast } from 'react-toastify'
 import { FormikContextType } from 'formik'
-import { CreateChannelFrameType } from '../../../models/channelFrames'
+import { CreateChannelFrameType, UpdateChannelFrameBodyType } from '../../../models/channelFrames'
 import { QuestionType } from '../../../models/questions'
 import { QuestionCategoryType } from '../../../models/questionCategories'
 import { Select } from '../Select'
@@ -10,7 +10,7 @@ import { getAllQuestionsOfCategory } from '../../../requests/questionCategories'
 import styles from './styles.module.css'
 
 type Props = {
-  formik: FormikContextType<CreateChannelFrameType>
+  formik: FormikContextType<UpdateChannelFrameBodyType> | FormikContextType<CreateChannelFrameType>
   allQuestions: QuestionType[]
 }
 
@@ -131,6 +131,7 @@ export const SelectIntroQuestions: React.FC<Props> = ({
         placeholder={placeholderMessage}
         onChange={handleQuestionSelected}
         disabled={formik.values.introQuestionIds.length === 3}
+        error={formik.touched.introQuestionIds ? formik.errors.introQuestionIds?.toString() : ''}
         value=""
       />
       <ol>
