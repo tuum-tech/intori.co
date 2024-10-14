@@ -10,6 +10,9 @@ export type CreateChannelFrameType = {
   channelId: string
   introQuestionIds: string[] // question ids
 }
+export type UpdateChannelFrameBodyType = {
+  introQuestionIds: string[] // question ids
+}
 
 let channelFrameCollection: FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData>
 
@@ -57,4 +60,28 @@ export const getAllChannelFrames = async (params: {
   const snapshot = await query.get()
 
   return snapshot.docs.map((doc) => doc.data() as ChannelFrameType)
+}
+
+export const updateChannelFrame = async (
+  channelId: string,
+  updateBody: UpdateChannelFrameBodyType
+): Promise<ChannelFrameType> => {
+  const collection = getCollection()
+
+  const query = await collection.where('channelId', '==', channelId).get()
+
+  if (query.empty) {
+    throw new Error('Channel frame not found.')
+  }
+
+  const doc = query.docs[0]
+
+  const updatedChannelFrame = {
+    ...doc.data(),
+    introQuestionIds: updateBody.introQuestionIds
+  }
+
+  await doc.ref.update(updatedChannelFrame)
+
+  return updatedChannelFrame as ChannelFrameType
 }
