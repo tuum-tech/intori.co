@@ -31,6 +31,8 @@ export const getServerSideProps = (async (context) => {
     }
   }
 
+  // TODO: get channel ids that user is moderator of
+  // only show channel frames that i am moderator of or owner of
   const channelFramesToShow = await getAllChannelFrames({
     adminFid: session.admin ? undefined : parseInt(session.user.fid, 10)
   })
