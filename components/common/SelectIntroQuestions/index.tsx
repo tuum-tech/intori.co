@@ -10,7 +10,7 @@ import { getAllQuestionsOfCategory } from '../../../requests/questionCategories'
 import styles from './styles.module.css'
 
 type Props = {
-  formik: FormikContextType<UpdateChannelFrameBodyType | CreateChannelFrameType>
+  formik: FormikContextType<UpdateChannelFrameBodyType> | FormikContextType<CreateChannelFrameType>
   allQuestions: QuestionType[]
 }
 
