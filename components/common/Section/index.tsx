@@ -39,3 +39,11 @@ export const SubSection: React.FC<Props> = ({ title, children }) => {
     </div>
   )
 }
+
+export const SectionBottomActions: React.FC<Props> = ({ children }) => {
+  return (
+    <div className={styles.bottomActions}>
+      {children}
+    </div>
+  )
+}

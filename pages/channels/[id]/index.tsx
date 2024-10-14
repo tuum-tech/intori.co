@@ -5,7 +5,7 @@ import { toast } from 'react-toastify'
 import { getSession } from "next-auth/react"
 import React from 'react'
 import { AppLayout } from "@/layouts/App"
-import { Section, SubSection } from '../../../components/common/Section'
+import { Section, SubSection, SectionBottomActions } from '../../../components/common/Section'
 import { ChannelFrameType, getChannelFrame } from '../../../models/channelFrames'
 import { QuestionType, getAllQuestions } from '../../../models/questions'
 import { ListPotentialMembers } from '../../../components/PotentialMembers'
@@ -132,14 +132,14 @@ const Channel: NextPage<Props> = ({
           </SubSection>
           <SubSection title="Update Your Intro Frame">
             <SelectIntroQuestions formik={formik} allQuestions={allQuestions} />
-            <div>
+            <SectionBottomActions>
               {formik.dirty && (
                 <>
                   <PrimaryButton disabled={formik.isSubmitting} onClick={() => formik.handleSubmit()}>Save Changes</PrimaryButton>
                   <SecondaryButton disabled={formik.isSubmitting} onClick={() => formik.resetForm()}>Reset</SecondaryButton>
                 </>
               )}
-            </div>
+            </SectionBottomActions>
           </SubSection>
 
           <SubSection title="Post a Single Question Frame">
