@@ -9,6 +9,7 @@ import {
 import {
   deleteQuestionCategoriesByCategoryId
 } from '../../../models/questionCategories'
+import { isSuperAdmin } from '../../../utils/isSuperAdmin'
 
 const deleteEditAddCategory = async (
   req: NextApiRequest,
@@ -21,9 +22,8 @@ const deleteEditAddCategory = async (
   }
 
   const fid = parseInt(session.user.fid, 10)
-  const adminFids = (process.env.ADMIN_FIDS || '').split(',').map((fid) => parseInt(fid, 10))
 
-  if (!adminFids.includes(fid)) {
+  if (!isSuperAdmin(fid)) {
     return res.status(404).end()
   }
 

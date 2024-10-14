@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react'
 import { createObjectCsvStringifier } from 'csv-writer'
 import { getAllUserResponses } from '../../../models/userAnswers'
+import { isSuperAdmin } from '../../../utils/isSuperAdmin'
 
 const downloadCsvOfStats = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -12,9 +13,8 @@ const downloadCsvOfStats = async (req: NextApiRequest, res: NextApiResponse) => 
     }
 
     const fid = parseInt(session.user.fid, 10)
-    const adminFids = (process.env.ADMIN_FIDS || '').split(',').map((fid) => parseInt(fid, 10))
 
-    if (!adminFids.includes(fid)) {
+    if (!isSuperAdmin(fid)) {
       return res.status(404).end()
     }
 
