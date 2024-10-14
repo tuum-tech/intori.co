@@ -3,8 +3,7 @@ import util from 'util'
 import CredentialsProvider from "next-auth/providers/credentials"
 import { createAppClient, viemConnector } from "@farcaster/auth-kit"
 import { NextApiRequest, NextApiResponse } from "next"
-
-const adminFids = (process.env.ADMIN_FIDS || '').split(',').map((fid) => parseInt(fid, 10))
+import { isSuperAdmin } from "../../../utils/isSuperAdmin"
 
 export const authOptions: (req: NextApiRequest) => NextAuthOptions = (req) => ({
     jwt: {
@@ -81,7 +80,7 @@ export const authOptions: (req: NextApiRequest) => NextAuthOptions = (req) => ({
       session({ session, token }) {
         session.user.fid = token.id as string
 
-        session.admin = adminFids.includes(parseInt(token.id as string, 10))
+        session.admin = isSuperAdmin(parseInt(token.id as string, 10))
 
         return session;
       }
