@@ -54,7 +54,11 @@ export const startCheckForChannelInvitesJob = (): CronJob => new CronJob(
 
           const newChannelFrame = {
             channelId,
-            introQuestionIds: [],
+            introQuestionIds: [
+              'c9c8b085-6177-4455-9705-4e548007ddc0',
+              'de471cde-a3c5-4584-9b68-7e7e1b2346fd',
+              'c692ed8b-3bbc-46d9-bc91-7ba464dfa730'
+            ],
             adminFid: channelDetails.adminFid
           }
 
