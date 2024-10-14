@@ -8,6 +8,7 @@ import { PrimaryButton } from '../../components/common/Button'
 import { CategoriesProvider, useCategories } from '../../contexts/useCategories'
 import { QuestionCategoriesProvider } from '../../contexts/useQuestionCategories'
 import { CategoriesOverview } from '../../components/Categories/CategoriesOverview'
+import { isSuperAdmin } from '../../utils/isSuperAdmin'
 
 type Props = {
   questions: QuestionType[]
@@ -26,9 +27,8 @@ export const getServerSideProps = (async (context) => {
   }
 
   const fid = parseInt(session.user.fid, 10)
-  const adminFids = (process.env.ADMIN_FIDS || '').split(',').map((fid) => parseInt(fid, 10))
 
-  if (!adminFids.includes(fid)) {
+  if (!isSuperAdmin(fid)) {
     return {
       notFound: true
     }

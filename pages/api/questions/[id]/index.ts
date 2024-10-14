@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '../../auth/[...nextauth]'
+import { isSuperAdmin } from '../../../../utils/isSuperAdmin'
 import * as yup from 'yup'
 import {
   QuestionType,
@@ -22,9 +23,8 @@ const deleteEditAddQuestion = async (
   }
 
   const fid = parseInt(session.user.fid, 10)
-  const adminFids = (process.env.ADMIN_FIDS || '').split(',').map((fid) => parseInt(fid, 10))
 
-  if (!adminFids.includes(fid)) {
+  if (!isSuperAdmin(fid)) {
     return res.status(404).end()
   }
 

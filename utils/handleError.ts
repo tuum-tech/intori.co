@@ -7,6 +7,7 @@ export const handleError = (err: unknown, message: string) => {
   if (isAxiosError(err)) {
     toast.error(
       err.response?.data?.error ||
+      err.response?.data?.message ||
       message
     )
   } else {

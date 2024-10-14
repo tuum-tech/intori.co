@@ -8,6 +8,7 @@ import {
   getQuestionsOfCategory,
   getAllQuestionCategories
 } from '../../../../models/questionCategories'
+import { isSuperAdmin } from '../../../../utils/isSuperAdmin'
 
 const getAddDeleteQuestionCategories = async (
   req: NextApiRequest,
@@ -50,9 +51,7 @@ const getAddDeleteQuestionCategories = async (
     })
   }
 
-  const adminFids = (process.env.ADMIN_FIDS || '').split(',').map((fid) => parseInt(fid, 10))
-
-  if (!adminFids.includes(fid)) {
+  if (!isSuperAdmin(fid)) {
     return res.status(404).end()
   }
 

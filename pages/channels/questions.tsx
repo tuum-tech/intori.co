@@ -10,6 +10,7 @@ import { DisplayQuestions } from '../../components/Questions'
 import { PrimaryButton } from '../../components/common/Button'
 import { CategoriesProvider } from '../../contexts/useCategories'
 import { QuestionCategoriesProvider } from '../../contexts/useQuestionCategories'
+import { isSuperAdmin } from '../../utils/isSuperAdmin'
 
 type Props = {
   questions: QuestionType[]
@@ -28,21 +29,14 @@ export const getServerSideProps = (async (context) => {
   }
 
   const fid = parseInt(session.user.fid, 10)
-  const adminFids = (process.env.ADMIN_FIDS || '').split(',').map((fid) => parseInt(fid, 10))
 
-  if (!adminFids.includes(fid)) {
+  if (!isSuperAdmin(fid)) {
     return {
       notFound: true
     }
   }
 
   const questions = await getAllQuestions()
-  console.table(
-                  questions.map((q) => ({
-                    question: q.question,
-                    deleted: q.deleted
-                  }))
-  )
 
   return {
     props: { questions: questions.reverse() }

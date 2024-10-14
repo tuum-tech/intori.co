@@ -4,6 +4,7 @@ import { getPotentialMembers } from '../../requests/potentialChannelMembers'
 import { PotentialChannelMemberType } from '../../models/potentialChannelMember'
 import { OnePotentialMember } from './OnePotentialMember'
 import { Empty } from '../common/Empty'
+import { SubSection } from '../common/Section'
 import styles from './styles.module.css'
 
 type Props = {
@@ -31,10 +32,7 @@ export const ListPotentialMembers: React.FC<Props> = ({
   }, [channelId])
 
   return (
-    <div className={styles.container}>
-      <h3>
-        Potential Channel Members
-      </h3>
+    <SubSection title="Potential Members">
       <div className={styles.listContainer}>
         <div>
           {
@@ -57,7 +55,7 @@ export const ListPotentialMembers: React.FC<Props> = ({
           }
         </div>
       </div>
-    </div>
+    </SubSection>
   )
   }
 
