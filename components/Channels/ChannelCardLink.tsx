@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
 import { ChannelFrameType } from '../../models/channelFrames'
 import { FarcasterChannelType } from '../../utils/neynarApi'
+import { PotentialChannelMemberType } from '../../models/potentialChannelMember'
 import { Skeleton } from '../common/Skeleton'
-import { getFarcasterChannelDetails } from '../../requests/farcaster'
+import { getFarcasterChannelDetails, getChannelMembers } from '../../requests/farcaster'
+import { getPotentialMembers } from '../../requests/potentialChannelMembers'
+import { shortenNumber } from '../../utils/textHelpers'
 import styles from './styles.module.css'
 
 type Props = {
@@ -14,6 +17,8 @@ export const ChannelCardLink: React.FC<Props> = ({
   channelFrame
 }) => {
   const [channelDetails, setChannelDetails] = useState<FarcasterChannelType>()
+  const [potentialMembers, setPotentialMembers] = useState<PotentialChannelMemberType[]>([])
+  const [channelMembers, setChannelMembers] = useState<number>(0)
 
   useEffect(() => {
     const fetchChannelDetails = async () => {
@@ -26,6 +31,35 @@ export const ChannelCardLink: React.FC<Props> = ({
     }
 
     fetchChannelDetails()
+  }, [channelFrame])
+
+  useEffect(() => {
+    const fetchPotentialMembers = async () => {
+      try {
+        const res = await getPotentialMembers({ channelId: channelFrame.channelId })
+        setPotentialMembers(res.data)
+      } catch (err) {
+        setPotentialMembers([])
+        toast.error(`Failed to fetch potential members for ${channelFrame.channelId}. Please try again later.`)
+      }
+    }
+
+    fetchPotentialMembers()
+  
+  }, [channelFrame])
+
+  useEffect(() => {
+    const fetchChannelMembers = async () => {
+      try {
+        const res = await getChannelMembers(channelFrame.channelId)
+        setChannelMembers(res.data.length)
+      } catch (err) {
+        setChannelMembers(0)
+        toast.error(`Failed to fetch channel members for ${channelFrame.channelId}. Please try again later.`)
+      }
+    }
+
+    fetchChannelMembers()
   }, [channelFrame])
 
   if (!channelDetails) {
@@ -58,10 +92,10 @@ export const ChannelCardLink: React.FC<Props> = ({
         { `/${channelFrame.channelId}` }
       </h4>
       <div className={styles.stats}>
-        <span>0 Members</span> • <span>{channelDetails.followCount} Followers</span>
+        <span>{shortenNumber(channelMembers)} Member{channelMembers === 1 ? '' : 's'}</span> • <span>{shortenNumber(channelDetails.followCount ?? 0)} Followers</span>
       </div>
       <h3>
-        0 Potential Members
+        {potentialMembers.length} Potential Member{potentialMembers.length === 1 ? '' : 's'}
       </h3>
     </a>
   )
