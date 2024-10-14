@@ -5,7 +5,7 @@ import { toast } from 'react-toastify'
 import { getSession } from "next-auth/react"
 import React from 'react'
 import { AppLayout } from "@/layouts/App"
-import { Section, SubSection, SectionTopActions } from '../../../components/common/Section'
+import { Section, SubSection } from '../../../components/common/Section'
 import { ChannelFrameType, getChannelFrame } from '../../../models/channelFrames'
 import { QuestionType, getAllQuestions } from '../../../models/questions'
 import { ListPotentialMembers } from '../../../components/PotentialMembers'

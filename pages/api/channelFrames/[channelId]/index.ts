@@ -4,7 +4,8 @@ import { authOptions } from '../../auth/[...nextauth]'
 import * as yup from 'yup'
 import {
   getChannelFrame,
-  updateChannelFrame
+  updateChannelFrame,
+  UpdateChannelFrameBodyType
 } from '../../../../models/channelFrames'
 
 const updateDeleteGetChannelFrame = async (
@@ -39,8 +40,8 @@ const updateDeleteGetChannelFrame = async (
   }
 
   const updateBody = await yup.object({
-    introQuestionIds: yup.array().of(yup.string()).max(3).required()
-  }).validate(req.body, { stripUnknown: true })
+    introQuestionIds: yup.array().of(yup.string()).min(1).max(3).required()
+  }).validate(req.body, { stripUnknown: true }) as UpdateChannelFrameBodyType
 
 
   const updatedChannel = await updateChannelFrame(channelId, updateBody)
