@@ -4,14 +4,12 @@ export type PotentialChannelMemberType = {
   fid: number
   channelId: string
   castHash: string
-  parentCastHash: string
 }
 
 type CreatePotentialChannelMemberType = {
   fid: number
   channelId: string
   castHash: string
-  parentCastHash: string
 }
 
 let collection: FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData>

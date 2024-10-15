@@ -43,7 +43,7 @@ export const isUserMemberOfChannel = async (params: {
 
     return res.data.result.members?.length > 0
   } catch (err) {
-    console.error('Warpcast API error:', err)
+    console.error(`Warpcast API error failed to check ${params.fid} in ${params.channelId}`, err)
     return false
   }
 }
