@@ -34,6 +34,8 @@ const getPotentialMembers = async (
     if (!allowedToSee) {
         return res.status(403).end()
     }
+
+    params.channelId = channel.channelId
   }
 
   const potentialChannelMembers = await getPotentialChannelMembers(params)
