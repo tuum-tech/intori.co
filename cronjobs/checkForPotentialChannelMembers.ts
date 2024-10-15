@@ -1,7 +1,8 @@
 import { CronJob } from 'cron'
 import { everyFiveMinutes } from './cronJobHelpers'
 import {
-  getUserReactionsToCommentsInChannel
+  getUserReactionsToCommentsInChannel,
+  getMembersOfChannel
 } from '../utils/neynarApi'
 import {
   getAllChannelFrames
@@ -20,13 +21,28 @@ export const startCheckForPotentialChannelMembersJob = (): CronJob => new CronJo
       for (let i = 0; i < channels.length; i++) {
         const { channelId, adminFid } = channels[i]
 
-        const reactionsFromAdminInChannel = await getUserReactionsToCommentsInChannel({
-          channelId,
-          fid: adminFid
-        })
+        const membersOfChannel = await getMembersOfChannel({ channelId })
+        const moderators = membersOfChannel.filter((member) => member.role === 'moderator')
+
+        const fidsToCheckReactions = moderators.map((moderator) => moderator.user.fid)
+        fidsToCheckReactions.push(adminFid)
+
+        const reactionsToCheck = []
+
+        for (let i = 0; i < fidsToCheckReactions.length; i++) {
+          const fid = fidsToCheckReactions[i]
+
+          const reactions = await getUserReactionsToCommentsInChannel({
+            channelId,
+            fid
+          })
+
+          await new Promise((resolve) => setTimeout(resolve, 500))
+          reactionsToCheck.push(...reactions)
+        }
 
         await Promise.all(
-          reactionsFromAdminInChannel.map(async (reaction) => {
+          reactionsToCheck.map(async (reaction) => {
             const { fid } = reaction.cast.author
             const channelId = reaction.cast.channel.id
 
