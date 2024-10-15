@@ -25,6 +25,7 @@ export const SkeletonCircle: React.FC<Props> = ({ width, inline }) => {
     <ReactSkeleton
       className={styles.skeleton}
       width={width}
+      height={width}
       inline={inline}
       circle
       duration={0.5}
