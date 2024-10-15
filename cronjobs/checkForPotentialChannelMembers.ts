@@ -56,17 +56,11 @@ export const startCheckForPotentialChannelMembersJob = (): CronJob => new CronJo
               await deletePotentialChannelMember({ fid, channelId })
             } else {
               const castHash = reaction.cast.hash
-              const parentCastHash = reaction.cast.parent_hash
-
-              if (!parentCastHash) {
-                return
-              }
 
               await createPotentialChannelMember({
                 fid,
                 channelId,
-                castHash,
-                parentCastHash
+                castHash
               })
             }
           })
