@@ -21,3 +21,5 @@ export const everyMinute = '0 * * * * *'
 export const everyThirtySeconds = '0 * * * * *'
 
 export const everyFiveMinutes = '0 */5 * * * *'
+
+export const everyTenMinutes = '0 */10 * * * *'

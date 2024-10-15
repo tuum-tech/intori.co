@@ -48,7 +48,8 @@ export const createPotentialChannelMember = async (
 
   // check if already exists by unique cast hash
   const snapshot = await collection.where('castHash', '==', body.castHash).get()
-  if (!snapshot.empty) {
+
+  if (snapshot.docs.length) {
     return body
   }
 

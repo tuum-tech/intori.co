@@ -1,5 +1,5 @@
 import { CronJob } from 'cron'
-import { everyFiveMinutes } from './cronJobHelpers'
+import { everyTenMinutes } from './cronJobHelpers'
 import {
   getUserReactionsToCommentsInChannel,
   getMembersOfChannel
@@ -15,7 +15,7 @@ import { isUserMemberOfChannel } from '../utils/warpcast'
 import { notifySuperAdminOfError } from '../utils/sendDirectCast'
 
 export const startCheckForPotentialChannelMembersJob = (): CronJob => new CronJob(
-    everyFiveMinutes,
+    everyTenMinutes,
     async () => {
       const channels = await getAllChannelFrames()
 
@@ -46,25 +46,25 @@ export const startCheckForPotentialChannelMembersJob = (): CronJob => new CronJo
           }
         }
 
-        await Promise.all(
-          reactionsToCheck.map(async (reaction) => {
-            const { fid } = reaction.cast.author
-            const channelId = reaction.cast.channel.id
+        for (let i = 0; i < reactionsToCheck.length; i++) {
+          const reaction = reactionsToCheck[i]
+          const { fid } = reaction.cast.author
 
-            const isMember = await isUserMemberOfChannel({ fid, channelId })
-            if (isMember) {
-              await deletePotentialChannelMember({ fid, channelId })
-            } else {
-              const castHash = reaction.cast.hash
+          const isMember = await isUserMemberOfChannel({ fid, channelId })
+          if (isMember) {
+            await deletePotentialChannelMember({ fid, channelId })
+          } else {
+            const castHash = reaction.cast.hash
 
-              await createPotentialChannelMember({
-                fid,
-                channelId,
-                castHash
-              })
-            }
-          })
-        )
+            await createPotentialChannelMember({
+              fid,
+              channelId,
+              castHash
+            })
+          }
+
+          await new Promise((resolve) => setTimeout(resolve, 500))
+        }
       }
     },
     null, // onComplete function handler
