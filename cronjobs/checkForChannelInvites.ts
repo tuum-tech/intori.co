@@ -1,7 +1,7 @@
 import { CronJob } from 'cron'
 import util from 'util'
 import { isAxiosError } from 'axios'
-import { everyFiveMinutes } from './cronJobHelpers'
+import { everyMinute } from './cronJobHelpers'
 import { getIntoriChannelInvites } from '../utils/warpcast'
 import {
   acceptChannelInvite,
@@ -13,7 +13,7 @@ import {
 } from '../models/channelFrames'
 
 export const startCheckForChannelInvitesJob = (): CronJob => new CronJob(
-    everyFiveMinutes,
+    everyMinute,
     async () => {
       try {
         const invites = await getIntoriChannelInvites()
