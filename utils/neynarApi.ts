@@ -313,7 +313,7 @@ export const getUserReactionsToCommentsInChannel = async (params: {
   )
 
   return res.reactions.filter((reaction) => {
-    const isCommentReply = !!reaction.cast.parent_url
+    const isCommentReply = !!reaction.cast.parent_author.fid
 
     return isCommentReply && reaction.cast.channel.id === params.channelId
   })
