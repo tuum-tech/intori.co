@@ -47,3 +47,18 @@ export const isUserMemberOfChannel = async (params: {
     return false
   }
 }
+
+export const getAllChannels = async () => {
+  try {
+    const res = await warpcastApi.get('/v2/all-channels')
+
+    if (!res.data.result?.channels) {
+      return []
+    }
+
+    return res.data.result.channels as Array<{ id: string }>
+  } catch (err) {
+    console.error('Warpcast API error:', err)
+    return []
+  }
+}
