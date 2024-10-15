@@ -344,3 +344,25 @@ export const getMembersOfChannel = async (params: {
 
   return members
 }
+
+export const getModeratedChannelsOfUser = async (fid: number) => {
+  let cursor: string | null = ''
+  const channelIds: string[] = []
+
+  do {
+    const res = await neynar.fetchUserChannelMemberships(fid, {
+      limit: 100,
+      cursor: cursor || undefined
+    })
+
+    const moderatorChannels = res.members.filter((membership) => {
+      return membership.role === 'moderator'
+    }).map((membership) => membership.channel.id)
+
+    channelIds.push(...moderatorChannels)
+
+    cursor = res.next.cursor
+  } while(cursor)
+
+  return channelIds
+}

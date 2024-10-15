@@ -1,8 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '../auth/[...nextauth]'
-import { getAllChannelFrames } from '../../../models/channelFrames'
 import { getPotentialChannelMembers } from '../../../models/potentialChannelMember'
+import { allowedToEditChannel } from '../../../utils/canEditChannel' 
+import { getChannelFrame } from '../../../models/channelFrames'
 
 const getPotentialMembers = async (
   req: NextApiRequest,
@@ -22,16 +23,16 @@ const getPotentialMembers = async (
   const params: { channelId?: string } = {}
 
   if (req.query.channelId) {
-    params.channelId = String(req.query.channelId)
+    const channel = await getChannelFrame(req.query.channelId as string)
 
-    if (!session.admin) {
-      const channelsIOwn = await getAllChannelFrames({ adminFid: fid })
-      const channelIdIsMine = channelsIOwn.some(
-        (channel) => channel.channelId === params.channelId
-      )
-      if (!channelIdIsMine) {
+    if (!channel) {
+      return res.status(404).json({ error: 'Channel not found' })
+    }
+
+    const allowedToSee = await allowedToEditChannel(fid, channel)
+
+    if (!allowedToSee) {
         return res.status(403).end()
-      }
     }
   }
 
