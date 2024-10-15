@@ -13,6 +13,7 @@ import { MostAnsweredQuestionsChart } from '../../components/Stats/MostAnsweredQ
 import { TopResponsesForTopQuestions } from '../../components/Stats/TopResponsesForTopQuestions'
 import { Empty } from '../../components/common/Empty'
 import { ChannelCardsContainer, ChannelCardLink } from '../../components/Channels/ChannelCardLink'
+import { getModeratedChannelsOfUser } from '../../utils/neynarApi'
 
 type Props = {
   showSuperAdminTab: boolean
@@ -31,15 +32,26 @@ export const getServerSideProps = (async (context) => {
     }
   }
 
-  // TODO: get channel ids that user is moderator of
-  // only show channel frames that i am moderator of or owner of
-  const channelFramesToShow = await getAllChannelFrames({
-    adminFid: session.admin ? undefined : parseInt(session.user.fid, 10)
+  const fid = parseInt(session.user.fid, 10)
+
+  const allChannelFrames = await getAllChannelFrames()
+  const moderatedChannelIds = session.admin ? [] : await getModeratedChannelsOfUser(fid)
+
+  const channelFramesToShow = allChannelFrames.filter((channelFrame) => {
+    if (session.admin) {
+      return true
+    }
+
+    if (channelFrame.adminFid === fid) {
+      return true
+    }
+
+    return moderatedChannelIds.includes(channelFrame.channelId)
   })
 
   return {
     props: {
-      showSuperAdminTab: !!session.admin,
+      showSuperAdminTab: session.admin,
       channelFramesToShow
     }
   }
