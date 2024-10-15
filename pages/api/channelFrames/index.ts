@@ -5,6 +5,7 @@ import * as yup from 'yup'
 import { getChannelDetails } from '../../../utils/neynarApi'
 import { ChannelFrameType, getChannelFrame, createChannelFrame } from '../../../models/channelFrames'
 import { allowedToEditChannel } from '@/utils/canEditChannel'
+import { notifyOwnerAndModeratorsOfChannelIntoriAdded } from '../../../utils/sendDirectCast'
 
 const createGetChannelFrames = async (
   req: NextApiRequest,
@@ -53,6 +54,8 @@ const createGetChannelFrames = async (
         adminFid: channel.adminFid as number,
         addedByFid: fid
       } as ChannelFrameType)
+
+        await notifyOwnerAndModeratorsOfChannelIntoriAdded(channelFrame)
 
       return res.status(201).json(channelFrame)
     } catch (err) {

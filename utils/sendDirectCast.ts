@@ -1,5 +1,7 @@
 import axios, { isAxiosError } from 'axios'
 import { v4 as uuid } from 'uuid'
+import { ChannelFrameType } from '../models/channelFrames'
+import { getMembersOfChannel } from './neynarApi'
 
 const WARPCAST_API_KEY = process.env.WARPCAST_API_KEY
 
@@ -45,4 +47,33 @@ export const notifySuperAdminOfError = async (error: unknown, where: string): Pr
       message: `${where} Error: ${(error as Error)?.message}`
     }))
   )
+}
+
+export const notifyOwnerAndModeratorsOfChannelIntoriAdded = async (newChannelFrame: ChannelFrameType): Promise<void> => {
+  const membersOfChannel = await getMembersOfChannel({
+    channelId: newChannelFrame.channelId
+  })
+
+  const fidsToNotify = membersOfChannel.filter((member) => member.role === 'moderator').map((member) => member.user.fid)
+  fidsToNotify.push(newChannelFrame.adminFid)
+
+  for (let i = 0; i < fidsToNotify.length; i++) {
+    const fid = fidsToNotify[i]
+
+    await sendDirectCast({
+      recipientFid: fid,
+      message: `
+🚀 Intori has successfully added your channel /${newChannelFrame.channelId}!
+
+
+Here is your channel frame ready to share:
+${process.env.NEXTAUTH_URL}/frames/channels/${newChannelFrame.channelId}}
+
+To edit your channel's frame, see potential members, and stats 👉 visit https://www.intori.co
+`
+    })
+
+    // for rate limiting
+    await new Promise((resolve) => setTimeout(resolve, 500))
+  }
 }
