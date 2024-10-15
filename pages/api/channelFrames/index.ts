@@ -4,6 +4,7 @@ import { authOptions } from '../auth/[...nextauth]'
 import * as yup from 'yup'
 import { getChannelDetails } from '../../../utils/neynarApi'
 import { ChannelFrameType, getChannelFrame, createChannelFrame } from '../../../models/channelFrames'
+import { allowedToEditChannel } from '@/utils/canEditChannel'
 
 const createGetChannelFrames = async (
   req: NextApiRequest,
@@ -40,7 +41,8 @@ const createGetChannelFrames = async (
         return res.status(400).json({ error: 'Channel frame is not available.' })
       }
 
-      if (!session.admin && channel.adminFid !== fid) {
+      const allowed = await allowedToEditChannel(fid, channel)
+      if (!allowed) {
         return res.status(403).json({
           error: 'Sorry, you must be the owner of the channel to create an Intori channel frame.'
         })
@@ -48,7 +50,8 @@ const createGetChannelFrames = async (
 
       const channelFrame = await createChannelFrame({
         ...validBody,
-        adminFid: channel.adminFid as number
+        adminFid: channel.adminFid as number,
+        addedByFid: fid
       } as ChannelFrameType)
 
       return res.status(201).json(channelFrame)
