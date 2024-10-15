@@ -90,7 +90,7 @@ export const OnePotentialMember: React.FC<Props> = ({
         rel="noopener noreferrer"
       >
         <div className={styles.imageContainer}>
-          <img src={userDetails.image} alt={userDetails.username} width={40} height={40} />
+          <img src={userDetails.image ?? '/assets/templates/avatar_fallback.png'} alt={userDetails.username} width={40} height={40} />
         </div>
         <h4>{userDetails.username}</h4>
       </a>
@@ -99,7 +99,7 @@ export const OnePotentialMember: React.FC<Props> = ({
         <div className={styles.castStats}>
           <div> {castDetails.reactions.likes_count} Like{castDetails.reactions.likes_count === 1 ? '' : 's'} </div>
           •
-          <div> {castDetails.replies.count} Replies </div>
+          <div> {castDetails.replies.count} Repl{castDetails.replies.count === 1 ? 'y' : 'ies'} </div>
           •
           <a
             href={`https://warpcast.com/${userDetails.username}/${castDetails.hash}`}

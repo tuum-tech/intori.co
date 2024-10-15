@@ -19,6 +19,7 @@ export const ChannelCardLink: React.FC<Props> = ({
   const [channelDetails, setChannelDetails] = useState<FarcasterChannelType>()
   const [potentialMembers, setPotentialMembers] = useState<PotentialChannelMemberType[]>([])
   const [channelMembers, setChannelMembers] = useState<number>(0)
+  const [loadingPotentialMembers, setLoadingPotentialMembers] = useState<boolean>(true)
 
   useEffect(() => {
     const fetchChannelDetails = async () => {
@@ -42,6 +43,7 @@ export const ChannelCardLink: React.FC<Props> = ({
         setPotentialMembers([])
         toast.error(`Failed to fetch potential members for ${channelFrame.channelId}. Please try again later.`)
       }
+      setLoadingPotentialMembers(false)
     }
 
     fetchPotentialMembers()
@@ -94,9 +96,16 @@ export const ChannelCardLink: React.FC<Props> = ({
       <div className={styles.stats}>
         <span>{shortenNumber(channelMembers)} Member{channelMembers === 1 ? '' : 's'}</span> • <span>{shortenNumber(channelDetails.followCount ?? 0)} Followers</span>
       </div>
-      <h3>
-        {potentialMembers.length} Potential Member{potentialMembers.length === 1 ? '' : 's'}
-      </h3>
+      { !loadingPotentialMembers && (
+        <h3>
+          {potentialMembers.length} Potential Member{potentialMembers.length === 1 ? '' : 's'}
+        </h3>
+      )}
+      { loadingPotentialMembers && (
+        <h3>
+          <Skeleton width={100} inline />
+        </h3>
+      )}
     </a>
   )
 }
