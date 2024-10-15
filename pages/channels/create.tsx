@@ -92,7 +92,7 @@ const CreateChannelFrame: React.FC<Props> = ({ allQuestions }) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={formik.touched.channelId ? formik.errors.channelId : ''}
-            note="You must be the owner to create a frame for this channel."
+            note="You must be the owner or a moderator to create a frame for this channel."
             required
           />
 
