@@ -12,6 +12,7 @@ import {
   deletePotentialChannelMember
 } from '../models/potentialChannelMember'
 import { isUserMemberOfChannel } from '../utils/warpcast'
+import { notifySuperAdminOfError } from '../utils/sendDirectCast'
 
 export const startCheckForPotentialChannelMembersJob = (): CronJob => new CronJob(
     everyFiveMinutes,
@@ -32,13 +33,17 @@ export const startCheckForPotentialChannelMembersJob = (): CronJob => new CronJo
         for (let i = 0; i < fidsToCheckReactions.length; i++) {
           const fid = fidsToCheckReactions[i]
 
-          const reactions = await getUserReactionsToCommentsInChannel({
-            channelId,
-            fid
-          })
+          try {
+            const reactions = await getUserReactionsToCommentsInChannel({
+              channelId,
+              fid
+            })
 
-          await new Promise((resolve) => setTimeout(resolve, 500))
-          reactionsToCheck.push(...reactions)
+            await new Promise((resolve) => setTimeout(resolve, 500))
+            reactionsToCheck.push(...reactions)
+          } catch (err) {
+            await notifySuperAdminOfError(err, `cronjob get reactions of ${fid} in channel ${channelId}`)
+          }
         }
 
         await Promise.all(
