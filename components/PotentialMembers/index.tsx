@@ -21,6 +21,7 @@ export const ListPotentialMembers: React.FC<Props> = ({
     const fetchPotentialMembers = async () => {
       try {
         const res = await getPotentialMembers({ channelId })
+        res.data.sort((a, b) => a.fid - b.fid) // sort fids together
         setPotentialMembers(res.data)
       } catch (err) {
         toast.error('Something went wrong loading this channel\'s potential members')
