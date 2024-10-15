@@ -4,11 +4,13 @@ export type ChannelFrameType = {
   channelId: string
   introQuestionIds: string[] // question ids
   adminFid: number
+  addedByFid?: number
 }
 
 export type CreateChannelFrameType = {
   channelId: string
   introQuestionIds: string[] // question ids
+  addedByFid?: number
 }
 export type UpdateChannelFrameBodyType = {
   introQuestionIds: string[] // question ids
