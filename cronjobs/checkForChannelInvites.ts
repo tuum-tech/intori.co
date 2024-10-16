@@ -11,6 +11,7 @@ import {
   createChannelFrame,
   getChannelFrame
 } from '../models/channelFrames'
+import { notifyOwnerAndModeratorsOfChannelIntoriAdded } from '../utils/sendDirectCast'
 
 export const startCheckForChannelInvitesJob = (): CronJob => new CronJob(
     everyMinute,
@@ -63,6 +64,7 @@ export const startCheckForChannelInvitesJob = (): CronJob => new CronJob(
           }
 
           await createChannelFrame(newChannelFrame)
+          await notifyOwnerAndModeratorsOfChannelIntoriAdded(newChannelFrame)
         }
       } catch (err) {
         console.error('Check for channel invites error:')
