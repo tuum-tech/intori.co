@@ -14,6 +14,7 @@ import { SelectIntroQuestions } from '../../../components/common/SelectIntroQues
 import { PrimaryButton, SecondaryButton } from '../../../components/common/Button'
 import Input from '../../../components/common/Input'
 import { handleError } from '../../../utils/handleError'
+import { allowedToEditChannel } from "../../../utils/canEditChannel";
 
 // requests
 import  { updateChannelFrame } from '../../../requests/channelFrames'
@@ -55,10 +56,12 @@ export const getServerSideProps = (async (context) => {
     }
   }
 
-  if (
-    !session.admin &&
-    channelFrame.adminFid !== parseInt(session.user.fid, 10)
-  ) {
+  const allowedToView = await allowedToEditChannel(
+    parseInt(session.user.fid, 10),
+    channelFrame
+  )
+
+  if (!allowedToView) {
     return {
       notFound: true
     }

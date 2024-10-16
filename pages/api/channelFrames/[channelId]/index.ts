@@ -7,6 +7,7 @@ import {
   updateChannelFrame,
   UpdateChannelFrameBodyType
 } from '../../../../models/channelFrames'
+import { allowedToEditChannel } from '../../../../utils/canEditChannel'
 
 const updateDeleteGetChannelFrame = async (
   req: NextApiRequest,
@@ -33,7 +34,8 @@ const updateDeleteGetChannelFrame = async (
     })
   }
 
-  if (!session.admin && channelFrame.adminFid !== fid) {
+  const allowed = await allowedToEditChannel(fid, channelFrame)
+  if (!allowed) {
     return res.status(403).json({
       error: "You do not have permission to update this channel frame."
     })
