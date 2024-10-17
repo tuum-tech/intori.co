@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useMemo, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { getPotentialMembers } from '../../requests/potentialChannelMembers'
 import { PotentialChannelMemberType } from '../../models/potentialChannelMember'
 import { OnePotentialMember } from './OnePotentialMember'
 import { Empty } from '../common/Empty'
-import { SubSection } from '../common/Section'
+import { Section } from '../common/Section'
 import styles from './styles.module.css'
 
 type Props = {
@@ -32,8 +32,16 @@ export const ListPotentialMembers: React.FC<Props> = ({
     fetchPotentialMembers()
   }, [channelId])
 
+  const title = useMemo(() => {
+    if (loading) {
+      return 'Potential Members'
+    }
+
+    return `${potentialMembers.length} Potential Member${potentialMembers.length === 1 ? '' : 's'}`
+  }, [loading, potentialMembers])
+
   return (
-    <SubSection title="Potential Members">
+    <Section title={title}>
       <div className={styles.listContainer}>
         <div>
           {
@@ -56,7 +64,7 @@ export const ListPotentialMembers: React.FC<Props> = ({
           }
         </div>
       </div>
-    </SubSection>
+    </Section>
   )
-  }
+}
 
