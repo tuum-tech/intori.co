@@ -122,7 +122,6 @@ const Channel: NextPage<Props> = ({
     <CategoriesProvider>
       <AppLayout>
         <Section title={`/${channelFrame.channelId}`}>
-          <ListPotentialMembers channelId={channelFrame.channelId} />
 
           <SubSection title="Your Intro Frame">
             <Input
@@ -145,10 +144,13 @@ const Channel: NextPage<Props> = ({
             </SectionBottomActions>
           </SubSection>
 
+
           <SubSection title="Post a Single Question Frame">
             <SelectQuestion channelId={channelFrame.channelId} questions={allQuestions} />
           </SubSection>
         </Section>
+
+        <ListPotentialMembers channelId={channelFrame.channelId} />
 
         <Section title={`Stats for /${channelFrame.channelId}`}>
           <GeneralStatsSection          channelId={channelFrame.channelId} />
