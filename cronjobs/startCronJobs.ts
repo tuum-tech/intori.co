@@ -1,11 +1,11 @@
 import config from '../config'
 config()
 
-import { startCheckForChannelInvitesJob } from './checkForChannelInvites'
 import { startCheckForPotentialChannelMembersJob } from './checkForPotentialChannelMembers'
+import { startCheckForNewChannelsJob } from './checkForNewChannels'
 
 const startCronJobs = (): void => {
-  startCheckForChannelInvitesJob()
+  startCheckForNewChannelsJob()
   startCheckForPotentialChannelMembersJob()
 }
 

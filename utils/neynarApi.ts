@@ -293,7 +293,6 @@ export const acceptChannelInvite = async (params: {
   channelId: string
   role: 'moderator' | 'member'
 }) => {
-  console.log('Accepting channel invite', params)
   return neynar.respondChannelInvite(
     process.env.NEYNAR_SIGNER_UUID ?? 'missing signer uuid',
     params.channelId,
@@ -349,9 +348,9 @@ export const getMembersOfChannel = async (params: {
   return members
 }
 
-export const getModeratedChannelsOfUser = async (fid: number) => {
+export const getMembershipsOfUser = async (fid: number) => {
   let cursor: string | null = ''
-  const channelIds: string[] = []
+  const channelMemberships = []
 
   do {
     const res = await neynar.fetchUserChannelMemberships(fid, {
@@ -359,14 +358,20 @@ export const getModeratedChannelsOfUser = async (fid: number) => {
       cursor: cursor || undefined
     })
 
-    const moderatorChannels = res.members.filter((membership) => {
-      return membership.role === 'moderator'
-    }).map((membership) => membership.channel.id)
-
-    channelIds.push(...moderatorChannels)
+    channelMemberships.push(...res.members)
 
     cursor = res.next.cursor
   } while(cursor)
 
-  return channelIds
+  return channelMemberships
+}
+
+export const getModeratedChannelsOfUser = async (fid: number) => {
+  const channelMemberships = await getMembershipsOfUser(fid)
+
+  const moderatorChannels = channelMemberships.filter((membership) => {
+    return membership.role === 'moderator'
+  })
+
+  return moderatorChannels.map((membership) => membership.channel.id)
 }
