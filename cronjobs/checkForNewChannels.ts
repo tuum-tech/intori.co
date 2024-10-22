@@ -30,8 +30,6 @@ export const startCheckForNewChannelsJob = (): CronJob => new CronJob(
             channelId
           })
 
-          console.log('Following channel:', channelId, ' – is member:', isMember)
-
           if (!isMember) {
             continue
           }
