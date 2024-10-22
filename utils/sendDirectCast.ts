@@ -55,7 +55,6 @@ export const notifyOwnerAndModeratorsOfChannelIntoriAdded = async (newChannelFra
   })
 
   const fidsToNotify = membersOfChannel.filter((member) => member.role === 'moderator').map((member) => member.user.fid)
-  fidsToNotify.push(newChannelFrame.adminFid)
 
   for (let i = 0; i < fidsToNotify.length; i++) {
     const fid = fidsToNotify[i]
@@ -67,7 +66,7 @@ export const notifyOwnerAndModeratorsOfChannelIntoriAdded = async (newChannelFra
 
 
 Here is your channel frame ready to share:
-${process.env.NEXTAUTH_URL}/frames/channels/${newChannelFrame.channelId}}
+${process.env.NEXTAUTH_URL}/frames/channels/${newChannelFrame.channelId}
 
 To edit your channel's frame, see potential members, and stats 👉 visit https://www.intori.co
 `
