@@ -190,3 +190,15 @@ I matched with @${params.userNameToTag} thanks to the introduction from @intori.
     }): string => {
       return `${process.env.NEXTAUTH_URL}/frames/unlocked-insights?fsid=${params.frameSessionId}`
     }
+
+    export const createOnboardStartUrl = () => {
+      return `${process.env.NEXTAUTH_URL}/frames/onboard`
+    }
+
+    export const createOnboardNoChannelsUrl = () => {
+      return `${process.env.NEXTAUTH_URL}/frames/onboard-no-channels`
+    }
+
+    export const createOnboardSuccessUrl = () => {
+      return `${process.env.NEXTAUTH_URL}/frames/onboard-success`
+    }
