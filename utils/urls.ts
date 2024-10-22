@@ -185,8 +185,24 @@ I matched with @${params.userNameToTag} thanks to the introduction from @intori.
     return `https://warpcast.com/~/compose?${queryParts.join('&')}`
   }
 
-    export const createUnlockedInsightsUrl = (params: {
-      frameSessionId: string
-    }): string => {
-      return `${process.env.NEXTAUTH_URL}/frames/unlocked-insights?fsid=${params.frameSessionId}`
-    }
+export const createUnlockedInsightsUrl = (params: {
+  frameSessionId: string
+}): string => {
+  return `${process.env.NEXTAUTH_URL}/frames/unlocked-insights?fsid=${params.frameSessionId}`
+}
+
+export const createOnboardStartUrl = () => {
+  return `${process.env.NEXTAUTH_URL}/frames/onboard`
+}
+
+export const createOnboardNoChannelsUrl = () => {
+  return `${process.env.NEXTAUTH_URL}/frames/onboard-no-channels`
+}
+
+export const createOnboardSuccessUrl = () => {
+  return `${process.env.NEXTAUTH_URL}/frames/onboard-success`
+}
+
+export const createOnboardActivateUrl = () => {
+  return `${process.env.NEXTAUTH_URL}/api/frames/activate`
+}

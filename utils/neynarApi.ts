@@ -375,3 +375,10 @@ export const getModeratedChannelsOfUser = async (fid: number) => {
 
   return moderatorChannels.map((membership) => membership.channel.id)
 }
+
+export const intoriFollowChannel = async (channelId: string) => {
+  await neynar.followChannel(
+    process.env.NEYNAR_SIGNER_UUID ?? 'missing signer uuid',
+    channelId
+  )
+}
