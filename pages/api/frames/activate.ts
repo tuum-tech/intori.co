@@ -55,7 +55,7 @@ const activateIntori = async (
 
   const directCastMessageParts = [
     `Congrats on activating intori! 🎉`,
-    ''
+    '\n'
   ]
 
   for (let i = 0; i < moderatedChannelIds.length; i++) {
@@ -74,14 +74,14 @@ const activateIntori = async (
 
   directCastMessageParts.push(...[
     `Next steps: simply send a member request from each of these channels to @intori, and you're all set! Once we receive the requests, we’ll automatically accept them, and your channels will start receiving:`,
-    '',
+    '\n',
     `👉 Introduction question frame`,
     `👉 Tracking of potential members`,
     `👉 Channel stats`,
     `👉 Branded insights frame generator`,
-    '',
+    '\n',
     `Looking forward to seeing your community grow with intori!`,
-    '',
+    '\n',
     `intori Team`,
   ])
 
