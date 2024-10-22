@@ -4,7 +4,7 @@ import { FrameGenerator } from '../../components/farcaster/FrameGenerator'
 import {
     IntoriFrameType
 } from '../../utils/frames/intoriFrameForms'
-import { createStartNewFrameQuestionUrl } from '../../utils/urls'
+import { createOnboardActivateUrl } from '../../utils/urls'
  
 type Props = {
   imageUrl: string
@@ -25,7 +25,7 @@ export const getServerSideProps = (async () => {
           {
             type: 'button',
             content: 'Activate',
-            postUrl: createStartNewFrameQuestionUrl()
+            postUrl: createOnboardActivateUrl()
           }
         ]
       }
