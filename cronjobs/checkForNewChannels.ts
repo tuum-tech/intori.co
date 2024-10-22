@@ -3,8 +3,7 @@ import util from 'util'
 import { isAxiosError } from 'axios'
 import { everyMinute } from './cronJobHelpers'
 import {
-  getChannelDetails,
-  getMembershipsOfUser
+  getChannelDetails
 } from '../utils/neynarApi'
 import {
   getAllFollowingChannelIdsOfUser,
@@ -30,6 +29,8 @@ export const startCheckForNewChannelsJob = (): CronJob => new CronJob(
             fid: intoriFid,
             channelId
           })
+
+          console.log('Following channel:', channelId, ' – is member:', isMember)
 
           if (!isMember) {
             continue
