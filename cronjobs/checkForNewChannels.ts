@@ -7,6 +7,10 @@ import {
   getMembershipsOfUser
 } from '../utils/neynarApi'
 import {
+  getAllFollowingChannelIdsOfUser,
+  isUserMemberOfChannel
+} from '../utils/warpcast'
+import {
   createChannelFrame,
   getChannelFrame
 } from '../models/channelFrames'
@@ -16,28 +20,36 @@ export const startCheckForNewChannelsJob = (): CronJob => new CronJob(
     everyMinute,
     async () => {
       try {
-        const currentChannelMemberships = await getMembershipsOfUser(
-          parseInt(process.env.INTORI_USER_FID ?? '294394', 10) ?? 294394
-        )
+        const intoriFid = parseInt(process.env.INTORI_USER_FID ?? '294394', 10) ?? 294394
+        const followedChannelIds = await getAllFollowingChannelIdsOfUser(intoriFid)
 
-        for (let i = 0; i < currentChannelMemberships.length; i++) {
-          const { channel } = currentChannelMemberships[i]
+        for (let i = 0; i < followedChannelIds.length; i++) {
+          const channelId = followedChannelIds[i]
 
-          const channelFrameExists = await getChannelFrame(channel.id)
+          const isMember = await isUserMemberOfChannel({
+            fid: intoriFid,
+            channelId
+          })
+
+          if (!isMember) {
+            continue
+          }
+
+          const channelFrameExists = await getChannelFrame(channelId)
 
           if (channelFrameExists) {
             continue
           }
 
-          console.log(channel.id, ' is a new channel')
+          console.log(channelId, ' is a new channel')
 
-          const channelDetails = await getChannelDetails(channel.id)
+          const channelDetails = await getChannelDetails(channelId)
           if (!channelDetails || !channelDetails.adminFid) {
             continue
           }
 
           const newChannelFrame = {
-            channelId: channel.id,
+            channelId,
             introQuestionIds: [
               'c9c8b085-6177-4455-9705-4e548007ddc0',
               'de471cde-a3c5-4584-9b68-7e7e1b2346fd',

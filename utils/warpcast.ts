@@ -48,6 +48,25 @@ export const isUserMemberOfChannel = async (params: {
   }
 }
 
+export const getAllFollowingChannelIdsOfUser = async (
+  fid: number
+): Promise<string[]> => {
+  try {
+    const res = await warpcastApi.get('/v1/user-following-channels', {
+      params: {
+        fid
+      }
+    })
+
+    return res.data.result.channels.map(
+      (channel: { id: string }) => channel.id
+    )
+  } catch (err) {
+    console.error(`Warpcast API error failed to get following channels for user: ${fid}`, err)
+    return []
+  }
+}
+
 export const getAllChannels = async () => {
   try {
     const res = await warpcastApi.get('/v2/all-channels')
