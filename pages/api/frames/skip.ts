@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { validateFarcasterPacketMessage } from '../utils/farcasterServer'
 import { getQuestionById } from '../../../models/questions'
-import { getFrameSessionFromRequest } from '../../../models/frameSession'
+import { getFrameSessionFromRequest, incrementSessionQuestion } from '../../../models/frameSession'
 import { createUserQuestionSkip } from '../../../models/userQuestionSkip'
 import {
   createFrameErrorUrl,
@@ -45,6 +45,8 @@ const skipQuestion = async (
         createFrameErrorUrl()
       )
     }
+
+    await incrementSessionQuestion(session.id)
 
     await createUserQuestionSkip({
       fid: session.fid,
