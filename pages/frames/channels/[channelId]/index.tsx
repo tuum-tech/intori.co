@@ -30,7 +30,7 @@ export const getServerSideProps = (async (context) => {
   }
 
   const frameUrl = `${process.env.NEXTAUTH_URL}/frames/channels/${channelId}`
-  const imageUrl = `${process.env.NEXTAUTH_URL}/api/frames/channels/${channelId}/images/intro`
+  const imageUrl = `${process.env.NEXTAUTH_URL}/api/frames/channels/${channelId}/images/intro?v=2`
 
   return {
     props: {
