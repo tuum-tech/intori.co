@@ -8,7 +8,11 @@ import {
 const addChannelImage = async (
   baseImage: Jimp,
   circleMask: Jimp,
-  channelImage: Jimp
+  channelImage: Jimp,
+  location: {
+    x: number
+    y: number
+  }
 ) => {
     const circleImageSize = 58
     circleMask.resize(circleImageSize, circleImageSize)
@@ -23,7 +27,7 @@ const addChannelImage = async (
 
     channelImage.mask(circleMask, 0, 0)
 
-    baseImage.composite(channelImage, 91, 177)
+    baseImage.composite(channelImage, location.x, location.y)
 }
 
 export const createUnlockedInsightFrame = async (params: {
@@ -44,7 +48,6 @@ export const createUnlockedInsightFrame = async (params: {
     Jimp.read(inPublicFolder('/assets/templates/circle_mask.png')),
   ])
 
-  await addChannelImage(baseImage, circleMask, channelImage)
 
   let yOffset = 0
   const yOffsetIncrement = 113
@@ -52,11 +55,17 @@ export const createUnlockedInsightFrame = async (params: {
   for (let i = 0; i < answers.length; i++) {
     const { question, answer } = answers[i]
 
+    // draw channel image
+    await addChannelImage(baseImage, circleMask, channelImage, {
+      x: 91,
+      y: 177 + yOffset
+    })
+
     // draw question
     baseImage.print(
       font21regularWhite,
       161,
-      197 + yOffset,
+      190 + yOffset,
       {
         text: question,
         alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
@@ -70,7 +79,7 @@ export const createUnlockedInsightFrame = async (params: {
     baseImage.print(
       font21regularWhite,
       161,
-      247 + yOffset,
+      240 + yOffset,
       {
         text: answer,
         alignmentX: Jimp.HORIZONTAL_ALIGN_RIGHT,
