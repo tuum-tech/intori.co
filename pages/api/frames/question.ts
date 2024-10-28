@@ -112,8 +112,6 @@ const newQuestion = async (
     const currentQuestionId = req.query.qi as string
     const requestedAnswerOffset = parseInt(req.query.ioff as string || '0', 10)
 
-    console.log('requesting question', req.query.qi, requestedAnswerOffset)
-
     const question = await getQuestionById(currentQuestionId)
 
     if (!question) {
