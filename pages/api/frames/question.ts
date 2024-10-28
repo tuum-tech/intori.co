@@ -7,6 +7,8 @@ import {
 import { createFrameSession } from '../../../models/frameSession'
 import { getChannelFrame } from '../../../models/channelFrames'
 import { saveUserFollowings } from '../../../models/userFollowings'
+import { didUserSkipQuestion } from '../../../models/userQuestionSkip'
+import { getQuestionById } from '../../../models/questions'
 import {
   createFrameQuestionUrl,
   createFrameErrorUrl,
@@ -109,14 +111,30 @@ const newQuestion = async (
     const currentQuestionId = req.query.qi as string
     const requestedAnswerOffset = parseInt(req.query.ioff as string || '0', 10)
 
-    return res.redirect(
-      307,
-      createFrameQuestionUrl({
-        questionId: currentQuestionId,
-        answerOffset: requestedAnswerOffset,
-        frameSessionId: session.id
-      })
+    const question = await getQuestionById(currentQuestionId)
+
+    if (!question) {
+      return res.redirect(
+        307,
+        createFrameErrorUrl()
+      )
+    }
+
+    const questionIsSkipped = await didUserSkipQuestion(
+      fid, 
+      question.question
     )
+
+    if (!questionIsSkipped) {
+      return res.redirect(
+        307,
+        createFrameQuestionUrl({
+          questionId: currentQuestionId,
+          answerOffset: requestedAnswerOffset,
+          frameSessionId: session.id
+        })
+      )
+    }
   }
 
   if (session.isIntroFrame) {
@@ -129,11 +147,6 @@ const newQuestion = async (
       })
     )
   }
-
-  console.log('here, no qi query given')
-
-  // TODO: need to think about what to do with skipped question for single question frames
-  // const skippedQuestions = await getLastSkippedQuestions(fid, 5)
 
   return res.redirect(
     307,
