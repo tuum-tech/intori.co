@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { toast } from 'react-toastify'
 import { ChannelFrameType } from '../../models/channelFrames'
 import { FarcasterChannelType } from '../../utils/neynarApi'
@@ -6,7 +6,7 @@ import { PotentialChannelMemberType } from '../../models/potentialChannelMember'
 import { Skeleton } from '../common/Skeleton'
 import { getFarcasterChannelDetails, getChannelMembers } from '../../requests/farcaster'
 import { getPotentialMembers } from '../../requests/potentialChannelMembers'
-import { shortenNumber } from '../../utils/textHelpers'
+import { shortenNumber, timeAgo } from '../../utils/textHelpers'
 import styles from './styles.module.css'
 
 type Props = {
@@ -64,6 +64,16 @@ export const ChannelCardLink: React.FC<Props> = ({
     fetchChannelMembers()
   }, [channelFrame])
 
+  const createdAgo = useMemo(() => {
+    if (!channelFrame?.createdAt) {
+      return ''
+    }
+
+    const createdAtDate = new Date(channelFrame.createdAt)
+
+    return `Joined ${timeAgo(createdAtDate.toISOString())}`
+  }, [channelFrame])
+
   if (!channelDetails) {
     return (
       <a href="#" className={styles.channelCard}>
@@ -76,6 +86,9 @@ export const ChannelCardLink: React.FC<Props> = ({
         </h4>
         <div className={styles.stats}>
           <span><Skeleton width={50} inline /></span> • <span><Skeleton width={80} inline /></span>
+        </div>
+        <div className={styles.stats}>
+          { createdAgo }
         </div>
         <h3>
           <Skeleton width={100} inline />
@@ -95,6 +108,9 @@ export const ChannelCardLink: React.FC<Props> = ({
       </h4>
       <div className={styles.stats}>
         <span>{shortenNumber(channelMembers)} Member{channelMembers === 1 ? '' : 's'}</span> • <span>{shortenNumber(channelDetails.followCount ?? 0)} Followers</span>
+      </div>
+      <div className={styles.stats}>
+        { createdAgo }
       </div>
       { !loadingPotentialMembers && (
         <h3>
