@@ -34,8 +34,11 @@ export const CategoriesProvider = ({ children }: { children: ReactNode }) => {
   const fetchAllCategories = useCallback(async () => {
     try {
       const res = await getAllCategories()
-      console.log('total categories:', res.data.length)
-      setAllCategories(res.data)
+      setAllCategories(
+        res.data.sort(
+          (a: CategoryType, b: CategoryType) => a.category.localeCompare(b.category)
+        )
+      )
     } catch (err) {
       toast.error('Failed to load categories. Please try again later.')
       setAllCategories([])
@@ -60,7 +63,9 @@ export const CategoriesProvider = ({ children }: { children: ReactNode }) => {
   const removeCategory = async (categoryId: string) => {
     try {
       await deleteCategory(categoryId)
-      setAllCategories(allCategories.filter(c => c.id !== categoryId))
+      setAllCategories(
+        allCategories.filter(c => c.id !== categoryId)
+      )
       toast.success('Category removed.')
     } catch (err) {
       toast.error('Failed to remove category. Please try again later.')
