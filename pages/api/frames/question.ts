@@ -12,7 +12,8 @@ import { getQuestionById } from '../../../models/questions'
 import {
   createFrameQuestionUrl,
   createFrameErrorUrl,
-  createTutorialFrameUrl
+  createTutorialFrameUrl,
+  createUnlockedInsightsUrl
 } from '../../../utils/urls'
 
 // User is requesting a new question
@@ -140,14 +141,16 @@ const newQuestion = async (
   }
 
   if (session.isIntroFrame) {
-    const introQuestionIdToShow = channelFrame.introQuestionIds[session.questionNumber]
+    if (session.questionNumber === channelFrame.introQuestionIds.length) {
+      return res.redirect(
+        307,
+        createUnlockedInsightsUrl({
+          frameSessionId: session.id
+        })
+      )
+    }
 
-    console.log({
-      isIntroFrame: true,
-      introQuestionIdToShow ,
-      questionNumber: session.questionNumber,
-      questionIds: session.questionIds
-    })
+    const introQuestionIdToShow = channelFrame.introQuestionIds[session.questionNumber]
 
     return res.redirect(
       createFrameQuestionUrl({
