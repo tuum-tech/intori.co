@@ -10,9 +10,10 @@ import { createUnlockedInsightFrame } from '@/utils/frames/createUnlockedInsight
 
 const getLastResponseFromFrameSession = async (
   session: FrameSessionType
-): Promise<UserAnswerType | null> => {
+): Promise<UserAnswerType[]> => {
   const { questionIds } = session
-  questionIds.reverse()
+
+  const answersToShow: UserAnswerType[] = []
 
   for (let i = 0; i < questionIds.length; i++) {
     const question = await getQuestionById(questionIds[i])
@@ -27,10 +28,10 @@ const getLastResponseFromFrameSession = async (
       continue
     }
 
-    return userAnswer
+    answersToShow.push(userAnswer)
   }
 
-  return null
+  return answersToShow
 }
 
 // This will generate the 'you unlocked new insight' frame
@@ -60,9 +61,8 @@ const createUnlockedInsightImage  = async (
     )
   }
 
-  const responseToShow = await getLastResponseFromFrameSession(session)
-  if (!responseToShow) {
-    console.log('No response found from questions saved in session')
+  const answersToShowAsInsights = await getLastResponseFromFrameSession(session)
+  if (!answersToShowAsInsights.length) {
     return res.redirect(
       307,
       createFrameErrorUrl()
@@ -80,8 +80,7 @@ const createUnlockedInsightImage  = async (
   }
 
   const buffer = await createUnlockedInsightFrame({
-    question: responseToShow.question,
-    answer: responseToShow.answer,
+    answers: answersToShowAsInsights,
     channelImageUrl: channelDetails.imageUrl as string
   })
 
