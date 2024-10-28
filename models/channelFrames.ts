@@ -5,6 +5,7 @@ export type ChannelFrameType = {
   introQuestionIds: string[] // question ids
   adminFid: number
   addedByFid?: number
+  createdAt?: number
 }
 
 export type CreateChannelFrameType = {
@@ -29,6 +30,8 @@ const getCollection = () => {
 
 export const createChannelFrame = async (newChannelFrame: ChannelFrameType) => {
   const collection = getCollection()
+
+  newChannelFrame.createdAt = Date.now()
 
   const doc = await collection.add(newChannelFrame)
   const ref = await doc.get()
