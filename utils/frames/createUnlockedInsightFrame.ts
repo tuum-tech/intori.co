@@ -1,6 +1,6 @@
 import Jimp from 'jimp'
 import { inPublicFolder } from '../../utils/paths'
-import { QuestionType } from '../../models/questions'
+import { UserAnswerType } from '../../models/userAnswers'
 import {
   loadFont
 } from './fonts'
@@ -8,7 +8,11 @@ import {
 const addChannelImage = async (
   baseImage: Jimp,
   circleMask: Jimp,
-  channelImage: Jimp
+  channelImage: Jimp,
+  location: {
+    x: number
+    y: number
+  }
 ) => {
     const circleImageSize = 58
     circleMask.resize(circleImageSize, circleImageSize)
@@ -23,15 +27,14 @@ const addChannelImage = async (
 
     channelImage.mask(circleMask, 0, 0)
 
-    baseImage.composite(channelImage, 91, 177)
+    baseImage.composite(channelImage, location.x, location.y)
 }
 
 export const createUnlockedInsightFrame = async (params: {
-  question: string
-  answer: string
+  answers: UserAnswerType[]
   channelImageUrl: string
 }): Promise<Buffer> => {
-  const { question, answer, channelImageUrl } = params
+  const { answers, channelImageUrl } = params
 
   const [
     font21regularWhite,
@@ -40,40 +43,54 @@ export const createUnlockedInsightFrame = async (params: {
     circleMask
   ] = await Promise.all([
     loadFont({ family: 'kumbh_sans', weight: 'regular', size: 21, color: 'white' }),
-    Jimp.read(inPublicFolder('/assets/templates/unlocked_insights_frame.png')),
+    Jimp.read(inPublicFolder(`/assets/templates/unlocked_insights_frame_${answers.length}.png`)),
     Jimp.read(channelImageUrl),
     Jimp.read(inPublicFolder('/assets/templates/circle_mask.png')),
   ])
 
-  await addChannelImage(baseImage, circleMask, channelImage)
 
-  // draw question
-  baseImage.print(
-    font21regularWhite,
-    161,
-    197,
-    {
-      text: question,
-      alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
-      alignmentY: Jimp.VERTICAL_ALIGN_TOP
-    },
-    509,
-    49
-  )
+  let yOffset = 0
+  const yOffsetIncrement = 113
 
-  // draw answer
-  baseImage.print(
-    font21regularWhite,
-    161,
-    247,
-    {
-      text: answer,
-      alignmentX: Jimp.HORIZONTAL_ALIGN_RIGHT,
-      alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
-    },
-    494,
-    33
-  )
+  for (let i = 0; i < answers.length; i++) {
+    const { question, answer } = answers[i]
+
+    // draw channel image
+    await addChannelImage(baseImage, circleMask, channelImage, {
+      x: 91,
+      y: 177 + yOffset
+    })
+
+    // draw question
+    baseImage.print(
+      font21regularWhite,
+      161,
+      190 + yOffset,
+      {
+        text: question,
+        alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
+        alignmentY: Jimp.VERTICAL_ALIGN_TOP
+      },
+      509,
+      49
+    )
+
+    // draw answer
+    baseImage.print(
+      font21regularWhite,
+      161,
+      240 + yOffset,
+      {
+        text: answer,
+        alignmentX: Jimp.HORIZONTAL_ALIGN_RIGHT,
+        alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
+      },
+      494,
+      33
+    )
+
+    yOffset += yOffsetIncrement
+  }
 
   return baseImage.getBufferAsync(Jimp.MIME_PNG)
 }
