@@ -35,6 +35,9 @@
   color: #666;
   font-size: 14px;
 }
+.channelCard .stats + .stats {
+  margin-top: 4px;
+}
 .channelCard h3 {
   color: #FFF;
   font-size: 18px;
