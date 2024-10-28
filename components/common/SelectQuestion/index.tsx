@@ -87,16 +87,16 @@ export const SelectQuestion: React.FC<Props> = ({ channelId, questions }) => {
   }, [questions, questionCategories])
 
   const selectQuestionPlaceholderText = useMemo(() => {
-    if (loadingQuestions) {
-      return 'Loading questions...'
-    }
-
     if (!selectedCategoryId) {
       return 'Select a category first'
     }
 
     return 'Select a question...'
-  }, [selectedCategoryId, loadingQuestions])
+  }, [selectedCategoryId])
+
+  useEffect(() => {
+    setSelectedQuestionId('')
+  }, [selectedCategoryId])
 
   return (
     <>
