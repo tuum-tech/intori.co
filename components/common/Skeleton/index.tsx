@@ -5,14 +5,16 @@ import styles from './Skeleton.module.css'
 
 type Props = {
   width?: string | number
+  height?: string | number
   inline?: boolean
 }
 
-export const Skeleton: React.FC<Props> = ({ width, inline }) => {
+export const Skeleton: React.FC<Props> = ({ width, inline, height }) => {
     return (
       <ReactSkeleton
         className={styles.skeleton}
         width={width}
+        height={height}
         inline={inline}
         duration={0.5}
       />
