@@ -25,7 +25,7 @@ const getCollection = () => {
 
 export const getPotentialChannelMembers = async (params: {
   channelId?: string
-}): Promise<PotentialChannelMemberType[]> => {
+} = {}): Promise<PotentialChannelMemberType[]> => {
   const collection = getCollection()
   let query = collection as FirebaseFirestore.Query<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>
 
