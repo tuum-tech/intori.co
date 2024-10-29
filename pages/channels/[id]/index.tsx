@@ -20,10 +20,9 @@ import { allowedToEditChannel } from "../../../utils/canEditChannel";
 import  { updateChannelFrame } from '../../../requests/channelFrames'
 
 // stats components
+import { ChannelQuestionStats } from '../../../components/Stats/ChannelQuestionStats'
 import { GeneralStatsSection } from '../../../components/Stats/GeneralStatsSection'
-import { UniqueUsersOverTimeChart } from '../../../components/Stats/UniqueUsersOverTimeChart'
 import { MostAnsweredQuestionsChart } from '../../../components/Stats/MostAnsweredQuestionsChart'
-import { TopResponsesForTopQuestions } from '../../../components/Stats/TopResponsesForTopQuestions'
 
 // contexts
 import { CategoriesProvider } from '../../../contexts/useCategories'
@@ -152,11 +151,13 @@ const Channel: NextPage<Props> = ({
 
         <ListPotentialMembers channelId={channelFrame.channelId} />
 
+        <Section title={`Question Stats for /${channelFrame.channelId}`}>
+          <ChannelQuestionStats channelId={channelFrame.channelId} />
+        </Section>
+
         <Section title={`Stats for /${channelFrame.channelId}`}>
           <GeneralStatsSection          channelId={channelFrame.channelId} />
-          <UniqueUsersOverTimeChart     channelId={channelFrame.channelId} />
           <MostAnsweredQuestionsChart   channelId={channelFrame.channelId} />
-          <TopResponsesForTopQuestions  channelId={channelFrame.channelId} />
         </Section>
       </AppLayout>
     </CategoriesProvider>

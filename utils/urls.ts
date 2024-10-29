@@ -204,5 +204,5 @@ export const createOnboardSuccessUrl = () => {
 }
 
 export const createOnboardActivateUrl = () => {
-  return `${process.env.NEXTAUTH_URL}/api/frames/activate`
+  return `${process.env.NEXTAUTH_URL}/api/frames/onboard-success`
 }
