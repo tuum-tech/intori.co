@@ -13,3 +13,20 @@ export const updateChannelFrame = async (
 ): Promise<AxiosResponse<ChannelFrameType>> => {
   return axios.put(`/api/channelFrames/${channelId}`, body)
 }
+
+export type UniquelyCastedQuestionStats = {
+  question: string
+  questionId: string
+  totalResponses: number
+  memberFids: number[]
+  nonMemberFids: number[]
+  responseTotals: {
+    answer: string
+    count: number
+  }[]
+}
+export const getUniqueChannelQuestionStats = (
+  channelId: string
+): Promise<AxiosResponse<UniquelyCastedQuestionStats[]>> => {
+  return axios.get(`/api/channelFrames/${channelId}/stats/questions`)
+}

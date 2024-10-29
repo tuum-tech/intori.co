@@ -378,9 +378,17 @@ export const getLastAnsweredQuestionForUser = async (fid: number): Promise<UserA
   return querySnapshot.docs[0].data() as UserAnswerType
 }
 
-export const getAllUserResponses = async () => {
+export const getAllUserResponses = async (params: {
+  channelId?: string
+} = {}) => {
   const collection = getCollection()
-  const querySnapshot = await collection.get()
+  let query = collection as FirebaseFirestore.Query<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>
+
+  if (params.channelId) {
+    query = query.where('channelId', '==', params.channelId)
+  }
+
+  const querySnapshot = await query.get()
 
   return querySnapshot.docs.map(
     (doc) => {
@@ -620,7 +628,7 @@ export const countUserAnswersForQuestion = async (question: string, options: {
       const answer = data.answer
 
       if (!answerCountMap.has(answer)) {
-        answerCountMap.set(answer, 1)
+        answerCountMap.set(answer, 0)
       }
 
       answerCountMap.set(answer, (answerCountMap.get(answer) ?? 0) + 1)
