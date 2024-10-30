@@ -48,3 +48,19 @@
   color: #9664FA;
   display: inline-flex;
 }
+
+.followers {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+.followers > span {
+  flex-basis: 100%;
+  color: #FFF;
+}
+.others {
+  display: flex;
+  align-items: center;
+  color: #666;
+  padding-top: 14px;
+}

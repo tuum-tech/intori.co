@@ -62,6 +62,10 @@ const answeredQuestion = async (
     channelId: session.channelId ?? null
   })
 
+  // if user is not a member of channel id
+  //    check if user is already a potential member
+  //      if not a potential member, check number of responses in this channel
+
   const { autoPublish } = await getBlockchainSettingsForUser(fid)
 
   if (autoPublish) {

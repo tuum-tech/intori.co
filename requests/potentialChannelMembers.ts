@@ -6,3 +6,12 @@ export const getPotentialMembers = (params: {
 }): Promise<AxiosResponse<PotentialChannelMemberType[]>> => {
   return axios.get('/api/potential-members', { params })
 }
+
+export const getPotentialMemberMemberFollowers = (
+  fid: number,
+  params: {
+    channelId: string
+  }
+): Promise<AxiosResponse<Array<{ fid: number, role: 'member' | 'moderator'}>>> => {
+  return axios.get(`/api/potential-members/${fid}/member-followers`, { params })
+}

@@ -9,11 +9,12 @@ import styles from './styles.module.css'
 
 type Props = {
   fid: number
+  defaultUserDetails?: FarcasterUserType
 }
 
-export const SmallUserCard: React.FC<Props> = ({ fid }) => {
+export const SmallUserCard: React.FC<Props> = ({ fid, defaultUserDetails }) => {
   const [loading, setLoading] = useState(true)
-  const [userDetails, setUserDetails] = useState<FarcasterUserType>()
+  const [userDetails, setUserDetails] = useState<FarcasterUserType>(defaultUserDetails)
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -27,8 +28,12 @@ export const SmallUserCard: React.FC<Props> = ({ fid }) => {
       setLoading(false)
     }
 
-    fetchUserDetails()
-  }, [fid])
+    if (!defaultUserDetails) {
+      fetchUserDetails()
+    } else {
+      setLoading(false)
+    }
+  }, [fid, defaultUserDetails])
 
   if (loading) {
     return (

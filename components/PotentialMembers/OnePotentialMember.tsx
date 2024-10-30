@@ -12,6 +12,7 @@ import {
 } from '../../utils/neynarApi'
 import styles from './styles.module.css'
 import { Skeleton, SkeletonCircle } from '../common/Skeleton'
+import { PotentialMemberFollowers } from './PotentialMemberFollowers'
 
 type Props = {
   potentialMember: PotentialChannelMemberType
@@ -110,6 +111,9 @@ export const OnePotentialMember: React.FC<Props> = ({
           </a>
         </div>
       </div>
+
+      <PotentialMemberFollowers potentialMember={potentialMember} />
+
       <div className={styles.actions}>
         <a
           href={`https://warpcast.com/~/channel/${potentialMember.channelId}/settings/invite`}

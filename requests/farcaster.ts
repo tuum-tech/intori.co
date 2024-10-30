@@ -29,3 +29,12 @@ export const getChannelMembers = (
 ): Promise<AxiosResponse<FarcasterChannelMemberType[]>> => {
   return axios.get(`/api/farcaster/channel-members/${channelId}`)
 }
+
+export const getRelevantFollowers = (
+  fid: number
+): Promise<AxiosResponse<{
+  top: FarcasterUserType[]
+  others: number
+}>> => {
+  return axios.get(`/api/farcaster/relevant-followers`, { params: { fid } })
+}

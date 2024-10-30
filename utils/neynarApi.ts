@@ -382,3 +382,46 @@ export const intoriFollowChannel = async (channelId: string) => {
     channelId
   )
 }
+
+export const doesUserFollowUser = async (
+  doesThisUser: number,
+  followThisUser: number
+): Promise<boolean> => {
+  const res = await neynar.fetchBulkUsers(
+    [followThisUser],
+    {
+      viewerFid: doesThisUser,
+    }
+  )
+
+  if (!res.users.length) {
+    return false
+  }
+
+  return !!res.users[0].viewer_context?.following
+}
+
+export const getRelevantFollowers = async (params: {
+  targetFid: number
+  viewerFid: number
+}): Promise<{
+  top: FarcasterUserType[]
+  others: number
+}> => {
+  const { targetFid, viewerFid } = params
+  const res = await neynar.fetchRelevantFollowers(
+    targetFid,
+    viewerFid
+  )
+
+  const users = res.top_relevant_followers_hydrated.map((user) => {
+    return user.user
+  })
+
+  const validUsers = users.filter((user) => user !== undefined)
+
+  return {
+    top: validUsers.map((user) => serializeUser(user)),
+    others: res.all_relevant_followers_dehydrated.length - validUsers.length
+  }
+}
