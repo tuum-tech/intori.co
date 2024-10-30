@@ -23,20 +23,9 @@ const getRecentlyCastedFidsInChannel = async (params: {
     limit: 50
   })
 
-  recentCasts.sort((a, b) => {
-      if (a.author.power_badge && !b.author.power_badge) {
-          return -1
-      }
-
-      if (!a.author.power_badge && b.author.power_badge) {
-          return 1
-      }
-
-      return 0
-  })
-
   return recentCasts.slice(0, limit).map((cast) => {
-    return serializeUser(cast.author)
+    // TODO: Add proper type def
+    return serializeUser(cast.author as any)
   })
 }
 
