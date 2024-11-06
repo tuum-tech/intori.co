@@ -1,5 +1,6 @@
 import { NeynarAPIClient, FeedType, FilterType } from '@neynar/nodejs-sdk'
 import { User } from '@neynar/nodejs-sdk/build/neynar-api/v2/openapi-farcaster/models/user'
+import { CastAuthor } from '@neynar/nodejs-sdk/build/neynar-api/v2/openapi-farcaster/models/cast-author'
 import config from '../config'
 
 // Nextjs has it's own way of handling environment variables
@@ -93,13 +94,13 @@ export type FarcasterChannelMemberType = {
   }
 }
 
-export const serializeUser = (user: User): FarcasterUserType => ({
-    username: user.username,
+export const serializeUser = (user: User | CastAuthor): FarcasterUserType => ({
+    username: user.username as string,
     displayName: user.display_name,
-    bio: user.profile.bio.text,
+    bio: (user as User).profile?.bio?.text ?? '',
     fid: user.fid,
     image: user.pfp_url,
-    powerBadge: user.power_badge ?? false
+    powerBadge: !!(user as User).power_badge
 })
 
 export const getChannelsThatUserFollows = async (

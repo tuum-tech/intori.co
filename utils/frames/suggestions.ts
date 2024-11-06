@@ -24,8 +24,7 @@ const getRecentlyCastedFidsInChannel = async (params: {
   })
 
   return recentCasts.slice(0, limit).map((cast) => {
-    // TODO: Add proper type def
-    return serializeUser(cast.author as any)
+    return serializeUser(cast.author)
   })
 }
 
