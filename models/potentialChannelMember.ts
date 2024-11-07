@@ -41,6 +41,21 @@ export const getPotentialChannelMembers = async (params: {
   }) as PotentialChannelMemberType[]
 }
 
+export const getPotentialChannelMembersTotal = async (params: {
+  channelId?: string
+}): Promise<number> => {
+  const collection = getCollection()
+  let query = collection as FirebaseFirestore.Query<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>
+
+  if (params.channelId) {
+    query = collection.where('channelId', '==', params.channelId)
+  }
+
+  const snapshot = await query.get()
+
+  return snapshot.size
+}
+
 export const createPotentialChannelMember = async (
   body: CreatePotentialChannelMemberType
 ): Promise<PotentialChannelMemberType> => {

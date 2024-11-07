@@ -35,6 +35,20 @@ export const getServerSideProps = (async (context) => {
   const fid = parseInt(session.user.fid, 10)
 
   const allChannelFrames = await getAllChannelFrames()
+
+  allChannelFrames.sort((a, b) => {
+    if (a.createdAt === b.createdAt) {
+      return 0
+    }
+
+    if (!a.createdAt || !b.createdAt) {
+      return a.createdAt ? -1 : 1
+    }
+
+    // sort so most recent createdAt are at top
+    return b.createdAt - a.createdAt
+  })
+
   const moderatedChannelIds = session.admin ? [] : await getModeratedChannelsOfUser(fid)
 
   const channelFramesToShow = allChannelFrames.filter((channelFrame) => {
