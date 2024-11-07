@@ -2,32 +2,31 @@ import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { PotentialChannelMemberType } from '../../models/potentialChannelMember'
 import {
-  getFarcasterUserDetails,
-  getFarcasterCastDetails
+  getFarcasterUserDetails
 } from '../../requests/farcaster'
 import { PrimaryButton } from '../common/Button'
 import {
-  FarcasterUserType,
-  FarcasterCastType
+  FarcasterUserType
 } from '../../utils/neynarApi'
+import { OnePotentialMemberCast } from './OnePotentialMemberCast'
 import styles from './styles.module.css'
 import { Skeleton, SkeletonCircle } from '../common/Skeleton'
 
 type Props = {
-  potentialMember: PotentialChannelMemberType
+  fid: number
+  potentialMemberCasts: PotentialChannelMemberType[]
 }
 
 export const OnePotentialMember: React.FC<Props> = ({
-  potentialMember
+  fid,
+  potentialMemberCasts
 }) => {
-  const [loading, setLoading] = useState<boolean>(true)
   const [userDetails, setUserDetails] = useState<FarcasterUserType>()
-  const [castDetails, setCastDetails] = useState<FarcasterCastType>()
 
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const res = await getFarcasterUserDetails(potentialMember.fid)
+        const res = await getFarcasterUserDetails(fid)
         setUserDetails(res.data)
       } catch (err) {
         toast.error('Something went wrong while fetching user details')
@@ -35,28 +34,9 @@ export const OnePotentialMember: React.FC<Props> = ({
     }
 
     fetchUserDetails()
-  }, [potentialMember.fid])
+  }, [fid])
 
-  useEffect(() => {
-    const fetchCastDetails = async () => {
-      try {
-        const res = await getFarcasterCastDetails(potentialMember.castHash)
-        setCastDetails(res.data)
-      } catch (err) {
-        toast.error('Something went wrong while fetching cast details')
-      }
-    }
-
-    fetchCastDetails()
-  }, [potentialMember.castHash])
-
-  useEffect(() => {
-    if (userDetails && castDetails) {
-      setLoading(false)
-    }
-  }, [userDetails, castDetails])
-
-  if (loading || !userDetails || !castDetails) {
+  if (!userDetails) {
     return (
       <div className={styles.onePotentialMember}>
         <sub><Skeleton width={40} /></sub>
@@ -82,7 +62,7 @@ export const OnePotentialMember: React.FC<Props> = ({
 
   return (
     <div className={styles.onePotentialMember}>
-      <div className={styles.fid}>FID {userDetails.fid}</div>
+      <div className={styles.fid}>FID {fid}</div>
 
       <a
         href={`https://warpcast.com/${userDetails.username}`}
@@ -94,7 +74,24 @@ export const OnePotentialMember: React.FC<Props> = ({
         </div>
         <h4>{userDetails.username}</h4>
       </a>
-      <div className={styles.cast}>
+      { potentialMemberCasts.length } moderator reaction{potentialMemberCasts.length === 1 ? '' : 's'}
+
+      <details className={styles.viewCasts}>
+        <summary>
+          View Casts
+        </summary>
+        {
+          potentialMemberCasts.map((cast) => (
+            <OnePotentialMemberCast
+              key={cast.castHash}
+              castHash={cast.castHash}
+              username={userDetails.username}
+            />
+          ))
+        }
+      </details>
+
+      { /*<div className={styles.cast}>
         <p>&quot;{ castDetails.text }&quot;</p>
         <div className={styles.castStats}>
           <div> {castDetails.reactions.likes_count} Like{castDetails.reactions.likes_count === 1 ? '' : 's'} </div>
@@ -109,7 +106,7 @@ export const OnePotentialMember: React.FC<Props> = ({
             View Cast
           </a>
         </div>
-      </div>
+        </div>
       <div className={styles.actions}>
         <a
           href={`https://warpcast.com/~/channel/${potentialMember.channelId}/settings/invite`}
@@ -121,6 +118,7 @@ export const OnePotentialMember: React.FC<Props> = ({
           </PrimaryButton>
         </a>
       </div>
+ */ }
     </div>
   )
 }
