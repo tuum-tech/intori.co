@@ -11,6 +11,20 @@ type Props = {
   fid: number
 }
 
+export const SmallUserCardSkeleton: React.FC<Props> = ({ fid }) => {
+  return (
+    <a href="#" className={styles.smallUserCard} >
+      <sub>FID {fid}</sub>
+      <div className={styles.userDetails}>
+        <SkeletonCircle width={40} />
+        <h4>
+          <Skeleton width={130} />
+        </h4>
+      </div>
+    </a>
+  )
+}
+
 export const SmallUserCard: React.FC<Props> = ({ fid }) => {
   const [loading, setLoading] = useState(true)
   const [userDetails, setUserDetails] = useState<FarcasterUserType>()
@@ -31,17 +45,7 @@ export const SmallUserCard: React.FC<Props> = ({ fid }) => {
   }, [fid])
 
   if (loading) {
-    return (
-      <a href="#" className={styles.smallUserCard} >
-        <sub>FID {fid}</sub>
-        <div className={styles.userDetails}>
-          <SkeletonCircle width={40} />
-          <h4>
-            <Skeleton width={130} />
-          </h4>
-        </div>
-      </a>
-    )
+    return <SmallUserCardSkeleton fid={fid} />
   }
 
   if (!userDetails) {

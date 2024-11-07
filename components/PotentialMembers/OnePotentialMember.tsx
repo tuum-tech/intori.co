@@ -11,6 +11,7 @@ import {
 import { OnePotentialMemberCast } from './OnePotentialMemberCast'
 import styles from './styles.module.css'
 import { Skeleton, SkeletonCircle } from '../common/Skeleton'
+import { ListRelevantChannelFollows } from './ListRelevantChannelFollows'
 
 type Props = {
   fid: number
@@ -74,11 +75,11 @@ export const OnePotentialMember: React.FC<Props> = ({
         </div>
         <h4>{userDetails.username}</h4>
       </a>
-      { potentialMemberCasts.length } moderator reaction{potentialMemberCasts.length === 1 ? '' : 's'}
 
+      <p>{ potentialMemberCasts.length } moderator reaction{potentialMemberCasts.length === 1 ? '' : 's'}</p>
       <details className={styles.viewCasts}>
         <summary>
-          View Casts
+          View Casts Reacted by Moderators
         </summary>
         {
           potentialMemberCasts.map((cast) => (
@@ -91,15 +92,24 @@ export const OnePotentialMember: React.FC<Props> = ({
         }
       </details>
 
-      <a
-        href={`https://warpcast.com/~/channel/${potentialMemberCasts[0].channelId}/settings/invite`}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <PrimaryButton>
-          Invite to {`/${potentialMemberCasts[0].channelId}`}
-        </PrimaryButton>
-      </a>
+      <ListRelevantChannelFollows
+        fid={fid}
+        channelId={potentialMemberCasts[0].channelId}
+      />
+
+
+
+      <div className={styles.actions}>
+        <a
+          href={`https://warpcast.com/~/channel/${potentialMemberCasts[0].channelId}/settings/invite`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <PrimaryButton>
+            Invite to {`/${potentialMemberCasts[0].channelId}`}
+          </PrimaryButton>
+        </a>
+      </div>
     </div>
   )
 }

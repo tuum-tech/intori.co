@@ -44,3 +44,18 @@ export const createRelevantFollow = async (
 }
 
 // find members of this channel that follow this potential member
+export const getRelevantFollows = async (params: {
+  channelId: string
+  potentialMemberFid: number
+}): Promise<PotentialChannelMemberRelevantFollow[]> => {
+  const collection = getCollection()
+  const query = collection
+    .where('potentialMemberFid', '==', params.potentialMemberFid)
+    .where('channelId', '==', params.channelId)
+
+  const snapshot = await query.get()
+
+  return snapshot.docs.map(doc => {
+    return doc.data() as PotentialChannelMemberRelevantFollow
+  })
+}
