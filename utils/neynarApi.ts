@@ -383,3 +383,26 @@ export const intoriFollowChannel = async (channelId: string) => {
     channelId
   )
 }
+
+export const doesUserFollowUser = async (params: {
+  doesThisFidFollow: number,
+  thisFid: number
+ }): Promise<boolean> => {
+  const { doesThisFidFollow, thisFid } = params
+
+  try {
+    const res = await neynar.fetchBulkUsers([thisFid], {
+      viewerFid: doesThisFidFollow
+    })
+
+    if (!res.users.length) {
+      return false
+    }
+
+    return !!res.users[0].viewer_context?.following
+  } catch (err) {
+    console.error('Failed to check if ', thisFid, ' follows ', doesThisFidFollow)
+  }
+
+  return false
+}
