@@ -47,13 +47,21 @@ export const getPotentialChannelMembersTotal = async (params: {
   const collection = getCollection()
   let query = collection as FirebaseFirestore.Query<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>
 
+  query = query.select('fid')
+
   if (params.channelId) {
     query = collection.where('channelId', '==', params.channelId)
   }
 
   const snapshot = await query.get()
 
-  return snapshot.size
+  const docs = snapshot.docs.map(doc => {
+    return doc.data().fid
+  })
+
+  const uniqueFidPotentials = new Set(docs)
+
+  return uniqueFidPotentials.size
 }
 
 export const createPotentialChannelMember = async (
