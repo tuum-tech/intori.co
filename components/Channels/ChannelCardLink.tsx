@@ -2,10 +2,9 @@ import React, { useState, useEffect, useMemo } from 'react'
 import { toast } from 'react-toastify'
 import { ChannelFrameType } from '../../models/channelFrames'
 import { FarcasterChannelType } from '../../utils/neynarApi'
-import { PotentialChannelMemberType } from '../../models/potentialChannelMember'
 import { Skeleton } from '../common/Skeleton'
-import { getFarcasterChannelDetails, getChannelMembers } from '../../requests/farcaster'
-import { getPotentialMembers } from '../../requests/potentialChannelMembers'
+import { getFarcasterChannelDetails, getChannelMembersTotal } from '../../requests/farcaster'
+import { getPotentialMembersTotal } from '../../requests/potentialChannelMembers'
 import { shortenNumber, timeAgo } from '../../utils/textHelpers'
 import styles from './styles.module.css'
 
@@ -17,7 +16,7 @@ export const ChannelCardLink: React.FC<Props> = ({
   channelFrame
 }) => {
   const [channelDetails, setChannelDetails] = useState<FarcasterChannelType>()
-  const [potentialMembers, setPotentialMembers] = useState<PotentialChannelMemberType[]>([])
+  const [potentialMembers, setPotentialMembers] = useState<number>(0)
   const [channelMembers, setChannelMembers] = useState<number>(0)
   const [loadingPotentialMembers, setLoadingPotentialMembers] = useState<boolean>(true)
 
@@ -37,10 +36,10 @@ export const ChannelCardLink: React.FC<Props> = ({
   useEffect(() => {
     const fetchPotentialMembers = async () => {
       try {
-        const res = await getPotentialMembers({ channelId: channelFrame.channelId })
-        setPotentialMembers(res.data)
+        const res = await getPotentialMembersTotal({ channelId: channelFrame.channelId })
+        setPotentialMembers(res.data.total)
       } catch (err) {
-        setPotentialMembers([])
+        setPotentialMembers(0)
         toast.error(`Failed to fetch potential members for ${channelFrame.channelId}. Please try again later.`)
       }
       setLoadingPotentialMembers(false)
@@ -53,8 +52,8 @@ export const ChannelCardLink: React.FC<Props> = ({
   useEffect(() => {
     const fetchChannelMembers = async () => {
       try {
-        const res = await getChannelMembers(channelFrame.channelId)
-        setChannelMembers(res.data.length)
+        const res = await getChannelMembersTotal(channelFrame.channelId)
+        setChannelMembers(res.data.total)
       } catch (err) {
         setChannelMembers(0)
         toast.error(`Failed to fetch channel members for ${channelFrame.channelId}. Please try again later.`)
@@ -114,7 +113,7 @@ export const ChannelCardLink: React.FC<Props> = ({
       </div>
       { !loadingPotentialMembers && (
         <h3>
-          {potentialMembers.length} Potential Member{potentialMembers.length === 1 ? '' : 's'}
+          {potentialMembers} Potential Member{potentialMembers === 1 ? '' : 's'}
         </h3>
       )}
       { loadingPotentialMembers && (

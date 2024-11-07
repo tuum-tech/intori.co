@@ -29,3 +29,9 @@ export const getChannelMembers = (
 ): Promise<AxiosResponse<FarcasterChannelMemberType[]>> => {
   return axios.get(`/api/farcaster/channel-members/${channelId}`)
 }
+
+export const getChannelMembersTotal = (
+  channelId: string
+): Promise<AxiosResponse<{ total: number }>> => {
+  return axios.get(`/api/farcaster/channel-members/${channelId}/total`)
+}
