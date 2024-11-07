@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState } from 'react'
+import React, { useCallback, useMemo, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { getPotentialMembers } from '../../requests/potentialChannelMembers'
 import { PotentialChannelMemberType } from '../../models/potentialChannelMember'
@@ -17,6 +17,16 @@ export const ListPotentialMembers: React.FC<Props> = ({
   const [potentialMembers, setPotentialMembers] = useState<PotentialChannelMemberType[]>([])
   const [loading, setLoading] = useState(true)
 
+  const uniquePotentialMemberFids = useMemo((): number[] => {
+    const fids = potentialMembers.map((potentialMember) => potentialMember.fid)
+
+    return Array.from(new Set(fids))
+  }, [potentialMembers])
+
+  const getPotentialMemberCastsForFid = useCallback((fid: number) => {
+    return potentialMembers.filter((potentialMember) => potentialMember.fid === fid)
+  }, [potentialMembers])
+
   useEffect(() => {
     const fetchPotentialMembers = async () => {
       try {
@@ -32,13 +42,23 @@ export const ListPotentialMembers: React.FC<Props> = ({
     fetchPotentialMembers()
   }, [channelId])
 
+  const sortPotentialMembersBasedOnMostPotentialMemberCasts = useCallback(
+    (fidA: number, fidB: number) => {
+      const potentialMemberCastsA = getPotentialMemberCastsForFid(fidA)
+      const potentialMemberCastsB = getPotentialMemberCastsForFid(fidB)
+
+      return potentialMemberCastsB.length - potentialMemberCastsA.length
+    },
+    [getPotentialMemberCastsForFid]
+  )
+
   const title = useMemo(() => {
     if (loading) {
       return 'Potential Members'
     }
 
-    return `${potentialMembers.length} Potential Member${potentialMembers.length === 1 ? '' : 's'}`
-  }, [loading, potentialMembers])
+    return `${uniquePotentialMemberFids.length} Potential Member${uniquePotentialMemberFids.length === 1 ? '' : 's'}`
+  }, [loading, uniquePotentialMemberFids])
 
   return (
     <Section title={title}>
@@ -47,6 +67,7 @@ export const ListPotentialMembers: React.FC<Props> = ({
           {
             loading && <p>Loading...</p>
           }
+
           {
             !loading && potentialMembers.length === 0 && (
               <Empty>
@@ -54,11 +75,13 @@ export const ListPotentialMembers: React.FC<Props> = ({
               </Empty>
             )
           }
+
           {
-            potentialMembers.map((potentialMember) => (
+            uniquePotentialMemberFids.sort(sortPotentialMembersBasedOnMostPotentialMemberCasts).map((fid) => (
               <OnePotentialMember
-                key={potentialMember.fid}
-                potentialMember={potentialMember}
+                key={fid}
+                fid={fid}
+                potentialMemberCasts={getPotentialMemberCastsForFid(fid)}
               />
             ))
           }

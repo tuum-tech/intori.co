@@ -34,7 +34,7 @@
   border: 1px solid #2A3042;
   padding: 16px;
   border-radius: 16px;
-  margin-bottom: 10px;
+  margin-top: 10px;
 }
 .cast p {
   margin-top: 0;
@@ -47,4 +47,15 @@
 .castStats a {
   color: #9664FA;
   display: inline-flex;
+}
+
+.viewCasts {
+  margin: 16px 0;
+}
+.viewCasts summary {
+  cursor: pointer;
+  color: #9664FA;
+}
+.viewCasts .cast {
+  margin-left: 18px;
 }
