@@ -168,40 +168,6 @@ export const getLastCastForUser = async (fid: number) => {
   return res.result.casts[0]
 }
 
-export const doesUserFollowIntori = async (fid: number): Promise<boolean> => {
-  let foundIntori = false
-  let cursor: string | null = ''
-
-  while (!foundIntori) {
-    const following = await neynar.fetchUserFollowingV2(
-      fid,
-      {
-        limit: 100,
-        sortType: 'desc_chron',
-        cursor: cursor || undefined
-      }
-    )
-
-    // @ts-expect-error because type definitions are not correct.
-    const fids = following.users.map((user) => user.user.fid)
-
-    for (let i = 0; i < fids.length; i++) {
-      if (fids[i] === 294394) {
-        foundIntori = true
-        break
-      }
-    }
-
-    if (!following.next.cursor) {
-      break
-    }
-
-    cursor = following.next.cursor
-    await new Promise((resolve) => setTimeout(resolve, 400))
-  }
-
-  return foundIntori
-}
 
 export const getFidsUserIsFollowing = async (fid: number): Promise<number[]> => {
   const followingFids: number[] = []
@@ -382,4 +348,34 @@ export const intoriFollowChannel = async (channelId: string) => {
     process.env.NEYNAR_SIGNER_UUID ?? 'missing signer uuid',
     channelId
   )
+}
+
+export const doesUserFollowUser = async (params: {
+  doesThisFidFollow: number,
+  thisFid: number
+ }): Promise<boolean> => {
+  const { doesThisFidFollow, thisFid } = params
+
+  try {
+    const res = await neynar.fetchBulkUsers([thisFid], {
+      viewerFid: doesThisFidFollow
+    })
+
+    if (!res.users.length) {
+      return false
+    }
+
+    return !!res.users[0].viewer_context?.following
+  } catch (err) {
+    console.error('Failed to check if ', thisFid, ' follows ', doesThisFidFollow)
+  }
+
+  return false
+}
+
+export const doesUserFollowIntori = async (fid: number): Promise<boolean> => {
+  return doesUserFollowUser({
+    doesThisFidFollow: fid,
+    thisFid: 294394
+  })
 }
