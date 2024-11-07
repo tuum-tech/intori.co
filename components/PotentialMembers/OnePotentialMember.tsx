@@ -91,34 +91,15 @@ export const OnePotentialMember: React.FC<Props> = ({
         }
       </details>
 
-      { /*<div className={styles.cast}>
-        <p>&quot;{ castDetails.text }&quot;</p>
-        <div className={styles.castStats}>
-          <div> {castDetails.reactions.likes_count} Like{castDetails.reactions.likes_count === 1 ? '' : 's'} </div>
-          •
-          <div> {castDetails.replies.count} Repl{castDetails.replies.count === 1 ? 'y' : 'ies'} </div>
-          •
-          <a
-            href={`https://warpcast.com/${userDetails.username}/${castDetails.hash}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            View Cast
-          </a>
-        </div>
-        </div>
-      <div className={styles.actions}>
-        <a
-          href={`https://warpcast.com/~/channel/${potentialMember.channelId}/settings/invite`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <PrimaryButton>
-            Invite...
-          </PrimaryButton>
-        </a>
-      </div>
- */ }
+      <a
+        href={`https://warpcast.com/~/channel/${potentialMemberCasts[0].channelId}/settings/invite`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <PrimaryButton>
+          Invite to {`/${potentialMemberCasts[0].channelId}`}
+        </PrimaryButton>
+      </a>
     </div>
   )
 }
