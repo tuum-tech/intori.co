@@ -1,5 +1,5 @@
 import { CronJob } from 'cron'
-import { everyDay } from './cronJobHelpers'
+import { everySunday } from './cronJobHelpers'
 import {
   getMembersOfChannel,
   doesUserFollowUser
@@ -18,7 +18,7 @@ import {
 // Instead of constantly fetching neynar's api to get follows which is rate limited,
 // We save the follows in our database and check if the follow is saved in our database
 export const startCheckForMembersFollowingPotentialMember = (): CronJob => new CronJob(
-    everyDay,
+    everySunday,
     async () => {
       const allChannelFrames = await getAllChannelFrames()
 
