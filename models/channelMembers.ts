@@ -20,24 +20,6 @@ const getCollection = () => {
   return db.collection('channelMembers')
 }
 
-export const saveChannelMembersForChannel = async (channelId: string): Promise<void> => {
-  const channelMembers = await getMembersOfChannel({ channelId })
-
-  const collection = getCollection()
-
-  const batch = createDb().batch()
-
-  channelMembers.forEach((channelMember) => {
-    const ref = collection.doc()
-    batch.set(ref, {
-      channelId,
-      fid: channelMember.user.fid,
-      role: channelMember.role
-    })
-  })
-
-  await batch.commit()
-}
 
 export const getSavedMembersOfChannel = async (params: {
   channelId: string
@@ -64,4 +46,29 @@ export const countSavedMembersOfChannel = async (params: {
   const querySnapshot = await collection.where('channelId', '==', params.channelId).get()
 
   return querySnapshot.size
+}
+
+export const saveChannelMembersForChannel = async (channelId: string): Promise<void> => {
+  const currentCount = await countSavedMembersOfChannel({ channelId })
+
+  if (currentCount > 0) {
+    throw new Error("Channel members already saved")
+  }
+
+  const channelMembers = await getMembersOfChannel({ channelId })
+
+  const collection = getCollection()
+
+  const batch = createDb().batch()
+
+  channelMembers.forEach((channelMember) => {
+    const ref = collection.doc()
+    batch.set(ref, {
+      channelId,
+      fid: channelMember.user.fid,
+      role: channelMember.role
+    })
+  })
+
+  await batch.commit()
 }
