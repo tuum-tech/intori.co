@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '../../../auth/[...nextauth]'
-import { getMembersOfChannel } from '../../../../../utils/neynarApi'
+import { countSavedMembersOfChannel } from '../../../../../models/channelMembers'
 
 const getChannelMembersTotal = async (
   req: NextApiRequest,
@@ -22,14 +22,14 @@ const getChannelMembersTotal = async (
       error: "Missing 'channelId' query parameter"
     })
   }
-  const members = await getMembersOfChannel({
+  const total = await countSavedMembersOfChannel({
     channelId: req.query.channelId as string
   })
 
   // cache for 7 days
   res.setHeader('Cache-Control', 'public, max-age=604800, immutable')
 
-  return res.status(200).json({ total: members.length })
+  return res.status(200).json({ total })
 }
 
 export default getChannelMembersTotal
