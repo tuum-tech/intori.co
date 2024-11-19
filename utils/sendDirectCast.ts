@@ -1,7 +1,7 @@
 import axios, { isAxiosError } from 'axios'
 import { v4 as uuid } from 'uuid'
 import { ChannelFrameType } from '../models/channelFrames'
-import { getMembersOfChannel } from './neynarApi'
+import { getSavedMembersOfChannel } from '../models/channelMembers'
 
 const WARPCAST_API_KEY = process.env.WARPCAST_API_KEY
 
@@ -50,11 +50,12 @@ export const notifySuperAdminOfError = async (error: unknown, where: string): Pr
 }
 
 export const notifyOwnerAndModeratorsOfChannelIntoriAdded = async (newChannelFrame: ChannelFrameType): Promise<void> => {
-  const membersOfChannel = await getMembersOfChannel({
-    channelId: newChannelFrame.channelId
+  const moderators = await getSavedMembersOfChannel({
+    channelId: newChannelFrame.channelId,
+    role: 'moderator'
   })
 
-  const fidsToNotify = membersOfChannel.filter((member) => member.role === 'moderator').map((member) => member.user.fid)
+  const fidsToNotify = moderators.map((mod) => mod.fid)
 
   for (let i = 0; i < fidsToNotify.length; i++) {
     const fid = fidsToNotify[i]

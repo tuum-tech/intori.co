@@ -2,9 +2,9 @@ import axios, { AxiosResponse } from 'axios'
 import {
   FarcasterUserType,
   FarcasterCastType,
-  FarcasterChannelType,
-  FarcasterChannelMemberType
+  FarcasterChannelType
 } from '../utils/neynarApi'
+import { SavedChannelMemberType } from '../models/channelMembers'
 
 export const getFarcasterUserDetails = (
   fid: number
@@ -26,7 +26,7 @@ export const getFarcasterChannelDetails = (
 
 export const getChannelMembers = (
   channelId: string
-): Promise<AxiosResponse<FarcasterChannelMemberType[]>> => {
+): Promise<AxiosResponse<SavedChannelMemberType[]>> => {
   return axios.get(`/api/farcaster/channel-members/${channelId}`)
 }
 
