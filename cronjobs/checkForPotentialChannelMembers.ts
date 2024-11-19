@@ -14,6 +14,7 @@ import {
 import { isUserMemberOfChannel } from '../utils/warpcast'
 import { notifySuperAdminOfError } from '../utils/sendDirectCast'
 
+// TODO: THIS WILL BE REPLACED WITH A WEBHOOK API EVENT FROM NEYNAR
 export const startCheckForPotentialChannelMembersJob = (): CronJob => new CronJob(
     everyTenMinutes,
     async () => {
