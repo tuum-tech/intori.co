@@ -14,7 +14,7 @@ export const everyHour   = '0 0 * * * *'
 
 export const everyDay    = '0 0 0 * * *'
 
-export const everySunday = '0 0 12 * * 0'
+export const everySunday = '0 0 1 * * 0'
 
 export const everyMinute = '0 * * * * *'
 
