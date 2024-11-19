@@ -2,7 +2,6 @@ import React, { useMemo, useEffect, useState } from 'react'
 import {
   getPotentialChannelMemberRelevantFollows
 } from '../../requests/potentialChannelMemberRelevantFollows'
-import { SmallUserCard } from '../common/SmallUserCard'
 import { PotentialChannelMemberRelevantFollow } from '../../models/potentialChannelMemberRelevantFollows'
 import styles from './styles.module.css'
 
@@ -60,22 +59,9 @@ export const ListRelevantChannelFollows: React.FC<Props> = ({
         <p>No channel members or moderators follow this user.</p>
       )}
       {relevantFollows.length > 0 && (
-        <>
           <p>
             Followed by {moderatorFollows.length} channel moderator{moderatorFollows.length === 1 ? '' : 's'}, {memberFollows.length} channel member{memberFollows.length === 1 ? '' : 's'}
           </p>
-          <details>
-            <summary>View members that follow this user</summary>
-            {
-              relevantFollows.map((follow) => (
-                <SmallUserCard
-                  key={follow.followedByFid}
-                  fid={follow.followedByFid}
-                />
-              ))
-            }
-          </details>
-        </>
       )}
     </div>
   )
