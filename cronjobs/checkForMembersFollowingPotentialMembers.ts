@@ -1,9 +1,7 @@
 import { CronJob } from 'cron'
 import { everySunday } from './cronJobHelpers'
-import {
-  getMembersOfChannel,
-  doesUserFollowUser
-} from '../utils/neynarApi'
+import { doesUserFollowUser } from '../utils/neynarApi'
+import { getSavedMembersOfChannel } from '../models/channelMembers'
 import {
   getAllChannelFrames
 } from '../models/channelFrames'
@@ -25,7 +23,7 @@ export const startCheckForMembersFollowingPotentialMember = (): CronJob => new C
       for (let i = 0; i < allChannelFrames.length; i++) {
         const { channelId } = allChannelFrames[i]
 
-        const membersOfChannel = await getMembersOfChannel({ channelId })
+        const membersOfChannel = await getSavedMembersOfChannel({ channelId })
 
         const potentialMembers = await getPotentialChannelMembers({ channelId })
         const uniquePotentialMemberFids = Array.from(
@@ -41,7 +39,7 @@ export const startCheckForMembersFollowingPotentialMember = (): CronJob => new C
             const followSaved = await isRelevantFollowSaved({
               channelId,
               potentialMemberFid,
-              followedByFid: member.user.fid
+              followedByFid: member.fid
             })
 
             if (followSaved) {
@@ -49,7 +47,7 @@ export const startCheckForMembersFollowingPotentialMember = (): CronJob => new C
             }
 
             const isFollowing = await doesUserFollowUser({
-              doesThisFidFollow: member.user.fid,
+              doesThisFidFollow: member.fid,
               thisFid: potentialMemberFid
             })
 
@@ -60,7 +58,7 @@ export const startCheckForMembersFollowingPotentialMember = (): CronJob => new C
             await createRelevantFollow({
               channelId,
               potentialMemberFid,
-              followedByFid: member.user.fid,
+              followedByFid: member.fid,
               followedByRole: member.role
             })
 
