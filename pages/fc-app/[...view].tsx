@@ -1,5 +1,4 @@
 import { useEffect, useMemo } from 'react'
-import sdk from '@farcaster/frame-sdk'
 import { useRouter } from 'next/router'
 import type { NextPage, GetServerSideProps } from "next";
 import { IntoriFarcasterAppRoutes } from '../../utils/fc-app/routes'
@@ -42,6 +41,8 @@ const IntoriFarcasterApp: NextPage<Props> = () => {
 
   useEffect(() => {
     const initialize = async () => {
+      const { sdk } = await import('@farcaster/frame-sdk');
+
       await sdk.actions.ready()
       const context = await sdk.context
       console.log({ context })
