@@ -1,0 +1,31 @@
+.page {
+  padding: 24px;
+}
+
+.startPageContainer {
+  padding-top: 10vh;
+  text-align: center;
+}
+.startPageContainer h1 {
+  font-size: 64px;
+  font-weight: 800;
+  margin-top: 0;
+}
+.startPageContainer h2,
+.startPageContainer h3 {
+  margin: 4px 0;
+}
+.startPageContainer button {
+  margin-top: 10vh;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.button {
+  background: #8867EC;
+  color: #FFF;
+  font-size: 14px;
+  border-radius: 28px;
+  border: none;
+  padding: 12px 32px;
+}

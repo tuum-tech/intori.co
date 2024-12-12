@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { getSession } from "next-auth/react"
 import { AuthLayout } from '../layouts/Auth'
 import { SignInWithFarcasterButton } from '../components/signin/SignInWithFarcaster'
+import { FramesV2EmbedMetaTags } from '../utils/frames/framesV2EmbedMetaTags'
 import styles from './index.module.css'
 
 export const getServerSideProps = (async (context) => {
@@ -27,12 +28,7 @@ const SigninDefaultScreen = () => {
   return (
     <>
       <Head>
-        <meta property="fc:frame" content="vNext" />
-        <meta property="fc:frame:image" content="https://www.intori.co/landing-page/metacard.png" />
-        <meta property="fc:frame:image:aspect_ratio" content="1.91:1" />
-        <meta name={`fc:frame:button:1`} content="Learn More" />
-        <meta name={`fc:frame:button:1:action`} content="link" />
-        <meta name={`fc:frame:button:1:target`} content="https://www.intori.co" />
+        <FramesV2EmbedMetaTags />
         <meta property="og:image" content="https://www.intori.co/landing-page/metacard.png" />
       </Head>
       <AuthLayout
