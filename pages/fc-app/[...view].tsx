@@ -1,4 +1,5 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
+import sdk from '@farcaster/frame-sdk'
 import { useRouter } from 'next/router'
 import type { NextPage, GetServerSideProps } from "next";
 import { IntoriFarcasterAppRoutes } from '../../utils/fc-app/routes'
@@ -38,6 +39,16 @@ const IntoriFarcasterApp: NextPage<Props> = () => {
 
     return ;
   }, [router])
+
+  useEffect(() => {
+    const initialize = async () => {
+      await sdk.actions.ready()
+      const context = await sdk.context
+      console.log({ context })
+    }
+
+    initialize()
+  }, [])
 
   return (
     <div className={styles.fcAppWrapper}>
