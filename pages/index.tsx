@@ -1,5 +1,4 @@
 import type { GetServerSideProps } from "next";
-import Head from 'next/head'
 import Image from 'next/image'
 import { getSession } from "next-auth/react"
 import { AuthLayout } from '../layouts/Auth'
