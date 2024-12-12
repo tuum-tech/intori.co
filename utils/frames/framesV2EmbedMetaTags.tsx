@@ -7,7 +7,7 @@ export const FramesV2EmbedMetaTags: React.FC = () => {
 
     return {
       version: 'next',
-      imageUrl: `${host}/public/assets/fc-app/metaImageUrl.png`,
+      imageUrl: `${host}/assets/fc-app/metaImageUrl.png`,
       button: {
         // Button text.
         // Max length of 32 characters.
@@ -30,7 +30,7 @@ export const FramesV2EmbedMetaTags: React.FC = () => {
           // Splash image URL.
           // Max 512 characters.
           // Image must be 200x200px and less than 1MB.
-          splashImageUrl: `${host}/public/assets/fc-app/metaSplashImageUrl.png`,
+          splashImageUrl: `${host}/assets/fc-app/metaSplashImageUrl.png`,
 
           // Hex color code.
           splashBackgroundColor: '#A388ED'
@@ -42,11 +42,6 @@ export const FramesV2EmbedMetaTags: React.FC = () => {
   return (
     <>
       <meta name="fc:frame" content={JSON.stringify(frameEmbed)} />
-      <meta property="fc:frame:image" content="https://www.intori.co/landing-page/metacard.png" />
-      <meta property="fc:frame:image:aspect_ratio" content="1.91:1" />
-      <meta name="fc:frame:button:1" content="Learn More" />
-      <meta name="fc:frame:button:1:action" content="link" />
-      <meta name="fc:frame:button:1:target" content="https://www.intori.co" />
     </>
   )
 }

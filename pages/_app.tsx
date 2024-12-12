@@ -1,13 +1,15 @@
+import { Fragment } from 'react'
 import type { AppProps } from 'next/app'
+import { SessionProvider } from "next-auth/react"
+import Head from 'next/head'
 import Chart from "chart.js/auto"
 import { CategoryScale } from "chart.js"
 import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import { SessionProvider } from "next-auth/react"
 import { WalletProvider } from '../contexts/EthereumWallet'
-import Head from 'next/head'
-import { Fragment } from 'react'
+import { FramesV2EmbedMetaTags } from '../utils/frames/framesV2EmbedMetaTags'
+
 import './global.css'
+import 'react-toastify/dist/ReactToastify.css'
 
 Chart.register(CategoryScale)
 
@@ -24,9 +26,11 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
         <meta property="twitter:card" content="https://www.intori.co/landing-page/metacard.png"/>
         <meta name="twitter:image:src" property="twitter:image:src" content="https://www.intori.co/landing-page/metacard.png"/>
         <meta name="twitter:image" property="twitter:image" content="https://www.intori.co/landing-page/metacard.png"/>
+        <meta property="og:image" content="https://www.intori.co/landing-page/metacard.png" />
         <meta name="og:image:alt" property="og:image:alt" content="Intori – Your data, connected" />
         <meta property="og:url" content="https://www.intori.co" />
         <meta property="og:type" content="website"/>
+        <FramesV2EmbedMetaTags />
       </Head>
       <SessionProvider session={session}>
         <WalletProvider>

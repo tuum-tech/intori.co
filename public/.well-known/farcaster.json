@@ -1,0 +1,18 @@
+{
+  "accountAssociation": {
+    "header": "eyJmaWQiOjQ3MDIyMywidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweDZmZWY4NjBjODA1YTBkY2JhM2JiOWRhMzNmZDdhNGJjNzE5NDA5OTQifQ",
+    "payload": "eyJkb21haW4iOiJpbnRvcmkudHloYWN6LmNvbSJ9",
+    "signature": "MHg4YTI4ZDk0NDY1ODgyZDdmYjNhNjQ4NmYyNjliMzYzNWY3MjUzNjA1ODYxOGFkZjQyMGQwMDY2ZjVkYzQyMGJjMWE1YjExMWQ3ZDAwZDQzOWExMzhhMzRlMjQ1YzU4MTUzMDVlYzc1YWM3ODk5NjlkZWZkMTljNzRiMWM3MjAyNTFj"
+  },
+
+  "frame": {
+    "version": "1",
+    "name": "intori",
+    "homeUrl": "https://intori.tyhacz.com/fc-app/start",
+    "iconUrl": "https://intori.tyhacz.com/assets/fc-app/metaSplashImageUrl.png",
+    "splashImageUrl": "https://intori.tyhacz.com/assets/fc-app/metaSplashImageUrl.png",
+    "splashBackgroundColor": "#A388ED"
+  },
+
+  "triggers": []
+}
