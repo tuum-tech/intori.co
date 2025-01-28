@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react'
 import Img from 'next/image'
 import Link from 'next/link'
+import { SignInWithFarcasterButton } from "@/components/signin/SignInWithFarcaster"
+
 import styles from './styles.module.css'
 
 export const Footer: React.FC = () => {
@@ -13,7 +15,7 @@ export const Footer: React.FC = () => {
       </div>
 
       <div className={styles.contact}>
-        <p>Create a private data portfolio and stop giving away information for free.</p>
+        <p>Answer questions. Unlock insights. Give gifts. Make connections.</p>
         <div className={styles.sm}>
           <a href="mailto:contact@tuum.tech" target="_blank" rel="noopener noreferrer">
             contact@tuum.tech
@@ -49,6 +51,7 @@ export const Footer: React.FC = () => {
           <a href="mailto:contact@tuum.tech" target="_blank" rel="noopener noreferrer">
             Feedback & Bug Report
           </a>
+          <SignInWithFarcasterButton />
         </div>
         <p>
           © {year} intori All Rights Reserved.
