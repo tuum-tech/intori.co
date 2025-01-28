@@ -73,8 +73,8 @@ const deleteEditAddQuestion = async (
     }
 
     if (req.method === "PUT") {
-      const new = await updateQuestionById(id as string, validBody as QuestionType)
-      return res.status(200).json(new)
+      const updatedQuestion = await updateQuestionById(id as string, validBody as QuestionType)
+      return res.status(200).json(updatedQuestion)
     }
   } catch (err) {
     console.error(err)
