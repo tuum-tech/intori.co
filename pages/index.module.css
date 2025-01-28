@@ -1,30 +1,145 @@
-.appImageContainer {
-  position: relative;
-  height: 80vh;
-  width: 70%;
-  margin: 5% auto;
+.main {
+  background: rgb(245,243,254);
+  background: -moz-linear-gradient(36deg, rgba(245,243,254,1) 0%, rgba(196,179,243,1) 14%, rgba(137,103,235,1) 68%);
+  background: -webkit-linear-gradient(36deg, rgba(245,243,254,1) 0%, rgba(196,179,243,1) 14%, rgba(137,103,235,1) 68%);
+  background: linear-gradient(36deg, rgba(245,243,254,1) 0%, rgba(196,179,243,1) 14%, rgba(137,103,235,1) 68%);
+  background-attachment: fixed;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#f5f3fe",endColorstr="#8967eb",GradientType=1);
+  padding: 128px 10%;
 }
-
-.desktopImage {
-  display: block;
-  object-fit: contain;
+.logoContainer {
+  display: flex;
+  justify-content: flex-start;
+  gap: 6px;
+  align-items: center;
 }
-
-.mobileImage {
-  display: none;
+.logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  padding: 6px;
+  border-radius: 10px;
 }
-.videoContainer h3 {
+.logoContainer h3 {
+  font-weight: 600;
+}
+.hero {
+  text-align: left;
+  min-height: 50vh;
+}
+.hero h1,
+.hero h2,
+.hero p {
   color: #FFF;
-  font-size: 54px;
 }
-.videoContainer h3 span {
-  color: #9664FA;
-  font-weight: 500;
+.hero h1 {
+  font-size: 64px;
+  line-height: 55px;
+  font-weight: 800;
+  margin-bottom: 10px;
 }
-.videoContainer iframe {
-  width: 90%;
-  margin: auto;
+.hero h2 {
+  font-size: 32px;
+  font-weight: 600;
 }
+.hero p {
+  width: 60%;
+  font-size: 18px;
+}
+.cta {
+  background: #8967EB;
+  border: none;
+  color: #FFF;
+  font-size: 24px;
+  padding: 12px 36px;
+  border-radius: 20px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.cta > span {
+  font-weight: bold;
+}
+
+.howItWorks {
+  text-align: center;
+  padding: 128px 0;
+}
+.howItWorksRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 72px;
+}
+.howItWorksRow > div {
+  background: #FFF;
+  border-radius: 24px;
+  padding: 5% 3%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 10px 10px 0px 0px rgba(196,179,243,0.75);
+  -webkit-box-shadow: 10px 10px 0px 0px rgba(196,179,243,0.75);
+  -moz-box-shadow: 10px 10px 0px 0px rgba(196,179,243,0.75);
+}
+.howItWorksRow > div > h4,
+.howItWorksRow > div > p {
+  color: #8967eb;
+}
+.howItWorksRow > div > h4 {
+  margin: 16px 0;
+  font-weight: bold;
+  font-size: 32px;
+}
+.howItWorksRow > div > p {
+  line-height: 24px;
+  font-size: 16px;
+  text-align: left;
+}
+
+.benefits {
+  padding: 128px 0;
+}
+.benefitsRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 64px;
+}
+.benefitsRow > div:first-child {
+  flex-grow: 1;
+}
+.oneBenefit {
+  background: #FFF;
+  border-radius: 20px;
+  border: 1px solid #8967EB;
+  padding: 32px;
+  margin-bottom: 32px;
+  box-shadow: 10px 10px 0px 0px rgba(196,179,243,0.75);
+  -webkit-box-shadow: 10px 10px 0px 0px rgba(196,179,243,0.75);
+  -moz-box-shadow: 10px 10px 0px 0px rgba(196,179,243,0.75);
+}
+.oneBenefit > h4,
+.oneBenefit > p {
+  color: #8967eb;
+}
+.oneBenefit > h4 {
+  margin-top: 0;
+  font-weight: bold;
+  font-size: 24px;
+}
+.oneBenefit > p {
+  margin-bottom: 0;
+  font-size: 16px;
+}
+.appPreview {
+  border: 1px solid #8967EB;
+  border-radius: 20px;
+}
+
 .faq {
   width: 60%;
   margin: 100px auto;
@@ -35,17 +150,18 @@
   color: #FFF;
   margin: 0;
   width: 100%;
-}
-.faq h2 span {
-  color: #9664FA;
-  font-weight: 500;
+  text-align: center;
 }
 .faq details {
   margin-top: 36px;
+  border: 2px solid #C4B3F3;
+  border-radius: 20px;
+  padding: 24px;
+  background: #8967EB;
 }
 .faq details summary {
   color: #FFF;
-  font-weight: 300;
+  font-weight: 600;
   font-size: 22px;
   text-align: left;
   cursor: pointer;
@@ -58,45 +174,83 @@
 }
 
 .faq details p {
-  color: #BDB5AB;
+  color: #fff;
   font-size: 18px;
+  line-height: 28px;
+  font-weight: 300;
   text-align: left;
+  margin-top: 32px;
+}
+.faq details p > span {
+  font-weight: bold;
 }
 .faq details p a {
   color: #9664FA;
 }
 
+.finalCta {
+  padding: 128px 0;
+  text-align: center;
+}
+.finalCta h3 {
+  color: #FFF;
+  font-size: 24px;
+  font-weight: 600;
+}
+.finalCta h3:last-of-type {
+  margin-bottom: 64px;
+}
+
 @media only screen and (max-width: 1000px) {
+  .main {
+    padding: 128px 5%;
+  }
   .faq {
     width: 80%;
   }
 }
+@media only screen and (max-width: 850px) {
+  .howItWorksRow {
+    flex-direction: column;
+  }
+  .howItWorksRow > div {
+    padding: 32px;
+  }
+  .benefitsRow {
+    flex-direction: column-reverse;
+  }
+  .benefitsRow:last-child {
+    text-align: center;
+  }
+}
 @media only screen and (max-width: 800px) {
-  .appImageContainer {
-    height: 100vh;
-    width: 96%;
-    margin-bottom: 100px;
+  .hero h1 {
+    font-size: 48px;
   }
-
-  .desktopImage {
-    display: none;
+  .hero h2 {
+    font-size: 24px;
   }
-
-  .mobileImage {
-    margin-top: 100px;
-    display: block;
+  .hero p {
+    font-size: 16px;
+    width: 100%;
   }
-
-  .videoContainer h3 {
-    font-size: 32px;
-  }
-
   .faq {
     width: 90%;
   }
 }
 
 @media only screen and (max-width: 700px) {
+  .hero h1 {
+    font-size: 32px;
+    line-height: 40px;
+  }
+  .hero h2 {
+    font-size: 18px;
+  }
+  .hero p {
+    margin-top: 32px;
+    line-height: 24px;
+  }
   .faq h2 {
     font-size: 36px;
   }
@@ -107,8 +261,16 @@
     font-size: 14px;
   }
 }
-@media only screen and (max-width: 600px) {
-  .appImageContainer {
-    margin-bottom: 256px;
+
+@media only screen and (max-width: 500px) {
+  .howItWorks {
+    padding: 64px 0;
+  }
+  .benefits {
+    padding: 64px 0;
+  }
+  .appPreview {
+    width: 207px;
+    height: 448px;
   }
 }
