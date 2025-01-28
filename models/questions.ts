@@ -84,9 +84,8 @@ export const updateQuestionById = async (
   id: string,
   body: QuestionType
 ) => {
-  const collection = getCollection()
-
-  return collection.doc(id).set(body, { merge: true })
+  await deleteQuestionById(id)
+  return createQuestion(body)
 }
 
 export const deleteQuestionById = async (id: string) => {
