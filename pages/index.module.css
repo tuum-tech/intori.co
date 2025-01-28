@@ -273,4 +273,8 @@
     width: 207px;
     height: 448px;
   }
+  .finalCta h3 {
+    text-align: left;
+    font-size: 16px;
+  }
 }
