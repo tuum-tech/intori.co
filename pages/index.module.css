@@ -1,11 +1,16 @@
 .main {
-  background: rgb(245,243,254);
+  background: #A181FC;
   background: -moz-linear-gradient(36deg, rgba(245,243,254,1) 0%, rgba(196,179,243,1) 14%, rgba(137,103,235,1) 68%);
   background: -webkit-linear-gradient(36deg, rgba(245,243,254,1) 0%, rgba(196,179,243,1) 14%, rgba(137,103,235,1) 68%);
   background: linear-gradient(36deg, rgba(245,243,254,1) 0%, rgba(196,179,243,1) 14%, rgba(137,103,235,1) 68%);
   background-attachment: fixed;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#f5f3fe",endColorstr="#8967eb",GradientType=1);
   padding: 128px 10%;
+}
+.main section {
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
 }
 .logoContainer {
   display: flex;
@@ -98,7 +103,7 @@
 .howItWorksRow > div > p {
   line-height: 24px;
   font-size: 16px;
-  text-align: left;
+  text-align: center;
 }
 
 .benefits {
@@ -263,6 +268,11 @@
 }
 
 @media only screen and (max-width: 500px) {
+  .main {
+    background: unset;
+    filter: none;
+    background: #A181FC;
+  }
   .howItWorks {
     padding: 64px 0;
   }
