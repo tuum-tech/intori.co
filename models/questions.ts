@@ -80,14 +80,6 @@ export const getQuestionByQuestionText = async (question: string) => {
   return query.docs[0].data() as QuestionType
 }
 
-export const updateQuestionById = async (
-  id: string,
-  body: QuestionType
-) => {
-  await deleteQuestionById(id)
-  return createQuestion(body)
-}
-
 export const deleteQuestionById = async (id: string) => {
   const collection = getCollection()
 
@@ -97,6 +89,22 @@ export const deleteQuestionById = async (id: string) => {
     deleted: true
   })
 }
+
+export const updateQuestionById = async (
+  id: string,
+  body: QuestionType
+) => {
+  const collection = getCollection()
+
+  const doc = await collection.where('id', '==', id).get()
+
+  if (!doc.empty) {
+    await doc.docs[0].ref.delete()
+  }
+
+  return createQuestion(body)
+}
+
 
 export const questionAlreadyExists = async (params: {
   question: string
