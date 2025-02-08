@@ -39,7 +39,9 @@ export const getServerSideProps = (async (context) => {
   const questions = await getAllQuestions()
 
   return {
-    props: { questions: questions.reverse() }
+    props: {
+      questions: questions.reverse().filter((q) => !q.deleted)
+    }
   }
 }) satisfies GetServerSideProps<Props>
 
