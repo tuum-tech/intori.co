@@ -190,7 +190,9 @@
   font-weight: bold;
 }
 .faq details p a {
-  color: #9664FA;
+  color: #FFF;
+  font-weight: bold;
+  text-decoration: underline;
 }
 
 .finalCta {
