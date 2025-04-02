@@ -191,6 +191,22 @@ const SigninDefaultScreen = () => {
               Future updates may include additional tracking features for sent gifts.
             </p>
           </details>
+
+          <details>
+            <summary>Does intori have a token?</summary>
+            <p>
+              Yes. intori uses a token called <span>$INTO</span> as part of the app experience. The token is integrated into certain features within the app and is not intended for trading, speculation, or external use.
+              <br />
+              <br />
+              Token Name: <a href="https://basescan.org/token/0x4baea77ec672dec0fc311cca0eb45916e66a93a1">INTO</a>
+              <br />
+              <br />
+              Contract Address: <span>0x4BAeA77EC672DEc0Fc311cCA0EB45916e66A93A1</span>
+              <br />
+              <br />
+              The <span>$INTO</span> token is designed solely to support in-app activities and engagement within the intori ecosystem.
+            </p>
+          </details>
         </section>
         <section className={styles.finalCta}>
           <h3>✅ Start answering questions and discover your next connection.  </h3>
