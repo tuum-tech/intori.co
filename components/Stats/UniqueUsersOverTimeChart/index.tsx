@@ -31,6 +31,7 @@ export const UniqueUsersOverTimeChart: React.FC<Props> = ({
           fill: false,
           backgroundColor: 'rgba(133, 88, 227, 0.2)',
           borderColor: 'rgba(133, 88, 227, 1)',
+          yAxisID: 'y-users',
         },
         {
           label: 'Questions Answered',
@@ -38,10 +39,50 @@ export const UniqueUsersOverTimeChart: React.FC<Props> = ({
           fill: false,
           backgroundColor: 'rgba(51, 153, 255, 0.2)',
           borderColor: 'rgba(51, 153, 255, 1)',
+          yAxisID: 'y-insights'
         }
       ]
     }
   }, [usersOverTime, questionsAnsweredOverTime])
+
+  const lineOptions = useMemo(() => {
+    return {
+      responsive: true,
+      interaction: {
+        mode: 'index' as const,
+        intersect: false,
+        axis: 'y',
+        includeInvisible: false
+      },
+      scales: {
+        'y-users': {
+          type: 'linear' as const,
+          position: 'left',
+          title: {
+            display: true,
+            text: 'Unique Users',
+          },
+        },
+        'y-insights': {
+          type: 'linear',
+          position: 'right',
+          title: {
+            display: true,
+            text: 'Questions Answered',
+          },
+          grid: {
+            drawOnChartArea: false, // 👈 disables grid lines for clarity
+          },
+        },
+        x: {
+          title: {
+            display: true,
+            text: 'Date',
+          },
+        },
+      }
+    }
+  }, [])
 
   useEffect(() => {
     const urlParts = [
@@ -107,7 +148,8 @@ export const UniqueUsersOverTimeChart: React.FC<Props> = ({
 
   return (
     <StatsChartContainer title="Unique users over past 30 days">
-      <Line data={chartData} />
+      { /* @ts-expect-error because line options types are very very strict but this works */ }
+      <Line data={chartData} options={lineOptions} />
     </StatsChartContainer>
   )
 }

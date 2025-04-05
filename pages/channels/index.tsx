@@ -1,7 +1,6 @@
 import type { NextPage, GetServerSideProps } from "next";
 import Link from 'next/link'
 import { getSession } from "next-auth/react"
-import { ChannelFrameType, getAllChannelFrames } from '../../models/channelFrames'
 
 // components
 import { AppLayout } from "@/layouts/App"
@@ -9,15 +8,10 @@ import { Section, SectionTopActions } from '../../components/common/Section'
 import { PrimaryButton } from '../../components/common/Button'
 import { GeneralStatsSection } from '../../components/Stats/GeneralStatsSection'
 import { UniqueUsersOverTimeChart } from '../../components/Stats/UniqueUsersOverTimeChart'
-import { MostAnsweredQuestionsChart } from '../../components/Stats/MostAnsweredQuestionsChart'
-import { TopResponsesForTopQuestions } from '../../components/Stats/TopResponsesForTopQuestions'
 import { Empty } from '../../components/common/Empty'
-import { ChannelCardsContainer, ChannelCardLink } from '../../components/Channels/ChannelCardLink'
-import { getModeratedChannelsOfUser } from '../../utils/neynarApi'
 
 type Props = {
   showSuperAdminTab: boolean
-  channelFramesToShow: ChannelFrameType[]
 }
 
 export const getServerSideProps = (async (context) => {
@@ -32,64 +26,23 @@ export const getServerSideProps = (async (context) => {
     }
   }
 
-  const fid = parseInt(session.user.fid, 10)
-
-  const allChannelFrames = await getAllChannelFrames()
-
-  allChannelFrames.sort((a, b) => {
-    if (a.createdAt === b.createdAt) {
-      return 0
-    }
-
-    if (!a.createdAt || !b.createdAt) {
-      return a.createdAt ? -1 : 1
-    }
-
-    // sort so most recent createdAt are at top
-    return b.createdAt - a.createdAt
-  })
-
-  const moderatedChannelIds = session.admin ? [] : await getModeratedChannelsOfUser(fid)
-
-  const channelFramesToShow = allChannelFrames.filter((channelFrame) => {
-    if (session.admin) {
-      return true
-    }
-
-    if (channelFrame.adminFid === fid) {
-      return true
-    }
-
-    return moderatedChannelIds.includes(channelFrame.channelId)
-  })
-
   return {
     props: {
       showSuperAdminTab: session.admin,
-      channelFramesToShow
     }
   }
 }) satisfies GetServerSideProps<Props>
 
 const Channels: NextPage<Props> = ({
-  showSuperAdminTab,
-  channelFramesToShow
+  showSuperAdminTab
 }) => {
 
   return (
     <AppLayout>
       <Section
-        title="Channel Frames"
-        subtitle="Here you can create Intori frames for your channel and view stats."
+        title="Stats"
+        subtitle="Here you can find stats"
       >
-        <SectionTopActions>
-          <Link href="/channels/create">
-            <PrimaryButton>
-              Create Channel Frame
-            </PrimaryButton>
-          </Link>
-        </SectionTopActions>
-
         { showSuperAdminTab && (
           <SectionTopActions>
             <Link href="/channels/questions">
@@ -110,14 +63,8 @@ const Channels: NextPage<Props> = ({
           </SectionTopActions>
         )}
 
-        <ChannelCardsContainer>
-          { channelFramesToShow.map((channelFrame) => (
-            <ChannelCardLink key={channelFrame.channelId} channelFrame={channelFrame} />
-          ))}
-        </ChannelCardsContainer>
-
-        { !showSuperAdminTab && !channelFramesToShow.length && (
-          <Empty>You don&apos;t have any channel frames yet. Create one now!</Empty>
+        { !showSuperAdminTab && (
+          <Empty>Nothing to show here.</Empty>
         )}
       </Section>
 
@@ -125,8 +72,6 @@ const Channels: NextPage<Props> = ({
         <Section title="Overal Stats">
           <GeneralStatsSection />
           <UniqueUsersOverTimeChart />
-          <MostAnsweredQuestionsChart />
-          <TopResponsesForTopQuestions />
         </Section>
       )}
     </AppLayout>
