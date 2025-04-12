@@ -1,0 +1,20 @@
+.userStatsTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+.userStatsTable thead th {
+  text-align: left;
+  color: grey;
+}
+.userStatsTable tbody tr:nth-child(odd) {
+  background: rgba(255, 255, 255, 0.05);
+}
+.userStatsTable tbody tr td {
+  padding: 8px 0;
+}
+
+.loadMoreContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
