@@ -8,8 +8,19 @@ import { WalletProvider } from '../contexts/EthereumWallet'
 import Head from 'next/head'
 import { Fragment } from 'react'
 import './global.css'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 Chart.register(CategoryScale)
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60 * 1000, // 1 minute
+      refetchOnWindowFocus: false,
+    },
+  },
+})
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
@@ -30,8 +41,11 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
       </Head>
       <SessionProvider session={session}>
         <WalletProvider>
-          <ToastContainer position="top-right" />
-          <Component {...pageProps} />
+          <QueryClientProvider client={queryClient}>
+            <ToastContainer position="top-right" />
+            <Component {...pageProps} />
+            <ReactQueryDevtools initialIsOpen={false} />
+          </QueryClientProvider>
         </WalletProvider>
       </SessionProvider>
     </Fragment>
