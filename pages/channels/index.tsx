@@ -9,6 +9,7 @@ import { PrimaryButton } from '../../components/common/Button'
 import { GeneralStatsSection } from '../../components/Stats/GeneralStatsSection'
 import { UniqueUsersOverTimeChart } from '../../components/Stats/UniqueUsersOverTimeChart'
 import { Empty } from '../../components/common/Empty'
+import { UserStatsTable } from '@/components/UserStatsTable'
 
 type Props = {
   showSuperAdminTab: boolean
@@ -72,6 +73,12 @@ const Channels: NextPage<Props> = ({
         <Section title="Overal Stats">
           <GeneralStatsSection />
           <UniqueUsersOverTimeChart />
+        </Section>
+      )}
+
+      { showSuperAdminTab && (
+        <Section title="User Stats">
+          <UserStatsTable />
         </Section>
       )}
     </AppLayout>
