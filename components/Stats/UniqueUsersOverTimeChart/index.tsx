@@ -68,8 +68,19 @@ export const UniqueUsersOverTimeChart: React.FC<Props> = ({
     staleTime: 1000 * 60 * 30 // 30 minutes
   })
 
+  const { data: insightLikesData, isLoading: isLoadingInsightLikes } = useQuery({
+    queryKey: ['insight-likes-over-time', channelId],
+    queryFn: async () => {
+      const res = await fetch(`/api/stats/charts/insight-likes-over-time`)
+      if (!res.ok) throw new Error('Failed to fetch insight likes data')
+
+      return res.json() as Promise<{ insightLikes: number, date: string }[]>
+    },
+    staleTime: 1000 * 60 * 30 // 30 minutes
+  })
+
   const chartData = useMemo(() => {
-    if (!usersData || !questionsData || !giftsData || !friendRequestsData) {
+    if (!usersData || !questionsData || !giftsData || !friendRequestsData || !insightLikesData) {
       return {}
     }
 
@@ -78,7 +89,8 @@ export const UniqueUsersOverTimeChart: React.FC<Props> = ({
         ...usersData.map((data) => data.date), 
         ...questionsData.map((data) => data.date),
         ...giftsData.map((data) => data.date),
-        ...friendRequestsData.map((data) => data.date)
+        ...friendRequestsData.map((data) => data.date),
+        ...insightLikesData.map((data) => data.date)
       ])),
       datasets: [
         {
@@ -112,10 +124,18 @@ export const UniqueUsersOverTimeChart: React.FC<Props> = ({
           backgroundColor: 'rgba(75, 192, 192, 0.2)',
           borderColor: 'rgba(75, 192, 192, 1)',
           yAxisID: 'y-insights'
+        },
+        {
+          label: 'Insight Likes',
+          data: insightLikesData.map((data) => data.insightLikes),
+          fill: false,
+          backgroundColor: 'rgba(255, 159, 64, 0.2)',
+          borderColor: 'rgba(255, 159, 64, 1)',
+          yAxisID: 'y-users'
         }
       ]
     }
-  }, [usersData, questionsData, giftsData, friendRequestsData])
+  }, [usersData, questionsData, giftsData, friendRequestsData, insightLikesData])
 
   const lineOptions = useMemo(() => {
     return {
@@ -132,7 +152,7 @@ export const UniqueUsersOverTimeChart: React.FC<Props> = ({
           position: 'left',
           title: {
             display: true,
-            text: 'Users',
+            text: 'Users & Likes',
           },
         },
         'y-insights': {
@@ -156,7 +176,7 @@ export const UniqueUsersOverTimeChart: React.FC<Props> = ({
     }
   }, [])
 
-  const isLoading = isLoadingUsers || isLoadingQuestions || isLoadingGifts || isLoadingFriendRequests
+  const isLoading = isLoadingUsers || isLoadingQuestions || isLoadingGifts || isLoadingFriendRequests || isLoadingInsightLikes
 
   if (isLoading) {
     return (
