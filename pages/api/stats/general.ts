@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react'
-import { getUniqueUserFids, countUserResponses } from '../../../models/userAnswers'
+import { countUserResponses } from '../../../models/userAnswers'
+import { countUserAnswerTotals } from '../../../models/userAnswerTotals'
 
 const getGeneralStats = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -22,7 +23,7 @@ const getGeneralStats = async (req: NextApiRequest, res: NextApiResponse) => {
       // TODO: check if getting stats about a channel i am admin for
     }
 
-    const uniqueUsersCount = await getUniqueUserFids(channelId)
+    const uniqueUsersCount = await countUserAnswerTotals()
     const totalResponses = await countUserResponses(channelId)
 
     res.status(200).json({

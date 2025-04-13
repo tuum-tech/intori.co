@@ -38,3 +38,54 @@ export const countGiftsSent = async (fid: number): Promise<number> => {
 
   return query.size
 }
+
+export const getGiftsSentOverTime = async (options: {
+  startDate: number,
+  endDate: number,
+}): Promise<Array<{ date: string, giftsSent: number }>> => {
+  const { startDate, endDate } = options
+
+  try {
+    const collection = getCollection()
+
+    const query = collection
+      .where('createdAt', '>=', startDate)
+      .where('createdAt', '<=', endDate)
+
+    const snapshot = await query.get()
+
+    if (snapshot.empty) {
+      return []
+    }
+
+    // Process the data
+    const dateGiftMap = new Map()
+
+    snapshot.forEach(doc => {
+      const data = doc.data() as UserGiftType
+      const date = new Date(data.createdAt).toISOString().split('T')[0] // Group by day
+
+      if (!dateGiftMap.has(date)) {
+        dateGiftMap.set(date, 0)
+      }
+
+      dateGiftMap.set(date, dateGiftMap.get(date) + 1)
+    })
+
+    // Prepare data for chart
+    const chartData = Array.from(dateGiftMap.entries()).map(([date, giftCount]) => {
+      return {
+        date,
+        giftsSent: giftCount
+      }
+    })
+
+    // Sort the data by date
+    chartData.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+
+    return chartData
+  } catch (error) {
+    console.error('Error querying user gifts:', error)
+    throw error
+  }
+}

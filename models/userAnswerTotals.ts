@@ -41,3 +41,9 @@ export const getPageOfTopUserAnswerTotals = async (params: {
     return data
   })
 }
+
+export const countUserAnswerTotals = async (): Promise<number> => {
+  const col = getCollection()
+  const snapshot = await col.get()
+  return snapshot.size
+}

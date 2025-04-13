@@ -1,8 +1,8 @@
-import React, { useMemo, useState, useEffect } from 'react'
+import React, { useMemo } from 'react'
 import { Line } from "react-chartjs-2";
-import { toast } from 'react-toastify'
 import { StatsContainer, StatsChartContainer } from '../StatsCard'
 import { Empty } from '../../common/Empty'
+import { useQuery } from '@tanstack/react-query'
 
 type Props = {
   channelId?: string
@@ -11,23 +11,79 @@ type Props = {
 export const UniqueUsersOverTimeChart: React.FC<Props> = ({
   channelId
 }) => {
-  const [loading, setLoading] = useState(true)
-  const [usersOverTime, setUsersOverTime] = useState<Array<{
-    date: Date
-    uniqueUsers: number
-  }>>([])
-  const [questionsAnsweredOverTime, setQuestionsAnsweredOverTime] = useState<Array<{
-    date: Date
-    questionsAnswered: number
-  }>>([])
+  const { data: usersData, isLoading: isLoadingUsers } = useQuery({
+    queryKey: ['unique-users', channelId],
+    queryFn: async () => {
+      const urlParts = [`/api/stats/charts/unique-users`]
+      if (channelId) {
+        urlParts.push(`?channelId=${channelId}`)
+      }
+      const res = await fetch(urlParts.join(''))
+      if (!res.ok) throw new Error('Failed to fetch unique users')
+
+      return res.json() as Promise<{ uniqueUsers: number, date: string }[]>
+    },
+    staleTime: 1000 * 60 * 30 // 30 minutes
+  })
+
+  const { data: questionsData, isLoading: isLoadingQuestions } = useQuery({
+    queryKey: ['questions-over-time', channelId],
+    queryFn: async () => {
+      const urlParts = [`/api/stats/charts/questions-over-time`]
+      if (channelId) {
+        urlParts.push(`?channelId=${channelId}`)
+      }
+      const res = await fetch(urlParts.join(''))
+
+      if (!res.ok) throw new Error('Failed to fetch questions data')
+
+      return res.json() as Promise<{ questionsAnswered: number, date: string }[]>
+    },
+    staleTime: 1000 * 60 * 30 // 30 minutes
+  })
+
+  const { data: giftsData, isLoading: isLoadingGifts } = useQuery({
+    queryKey: ['gifts-over-time', channelId],
+    queryFn: async () => {
+      const urlParts = [`/api/stats/charts/gifts-over-time`]
+      if (channelId) {
+        urlParts.push(`?channelId=${channelId}`)
+      }
+      const res = await fetch(urlParts.join(''))
+      if (!res.ok) throw new Error('Failed to fetch gifts data')
+
+      return res.json() as Promise<{ giftsSent: number, date: string }[]>
+    },
+    staleTime: 1000 * 60 * 30 // 30 minutes
+  })
+
+  const { data: friendRequestsData, isLoading: isLoadingFriendRequests } = useQuery({
+    queryKey: ['friend-requests-over-time', channelId],
+    queryFn: async () => {
+      const res = await fetch(`/api/stats/charts/friend-requests-over-time`)
+      if (!res.ok) throw new Error('Failed to fetch friend requests data')
+
+      return res.json() as Promise<{ friendRequests: number, date: string }[]>
+    },
+    staleTime: 1000 * 60 * 30 // 30 minutes
+  })
 
   const chartData = useMemo(() => {
+    if (!usersData || !questionsData || !giftsData || !friendRequestsData) {
+      return {}
+    }
+
     return {
-      labels: Array.from(new Set([...usersOverTime.map((data) => data.date), ...questionsAnsweredOverTime.map((data) => data.date)])),
+      labels: Array.from(new Set([
+        ...usersData.map((data) => data.date), 
+        ...questionsData.map((data) => data.date),
+        ...giftsData.map((data) => data.date),
+        ...friendRequestsData.map((data) => data.date)
+      ])),
       datasets: [
         {
           label: 'Unique Users',
-          data: usersOverTime.map((data) => data.uniqueUsers),
+          data: usersData.map((data) => data.uniqueUsers),
           fill: false,
           backgroundColor: 'rgba(133, 88, 227, 0.2)',
           borderColor: 'rgba(133, 88, 227, 1)',
@@ -35,15 +91,31 @@ export const UniqueUsersOverTimeChart: React.FC<Props> = ({
         },
         {
           label: 'Questions Answered',
-          data: questionsAnsweredOverTime.map((data) => data.questionsAnswered),
+          data: questionsData.map((data) => data.questionsAnswered),
           fill: false,
           backgroundColor: 'rgba(51, 153, 255, 0.2)',
           borderColor: 'rgba(51, 153, 255, 1)',
           yAxisID: 'y-insights'
+        },
+        {
+          label: 'Gifts Sent',
+          data: giftsData.map((data) => data.giftsSent),
+          fill: false,
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+          yAxisID: 'y-insights'
+        },
+        {
+          label: 'Friend Requests',
+          data: friendRequestsData.map((data) => data.friendRequests),
+          fill: false,
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          yAxisID: 'y-insights'
         }
       ]
     }
-  }, [usersOverTime, questionsAnsweredOverTime])
+  }, [usersData, questionsData, giftsData, friendRequestsData])
 
   const lineOptions = useMemo(() => {
     return {
@@ -60,7 +132,7 @@ export const UniqueUsersOverTimeChart: React.FC<Props> = ({
           position: 'left',
           title: {
             display: true,
-            text: 'Unique Users',
+            text: 'Users',
           },
         },
         'y-insights': {
@@ -68,10 +140,10 @@ export const UniqueUsersOverTimeChart: React.FC<Props> = ({
           position: 'right',
           title: {
             display: true,
-            text: 'Questions Answered',
+            text: 'Insights, Gifts, Friend Requests',
           },
           grid: {
-            drawOnChartArea: false, // 👈 disables grid lines for clarity
+            drawOnChartArea: false,
           },
         },
         x: {
@@ -84,53 +156,9 @@ export const UniqueUsersOverTimeChart: React.FC<Props> = ({
     }
   }, [])
 
-  useEffect(() => {
-    const urlParts = [
-      `/api/stats/charts/unique-users`
-    ]
+  const isLoading = isLoadingUsers || isLoadingQuestions || isLoadingGifts || isLoadingFriendRequests
 
-    if (channelId) {
-      urlParts.push(`?channelId=${channelId}`)
-    }
-
-    fetch(urlParts.join('')).then((res) => {
-      if (res.ok) {
-        return res.json()
-      }
-    }).then((data) => {
-      setUsersOverTime(data.usersOverTime)
-    }).catch((err) => {
-      toast.error('Failed to fetch stats. Please try again later.')
-      console.error('Error:', err)
-    }).finally(() => {
-      setLoading(false)
-    })
-  }, [channelId])
-
-  useEffect(() => {
-    const urlParts = [
-      `/api/stats/charts/questions-over-time`
-    ]
-
-    if (channelId) {
-      urlParts.push(`?channelId=${channelId}`)
-    }
-
-    fetch(urlParts.join('')).then((res) => {
-      if (res.ok) {
-        return res.json()
-      }
-    }).then((data) => {
-      setQuestionsAnsweredOverTime(data.questionsAnsweredOverTime)
-    }).catch((err) => {
-      toast.error('Failed to fetch stats. Please try again later.')
-      console.error('Error:', err)
-    }).finally(() => {
-      setLoading(false)
-    })
-  }, [channelId])
-
-  if (loading) {
+  if (isLoading) {
     return (
       <StatsContainer>
         <Empty>Preparing stats...</Empty>
@@ -138,7 +166,7 @@ export const UniqueUsersOverTimeChart: React.FC<Props> = ({
     )
   }
 
-  if (!usersOverTime.length) {
+  if (!chartData) {
     return (
       <StatsChartContainer title="Unique users over past 30 days">
         <Empty>No data available</Empty>
@@ -153,4 +181,3 @@ export const UniqueUsersOverTimeChart: React.FC<Props> = ({
     </StatsChartContainer>
   )
 }
-

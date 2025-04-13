@@ -528,12 +528,16 @@ export const getQuestionsAnsweredOverTime = async (options: {
     });
 
     // Prepare data for chart
-    const chartData = Array.from(dateQuestionMap.entries()).map(([date, questionCount]) => {
+    const chartData = Array.from(
+      dateQuestionMap.entries()
+    ).map(([date, questionCount]) => {
       return {
         date,
         questionsAnswered: questionCount
       };
     });
+
+    chartData
 
     // Sort the data by date
     chartData.sort((a, b) => a.date.seconds - b.date.seconds)
