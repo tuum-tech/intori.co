@@ -32,9 +32,7 @@ const getQuestionsOverTimeChart = async (req: NextApiRequest, res: NextApiRespon
       channelId
     })
 
-    res.status(200).json({
-        questionsAnsweredOverTime
-    })
+    res.status(200).json(questionsAnsweredOverTime)
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch documents' })
   }
