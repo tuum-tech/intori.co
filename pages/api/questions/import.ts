@@ -43,7 +43,8 @@ export default async function importQuestionsHandler(
   try {
     // Parse the form data
     const form = formidable()
-    const [_, files] = await form.parse(req)
+    const uploadedResult = await form.parse(req)
+    const files = uploadedResult[1]
 
     if (!files.csv) {
       return res.status(400).json({ error: 'CSV file is required' })
