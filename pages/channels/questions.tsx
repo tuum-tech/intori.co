@@ -8,6 +8,7 @@ import { Section } from '../../components/common/Section'
 import { QuestionType, getAllQuestions } from '../../models/questions'
 import { DisplayQuestions } from '../../components/Questions'
 import { PrimaryButton } from '../../components/common/Button'
+import { ImportQuestionsButton } from '../../components/Questions/ImportQuestionsButton'
 import { CategoriesProvider } from '../../contexts/useCategories'
 import { QuestionCategoriesProvider } from '../../contexts/useQuestionCategories'
 import { isSuperAdmin } from '../../utils/isSuperAdmin'
@@ -70,10 +71,12 @@ const AdminStats: NextPage<Props> = ({ questions: inQuestions }) => {
             title={`All Questions (${questions.length})`}
             subtitle="Here you can view all frame questions."
           >
-            <PrimaryButton onClick={addNewQuestion}>
-              Add Question
-            </PrimaryButton>
-            <br />
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <PrimaryButton onClick={addNewQuestion}>
+                Add Question
+              </PrimaryButton>
+              <ImportQuestionsButton />
+            </div>
             <br />
             <DisplayQuestions
               questions={questions}

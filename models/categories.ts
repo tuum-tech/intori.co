@@ -36,12 +36,12 @@ export const getCategoryById = async (categoryId: string): Promise<CategoryType>
   }
 }
 
-export const getCategoryByName = async (category: string): Promise<CategoryType> => {
+export const getCategoryByName = async (category: string): Promise<CategoryType | null> => {
   const collection = getCollection()
   const snapshot = await collection.where('category', '==', category).get()
 
   if (snapshot.empty) {
-    throw new Error('Category not found')
+    return null
   }
   
   const doc = snapshot.docs[0]
@@ -49,6 +49,13 @@ export const getCategoryByName = async (category: string): Promise<CategoryType>
     id: doc.id,
     category: (doc.data() as CategoryType).category
   }
+}
+
+export const doesCategoryExist = async (category: string): Promise<boolean> => {
+  const collection = getCollection()
+  const snapshot = await collection.where('category', '==', category).get()
+
+  return snapshot.empty === false
 }
 
 export const createCategory = async (category: string): Promise<CategoryType> => {
