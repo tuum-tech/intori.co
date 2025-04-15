@@ -8,6 +8,7 @@ type Props = {
   channelId?: string
 }
 
+
 export const UniqueUsersOverTimeChart: React.FC<Props> = ({
   channelId
 }) => {
@@ -79,60 +80,55 @@ export const UniqueUsersOverTimeChart: React.FC<Props> = ({
     staleTime: 1000 * 60 * 30 // 30 minutes
   })
 
+  const lastThirtyDays = useMemo(() => {
+    const labels: string[] = [];
+    const today = new Date();
+
+    for (let i = 0; i < 30; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() - i);
+      const isoDate = date.toISOString().split('T')[0];
+      labels.push(isoDate);
+    }
+
+    return labels.reverse()
+  }, [])
+
+  const createConsistentDataset = <T extends { date: string }>(
+    data: T[] | undefined,
+    valueKey: keyof T,
+    label: string,
+    borderColor: string,
+    backgroundColor: string,
+    yAxisID: string
+  ) => {
+    // Create a map of date to value
+    const dataMap = new Map(data?.map(item => [item.date, item[valueKey] as number]) || [])
+
+    return {
+      label,
+      data: lastThirtyDays.map(date => dataMap.get(date) || 0),
+      fill: false,
+      backgroundColor,
+      borderColor,
+      yAxisID
+    }
+  }
+
   const chartData = useMemo(() => {
     if (!usersData || !questionsData || !giftsData || !friendRequestsData || !insightLikesData) {
       return {}
     }
 
+
     return {
-      labels: Array.from(new Set([
-        ...usersData.map((data) => data.date), 
-        ...questionsData.map((data) => data.date),
-        ...giftsData.map((data) => data.date),
-        ...friendRequestsData.map((data) => data.date),
-        ...insightLikesData.map((data) => data.date)
-      ])),
+      labels: lastThirtyDays,
       datasets: [
-        {
-          label: 'Unique Users',
-          data: usersData.map((data) => data.uniqueUsers),
-          fill: false,
-          backgroundColor: 'rgba(133, 88, 227, 0.2)',
-          borderColor: 'rgba(133, 88, 227, 1)',
-          yAxisID: 'y-users',
-        },
-        {
-          label: 'Questions Answered',
-          data: questionsData.map((data) => data.questionsAnswered),
-          fill: false,
-          backgroundColor: 'rgba(51, 153, 255, 0.2)',
-          borderColor: 'rgba(51, 153, 255, 1)',
-          yAxisID: 'y-insights'
-        },
-        {
-          label: 'Gifts Sent',
-          data: giftsData.map((data) => data.giftsSent),
-          fill: false,
-          backgroundColor: 'rgba(255, 99, 132, 0.2)',
-          borderColor: 'rgba(255, 99, 132, 1)',
-          yAxisID: 'y-insights'
-        },
-        {
-          label: 'Friend Requests',
-          data: friendRequestsData.map((data) => data.friendRequests),
-          fill: false,
-          backgroundColor: 'rgba(75, 192, 192, 0.2)',
-          borderColor: 'rgba(75, 192, 192, 1)',
-          yAxisID: 'y-insights'
-        },
-        {
-          label: 'Insight Likes',
-          data: insightLikesData.map((data) => data.insightLikes),
-          fill: false,
-          backgroundColor: 'rgba(255, 159, 64, 0.2)',
-          borderColor: 'rgba(255, 159, 64, 1)',
-          yAxisID: 'y-users'
-        }
+        createConsistentDataset(usersData, 'uniqueUsers', 'Unique Users', 'rgba(133, 88, 227, 1)', 'rgba(133, 88, 227, 0.2)', 'y-users'),
+        createConsistentDataset(questionsData, 'questionsAnswered', 'Questions Answered', 'rgba(51, 153, 255, 1)', 'rgba(51, 153, 255, 0.2)', 'y-insights'),
+        createConsistentDataset(giftsData, 'giftsSent', 'Gifts Sent', 'rgba(255, 99, 132, 1)', 'rgba(255, 99, 132, 0.2)', 'y-insights'),
+        createConsistentDataset(friendRequestsData, 'friendRequests', 'Friend Requests', 'rgba(75, 192, 192, 1)', 'rgba(75, 192, 192, 0.2)', 'y-insights'),
+        createConsistentDataset(insightLikesData, 'insightLikes', 'Insight Likes', 'rgba(255, 159, 64, 1)', 'rgba(255, 159, 64, 0.2)', 'y-users')
       ]
     }
   }, [usersData, questionsData, giftsData, friendRequestsData, insightLikesData])
