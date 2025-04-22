@@ -128,7 +128,7 @@ export const UniqueUsersOverTimeChart: React.FC<Props> = ({
         createConsistentDataset(questionsData, 'questionsAnswered', 'Questions Answered', 'rgba(51, 153, 255, 1)', 'rgba(51, 153, 255, 0.2)', 'y-insights'),
         createConsistentDataset(giftsData, 'giftsSent', 'Gifts Sent', 'rgba(255, 99, 132, 1)', 'rgba(255, 99, 132, 0.2)', 'y-insights'),
         createConsistentDataset(friendRequestsData, 'friendRequests', 'Friend Requests', 'rgba(75, 192, 192, 1)', 'rgba(75, 192, 192, 0.2)', 'y-insights'),
-        createConsistentDataset(insightLikesData, 'insightLikes', 'Insight Likes', 'rgba(255, 159, 64, 1)', 'rgba(255, 159, 64, 0.2)', 'y-users')
+        createConsistentDataset(insightLikesData, 'insightLikes', 'Insight Likes', 'rgba(255, 159, 64, 1)', 'rgba(255, 159, 64, 0.2)', 'y-insights')
       ]
     }
   }, [usersData, questionsData, giftsData, friendRequestsData, insightLikesData])
