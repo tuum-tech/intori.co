@@ -7,6 +7,7 @@ export type QuestionType = {
   answers: string[]
   order: number
   deleted: boolean
+  topics?: string[]
 }
 
 export type CreateQuestionType = {
@@ -14,6 +15,7 @@ export type CreateQuestionType = {
   question: string
   answers: string[]
   order: number
+  topics: string[]
 }
 
 let frameSessionsCollection: FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData>
