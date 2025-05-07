@@ -3,7 +3,7 @@ import { createDb } from '../pages/api/utils/firestore'
 export type AnswerUnlockTopicType = {
   question: string
   answer: string
-  unlockTopic: string[]
+  unlockTopics: string[]
 }
 
 let frameSessionsCollection: FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData>
