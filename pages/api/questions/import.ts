@@ -70,8 +70,7 @@ export default async function importQuestionsHandler(
           id: uuid(),
           question: questionData.question,
           answers,
-          topics,
-          order: i
+          topics
         })
 
         newQuestions++
