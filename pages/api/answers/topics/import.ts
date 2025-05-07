@@ -51,6 +51,7 @@ export default async function importAnswerUnlockTopicsCsv(
     const rowErrors: string[] = []
 
     for (let i = 0; i < records.length; i++) {
+      console.log('Row:', records[i])
       try {
         const row = records[i]
         const newAnswerUnlockTopic = csvRowValidation.validateSync(row, { stripUnknown: true })
@@ -58,8 +59,8 @@ export default async function importAnswerUnlockTopicsCsv(
         const unlockTopics = newAnswerUnlockTopic.unlockTopics.split('|').map((topic) => topic.trim())
 
         await createAnswerUnlockTopic({
-          question: newAnswerUnlockTopic.question,
-          answer: newAnswerUnlockTopic.answer,
+          question: newAnswerUnlockTopic.question.trim(),
+          answer: newAnswerUnlockTopic.answer.trim(),
           unlockTopics
         })
 
