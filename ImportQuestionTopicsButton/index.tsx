@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { toast } from 'react-toastify'
-import { PrimaryButton } from '../../common/Button'
+import { PrimaryButton } from '@/components/common/Button'
 import { handleError } from '@/utils/handleError'
 import styles from './styles.module.css'
 
