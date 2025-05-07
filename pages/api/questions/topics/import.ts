@@ -40,6 +40,7 @@ export default async function importTopicsForQuestions(
 
   try {
     const records = await getCsvFromRequest(req)
+    console.log('records:', records)
 
     const csvRowValidation = yup.object({
       question: yup.string().required('question column is required'),

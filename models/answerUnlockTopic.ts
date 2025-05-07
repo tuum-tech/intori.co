@@ -38,21 +38,26 @@ export const createAnswerUnlockTopic = async (body: AnswerUnlockTopicType) => {
 }
 
 export const getAnswerUnlockTopic = async (
-  body: AnswerUnlockTopicType
-):Promise<AnswerUnlockTopicType | null> => {
+  body: {
+    question: string
+    answer?: string
+  }
+):Promise<AnswerUnlockTopicType[]> => {
   const collection = getCollection()
 
   const query = collection
     .where('question', '==', body.question)
-    .where('answer', '==', body.answer)
+
+  if (body.answer) {
+    query.where('answer', '==', body.answer)
+  }
 
   const snapshot = await query.get()
 
   if (snapshot.empty) {
-    return null
+    return []
   }
 
-  const data = snapshot.docs[0].data() as AnswerUnlockTopicType
-
-  return data
+  const answerUnlockTopics = snapshot.docs.map((doc) => doc.data()) as AnswerUnlockTopicType[]
+  return answerUnlockTopics
 }
