@@ -1,14 +1,12 @@
 import { useRef, useState } from 'react'
 import { toast } from 'react-toastify'
-import { PrimaryButton } from '../../common/Button'
+import { PrimaryButton } from '@/components/common/Button'
 import { handleError } from '@/utils/handleError'
-import { useQueryClient } from '@tanstack/react-query'
 import styles from './styles.module.css'
 
 export const ImportQuestionsButton = () => {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const queryClient = useQueryClient()
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -37,9 +35,6 @@ export const ImportQuestionsButton = () => {
           })
         }
       }
-
-      queryClient.invalidateQueries({ queryKey: ['paginated-questions'] })
-      queryClient.invalidateQueries({ queryKey: ['questions-count'] })
     } catch (error) {
       handleError(error, 'Something went wrong while importing questions.')
     }

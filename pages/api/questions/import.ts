@@ -1,10 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth'
 import { v4 as uuid } from 'uuid'
-import { parse } from 'csv-parse/sync'
-import formidable from 'formidable'
 import * as yup from 'yup'
-import fs from 'fs'
 
 // models
 import { getQuestionByQuestionText, createQuestion } from '@/models/questions'
@@ -14,6 +11,7 @@ import { addQuestionCategory } from '@/models/questionCategories'
 // utils
 import { authOptions } from '../auth/[...nextauth]'
 import { isSuperAdmin } from '@/utils/isSuperAdmin'
+import { getCsvFromRequest } from '@/utils/csv'
 
 export const config = {
   api: {
@@ -41,31 +39,13 @@ export default async function importQuestionsHandler(
   }
 
   try {
-    // Parse the form data
-    const form = formidable()
-    const uploadedResult = await form.parse(req)
-    const files = uploadedResult[1]
-
-    if (!files.csv) {
-      return res.status(400).json({ error: 'CSV file is required' })
-    }
-
-    const csvFile = files.csv[0]
-    if (!csvFile.mimetype?.includes('csv')) {
-      return res.status(400).json({ error: 'File must be a CSV' })
-    }
-
-    // Read and parse the CSV file
-    const csvContent = fs.readFileSync(csvFile.filepath, 'utf-8')
-    const records = parse(csvContent, {
-      columns: true,
-      skip_empty_lines: true,
-    })
+    const records = await getCsvFromRequest(req)
 
     const csvRowValidation = yup.object({
       question: yup.string().required('Question is required'),
       answers: yup.string().required('Answers are required'),
       categories: yup.string().required('Categories are required'),
+      topics: yup.string().notRequired()
     })
 
     const rowErrors: string[] = []
@@ -84,16 +64,15 @@ export default async function importQuestionsHandler(
 
         const answers = questionData.answers.split('|').map((answer: string) => answer.trim())
         const categories = questionData.categories.split('|').map((category: string) => category.trim())
-        console.log(questionData.question, answers, categories)
+        const topics = questionData.topics ? questionData.topics.split('|').map((topic: string) => topic.trim()) : []
 
         const newQuestion = await createQuestion({
           id: uuid(),
           question: questionData.question,
           answers,
-          order: i
+          topics
         })
 
-        console.log('new question id', newQuestion.id)
         newQuestions++
 
         for (let j = 0; j < categories.length; j++) {
@@ -111,10 +90,6 @@ export default async function importQuestionsHandler(
             }
           }
 
-          console.log({
-            questionId: newQuestion.id,
-            categoryId,
-          })
           await addQuestionCategory({
             questionId: newQuestion.id,
             categoryId,
@@ -128,9 +103,6 @@ export default async function importQuestionsHandler(
         }
       }
     }
-
-    // Clean up the uploaded file
-    fs.unlinkSync(csvFile.filepath)
 
     return res.status(200).json({
       questionsCount: newQuestions,
