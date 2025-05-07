@@ -45,6 +45,7 @@ export default async function importQuestionsHandler(
       question: yup.string().required('Question is required'),
       answers: yup.string().required('Answers are required'),
       categories: yup.string().required('Categories are required'),
+      topics: yup.string().notRequired()
     })
 
     const rowErrors: string[] = []
@@ -63,16 +64,16 @@ export default async function importQuestionsHandler(
 
         const answers = questionData.answers.split('|').map((answer: string) => answer.trim())
         const categories = questionData.categories.split('|').map((category: string) => category.trim())
-        console.log(questionData.question, answers, categories)
+        const topics = questionData.topics ? questionData.topics.split('|').map((topic: string) => topic.trim()) : []
 
         const newQuestion = await createQuestion({
           id: uuid(),
           question: questionData.question,
           answers,
+          topics,
           order: i
         })
 
-        console.log('new question id', newQuestion.id)
         newQuestions++
 
         for (let j = 0; j < categories.length; j++) {
@@ -90,10 +91,6 @@ export default async function importQuestionsHandler(
             }
           }
 
-          console.log({
-            questionId: newQuestion.id,
-            categoryId,
-          })
           await addQuestionCategory({
             questionId: newQuestion.id,
             categoryId,

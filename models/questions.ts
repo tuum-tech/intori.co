@@ -174,3 +174,26 @@ export const removeDuplicateQuestions = async () => {
 
   await Promise.all(deletePromises);
 }
+
+export const addTopicsToQuestion = async (params: {
+  question: string
+  topics: string[]
+}) => {
+  const { question, topics } = params
+
+  const collection = getCollection()
+
+  const query = await collection.where('question', '==', question).limit(1).get()
+
+  if (!query.size) {
+    return null
+  }
+
+  const doc = query.docs[0]
+
+  await doc.ref.set({
+    topics
+  }, { merge: true })
+
+  return doc.data() as QuestionType
+}
