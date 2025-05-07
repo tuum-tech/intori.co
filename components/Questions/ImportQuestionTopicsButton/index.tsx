@@ -2,13 +2,11 @@ import { useRef, useState } from 'react'
 import { toast } from 'react-toastify'
 import { PrimaryButton } from '../../common/Button'
 import { handleError } from '@/utils/handleError'
-import { useQueryClient } from '@tanstack/react-query'
 import styles from './styles.module.css'
 
-export const ImportQuestionsButton = () => {
+export const ImportQuestionTopicsButton = () => {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const queryClient = useQueryClient()
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -19,17 +17,17 @@ export const ImportQuestionsButton = () => {
     formData.append('csv', file)
 
     try {
-      const response = await fetch('/api/questions/import', {
+      const response = await fetch('/api/questions/topics/import', {
         method: 'POST',
         body: formData,
       })
 
       if (!response.ok) {
-        throw new Error('Failed to import questions')
+        throw new Error('Failed to import question topics')
       }
 
       const data = await response.json() as { questionsCount: number, importErrors: string[] }
-      toast.success(`${data.questionsCount} questions imported successfully!`)
+      toast.success(`Question topics imported successfully!`)
       if (data.importErrors) {
         for (const error of data.importErrors) {
           toast.error(error, {
@@ -37,11 +35,8 @@ export const ImportQuestionsButton = () => {
           })
         }
       }
-
-      queryClient.invalidateQueries({ queryKey: ['paginated-questions'] })
-      queryClient.invalidateQueries({ queryKey: ['questions-count'] })
     } catch (error) {
-      handleError(error, 'Something went wrong while importing questions.')
+      handleError(error, 'Something went wrong while importing question topics.')
     }
 
     setIsLoading(false)
@@ -68,7 +63,7 @@ export const ImportQuestionsButton = () => {
         onClick={handleClick}
         disabled={isLoading}
       >
-        {isLoading ? 'Importing...' : 'Import Questions'}
+        {isLoading ? 'Importing...' : 'Import Topics for Existing Questions'}
       </PrimaryButton>
     </>
   )

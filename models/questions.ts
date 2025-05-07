@@ -5,15 +5,15 @@ export type QuestionType = {
   id: string
   question: string
   answers: string[]
-  order: number
   deleted: boolean
+  topics?: string[]
 }
 
 export type CreateQuestionType = {
   id: string
   question: string
   answers: string[]
-  order: number
+  topics?: string[]
 }
 
 let frameSessionsCollection: FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData>
@@ -29,6 +29,10 @@ const getCollection = () => {
 
 export const createQuestion = async (newQuestion: CreateQuestionType) => {
   const collection = getCollection()
+
+  if (!newQuestion.topics) {
+    newQuestion.topics = []
+  }
 
   const doc = await collection.add({
     deleted: false,
@@ -53,7 +57,7 @@ export const getAllQuestions = async (): Promise<QuestionType[]> => {
     ...doc.data()
   })) as QuestionType[]
 
-  return allQuestions.sort((a, b) => a.order - b.order)
+  return allQuestions
 }
 
 export const getQuestionById = async (id: string) => {
@@ -171,4 +175,72 @@ export const removeDuplicateQuestions = async () => {
   );
 
   await Promise.all(deletePromises);
+}
+
+export const addTopicsToQuestion = async (params: {
+  question: string
+  topics: string[]
+}) => {
+  const { question, topics } = params
+
+  const collection = getCollection()
+
+  const query = await collection.where('question', '==', question).limit(1).get()
+
+  if (!query.size) {
+    return null
+  }
+
+  const doc = query.docs[0]
+
+  await doc.ref.set({
+    topics
+  }, { merge: true })
+
+  return doc.data() as QuestionType
+}
+
+export const getPaginatedQuestions = async (params: {
+  limit: number
+  lastDocId?: string
+  search?: string
+}): Promise<{ questions: QuestionType[]; nextPageCursor: string | null }> => {
+  const collection = getCollection()
+  let query = collection.where('deleted', '==', false)
+  query = query.orderBy('question')
+
+  // If search is provided, do a Firestore prefix search (case-sensitive)
+  if (params.search) {
+    query = query
+      .where('question', '>=', params.search)
+      .where('question', '<=', params.search + '\uf8ff')
+  }
+
+  if (params.limit) {
+    query = query.limit(params.limit)
+  }
+
+  if (params.lastDocId) {
+    const lastDocRef = await collection.doc(params.lastDocId).get()
+    if (lastDocRef.exists) {
+      query = query.startAfter(lastDocRef)
+    }
+  }
+
+  const ref = await query.get()
+  const questions = ref.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data()
+  })) as QuestionType[]
+
+  const lastVisible = ref.docs[ref.docs.length - 1]
+  const nextPageCursor = lastVisible ? lastVisible.id : null
+
+  return { questions, nextPageCursor }
+}
+
+export const getQuestionsCount = async (): Promise<number> => {
+  const collection = getCollection()
+  const snapshot = await collection.where('deleted', '==', false).get()
+  return snapshot.size
 }

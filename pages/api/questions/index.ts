@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '../auth/[...nextauth]'
-import { getAllQuestions } from '../../../models/questions'
+import { getPaginatedQuestions } from '../../../models/questions'
 
 const getQuestions = async (
   req: NextApiRequest,
@@ -17,9 +17,16 @@ const getQuestions = async (
     return res.status(405).end()
   }
 
-  const questions = await getAllQuestions()
+  const limit = parseInt(req.query.limit as string) || 20
+  const lastDocId = req.query.lastDocId as string | undefined
+  const search = req.query.search as string | undefined
 
-  return res.status(200).json(questions)
+  const { questions, nextPageCursor } = await getPaginatedQuestions({ limit, lastDocId, search })
+
+  return res.status(200).json({
+    questions,
+    nextPageCursor
+  })
 }
 
 export default getQuestions

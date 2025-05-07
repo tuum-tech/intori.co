@@ -19,6 +19,15 @@
 .columns {
   display: flex;
 }
+.answerBadge {
+  background: #9664FA;
+  border-radius: 12px;
+  font-size: 14px;
+  display: inline-block;
+  padding: 6px 12px;
+  margin-right: 12px;
+  margin-bottom: 12px;
+}
 .indexNumber {
   font-size: 14px;
   color: #999;

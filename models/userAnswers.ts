@@ -645,3 +645,16 @@ export const countUserAnswersForQuestion = async (question: string, options: {
     return []
   }
 }
+
+export const getUserAnswersByQuestionAndAnswer = async (params: {
+  question: string
+  answer: string
+}) => {
+  const collection = getCollection()
+  const querySnapshot = await collection
+    .where('question', '==', params.question)
+    .where('answer', '==', params.answer)
+    .get()
+
+  return querySnapshot.docs.map((doc) => doc.data() as UserAnswerType)
+}
