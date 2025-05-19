@@ -2,6 +2,10 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react'
 import { countTotalUserAnswers } from '../../../models/userAnswers'
 import { countUserAnswerTotals } from '../../../models/userAnswerTotals'
+import {
+  countPendingFriendRequests,
+  countAcceptedFriendRequests
+} from '../../../models/friendRequests'
 
 const getGeneralStats = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -21,10 +25,14 @@ const getGeneralStats = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const uniqueUsersCount = await countUserAnswerTotals()
     const totalResponses = await countTotalUserAnswers()
+    const pendingFriends = await countPendingFriendRequests()
+    const acceptedFriends = await countAcceptedFriendRequests()
 
     res.status(200).json({
         uniqueUsersCount,
-        totalResponses
+        totalResponses,
+        pendingFriends,
+        acceptedFriends
     })
   } catch (error) {
     console.error(error)

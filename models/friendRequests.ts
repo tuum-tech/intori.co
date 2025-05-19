@@ -12,6 +12,22 @@ export const countTotalFriends = async (fid: number): Promise<number> => {
   })
 }
 
+export const countPendingFriendRequests = async (): Promise<number> => {
+  return prisma.friendRequest.count({
+    where: {
+      status: 'pending'
+    }
+  })
+}
+
+export const countAcceptedFriendRequests = async (): Promise<number> => {
+  return prisma.friendRequest.count({
+    where: {
+      status: 'accepted'
+    }
+  })
+}
+
 export const getFriendRequestsOverTime = async (options: {
   startDate: number,
   endDate: number,

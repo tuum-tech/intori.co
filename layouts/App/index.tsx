@@ -76,11 +76,17 @@ export const AppLayout: React.FC<Props> = ({ children }) => {
         <div className={styles.headerLeft}>
           <Image src="/intorilogomark.svg" alt="Intori" width={26} height={35} />
           <nav>
-            <Link href="/channels" title="Channels" className={isNavLinkActive('/channels') ? styles.selected : ''}>
+            <Link href="/dashboard" title="Dashboard" className={isNavLinkActive('/dashboard') ? styles.selected : ''}>
               <span className={styles.icon}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="#ffffff" viewBox="0 0 256 256"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,16V88H40V56Zm0,144H40V104H216v96Z"></path></svg>
               </span>
-              Channels
+              Stats
+            </Link>
+            <Link href="/dashboard/questions" title="Questions" className={isNavLinkActive('/dashboard/questions') ? styles.selected : ''}>
+              <span className={styles.icon}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="#ffffff" viewBox="0 0 256 256"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,16V88H40V56Zm0,144H40V104H216v96Z"></path></svg>
+              </span>
+              Questions
             </Link>
           </nav>
         </div>
