@@ -1,0 +1,220 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model AnswerUnlockTopic {
+  id           String   @id @default(cuid())
+  question     String
+  answer       String
+  unlockTopics String[]
+}
+
+model CastShareRecord {
+  id          String      @id
+  fid         Int
+  giftId      String
+  createdAt   DateTime    @default(now())
+  UserProfile UserProfile @relation(fields: [fid], references: [fid])
+}
+
+model Category {
+  id               String             @id @default(cuid())
+  category         String
+  QuestionCategory QuestionCategory[]
+}
+
+model ClaimTransactionRecord {
+  id              String   @id
+  fid             Int
+  address         String
+  createdAt       DateTime @default(now())
+  transactionHash String
+  bigIntAmount    BigInt
+}
+
+model EarlyAccessFid {
+  id  String @id
+  fid Int
+}
+
+model FriendRequest {
+  id                                             String              @id
+  fromFid                                        Int
+  toFid                                          Int
+  status                                         FriendRequestStatus
+  createdAt                                      DateTime
+  UserProfile_FriendRequest_fromFidToUserProfile UserProfile         @relation("FriendRequest_fromFidToUserProfile", fields: [fromFid], references: [fid])
+  UserProfile_FriendRequest_toFidToUserProfile   UserProfile         @relation("FriendRequest_toFidToUserProfile", fields: [toFid], references: [fid])
+}
+
+model PointRecord {
+  id                     String                @id
+  fid                    Int
+  points                 Int
+  pointsMultiplier       Int
+  action                 PointRecordActionType
+  relevantActionObjectId String?
+  description            String
+  createdAt              DateTime              @default(now())
+}
+
+model Question {
+  id               String             @id @default(cuid())
+  question         String
+  answers          String[]
+  deleted          Boolean            @default(false)
+  topics           String[]
+  QuestionCategory QuestionCategory[]
+}
+
+model QuestionCategory {
+  id         String   @id @default(cuid())
+  questionId String
+  categoryId String
+  Category   Category @relation(fields: [categoryId], references: [id])
+  Question   Question @relation(fields: [questionId], references: [id])
+}
+
+model Session {
+  id        String   @id
+  fid       Int
+  token     String
+  createdAt DateTime @default(now())
+}
+
+model SpecialGiftTransaction {
+  id                         String     @id
+  sentFromFid                Int
+  sentToFid                  Int
+  giftType                   TypeOfGift
+  totalCostAmount            Int
+  intoriFee                  Int
+  createdGiftTransactionHash String?
+  openedGiftTransactionHash  String?
+  giftId                     String?
+  giftIdToSendBackFor        String?
+  createdAt                  DateTime   @default(now())
+}
+
+model UserAnswer {
+  id                String            @id
+  fid               Int
+  question          String
+  answer            String
+  publicHash        String?
+  publicBlockHash   String?
+  likes             Int               @default(0)
+  createdAt         DateTime          @default(now())
+  publicBlockNumber Int?
+  UserInsightLike   UserInsightLike[]
+}
+
+model UserAnswerTotal {
+  id          String   @id
+  fid         Int
+  count       Int
+  lastUpdated DateTime
+}
+
+model UserGift {
+  id              String     @id
+  sentFromFid     Int
+  sentToFid       Int
+  opened          Boolean    @default(false)
+  sentBackGiftFor String?
+  sentGiftBack    Boolean?
+  giftType        TypeOfGift @default(NORMAL)
+  unlocked        Boolean?
+  createdAt       DateTime   @default(now())
+}
+
+model UserInsightLike {
+  id              String      @id
+  likedByFid      Int
+  answerInsightId String
+  createdAt       DateTime    @default(now())
+  UserAnswer      UserAnswer  @relation(fields: [answerInsightId], references: [id])
+  UserProfile     UserProfile @relation(fields: [likedByFid], references: [fid])
+}
+
+model UserNotificationDetails {
+  id          String      @id
+  fid         Int
+  token       String
+  url         String
+  UserProfile UserProfile @relation(fields: [fid], references: [fid])
+}
+
+model UserPointTotals {
+  id           String   @id
+  fid          Int
+  lastUpdated  DateTime
+  bigIntPoints BigInt
+}
+
+model UserProfile {
+  fid                                              Int                       @id
+  pfp_url                                          String?
+  display_name                                     String?
+  power_badge                                      Boolean
+  username                                         String
+  bio                                              String
+  CastShareRecord                                  CastShareRecord[]
+  FriendRequest_FriendRequest_fromFidToUserProfile FriendRequest[]           @relation("FriendRequest_fromFidToUserProfile")
+  FriendRequest_FriendRequest_toFidToUserProfile   FriendRequest[]           @relation("FriendRequest_toFidToUserProfile")
+  UserInsightLike                                  UserInsightLike[]
+  UserNotificationDetails                          UserNotificationDetails[]
+  UserUnlockedTopic                                UserUnlockedTopic[]
+}
+
+model UserQuestionSkip {
+  id           String   @id
+  fid          Int
+  questionText String
+  createdAt    DateTime @default(now())
+}
+
+model UserUnlockedTopic {
+  id          String      @id @default(cuid())
+  fid         Int
+  topic       String
+  createdAt   DateTime    @default(now())
+  UserProfile UserProfile @relation(fields: [fid], references: [fid])
+}
+
+model WalletAuthentication {
+  id             String @id
+  notBefore      String
+  expirationTime String
+  nonce          String
+}
+
+enum FriendRequestStatus {
+  pending
+  accepted
+  rejected
+}
+
+enum PointRecordActionType {
+  earlyAccessBonus
+  answeredQuestion
+  openedGift
+  friendAccepted
+  unlockedGift
+  sentSuperGift
+  openedSuperGift
+}
+
+enum TypeOfGift {
+  NORMAL
+  NEW_CONNECTION
+  THANK_YOU
+  SHOUT_OUT
+  ENCOURAGEMENT
+  HAPPY_BIRTHDAY
+}

@@ -1,31 +1,13 @@
-import { createDb } from '../pages/api/utils/firestore'
-
-export type UserPointTotalType = {
-  fid: number
-  points: string
-  lastUpdated: number
-}
-
-let collection: FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData>
-
-const getCollection = () => {
-  if (collection) {
-    return collection
-  }
-
-  const db = createDb()
-  collection = db.collection('userPointTotals')
-  return collection
-}
+import { prisma } from "@/prisma"
 
 export const getPointsTotalForFid = async (fid: number): Promise<string> => {
-  const col = getCollection()
-  const querySnapshot = await col.where('fid', '==', fid).get()
+  const total = await prisma.userPointTotals.findFirst({
+    where: { fid }
+  })
 
-  if (querySnapshot.empty) {
+  if (!total) {
     return "0"
   }
 
-  const data = querySnapshot.docs[0].data() as UserPointTotalType
-  return data.points
+  return total.bigIntPoints.toString()
 }

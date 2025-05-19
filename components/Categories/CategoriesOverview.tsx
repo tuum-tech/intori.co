@@ -1,15 +1,14 @@
 import React, { useMemo } from 'react'
+import { type Question, type Category } from "@prisma/client"
 import { useCategories } from '@/contexts/useCategories'
-import { QuestionType } from '@/models/questions'
-import { CategoryType } from '@/models/categories'
 import { useQuestionCategories } from '@/contexts/useQuestionCategories'
 import Input from '@/components/common/Input'
 import { DangerButton } from '@/components/common/Button'
 import styles from './styles.module.css'
 
 const OneCategoryOverview: React.FC<{
-  category: CategoryType
-  questions: QuestionType[]
+  category: Category
+  questions: Question[]
 }> = ({
   category,
   questions
@@ -25,7 +24,7 @@ const OneCategoryOverview: React.FC<{
     return questions.filter((q) => questionIds.includes(q.id))
   }, [questionCategories, questions, category])
 
-  const removeQuestion = (question: QuestionType) => {
+  const removeQuestion = (question: Question) => {
     const body = {
       questionId: question.id,
       categoryId: category.id
@@ -59,7 +58,7 @@ const OneCategoryOverview: React.FC<{
 }
 
 type Props = {
-  questions: QuestionType[]
+  questions: Question[]
 }
 
 export const CategoriesOverview: React.FC<Props> = ({ questions }) => {
@@ -101,4 +100,3 @@ export const CategoriesOverview: React.FC<Props> = ({ questions }) => {
     </div>
   )
 }
-

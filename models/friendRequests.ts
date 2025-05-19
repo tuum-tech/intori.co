@@ -1,37 +1,31 @@
-import { createDb } from '../pages/api/utils/firestore'
-
-export type FriendRequestType = {
-  fromFid: number
-  toFid: number
-  status: "pending" | "accepted" | "rejected"
-  createdAt: number
-}
-
-let collection: FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData>
-
-const getCollection = () => {
-  if (collection) {
-    return collection
-  }
-
-  const db = createDb()
-  collection = db.collection('friendRequest')
-  return collection
-}
+import { FriendRequestStatus } from "@prisma/client"
+import { prisma } from "@/prisma"
 
 export const countTotalFriends = async (fid: number): Promise<number> => {
-  const col = getCollection()
-  const query = await col
-    .where("fromFid", "==", fid)
-    .where("status", "==", "accepted")
-    .get()
+  return prisma.friendRequest.count({
+    where: {
+      AND: [
+        { fromFid: fid, status: FriendRequestStatus.accepted },
+        { toFid: fid, status: FriendRequestStatus.accepted },
+      ]
+    }
+  })
+}
 
-  const sentToMe = await col
-    .where("toFid", "==", fid)
-    .where("status", "==", "accepted")
-    .get()
+export const countPendingFriendRequests = async (): Promise<number> => {
+  return prisma.friendRequest.count({
+    where: {
+      status: 'pending'
+    }
+  })
+}
 
-  return query.size + sentToMe.size
+export const countAcceptedFriendRequests = async (): Promise<number> => {
+  return prisma.friendRequest.count({
+    where: {
+      status: 'accepted'
+    }
+  })
 }
 
 export const getFriendRequestsOverTime = async (options: {
@@ -40,47 +34,34 @@ export const getFriendRequestsOverTime = async (options: {
 }): Promise<Array<{ date: string, friendRequests: number }>> => {
   const { startDate, endDate } = options
 
-  try {
-    const collection = getCollection()
+  // Convert timestamps to Date objects
+  const start = new Date(startDate)
+  const end = new Date(endDate)
 
-    const query = collection
-      .where('createdAt', '>=', startDate)
-      .where('createdAt', '<=', endDate)
+  // Fetch all friend requests in the date range
+  const requests = await prisma.friendRequest.findMany({
+    where: {
+      createdAt: {
+        gte: start,
+        lte: end,
+      },
+    },
+    select: {
+      createdAt: true,
+    },
+  })
 
-    const snapshot = await query.get()
-
-    if (snapshot.empty) {
-      return []
-    }
-
-    // Process the data
-    const dateRequestMap = new Map()
-
-    snapshot.forEach(doc => {
-      const data = doc.data() as FriendRequestType
-      const date = new Date(data.createdAt).toISOString().split('T')[0] // Group by day
-
-      if (!dateRequestMap.has(date)) {
-        dateRequestMap.set(date, 0)
-      }
-
-      dateRequestMap.set(date, dateRequestMap.get(date) + 1)
-    })
-
-    // Prepare data for chart
-    const chartData = Array.from(dateRequestMap.entries()).map(([date, requestCount]) => {
-      return {
-        date,
-        friendRequests: requestCount
-      }
-    })
-
-    // Sort the data by date
-    chartData.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-
-    return chartData
-  } catch (error) {
-    console.error('Error querying friend requests:', error)
-    throw error
+  // Group by day
+  const dateRequestMap = new Map<string, number>()
+  for (const req of requests) {
+    const date = req.createdAt.toISOString().split('T')[0]
+    dateRequestMap.set(date, (dateRequestMap.get(date) || 0) + 1)
   }
+
+  // Prepare and sort the result
+  const chartData = Array.from(dateRequestMap.entries())
+    .map(([date, friendRequests]) => ({ date, friendRequests }))
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+
+  return chartData
 }

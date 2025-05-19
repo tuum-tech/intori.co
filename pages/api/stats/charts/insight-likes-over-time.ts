@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react'
 import { getInsightLikesOverTime } from '../../../../models/userInsightLike'
+import { subDays } from 'date-fns'
+import { CHART_DAYS } from '@/utils/charts'
 
 export default async function getInsightLikesOverTimeHandler(
   req: NextApiRequest,
@@ -16,9 +18,8 @@ export default async function getInsightLikesOverTimeHandler(
       return res.status(401).json({ error: 'Unauthorized' })
     }
 
-    const days = parseInt(req.query.days as string) || 30
     const endDate = Date.now()
-    const startDate = endDate - (days * 24 * 60 * 60 * 1000)
+    const startDate = subDays(endDate, CHART_DAYS).getTime()
 
     const insightLikesOverTime = await getInsightLikesOverTime({
       startDate,

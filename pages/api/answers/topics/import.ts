@@ -5,7 +5,7 @@ import * as yup from 'yup'
 // models
 import { createAnswerUnlockTopic } from '@/models/answerUnlockTopic'
 import { getUserAnswersByQuestionAndAnswer } from '@/models/userAnswers'
-import { createUserUnlockedTopic } from '@/models/userUnlockedTopic'
+import { createUserUnlockedTopics } from '@/models/userUnlockedTopic'
 
 // utils
 import { authOptions } from '../../auth/[...nextauth]'
@@ -69,18 +69,12 @@ export default async function importAnswerUnlockTopicsCsv(
           answer: newAnswerUnlockTopic.answer
         })
 
-        await Promise.all(
-          existingResponses.map((response) => {
-            return Promise.all(
-              unlockTopics.map((topic) => {
-                return createUserUnlockedTopic({
-                  fid: response.fid,
-                  topic
-                })
-              })
-            )
+        await Promise.all(unlockTopics.map((topic) => {
+          return createUserUnlockedTopics({
+            fids: existingResponses.map((response) => response.fid),
+            topic
           })
-        )
+        }))
       } catch (err) {
         if (err instanceof yup.ValidationError) {
           rowErrors.push(`Row ${i + 1}: ${(err.message)}`)

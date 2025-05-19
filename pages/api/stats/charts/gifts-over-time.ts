@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react'
 import { getGiftsSentOverTime } from '../../../../models/userGift'
 import { subDays } from 'date-fns'
+import { CHART_DAYS } from '@/utils/charts'
 
 const getGiftsOverTime = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -15,9 +16,8 @@ const getGiftsOverTime = async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(404).end()
     }
 
-    const days = parseInt(req.query.days as string) || 30
     const endDate = Date.now()
-    const startDate = subDays(endDate, days).getTime()
+    const startDate = subDays(endDate, CHART_DAYS).getTime()
 
     const data = await getGiftsSentOverTime({
       startDate,

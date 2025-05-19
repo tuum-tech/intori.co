@@ -1,40 +1,30 @@
-import { createDb } from '../pages/api/utils/firestore'
+import { type AnswerUnlockTopic, type Prisma } from "@prisma/client"
+import { prisma } from "@/prisma"
 
-export type AnswerUnlockTopicType = {
+export const createAnswerUnlockTopic = async (body: {
   question: string
   answer: string
   unlockTopics: string[]
-}
+}) => {
+  const alreadyExists = await prisma.answerUnlockTopic.findFirst({
+    where: {
+      question: body.question,
+      answer: body.answer
+    },
+    select: { id: true }
+  })
 
-let frameSessionsCollection: FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData>
-
-const getCollection = () => {
-  if (frameSessionsCollection) {
-    return frameSessionsCollection
-  }
-
-  const db = createDb()
-  return db.collection('answerUnlockTopic')
-}
-
-export const createAnswerUnlockTopic = async (body: AnswerUnlockTopicType) => {
-  const collection = getCollection()
-
-  // check if already exists
-  const query = collection
-    .where('question', '==', body.question)
-    .where('answer', '==', body.answer)
-
-  const snapshot = await query.get()
-  if (!snapshot.empty) {
+  if (alreadyExists) {
     throw new Error('Answer unlock topic already exists')
   }
 
-  const doc = await collection.add(body)
-
-  const ref = await doc.get()
-
-  return ref.data()
+  return prisma.answerUnlockTopic.create({
+    data: {
+      question: body.question,
+      answer: body.answer,
+      unlockTopics: body.unlockTopics
+    }
+  })
 }
 
 export const getAnswerUnlockTopic = async (
@@ -42,22 +32,14 @@ export const getAnswerUnlockTopic = async (
     question: string
     answer?: string
   }
-):Promise<AnswerUnlockTopicType[]> => {
-  const collection = getCollection()
-
-  const query = collection
-    .where('question', '==', body.question)
+):Promise<AnswerUnlockTopic[]> => {
+  const where: Prisma.AnswerUnlockTopicWhereInput = {
+    question: body.question
+  }
 
   if (body.answer) {
-    query.where('answer', '==', body.answer)
+    where.answer = body.answer
   }
 
-  const snapshot = await query.get()
-
-  if (snapshot.empty) {
-    return []
-  }
-
-  const answerUnlockTopics = snapshot.docs.map((doc) => doc.data()) as AnswerUnlockTopicType[]
-  return answerUnlockTopics
+  return prisma.answerUnlockTopic.findMany({ where })
 }

@@ -1,7 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react'
-import { countUserResponses } from '../../../models/userAnswers'
+import { countTotalUserAnswers } from '../../../models/userAnswers'
 import { countUserAnswerTotals } from '../../../models/userAnswerTotals'
+import {
+  countPendingFriendRequests,
+  countAcceptedFriendRequests
+} from '../../../models/friendRequests'
 
 const getGeneralStats = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -19,16 +23,16 @@ const getGeneralStats = async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(404).end()
     }
 
-    if (channelId) {
-      // TODO: check if getting stats about a channel i am admin for
-    }
-
     const uniqueUsersCount = await countUserAnswerTotals()
-    const totalResponses = await countUserResponses(channelId)
+    const totalResponses = await countTotalUserAnswers()
+    const pendingFriends = await countPendingFriendRequests()
+    const acceptedFriends = await countAcceptedFriendRequests()
 
     res.status(200).json({
         uniqueUsersCount,
-        totalResponses
+        totalResponses,
+        pendingFriends,
+        acceptedFriends
     })
   } catch (error) {
     console.error(error)
