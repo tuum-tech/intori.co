@@ -1,93 +1,43 @@
-import { createDb } from '../pages/api/utils/firestore'
+import { type Category } from "@prisma/client"
+import { prisma } from "@/prisma"
 
-export type CategoryType = {
-  id: string
+export const getAllCategories = async (): Promise<Category[]> => {
+  return prisma.category.findMany()
+}
+
+export const getCategoryById = async (categoryId: string): Promise<Category | null> => {
+  return prisma.category.findUnique({
+    where: { id: categoryId }
+  })
+}
+
+export const getCategoryByName = async (
   category: string
-}
-
-let categoryCollection: FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData>
-
-const getCollection = () => {
-  if (categoryCollection) {
-    return categoryCollection
-  }
-
-  const db = createDb()
-  return db.collection('categories')
-}
-
-export const getAllCategories = async (): Promise<CategoryType[]> => {
-  const collection = getCollection()
-  const snapshot = await collection.get()
-
-  return snapshot.docs.map(doc => ({
-    id: doc.id,
-    category: doc.data().category
-  }))
-}
-
-export const getCategoryById = async (categoryId: string): Promise<CategoryType> => {
-  const collection = getCollection()
-  const doc = await collection.doc(categoryId).get()
-
-  return {
-    id: doc.id,
-    category: (doc.data() as CategoryType).category
-  }
-}
-
-export const getCategoryByName = async (category: string): Promise<CategoryType | null> => {
-  const collection = getCollection()
-  const snapshot = await collection.where('category', '==', category).get()
-
-  if (snapshot.empty) {
-    return null
-  }
-  
-  const doc = snapshot.docs[0]
-  return {
-    id: doc.id,
-    category: (doc.data() as CategoryType).category
-  }
+): Promise<Category | null> => {
+  return prisma.category.findFirst({
+    where: { category }
+  })
 }
 
 export const doesCategoryExist = async (category: string): Promise<boolean> => {
-  const collection = getCollection()
-  const snapshot = await collection.where('category', '==', category).get()
+  const exists = await prisma.category.findFirst({
+    where: { category },
+    select: { id: true }
+  })
 
-  return snapshot.empty === false
+  return !!exists
 }
 
-export const createCategory = async (category: string): Promise<CategoryType> => {
-  const collection = getCollection()
-
-  // check if category already exists
-  const snapshot = await collection.where('category', '==', category).get()
-  if (!snapshot.empty) {
-    throw new Error('Category already exists')
-  }
-
-  const doc = await collection.add({ category })
-
-  const ref = await doc.get()
-
-  return {
-    id: doc.id,
-    category: (ref.data() as CategoryType).category
-  }
+export const createCategory = async (category: string): Promise<Category> => {
+  return prisma.category.create({
+    data: {
+      category
+    }
+  })
 }
 
 export const deleteCategory = async (categoryId: string): Promise<void> => {
-  const collection = getCollection()
-
-  await collection.doc(categoryId).delete()
-}
-
-export const deleteAllCategories = async (): Promise<void> => {
-  const collection = getCollection()
-
-  const snapshot = await collection.get()
-  snapshot.forEach(async (doc) => {
-    await doc.ref.delete()
+  await prisma.category.delete({
+    where: { id: categoryId }
   })
 }
