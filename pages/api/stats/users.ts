@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react'
+import { UserAnswerTotal } from "@prisma/client"
 
 // models
 import { getPageOfTopUserAnswerTotals } from '@/models/userAnswerTotals'
-import { UserAnswerTotalType } from '@/models/userAnswerTotals'
 import { countTotalFriends } from '@/models/friendRequests'
 import { countGiftsSent } from '@/models/userGift'
 import { getPointsTotalForFid } from '@/models/userPointTotals'
@@ -19,7 +19,7 @@ export type UserStatsType = {
 }
 
 interface UserStatsResponse {
-  items: UserAnswerTotalType[];
+  items: UserAnswerTotal[];
   nextCursor?: string;
   hasMore: boolean;
 }
@@ -37,11 +37,11 @@ const getUserStats = async (req: NextApiRequest, res: NextApiResponse<UserStatsR
     }
 
     const limit = parseInt(req.query.limit as string) || 10
-    const lastId = req.query.lastId as string
+    const skip = parseInt(req.query.skip as string) || 10
 
     const items = await getPageOfTopUserAnswerTotals({
       limit: limit + 1, // Fetch one extra to determine if there are more
-      lastId
+      skip
     })
 
     const hasMore = items.length > limit

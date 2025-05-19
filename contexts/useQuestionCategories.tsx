@@ -7,7 +7,7 @@ import React, {
   ReactNode
 } from 'react';
 import { toast } from 'react-toastify'
-import { QuestionCategoryType } from '@/models/questionCategories';
+import { QuestionCategory } from "@prisma/client"
 import {
   addQuestionCategory,
   deleteQuestionCategory,
@@ -15,7 +15,7 @@ import {
 } from '@/requests/questionCategories'
 
 interface QuestionCategoriesContextType {
-  questionCategories: QuestionCategoryType[]
+  questionCategories: QuestionCategory[]
 
   createQuestionCategory: (body: {
     categoryId: string
@@ -45,7 +45,7 @@ export const QuestionCategoriesProvider = ({
   const [
     questionCategories,
     setQuestionCategories
-  ] = useState<QuestionCategoryType[]>([])
+  ] = useState<QuestionCategory[]>([])
 
   const fetchQuestionCategories = useCallback(async () => {
     try {
