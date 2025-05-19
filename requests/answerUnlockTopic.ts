@@ -1,14 +1,14 @@
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
-import { AnswerUnlockTopicType } from '@/models/answerUnlockTopic'
+import { type AnswerUnlockTopic } from '@prisma/client'
 
 export const useAnswerUnlockTopic = (params: { question: string }) => {
   const { question } = params
-  return useQuery<AnswerUnlockTopicType[] | null>({
+  return useQuery<AnswerUnlockTopic[] | null>({
     queryKey: ['answer-unlock-topic', question],
     queryFn: async () => {
       if (!question) return null
-      const { data } = await axios.get<AnswerUnlockTopicType[]>(
+      const { data } = await axios.get<AnswerUnlockTopic[]>(
         `/api/answer-unlock-topic?question=${encodeURIComponent(question)}`
       )
       return data

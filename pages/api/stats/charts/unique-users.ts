@@ -8,18 +8,13 @@ const getQuestionsOverTimeChart = async (req: NextApiRequest, res: NextApiRespon
       return res.status(404).end()
     }
     const session = await getSession({ req })
-    const channelId = req.query.channelId as string
 
     if (!session?.user?.fid) {
       return res.status(404).end()
     }
 
-    if (!channelId && !session.admin) {
+    if (!session.admin) {
       return res.status(404).end()
-    }
-
-    if (channelId) {
-      // TODO: check if getting stats about a channel i am admin for
     }
 
     const today = new Date()
@@ -28,8 +23,7 @@ const getQuestionsOverTimeChart = async (req: NextApiRequest, res: NextApiRespon
 
     const usersOverTime = await getUniqueUsersOverTime({
       startDate: thirtyDaysAgo,
-      endDate: today,
-      channelId
+      endDate: today
     })
 
     res.status(200).json(usersOverTime)

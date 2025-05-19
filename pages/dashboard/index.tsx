@@ -56,11 +56,6 @@ const Channels: NextPage<Props> = ({
                 Edit Categories
               </PrimaryButton>
             </Link>
-            <a href="/api/stats/csv" target="_blank" rel="noopener noreferrer">
-              <PrimaryButton>
-                Download CSV
-              </PrimaryButton>
-            </a>
           </SectionTopActions>
         )}
 
