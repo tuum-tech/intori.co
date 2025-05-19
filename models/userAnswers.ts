@@ -1,4 +1,3 @@
-import { UserAnswer } from "@prisma/client"
 import { prisma } from "@/prisma"
 
 export const getUserAnswersByQuestionAndAnswer = async (options: {
@@ -88,4 +87,9 @@ export const getQuestionsAnsweredOverTime = async (options: {
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
 
   return chartData
+}
+
+export const countTotalUserAnswers = async (): Promise<number> => {
+  const total = await prisma.userAnswer.count()
+  return total
 }

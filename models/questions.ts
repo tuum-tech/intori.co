@@ -7,6 +7,18 @@ export const getQuestionByQuestionText = async (question: string) => {
   })
 }
 
+export const getQuestionById = async (id: string) => {
+  return prisma.question.findUnique({
+    where: { id }
+  })
+}
+
+export const deleteQuestionById = async (id: string) => {
+  return prisma.question.delete({
+    where: { id }
+  })
+}
+
 export const createQuestion = async (newQuestion: {
   question: string
   answers: string[]
@@ -61,5 +73,27 @@ export const getPaginatedQuestions = async (params: {
 export const getQuestionsCount = async (): Promise<number> => {
   return prisma.question.count({
     where: { deleted: false }
+  })
+}
+
+export const addTopicsToQuestion = async (options: {
+  question: string
+  topics: string[]
+}): Promise<void> => {
+  const { question, topics } = options
+
+  const questionRecord = await getQuestionByQuestionText(question)
+
+  if (!questionRecord) {
+    throw new Error(`Question "${question}" not found`)
+  }
+
+  await prisma.question.update({
+    where: { id: questionRecord.id },
+    data: {
+      topics: {
+        set: topics
+      }
+    }
   })
 }
