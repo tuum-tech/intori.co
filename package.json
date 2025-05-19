@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "PORT=6868 next start",
     "lint": "next lint",
+    "tsc": "tsc --noEmit",
     "db:pull": "prisma db pull && prisma generate"
   },
   "dependencies": {
