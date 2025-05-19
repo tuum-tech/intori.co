@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth'
-import { v4 as uuid } from 'uuid'
 import * as yup from 'yup'
 
 // models
@@ -67,7 +66,6 @@ export default async function importQuestionsHandler(
         const topics = questionData.topics ? questionData.topics.split('|').map((topic: string) => topic.trim()) : []
 
         const newQuestion = await createQuestion({
-          id: uuid(),
           question: questionData.question,
           answers,
           topics

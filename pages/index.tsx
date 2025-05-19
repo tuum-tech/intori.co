@@ -13,7 +13,7 @@ export const getServerSideProps = (async (context) => {
     return {
       redirect: {
         permanent: false,
-        destination: "/channels"
+        destination: "/dashboard"
       }
     }
   }

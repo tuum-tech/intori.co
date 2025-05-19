@@ -4,7 +4,6 @@ import { CategoryScale } from "chart.js"
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { SessionProvider } from "next-auth/react"
-import { WalletProvider } from '../contexts/EthereumWallet'
 import Head from 'next/head'
 import { Fragment } from 'react'
 import './global.css'
@@ -40,13 +39,11 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
         <meta property="og:type" content="website"/>
       </Head>
       <SessionProvider session={session}>
-        <WalletProvider>
-          <QueryClientProvider client={queryClient}>
-            <ToastContainer position="top-right" />
-            <Component {...pageProps} />
-            <ReactQueryDevtools initialIsOpen={false} />
-          </QueryClientProvider>
-        </WalletProvider>
+        <QueryClientProvider client={queryClient}>
+          <ToastContainer position="top-right" />
+          <Component {...pageProps} />
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
       </SessionProvider>
     </Fragment>
   )

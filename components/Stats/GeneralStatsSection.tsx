@@ -10,15 +10,13 @@ export const GeneralStatsSection: React.FC<Props> = ({ channelId }) => {
   const [loading, setLoading] = useState(true)
   const [uniqueUsersCount, setUniqueUsersCount] = useState(0)
   const [totalResponses, setTotalResponses] = useState(0)
+  const [pendingFriends, setPendingFriends] = useState(0)
+  const [acceptedFriends, setAcceptedFriends] = useState(0)
 
   useEffect(() => {
     const urlParts = [
       `/api/stats/general`
     ]
-
-    if (channelId) {
-      urlParts.push(`?channelId=${channelId}`)
-    }
 
     fetch(urlParts.join('')).then((res) => {
       if (res.ok) {
@@ -27,6 +25,8 @@ export const GeneralStatsSection: React.FC<Props> = ({ channelId }) => {
     }).then((data) => {
       setUniqueUsersCount(data.uniqueUsersCount)
       setTotalResponses(data.totalResponses)
+      setPendingFriends(data.pendingFriends)
+      setAcceptedFriends(data.acceptedFriends)
     }).catch((err) => {
       toast.error('Failed to fetch stats. Please try again later.')
       console.error('Error:', err)
@@ -55,6 +55,16 @@ export const GeneralStatsSection: React.FC<Props> = ({ channelId }) => {
       <StatsCard
         title="Total questions answered"
         value={totalResponses}
+      />
+
+      <StatsCard
+        title="Pending Friend Requests"
+        value={pendingFriends}
+      />
+
+      <StatsCard
+        title="Accepted Friend Requests"
+        value={acceptedFriends}
       />
     </StatsContainer>
   )
