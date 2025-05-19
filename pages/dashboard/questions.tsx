@@ -9,27 +9,18 @@ import { ImportQuestionTopicsButton } from '../../components/Questions/ImportQue
 import { ImportAnswerUnlockTopicsButton } from '../../components/Questions/ImportAnswerUnlockTopicsButton'
 import { CategoriesProvider } from '../../contexts/useCategories'
 import { QuestionCategoriesProvider } from '../../contexts/useQuestionCategories'
-import { isSuperAdmin } from '../../utils/isSuperAdmin'
 
 import { useQuestionsCount } from '@/requests/questions'
 
 export const getServerSideProps = (async (context) => {
   const session = await getSession(context)
 
-  if (!session?.user?.fid) {
+  if (!session?.user?.fid || !session.admin) {
     return {
       redirect: {
         permanent: false,
         destination: '/'
       }
-    }
-  }
-
-  const fid = parseInt(session.user.fid, 10)
-
-  if (!isSuperAdmin(fid)) {
-    return {
-      notFound: true
     }
   }
 
@@ -40,6 +31,7 @@ export const getServerSideProps = (async (context) => {
 
 const AdminStats: NextPage = () => {
   const { data: questionCount } = useQuestionsCount()
+
   return (
     <AppLayout>
       <QuestionCategoriesProvider>

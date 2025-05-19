@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react'
 import { getFriendRequestsOverTime } from '../../../../models/friendRequests'
+import { subDays } from 'date-fns'
+import { CHART_DAYS } from '@/utils/charts'
 
 export default async function getFriendRequestsOverTimeHandler(
   req: NextApiRequest,
@@ -17,7 +19,7 @@ export default async function getFriendRequestsOverTimeHandler(
     }
 
     const endDate = Date.now()
-    const startDate = endDate - (30 * 24 * 60 * 60 * 1000)
+    const startDate = subDays(endDate, CHART_DAYS).getTime()
 
     const friendRequestsOverTime = await getFriendRequestsOverTime({
       startDate,

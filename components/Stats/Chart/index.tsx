@@ -3,13 +3,14 @@ import { Line } from "react-chartjs-2";
 import { StatsContainer, StatsChartContainer } from '../StatsCard'
 import { Empty } from '../../common/Empty'
 import { useQuery } from '@tanstack/react-query'
+import { CHART_DAYS } from '@/utils/charts'
 
 type Props = {
   channelId?: string
 }
 
 
-export const UniqueUsersOverTimeChart: React.FC<Props> = ({
+export const StatsChart: React.FC<Props> = ({
   channelId
 }) => {
   const { data: usersData, isLoading: isLoadingUsers } = useQuery({
@@ -80,11 +81,11 @@ export const UniqueUsersOverTimeChart: React.FC<Props> = ({
     staleTime: 1000 * 60 * 30 // 30 minutes
   })
 
-  const lastThirtyDays = useMemo(() => {
+  const shownTimeline = useMemo(() => {
     const labels: string[] = [];
     const today = new Date();
 
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < CHART_DAYS; i++) {
       const date = new Date(today);
       date.setDate(today.getDate() - i);
       const isoDate = date.toISOString().split('T')[0];
@@ -107,7 +108,7 @@ export const UniqueUsersOverTimeChart: React.FC<Props> = ({
 
     return {
       label,
-      data: lastThirtyDays.map(date => dataMap.get(date) || 0),
+      data: shownTimeline.map(date => dataMap.get(date) || 0),
       fill: false,
       backgroundColor,
       borderColor,
@@ -122,7 +123,7 @@ export const UniqueUsersOverTimeChart: React.FC<Props> = ({
 
 
     return {
-      labels: lastThirtyDays,
+      labels: shownTimeline,
       datasets: [
         createConsistentDataset(usersData, 'uniqueUsers', 'Unique Users', 'rgba(133, 88, 227, 1)', 'rgba(133, 88, 227, 0.2)', 'y-users'),
         createConsistentDataset(questionsData, 'questionsAnswered', 'Questions Answered', 'rgba(51, 153, 255, 1)', 'rgba(51, 153, 255, 0.2)', 'y-insights'),
@@ -184,14 +185,14 @@ export const UniqueUsersOverTimeChart: React.FC<Props> = ({
 
   if (!chartData) {
     return (
-      <StatsChartContainer title="Unique users over past 30 days">
+      <StatsChartContainer title="Unique users over past 7 days">
         <Empty>No data available</Empty>
       </StatsChartContainer>
     )
   }
 
   return (
-    <StatsChartContainer title="Unique users over past 30 days">
+    <StatsChartContainer title="Unique users over past 7 days">
       { /* @ts-expect-error because line options types are very very strict but this works */ }
       <Line data={chartData} options={lineOptions} />
     </StatsChartContainer>
