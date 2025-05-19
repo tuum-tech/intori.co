@@ -8,12 +8,12 @@ import React, {
 } from 'react';
 import { isAxiosError } from 'axios'
 import { toast } from 'react-toastify'
-import { CategoryType } from '@/models/categories';
+import { Category } from "@prisma/client"
 import { createCategory, deleteCategory, getAllCategories } from '@/requests/categories'
 import { AddNewCategoryModal } from '@/components/Categories/AddNewCategoryModal'
 
 interface CategoriesContextType {
-  allCategories: CategoryType[]
+  allCategories: Category[]
   addCategory: (category: string) => Promise<void>
   removeCategory: (categoryId: string) => Promise<void>
   showAddCategoryModal: () => void
@@ -28,7 +28,7 @@ const CategoriesContext = createContext<CategoriesContextType>({
 
 // Create a provider component
 export const CategoriesProvider = ({ children }: { children: ReactNode }) => {
-  const [allCategories, setAllCategories] = useState<CategoryType[]>([])
+  const [allCategories, setAllCategories] = useState<Category[]>([])
   const [addingNewCategory, setAddingNewCategory] = useState(false)
 
   const fetchAllCategories = useCallback(async () => {
@@ -36,7 +36,7 @@ export const CategoriesProvider = ({ children }: { children: ReactNode }) => {
       const res = await getAllCategories()
       setAllCategories(
         res.data.sort(
-          (a: CategoryType, b: CategoryType) => a.category.localeCompare(b.category)
+          (a: Category, b: Category) => a.category.localeCompare(b.category)
         )
       )
     } catch (err) {

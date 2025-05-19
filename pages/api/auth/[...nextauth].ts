@@ -70,6 +70,13 @@ export const authOptions: (req: NextApiRequest) => NextAuthOptions = (req) => ({
       })
     ],
     callbacks: {
+      signIn({ user }) {
+        if (!isSuperAdmin(parseInt(user.id, 10))) {
+          return false
+        }
+
+        return true
+      },
       jwt({ token, account, user }) {
         if (account) {
           token.accessToken = account.access_token

@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react'
-import { QuestionType } from '../../models/questions'
-import { AnswerUnlockTopicType } from '../../models/answerUnlockTopic'
+import { type Question, type AnswerUnlockTopic } from "@prisma/client"
 import Input from '../../components/common/Input'
 
 import { usePaginatedQuestions } from '../../requests/questions'
@@ -11,7 +10,7 @@ import styles from './styles.module.css'
 const AnswerUnlockTopics = ({
   unlockTopics
 }: {
-  unlockTopics?: AnswerUnlockTopicType
+  unlockTopics?: AnswerUnlockTopic
 }) => {
   if (!unlockTopics || !unlockTopics.unlockTopics.length) {
     return null
@@ -20,7 +19,7 @@ const AnswerUnlockTopics = ({
   return <span>&nbsp;({unlockTopics.unlockTopics.map((t) => `🔓 ${t}`).join(', ')})</span>
 }
 
-const QuestionRow = ({ question }: { question: QuestionType }) => {
+const QuestionRow = ({ question }: { question: Question }) => {
   const {
     data: answerUnlockTopics,
   } = useAnswerUnlockTopic({ question: question.question })
