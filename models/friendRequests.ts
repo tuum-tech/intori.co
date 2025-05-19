@@ -4,7 +4,7 @@ import { prisma } from "@/prisma"
 export const countTotalFriends = async (fid: number): Promise<number> => {
   return prisma.friendRequest.count({
     where: {
-      AND: [
+      OR: [
         { fromFid: fid, status: FriendRequestStatus.accepted },
         { toFid: fid, status: FriendRequestStatus.accepted },
       ]
