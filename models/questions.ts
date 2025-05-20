@@ -31,7 +31,7 @@ export const createQuestion = async (newQuestion: {
     select: { id: true }
   })
 
-  if (!alreadyExists) {
+  if (alreadyExists) {
     throw new Error(`"${question}" already exists`)
   }
 

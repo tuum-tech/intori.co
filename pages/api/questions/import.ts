@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth'
+import { Prisma } from "@prisma/client"
 import * as yup from 'yup'
 
 // models
@@ -96,9 +97,10 @@ export default async function importQuestionsHandler(
       } catch (err) {
         if (err instanceof yup.ValidationError) {
           rowErrors.push(`Row ${i + 1}: ${(err.message)}`)
-        } else {
-          console.error(err)
+        } else if (err instanceof Error) {
+          rowErrors.push(`Row ${i + 1}: ${(err.message)}`)
         }
+        console.error(err)
       }
     }
 
