@@ -50,15 +50,15 @@ export default async function importQuestionsHandler(
     const rowErrors: string[] = []
     let newQuestions = 0
 
-    for (let i = 0; i < records.length; i++) {
-      const row = records[i]
+    // Process all rows in parallel
+    await Promise.all(records.map(async (row, i) => {
       try {
         const questionData = csvRowValidation.validateSync(row, { stripUnknown: true })
         const questionExists = await getQuestionByQuestionText(questionData.question)
 
         if (questionExists) {
           rowErrors.push(`Row ${i + 1}: Question "${questionData.question}" already exists`)
-          continue
+          return
         }
 
         const answers = questionData.answers.split('|').map((answer: string) => answer.trim())
@@ -101,7 +101,7 @@ export default async function importQuestionsHandler(
         }
         console.error(err)
       }
-    }
+    }))
 
     return res.status(200).json({
       questionsCount: newQuestions,
