@@ -26,7 +26,7 @@ export const ImportAnswerUnlockTopicsButton = () => {
         throw new Error('Failed to import answer unlock topics')
       }
 
-      const data = await response.json() as { questionsCount: number, importErrors: string[] }
+      const data = await response.json() as { importErrors: string[] }
       toast.success(`Answer unlock topics imported successfully!`)
       if (data.importErrors) {
         for (const error of data.importErrors) {
