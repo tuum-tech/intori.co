@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth'
-import { Prisma } from "@prisma/client"
 import * as yup from 'yup'
 
 // models
