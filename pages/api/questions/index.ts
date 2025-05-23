@@ -20,8 +20,9 @@ const getQuestions = async (
   const limit = parseInt(req.query.limit as string) || 20
   const skip = parseInt(req.query.skip as string) || 0
   const search = req.query.search as string | undefined
+  const byTopic = req.query.byTopic as string | undefined
 
-  const { questions, total } = await getPaginatedQuestions({ limit, skip, search })
+  const { questions, total } = await getPaginatedQuestions({ limit, skip, search, byTopic })
 
   return res.status(200).json({
     questions,
