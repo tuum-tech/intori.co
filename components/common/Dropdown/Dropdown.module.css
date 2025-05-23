@@ -1,26 +1,29 @@
 .dropdownContainer {
     position: relative;
-    text-align: right;
+    display: inline-block;
 }
 .dropdownContainer > button {
     border: none;
     background: none;
     cursor: initial;
+    margin: 0;
+    padding: 0;
 }
 
 .dropdownContainer ul {
     position: absolute;
     width: 200px;
+    max-height: 300px;
+    overflow-y: scroll;
     background: #20202F;
     border: 1px solid #2A3042;
     top: calc(100% - 1px);
-    right: 0;
+    left: 0;
     box-shadow: 4px 4px 14px 0px rgba(0, 0, 0, 0.4);
     margin: 0;
     padding: 0;
     z-index: 10;
     border-radius: 8px;
-    overflow: hidden;
 }
 
 .dropdownContainer ul li {

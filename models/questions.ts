@@ -48,12 +48,19 @@ export const getPaginatedQuestions = async (params: {
   limit: number
   skip: number
   search?: string
+  byTopic?: string
 }): Promise<{ questions: Question[]; total: number }> => {
   const where: Prisma.QuestionWhereInput = {
     deleted: false,
     question: {
       contains: params.search || "",
       mode: "insensitive"
+    }
+  }
+
+  if (params.byTopic) {
+    where.topics = {
+      has: params.byTopic
     }
   }
 

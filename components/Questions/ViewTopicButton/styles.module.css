@@ -1,0 +1,12 @@
+.viewTopicButtonContainer {
+  position: relative;
+}
+.viewTopicButtonContainer > button {
+  background: #FFF;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  padding: 6px 10px;
+  cursor: pointer;
+}

@@ -3,6 +3,8 @@ import { type Question, type AnswerUnlockTopic } from "@prisma/client"
 import Input from '../../components/common/Input'
 import { Empty } from '../../components/common/Empty'
 import { PrimaryButton } from '../../components/common/Button'
+import { SelectTopicDropdown } from './SelectTopicDropdown'
+import { ViewTopicButton } from './ViewTopicButton'
 
 import { usePaginatedQuestions } from '../../requests/questions'
 import { useAnswerUnlockTopic } from '../../requests/answerUnlockTopic'
@@ -28,10 +30,10 @@ const QuestionRow = ({ question }: { question: Question }) => {
 
   const topics = useMemo(() => {
     if (!question.topics?.length) {
-      return ''
+      return []
     }
 
-    return question.topics.join(', ')
+    return question.topics
   }, [question])
 
   const getAnswerUnlockTopics = useCallback((answer: string) => {
@@ -48,7 +50,13 @@ const QuestionRow = ({ question }: { question: Question }) => {
 
   return (
     <tr>
-      <td>{topics}</td>
+      <td>
+        {
+          topics.map((topic) => (
+            <ViewTopicButton key={topic} topic={topic} question={question.question} />
+          ))
+        }
+      </td>
       <td>{question.question}</td>
       <td>
         {question.answers.map((answer) => (
@@ -66,13 +74,14 @@ const QuestionRow = ({ question }: { question: Question }) => {
 
 export const PaginatedQuestionsTable: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('')
+  const [selectedTopic, setSelectedTopic] = useState<string>("")
   const {
     data,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
     isLoading,
-  } = usePaginatedQuestions(20, searchTerm)
+  } = usePaginatedQuestions(20, searchTerm, selectedTopic)
 
   const allQuestions = data ? data.pages.flatMap(page => page.questions) : []
 
@@ -87,6 +96,15 @@ export const PaginatedQuestionsTable: React.FC = () => {
         />
       </div>
 
+      <div className={styles.filterContainer}> 
+        <SelectTopicDropdown onTopicSelected={setSelectedTopic} />
+        { selectedTopic && (
+          <PrimaryButton onClick={() => setSelectedTopic("")}>
+            Topic: {selectedTopic}
+          </PrimaryButton>
+        )}
+      </div>
+
 
       {isLoading && (
         <Empty>Loading questions...</Empty>
@@ -96,7 +114,7 @@ export const PaginatedQuestionsTable: React.FC = () => {
         <table border={1} cellPadding={8} cellSpacing={0} style={{ width: '100%', marginTop: 16 }}>
           <thead>
             <tr>
-              <th>Topics</th>
+              <th>Required Topic(s)</th>
               <th>Question</th>
               <th>Answers</th>
             </tr>

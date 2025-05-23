@@ -18,14 +18,19 @@ export const createQuestion = async (
   return axios.post(`/api/questions/new`, body)
 }
 
-export const usePaginatedQuestions = (limit: number = 20, search: string = '') => {
+export const usePaginatedQuestions = (
+  limit: number = 20,
+  search: string = '',
+  byTopic: string = ''
+) => {
   return useInfiniteQuery({
-    queryKey: ['paginated-questions', limit, search],
+    queryKey: ['paginated-questions', limit, search, byTopic],
     queryFn: async ({ pageParam = 0 }) => {
       const params = new URLSearchParams({
         limit: limit.toString(),
         skip: pageParam.toString(),
         ...(search && { search }),
+        ...(byTopic && { byTopic }),
       })
       const { data } = await axios.get(`/api/questions?${params.toString()}`)
       return data
