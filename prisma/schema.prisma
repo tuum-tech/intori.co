@@ -70,6 +70,8 @@ model Question {
   deleted          Boolean            @default(false)
   topics           String[]
   QuestionCategory QuestionCategory[]
+
+  @@index([question])
 }
 
 model QuestionCategory {
@@ -111,7 +113,10 @@ model UserAnswer {
   likes             Int               @default(0)
   createdAt         DateTime          @default(now())
   publicBlockNumber Int?
+  embeddingPending  Boolean           @default(false)
   UserInsightLike   UserInsightLike[]
+
+  @@index([question])
 }
 
 model UserAnswerTotal {
@@ -143,11 +148,10 @@ model UserInsightLike {
 }
 
 model UserNotificationDetails {
-  id          String      @id
-  fid         Int
-  token       String
-  url         String
-  UserProfile UserProfile @relation(fields: [fid], references: [fid])
+  id    String @id
+  fid   Int
+  token String
+  url   String
 }
 
 model UserPointTotals {
@@ -158,18 +162,16 @@ model UserPointTotals {
 }
 
 model UserProfile {
-  fid                                              Int                       @id
+  fid                                              Int               @id
   pfp_url                                          String?
   display_name                                     String?
   power_badge                                      Boolean
   username                                         String
   bio                                              String
   CastShareRecord                                  CastShareRecord[]
-  FriendRequest_FriendRequest_fromFidToUserProfile FriendRequest[]           @relation("FriendRequest_fromFidToUserProfile")
-  FriendRequest_FriendRequest_toFidToUserProfile   FriendRequest[]           @relation("FriendRequest_toFidToUserProfile")
+  FriendRequest_FriendRequest_fromFidToUserProfile FriendRequest[]   @relation("FriendRequest_fromFidToUserProfile")
+  FriendRequest_FriendRequest_toFidToUserProfile   FriendRequest[]   @relation("FriendRequest_toFidToUserProfile")
   UserInsightLike                                  UserInsightLike[]
-  UserNotificationDetails                          UserNotificationDetails[]
-  UserUnlockedTopic                                UserUnlockedTopic[]
 }
 
 model UserQuestionSkip {
@@ -180,11 +182,10 @@ model UserQuestionSkip {
 }
 
 model UserUnlockedTopic {
-  id          String      @id @default(cuid())
-  fid         Int
-  topic       String
-  createdAt   DateTime    @default(now())
-  UserProfile UserProfile @relation(fields: [fid], references: [fid])
+  id        String   @id @default(cuid())
+  fid       Int
+  topic     String
+  createdAt DateTime @default(now())
 }
 
 model WalletAuthentication {
@@ -192,6 +193,19 @@ model WalletAuthentication {
   notBefore      String
   expirationTime String
   nonce          String
+}
+
+model SpamScore {
+  fid       Int     @id
+  score     Float
+  whitelist Boolean @default(false)
+}
+
+model UserProfileEmbedding {
+  fid       Int      @id
+  embedding Float[]
+  count     Int
+  updatedAt DateTime
 }
 
 enum FriendRequestStatus {

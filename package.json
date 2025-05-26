@@ -9,7 +9,7 @@
     "start": "PORT=6868 next start",
     "lint": "next lint",
     "tsc": "tsc --noEmit",
-    "db:pull": "prisma db pull && prisma generate",
+    "db:pull": "prisma db pull && prisma generate --no-engine",
 
     "_comment": "For vercel prod deployment for the TS build checks",
     "postinstall": "prisma generate --no-engine"
