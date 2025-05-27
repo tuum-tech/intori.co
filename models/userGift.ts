@@ -1,4 +1,5 @@
 import { prisma } from "@/prisma"
+import { chunkArray } from '@/utils/chunkArray'
 
 export const countGiftsSent = async (fid: number): Promise<number> => {
   return prisma.userGift.count({
@@ -18,18 +19,46 @@ export const getGiftsSentOverTime = async (options: {
   const start = new Date(startDate)
   const end = new Date(endDate)
 
-  // Fetch all user gifts in the date range
-  const gifts = await prisma.userGift.findMany({
-    where: {
-      createdAt: {
-        gte: start,
-        lte: end,
-      },
-    },
-    select: {
-      createdAt: true,
-    },
-  })
+  // Split the date range into 30-day chunks
+  const days: Date[] = []
+  let d = new Date(start)
+  while (d <= end) {
+    days.push(new Date(d))
+    d.setDate(d.getDate() + 1)
+  }
+  const dayChunks = chunkArray(days, 30)
+
+  let gifts: { id: string, createdAt: Date }[] = []
+  const PAGE_SIZE = 1000;
+  for (const chunk of dayChunks) {
+    const chunkStart = chunk[0]
+    const chunkEnd = chunk[chunk.length - 1]
+    let hasMore = true;
+    let cursor: string | undefined = undefined;
+    while (hasMore) {
+      const chunkGifts: { id: string, createdAt: Date }[] = await prisma.userGift.findMany({
+        where: {
+          createdAt: {
+            gte: chunkStart,
+            lte: chunkEnd,
+          },
+        },
+        select: {
+          id: true,
+          createdAt: true,
+        },
+        take: PAGE_SIZE,
+        ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
+        orderBy: { id: 'asc' },
+      });
+      gifts = gifts.concat(chunkGifts);
+      if (chunkGifts.length < PAGE_SIZE) {
+        hasMore = false;
+      } else {
+        cursor = chunkGifts[chunkGifts.length - 1].id;
+      }
+    }
+  }
 
   // Group by day
   const dateGiftMap = new Map<string, number>()

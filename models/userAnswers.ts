@@ -1,4 +1,5 @@
 import { prisma } from "@/prisma"
+import { chunkArray } from '@/utils/chunkArray'
 
 export const getUserAnswersByQuestionAndAnswer = async (options: {
   answer: string
@@ -24,19 +25,47 @@ export const getUniqueUsersOverTime = async (options: {
   endDate: Date
 }): Promise<Array<{ date: string, uniqueUsers: number }>> => {
   const { startDate, endDate } = options
-  // Fetch all user answers in the date range
-  const answers = await prisma.userAnswer.findMany({
-    where: {
-      createdAt: {
-        gte: startDate,
-        lte: endDate,
-      },
-    },
-    select: {
-      createdAt: true,
-      fid: true,
-    },
-  })
+  // Split the date range into 30-day chunks
+  const days: Date[] = []
+  let d = new Date(startDate)
+  while (d <= endDate) {
+    days.push(new Date(d))
+    d.setDate(d.getDate() + 1)
+  }
+  const dayChunks = chunkArray(days, 30)
+
+  let answers: { id: string, createdAt: Date, fid: number }[] = []
+  const PAGE_SIZE = 1000;
+  for (const chunk of dayChunks) {
+    const chunkStart = chunk[0]
+    const chunkEnd = chunk[chunk.length - 1]
+    let hasMore = true;
+    let cursor: string | undefined = undefined;
+    while (hasMore) {
+      const chunkAnswers: { id: string, createdAt: Date, fid: number }[] = await prisma.userAnswer.findMany({
+        where: {
+          createdAt: {
+            gte: chunkStart,
+            lte: chunkEnd,
+          },
+        },
+        select: {
+          id: true,
+          createdAt: true,
+          fid: true,
+        },
+        take: PAGE_SIZE,
+        ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
+        orderBy: { id: 'asc' },
+      });
+      answers = answers.concat(chunkAnswers);
+      if (chunkAnswers.length < PAGE_SIZE) {
+        hasMore = false;
+      } else {
+        cursor = chunkAnswers[chunkAnswers.length - 1].id;
+      }
+    }
+  }
 
   // Group by day and count unique fids
   const dateUserMap = new Map<string, Set<number>>()
@@ -61,18 +90,46 @@ export const getQuestionsAnsweredOverTime = async (options: {
   endDate: Date
 }): Promise<Array<{ date: string, questionsAnswered: number }>> => {
   const { startDate, endDate } = options
-  // Fetch all user answers in the date range
-  const answers = await prisma.userAnswer.findMany({
-    where: {
-      createdAt: {
-        gte: startDate,
-        lte: endDate,
-      },
-    },
-    select: {
-      createdAt: true,
-    },
-  })
+  // Split the date range into 30-day chunks
+  const days: Date[] = []
+  let d = new Date(startDate)
+  while (d <= endDate) {
+    days.push(new Date(d))
+    d.setDate(d.getDate() + 1)
+  }
+  const dayChunks = chunkArray(days, 30)
+
+  let answers: { id: string, createdAt: Date }[] = []
+  const PAGE_SIZE = 1000;
+  for (const chunk of dayChunks) {
+    const chunkStart = chunk[0]
+    const chunkEnd = chunk[chunk.length - 1]
+    let hasMore = true;
+    let cursor: string | undefined = undefined;
+    while (hasMore) {
+      const chunkAnswers: { id: string, createdAt: Date }[] = await prisma.userAnswer.findMany({
+        where: {
+          createdAt: {
+            gte: chunkStart,
+            lte: chunkEnd,
+          },
+        },
+        select: {
+          id: true,
+          createdAt: true,
+        },
+        take: PAGE_SIZE,
+        ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
+        orderBy: { id: 'asc' },
+      });
+      answers = answers.concat(chunkAnswers);
+      if (chunkAnswers.length < PAGE_SIZE) {
+        hasMore = false;
+      } else {
+        cursor = chunkAnswers[chunkAnswers.length - 1].id;
+      }
+    }
+  }
 
   // Group by day and count answers
   const dateQuestionMap = new Map<string, number>()
