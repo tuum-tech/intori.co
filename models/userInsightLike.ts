@@ -13,7 +13,7 @@ export const getInsightLikesOverTime = async (options: {
 
   // Split the date range into 30-day chunks
   const days: Date[] = []
-  let d = new Date(start)
+  const d = new Date(start)
   while (d <= end) {
     days.push(new Date(d))
     d.setDate(d.getDate() + 1)
@@ -21,7 +21,7 @@ export const getInsightLikesOverTime = async (options: {
   const dayChunks = chunkArray(days, 30)
 
   let likes: { id: string, createdAt: Date }[] = []
-  const PAGE_SIZE = 1000;
+  const PAGE_SIZE = 250;
   for (const chunk of dayChunks) {
     const chunkStart = chunk[0]
     const chunkEnd = chunk[chunk.length - 1]

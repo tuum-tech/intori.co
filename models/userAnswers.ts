@@ -35,7 +35,7 @@ export const getUniqueUsersOverTime = async (options: {
   const dayChunks = chunkArray(days, 30)
 
   let answers: { id: string, createdAt: Date, fid: number }[] = []
-  const PAGE_SIZE = 1000;
+  const PAGE_SIZE = 250;
   for (const chunk of dayChunks) {
     const chunkStart = chunk[0]
     const chunkEnd = chunk[chunk.length - 1]
@@ -100,7 +100,7 @@ export const getQuestionsAnsweredOverTime = async (options: {
   const dayChunks = chunkArray(days, 30)
 
   let answers: { id: string, createdAt: Date }[] = []
-  const PAGE_SIZE = 1000;
+  const PAGE_SIZE = 250;
   for (const chunk of dayChunks) {
     const chunkStart = chunk[0]
     const chunkEnd = chunk[chunk.length - 1]
