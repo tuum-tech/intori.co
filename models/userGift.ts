@@ -29,7 +29,7 @@ export const getGiftsSentOverTime = async (options: {
   const dayChunks = chunkArray(days, 30)
 
   let gifts: { id: string, createdAt: Date }[] = []
-  const PAGE_SIZE = 1000;
+  const PAGE_SIZE = 250;
   for (const chunk of dayChunks) {
     const chunkStart = chunk[0]
     const chunkEnd = chunk[chunk.length - 1]
