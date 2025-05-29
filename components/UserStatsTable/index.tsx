@@ -34,6 +34,7 @@ export const UserStatsTable: React.FC = () => {
             <th>Gifts Sent</th>
             <th>Points</th>
             <th>Last Activity</th>
+            <th>Red Flags</th>
           </tr>
         </thead>
         <tbody>
@@ -45,6 +46,7 @@ export const UserStatsTable: React.FC = () => {
               <td>{item.totalGiftsSent} gifts sent</td>
               <td>{item.totalPoints ? BigInt(item.totalPoints).toLocaleString() : 0} points</td>
               <td>{formatDistanceToNow(item.lastUpdated, { addSuffix: true })}</td>
+              <td>{item.totalRedFlags} red flag(s)</td>
             </tr>
           ))}
         </tbody>
