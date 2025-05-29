@@ -143,7 +143,7 @@ model UserInsightLike {
   likedByFid      Int
   answerInsightId String
   createdAt       DateTime    @default(now())
-  UserAnswer      UserAnswer  @relation(fields: [answerInsightId], references: [id])
+  UserAnswer      UserAnswer  @relation(fields: [answerInsightId], references: [id], onDelete: Cascade)
   UserProfile     UserProfile @relation(fields: [likedByFid], references: [fid])
 }
 
@@ -199,6 +199,7 @@ model SpamScore {
   fid       Int     @id
   score     Float
   whitelist Boolean @default(false)
+  banned    Boolean @default(false)
 }
 
 model UserProfileEmbedding {
