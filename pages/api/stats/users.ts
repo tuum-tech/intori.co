@@ -7,6 +7,7 @@ import { getPageOfTopUserAnswerTotals } from '@/models/userAnswerTotals'
 import { countTotalFriends } from '@/models/friendRequests'
 import { countGiftsSent } from '@/models/userGift'
 import { getPointsTotalForFid } from '@/models/userPointTotals'
+import { countRedFlags } from '@/models/RedFlag'
 
 export type UserStatsType = {
   id: string
@@ -16,6 +17,7 @@ export type UserStatsType = {
   totalGiftsSent: number
   totalPoints: string
   lastUpdated: number
+  totalRedFlags: number
 }
 
 interface UserStatsResponse {
@@ -49,17 +51,19 @@ const getUserStats = async (req: NextApiRequest, res: NextApiResponse<UserStatsR
     const nextCursor = hasMore ? items[limit].id : undefined
 
     const pageOfItems = await Promise.all(itemsToReturn.map(async (item) => {
-      const [totalFriends, totalGiftsSent, totalPoints] = await Promise.all([
+      const [totalFriends, totalGiftsSent, totalPoints, totalRedFlags] = await Promise.all([
         countTotalFriends(item.fid),
         countGiftsSent(item.fid),
-        getPointsTotalForFid(item.fid)
+        getPointsTotalForFid(item.fid),
+        countRedFlags(item.fid)
       ])
       return {
         ...item,
         totalInsights: item.count,
         totalFriends,
         totalGiftsSent,
-        totalPoints
+        totalPoints,
+        totalRedFlags,
       }
     }))
 

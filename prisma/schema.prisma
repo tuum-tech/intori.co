@@ -209,6 +209,13 @@ model UserProfileEmbedding {
   updatedAt DateTime
 }
 
+model RedFlag {
+  id        String   @id
+  fid       Int
+  reason    String
+  createdAt DateTime @default(now())
+}
+
 enum FriendRequestStatus {
   pending
   accepted
