@@ -14,14 +14,6 @@ model AnswerUnlockTopic {
   unlockTopics String[]
 }
 
-model CastShareRecord {
-  id          String      @id
-  fid         Int
-  giftId      String
-  createdAt   DateTime    @default(now())
-  UserProfile UserProfile @relation(fields: [fid], references: [fid])
-}
-
 model Category {
   id               String             @id @default(cuid())
   category         String
@@ -43,13 +35,14 @@ model EarlyAccessFid {
 }
 
 model FriendRequest {
-  id                                             String              @id
-  fromFid                                        Int
-  toFid                                          Int
-  status                                         FriendRequestStatus
-  createdAt                                      DateTime
-  UserProfile_FriendRequest_fromFidToUserProfile UserProfile         @relation("FriendRequest_fromFidToUserProfile", fields: [fromFid], references: [fid])
-  UserProfile_FriendRequest_toFidToUserProfile   UserProfile         @relation("FriendRequest_toFidToUserProfile", fields: [toFid], references: [fid])
+  id          String              @id
+  fromFid     Int
+  toFid       Int
+  status      FriendRequestStatus
+  createdAt   DateTime
+  lastUpdated DateTime
+
+  @@index([fromFid, toFid, lastUpdated])
 }
 
 model PointRecord {
@@ -162,16 +155,13 @@ model UserPointTotals {
 }
 
 model UserProfile {
-  fid                                              Int               @id
-  pfp_url                                          String?
-  display_name                                     String?
-  power_badge                                      Boolean
-  username                                         String
-  bio                                              String
-  CastShareRecord                                  CastShareRecord[]
-  FriendRequest_FriendRequest_fromFidToUserProfile FriendRequest[]   @relation("FriendRequest_fromFidToUserProfile")
-  FriendRequest_FriendRequest_toFidToUserProfile   FriendRequest[]   @relation("FriendRequest_toFidToUserProfile")
-  UserInsightLike                                  UserInsightLike[]
+  fid             Int               @id
+  pfp_url         String?
+  display_name    String?
+  power_badge     Boolean
+  username        String
+  bio             String
+  UserInsightLike UserInsightLike[]
 }
 
 model UserQuestionSkip {
@@ -196,16 +186,16 @@ model WalletAuthentication {
 }
 
 model SpamScore {
-  fid       Int     @id
-  score     Float
-  whitelist Boolean @default(false)
-  banned    Boolean @default(false)
+  fid             Int     @id
+  score           Float
+  whitelist       Boolean @default(false)
+  banned          Boolean @default(false)
+  preventClaiming Boolean @default(false)
 }
 
 model UserProfileEmbedding {
   fid       Int      @id
   embedding Float[]
-  count     Int
   updatedAt DateTime
 }
 
@@ -214,6 +204,74 @@ model RedFlag {
   fid       Int
   reason    String
   createdAt DateTime @default(now())
+}
+
+model DayPass {
+  id              String   @id
+  fid             Int
+  createdAt       DateTime @default(now())
+  totalCostAmount Int
+  transactionHash String
+
+  @@index([fid, createdAt])
+}
+
+model FriendRequestSettings {
+  fid                               Int     @id
+  allowNewMutualFollowerFriendships Boolean @default(true)
+}
+
+model InsightBoostTransaction {
+  id              String   @id
+  fid             Int
+  totalCostAmount Int
+  transactionHash String
+  answerId        String?
+  updatedAt       DateTime
+  createdAt       DateTime @default(now())
+
+  @@index([fid, answerId, updatedAt])
+}
+
+model InsightBoostView {
+  id                              String   @id
+  viewedByFid                     Int
+  viewedInsightBoostTransactionId String
+  createdAt                       DateTime @default(now())
+
+  @@index([viewedByFid, viewedInsightBoostTransactionId])
+}
+
+model MutualFollowsJob {
+  id        String   @id
+  fid       Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+
+  @@index([fid])
+}
+
+model SuggestedUser {
+  id           String   @id
+  fid          Int
+  suggestedFid Int
+  createdAt    DateTime @default(now())
+
+  @@index([fid, suggestedFid])
+}
+
+model DailyStats {
+  id                     String   @id
+  uniqueUsers            Int
+  questionsAnswered      Int
+  pendingFriendRequests  Int
+  acceptedFriendRequests Int
+  giftsSent              Int
+  specialGiftsSent       Int
+  dayPassesBought        Int
+  insightsBoosted        Int
+  insightLikes           Int
+  createdAt              DateTime @default(now())
 }
 
 enum FriendRequestStatus {
@@ -230,6 +288,7 @@ enum PointRecordActionType {
   unlockedGift
   sentSuperGift
   openedSuperGift
+  castShare
 }
 
 enum TypeOfGift {
@@ -239,4 +298,11 @@ enum TypeOfGift {
   SHOUT_OUT
   ENCOURAGEMENT
   HAPPY_BIRTHDAY
+  PING
+}
+
+enum LimitType {
+  FRIEND_REQUESTS
+  GIFTS_SENT
+  SUGGESTIONS_SHOWN
 }
