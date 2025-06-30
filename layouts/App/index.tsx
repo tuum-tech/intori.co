@@ -28,12 +28,14 @@ export const AppLayout: React.FC<Props> = ({ children }) => {
       return false
     }
 
-    return pathname === href || pathname.startsWith(href)
+    return pathname === href
   }
 
   const dropdownItems = useMemo(() => {
     const items: DropdownItemType[] = [
       { label: 'Dashboard', href: '/dashboard' },
+      { label: 'Questions', href: '/questions' },
+      { label: 'Users', href: '/users' },
     ]
 
     items.push(
@@ -78,7 +80,7 @@ export const AppLayout: React.FC<Props> = ({ children }) => {
           <nav>
             <Link href="/dashboard" title="Dashboard" className={isNavLinkActive('/dashboard') ? styles.selected : ''}>
               <span className={styles.icon}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="#ffffff" viewBox="0 0 256 256"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,16V88H40V56Zm0,144H40V104H216v96Z"></path></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="#ffffff" viewBox="0 0 256 256"><path d="M232,208a8,8,0,0,1-8,8H32a8,8,0,0,1-8-8V48a8,8,0,0,1,16,0v94.37L90.73,98a8,8,0,0,1,10.07-.38l58.81,44.11L218.73,90a8,8,0,1,1,10.54,12l-64,56a8,8,0,0,1-10.07.38L96.39,114.29,40,163.63V200H224A8,8,0,0,1,232,208Z"></path></svg>
               </span>
               Stats
             </Link>
@@ -87,6 +89,12 @@ export const AppLayout: React.FC<Props> = ({ children }) => {
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="#ffffff" viewBox="0 0 256 256"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,16V88H40V56Zm0,144H40V104H216v96Z"></path></svg>
               </span>
               Questions
+            </Link>
+            <Link href="/dashboard/users" title="Users" className={isNavLinkActive('/dashboard/users') ? styles.selected : ''}>
+              <span className={styles.icon}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="#ffffff" viewBox="0 0 256 256"><path d="M117.25,157.92a60,60,0,1,0-66.5,0A95.83,95.83,0,0,0,3.53,195.63a8,8,0,1,0,13.4,8.74,80,80,0,0,1,134.14,0,8,8,0,0,0,13.4-8.74A95.83,95.83,0,0,0,117.25,157.92ZM40,108a44,44,0,1,1,44,44A44.05,44.05,0,0,1,40,108Zm210.14,98.7a8,8,0,0,1-11.07-2.33A79.83,79.83,0,0,0,172,168a8,8,0,0,1,0-16,44,44,0,1,0-16.34-84.87,8,8,0,1,1-5.94-14.85,60,60,0,0,1,55.53,105.64,95.83,95.83,0,0,1,47.22,37.71A8,8,0,0,1,250.14,206.7Z"></path></svg>
+              </span>
+              Users
             </Link>
           </nav>
         </div>
