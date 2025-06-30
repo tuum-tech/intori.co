@@ -1,6 +1,7 @@
 .userStatsTable {
   width: 100%;
   border-collapse: collapse;
+  margin-top: 32px;
 }
 .userStatsTable thead th {
   text-align: left;
@@ -17,4 +18,15 @@
   display: flex;
   justify-content: center;
   margin-top: 16px;
+}
+
+.enableClaimsButton {
+  background: #9664FA;
+  border-color: #9664FA;
+  color: #FFF;
+  font-size: 12px;
+  border-radius: 12px;
+  border: none;
+  padding: 4px 8px;
+  cursor: pointer;
 }
