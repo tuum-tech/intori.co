@@ -22,7 +22,7 @@ export const GeneralStatsSection: React.FC<Props> = ({ channelId }) => {
       if (res.ok) {
         return res.json()
       }
-    }).then((data) => {
+    }).then((data: { uniqueUsersCount: number, totalResponses: number, pendingFriends: number, acceptedFriends: number }) => {
       setUniqueUsersCount(data.uniqueUsersCount)
       setTotalResponses(data.totalResponses)
       setPendingFriends(data.pendingFriends)
@@ -49,22 +49,22 @@ export const GeneralStatsSection: React.FC<Props> = ({ channelId }) => {
     <StatsContainer>
       <StatsCard
         title="Unique Users"
-        value={uniqueUsersCount}
+        value={uniqueUsersCount.toLocaleString()}
       />
 
       <StatsCard
         title="Total questions answered"
-        value={totalResponses}
+        value={totalResponses.toLocaleString()}
       />
 
       <StatsCard
         title="Pending Friend Requests"
-        value={pendingFriends}
+        value={pendingFriends.toLocaleString()}
       />
 
       <StatsCard
         title="Accepted Friend Requests"
-        value={acceptedFriends}
+        value={acceptedFriends.toLocaleString()}
       />
     </StatsContainer>
   )
