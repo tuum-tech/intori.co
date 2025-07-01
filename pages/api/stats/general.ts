@@ -1,11 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react'
-import { countTotalUserAnswers } from '../../../models/userAnswers'
-import { countUserAnswerTotals } from '../../../models/userAnswerTotals'
-import {
-  countPendingFriendRequests,
-  countAcceptedFriendRequests
-} from '../../../models/friendRequests'
+import { prisma } from "@/prisma"
 
 const getGeneralStats = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -13,26 +8,42 @@ const getGeneralStats = async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(404).end()
     }
     const session = await getSession({ req })
-    const channelId = req.query.channelId as string
 
     if (!session?.user?.fid) {
       return res.status(404).end()
     }
 
-    if (!channelId && !session.admin) {
+    if (!session.admin) {
       return res.status(404).end()
     }
 
-    const uniqueUsersCount = await countUserAnswerTotals()
-    const totalResponses = await countTotalUserAnswers()
-    const pendingFriends = await countPendingFriendRequests()
-    const acceptedFriends = await countAcceptedFriendRequests()
+    const latestStats = await prisma.dailyStats.findFirst({
+      orderBy: {
+        createdAt: 'desc'
+      },
+      select: {
+        uniqueUsers: true,
+        questionsAnswered: true,
+        pendingFriendRequests: true,
+        acceptedFriendRequests: true
+      }
+    })
+
+    if (!latestStats) {
+      res.status(200).json({
+          uniqueUsersCount: 0,
+          totalResponses: 0,
+          pendingFriends: 0,
+          acceptedFriends: 0
+      })
+      return
+    }
 
     res.status(200).json({
-        uniqueUsersCount,
-        totalResponses,
-        pendingFriends,
-        acceptedFriends
+        uniqueUsersCount: latestStats.uniqueUsers,
+        totalResponses: latestStats.questionsAnswered,
+        pendingFriends: latestStats.pendingFriendRequests,
+        acceptedFriends: latestStats.acceptedFriendRequests
     })
   } catch (error) {
     console.error(error)
