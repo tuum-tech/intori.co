@@ -51,13 +51,23 @@ export const StatsChart: React.FC = () => {
     }
   }
 
-  // Chart 1: Unique Users, Gifts Sent, Questions Answered
-  const usersGiftsQuestionsData = useMemo(() => {
+  // Chart for only Unique Users
+  const uniqueUsersData = useMemo(() => {
     if (!data) return {}
     return {
       labels: availableDates,
       datasets: [
         createDataset('uniqueUsers', 'Unique Users', 'rgba(133, 88, 227, 1)', 'rgba(133, 88, 227, 0.2)', 'y'),
+      ]
+    }
+  }, [data, availableDates])
+
+  // Chart 1: Gifts Sent, Questions Answered (removed Unique Users)
+  const usersGiftsQuestionsData = useMemo(() => {
+    if (!data) return {}
+    return {
+      labels: availableDates,
+      datasets: [
         createDataset('giftsSent', 'Gifts Sent', 'rgba(255, 99, 132, 1)', 'rgba(255, 99, 132, 0.2)', 'y'),
         createDataset('questionsAnswered', 'Questions Answered', 'rgba(51, 153, 255, 1)', 'rgba(51, 153, 255, 0.2)', 'y'),
       ]
@@ -85,17 +95,6 @@ export const StatsChart: React.FC = () => {
         createDataset('specialGiftsSent', 'Special Gifts Sent', 'rgba(54, 162, 235, 1)', 'rgba(54, 162, 235, 0.2)', 'y'),
         createDataset('dayPassesBought', 'Day Passes Bought', 'rgba(153, 102, 255, 1)', 'rgba(153, 102, 255, 0.2)', 'y'),
         createDataset('insightsBoosted', 'Insights Boosted', 'rgba(255, 99, 71, 1)', 'rgba(255, 99, 71, 0.2)', 'y'),
-      ]
-    }
-  }, [data, availableDates])
-
-  // Chart for only Unique Users
-  const uniqueUsersData = useMemo(() => {
-    if (!data) return {}
-    return {
-      labels: availableDates,
-      datasets: [
-        createDataset('uniqueUsers', 'Unique Users', 'rgba(133, 88, 227, 1)', 'rgba(133, 88, 227, 0.2)', 'y'),
       ]
     }
   }, [data, availableDates])
