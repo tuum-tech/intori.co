@@ -4,6 +4,7 @@ import { StatsContainer, StatsChartContainer } from '../StatsCard'
 import { Empty } from '../../common/Empty'
 import { useQuery } from '@tanstack/react-query'
 import type { DailyStats } from '@prisma/client'
+import type { TooltipItem } from 'chart.js';
 
 export const StatsChart: React.FC = () => {
   const { data, isLoading } = useQuery({
@@ -99,9 +100,35 @@ export const StatsChart: React.FC = () => {
     }
   }, [data, availableDates])
 
+  // Helper for percent difference tooltip
+  function percentDiffLabel(context: TooltipItem<'line'>) {
+    const value = context.parsed.y;
+    const index = context.dataIndex;
+    const dataArr = context.dataset.data as number[];
+    let percentDiff = '';
+    if (index > 0) {
+      const prev = dataArr[index - 1];
+      if (prev !== 0) {
+        const diff = ((value - prev) / Math.abs(prev)) * 100;
+        const sign = diff > 0 ? '+' : diff < 0 ? '-' : '';
+        percentDiff = ` (${sign}${Math.abs(diff).toFixed(1)}%)`;
+      } else {
+        percentDiff = ' (N/A)';
+      }
+    }
+    return `${context.dataset.label}: ${value.toLocaleString()}${percentDiff}`;
+  }
+
   const uniqueUsersLineOptions = useMemo(() => ({
     responsive: true,
     interaction: { mode: 'index' as const, intersect: false, axis: 'y', includeInvisible: false },
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: percentDiffLabel
+        }
+      }
+    },
     scales: {
       y: {
         type: 'linear' as const,
@@ -116,6 +143,13 @@ export const StatsChart: React.FC = () => {
   const lineOptionsUsersGiftsQuestions = useMemo(() => ({
     responsive: true,
     interaction: { mode: 'index' as const, intersect: false, axis: 'y', includeInvisible: false },
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: percentDiffLabel
+        }
+      }
+    },
     scales: {
       y: {
         type: 'linear' as const,
@@ -129,6 +163,13 @@ export const StatsChart: React.FC = () => {
   const lineOptionsLikesRequests = useMemo(() => ({
     responsive: true,
     interaction: { mode: 'index' as const, intersect: false, axis: 'y', includeInvisible: false },
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: percentDiffLabel
+        }
+      }
+    },
     scales: {
       y: {
         type: 'linear',
@@ -142,6 +183,13 @@ export const StatsChart: React.FC = () => {
   const lineOptionsSpecialsDayPassesBoosted = useMemo(() => ({
     responsive: true,
     interaction: { mode: 'index' as const, intersect: false, axis: 'y', includeInvisible: false },
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: percentDiffLabel
+        }
+      }
+    },
     scales: {
       y: {
         type: 'linear',
