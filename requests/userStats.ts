@@ -73,4 +73,39 @@ export const useEnableClaims = (search?: string, claimsDisabled?: boolean) => {
       console.error('Failed to enable claims:', error);
     }
   });
+};
+
+export const useBanUser = (search?: string, claimsDisabled?: boolean) => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async (fid: number) => {
+      const response = await axios.post(`/api/users/${fid}/ban`);
+      return response.data;
+    },
+    onSuccess: (_, fid) => {
+      // Update the specific user's data in the cache with the correct query key
+      queryClient.setQueryData(
+        ['userStats', search, claimsDisabled],
+        (oldData: InfiniteData<UserStatsResponse> | undefined) => {
+          if (!oldData?.pages) return oldData;
+          
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page: UserStatsResponse) => ({
+              ...page,
+              items: page.items.map((item: UserStatsType) => 
+                item.fid === fid 
+                  ? { ...item, banned: true }
+                  : item
+              )
+            }))
+          };
+        }
+      );
+    },
+    onError: (error) => {
+      console.error('Failed to ban user:', error);
+    }
+  });
 }; 
