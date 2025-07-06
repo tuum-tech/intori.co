@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { type UserStatsType } from '@/pages/api/users'
-import { useUserStats, useEnableClaims } from '../../requests/userStats'
+import { useUserStats, useEnableClaims, useBanUser } from '../../requests/userStats'
 import { InfiniteData } from '@tanstack/react-query'
 import { formatDistanceToNow } from 'date-fns'
 import { UserProfileCell } from './components/UserProfileCell'
@@ -24,6 +24,7 @@ export const UserStatsTable: React.FC = () => {
 
   const { data, fetchNextPage, hasNextPage, isFetching, isLoading } = useUserStats(50, debouncedSearchTerm, claimsDisabledFilter)
   const enableClaimsMutation = useEnableClaims(debouncedSearchTerm, claimsDisabledFilter)
+  const banUserMutation = useBanUser(debouncedSearchTerm, claimsDisabledFilter)
 
   // Toast effect for enable claims mutation
   useEffect(() => {
@@ -33,6 +34,28 @@ export const UserStatsTable: React.FC = () => {
     }
   }, [enableClaimsMutation.isPending])
 
+  // Success toast for enable claims mutation
+  useEffect(() => {
+    if (enableClaimsMutation.isSuccess) {
+      toast.success('Claims enabled.')
+    }
+  }, [enableClaimsMutation.isSuccess])
+
+  // Toast effect for ban user mutation
+  useEffect(() => {
+    if (banUserMutation.isPending) {
+      const toastId = toast.loading('Banning user...')
+      return () => toast.dismiss(toastId)
+    }
+  }, [banUserMutation.isPending])
+
+  // Success toast for ban user mutation
+  useEffect(() => {
+    if (banUserMutation.isSuccess) {
+      toast.success('User banned.')
+    }
+  }, [banUserMutation.isSuccess])
+
   const allItems = React.useMemo(() => {
     const infiniteData = data as InfiniteData<UserStatsPage> | undefined
     if (!infiniteData?.pages) return []
@@ -41,6 +64,10 @@ export const UserStatsTable: React.FC = () => {
 
   const handleEnableClaims = (fid: number) => {
     enableClaimsMutation.mutate(fid)
+  }
+
+  const handleBanUser = (fid: number) => {
+    banUserMutation.mutate(fid)
   }
 
   return (
@@ -96,7 +123,19 @@ export const UserStatsTable: React.FC = () => {
               <td>{formatDistanceToNow(item.lastUpdated, { addSuffix: true })}</td>
               <td>{item.spamScore.toFixed(2)}</td>
               <td>{item.totalRedFlags} red flag(s)</td>
-              <td>{item.banned ? "Banned" : "Active"}</td>
+              <td>
+                {item.banned ? (
+                  "Banned"
+                ) : (
+                  <button 
+                    type="button" 
+                    className={styles.banUserButton}
+                    onClick={() => handleBanUser(item.fid)}
+                  >
+                    Ban User
+                  </button>
+                )}
+              </td>
               <td>{
                 item.claimsDisabled
                   ? <button 

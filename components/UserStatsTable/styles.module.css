@@ -30,3 +30,14 @@
   padding: 4px 8px;
   cursor: pointer;
 }
+
+.banUserButton {
+  background: #dc2626;
+  border-color: #dc2626;
+  color: #FFF;
+  font-size: 12px;
+  border-radius: 12px;
+  border: none;
+  padding: 4px 8px;
+  cursor: pointer;
+}
