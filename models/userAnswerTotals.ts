@@ -46,14 +46,14 @@ export const getPageOfTopUserAnswerTotals = async (params: {
     whereClause.fid = {
       in: matchingFids
     }
-    console.log(whereClause)
   }
 
   if (params.claimsDisabled) {
     // Find users with claims disabled
     const claimsDisabledUsers = await prisma.spamScore.findMany({
       where: {
-        preventClaiming: true
+        preventClaiming: true,
+        banned: false
       },
       select: {
         fid: true
@@ -88,12 +88,7 @@ export const getPageOfTopUserAnswerTotals = async (params: {
       lastUpdated: "desc"
     }
   })
-  console.log({
-    where: whereClause,
-    take: params.limit,
-    skip: params.skip,
-  })
-  console.log(res)
+
   return res
 }
 

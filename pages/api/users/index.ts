@@ -33,14 +33,12 @@ interface UserStatsResponse {
 const getUserStats = async (req: NextApiRequest, res: NextApiResponse<UserStatsResponse>) => {
   try {
     if (req.method !== 'GET') {
-      console.log('not get')
       return res.status(404).end()
     }
 
     const session = await getSession({ req })
 
     if (!session?.user?.fid || !session?.admin) {
-      console.log('not admin')
       return res.status(404).end()
     }
 
