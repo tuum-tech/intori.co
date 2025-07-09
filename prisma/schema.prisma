@@ -107,9 +107,10 @@ model UserAnswer {
   createdAt         DateTime          @default(now())
   publicBlockNumber Int?
   embeddingPending  Boolean           @default(false)
+  topic             String?
   UserInsightLike   UserInsightLike[]
 
-  @@index([question])
+  @@index([question, fid])
 }
 
 model UserAnswerTotal {
@@ -272,6 +273,9 @@ model DailyStats {
   insightsBoosted        Int
   insightLikes           Int
   createdAt              DateTime @default(now())
+  activeUsersAllowedIn   Int      @default(0)
+  bannedUsers            Int      @default(0)
+  usersBlocked           Int      @default(0)
 }
 
 enum FriendRequestStatus {

@@ -52,13 +52,16 @@ export const StatsChart: React.FC = () => {
     }
   }
 
-  // Chart for only Unique Users
-  const uniqueUsersData = useMemo(() => {
+  // Chart for User Activity and Status
+  const userActivityData = useMemo(() => {
     if (!data) return {}
     return {
       labels: availableDates,
       datasets: [
-        createDataset('uniqueUsers', 'Unique Users', 'rgba(133, 88, 227, 1)', 'rgba(133, 88, 227, 0.2)', 'y'),
+        createDataset('uniqueUsers', 'Users that have insights', 'rgba(133, 88, 227, 1)', 'rgba(133, 88, 227, 0.2)', 'y'),
+        createDataset('activeUsersAllowedIn', 'Active Users Allowed In', 'rgba(76, 175, 80, 1)', 'rgba(76, 175, 80, 0.2)', 'y'),
+        createDataset('bannedUsers', 'Banned Users', 'rgba(244, 67, 54, 1)', 'rgba(244, 67, 54, 0.2)', 'y'),
+        createDataset('usersBlocked', 'Users Blocked', 'rgba(255, 152, 0, 1)', 'rgba(255, 152, 0, 0.2)', 'y'),
       ]
     }
   }, [data, availableDates])
@@ -119,7 +122,7 @@ export const StatsChart: React.FC = () => {
     return `${context.dataset.label}: ${value.toLocaleString()}${percentDiff}`;
   }
 
-  const uniqueUsersLineOptions = useMemo(() => ({
+  const userActivityLineOptions = useMemo(() => ({
     responsive: true,
     interaction: { mode: 'index' as const, intersect: false, axis: 'y', includeInvisible: false },
     plugins: {
@@ -133,7 +136,7 @@ export const StatsChart: React.FC = () => {
       y: {
         type: 'linear' as const,
         position: 'left',
-        title: { display: true, text: 'Unique Users' },
+        title: { display: true, text: 'Count' },
       },
       x: { title: { display: true, text: 'Date' } },
     }
@@ -208,7 +211,7 @@ export const StatsChart: React.FC = () => {
     )
   }
 
-  if (!uniqueUsersData || !('labels' in uniqueUsersData)) {
+  if (!userActivityData || !('labels' in userActivityData)) {
     return (
       <StatsChartContainer title="Stats">
         <Empty>No data available</Empty>
@@ -218,11 +221,11 @@ export const StatsChart: React.FC = () => {
 
   return (
     <>
-      <StatsChartContainer title="Unique Users">
+      <StatsChartContainer title="User Activity and Status">
         {/* @ts-expect-error because line options types are very very strict but this works */}
-        <Line data={uniqueUsersData} options={uniqueUsersLineOptions} />
+        <Line data={userActivityData} options={userActivityLineOptions} />
       </StatsChartContainer>
-      <StatsChartContainer title="Users, Gifts, and Questions">
+      <StatsChartContainer title="Gifts Sent and Questions Answered">
         {/* @ts-expect-error because line options types are very very strict but this works */}
         <Line data={usersGiftsQuestionsData} options={lineOptionsUsersGiftsQuestions} />
       </StatsChartContainer>
@@ -230,7 +233,7 @@ export const StatsChart: React.FC = () => {
         {/* @ts-expect-error because line options types are very very strict but this works */}
         <Line data={likesRequestsData} options={lineOptionsLikesRequests} />
       </StatsChartContainer>
-      <StatsChartContainer title="Special Gifts, Day Passes, Insights Boosted">
+      <StatsChartContainer title="Special Gifts, Day Passes, and Insights Boosted">
         {/* @ts-expect-error because line options types are very very strict but this works */}
         <Line data={specialsDayPassesBoostedData} options={lineOptionsSpecialsDayPassesBoosted} />
       </StatsChartContainer>
