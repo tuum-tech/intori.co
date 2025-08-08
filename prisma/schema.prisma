@@ -41,6 +41,7 @@ model FriendRequest {
   status      FriendRequestStatus
   createdAt   DateTime
   lastUpdated DateTime
+  source      FriendRequestSource @default(MANUAL)
 
   @@index([fromFid, toFid, lastUpdated])
 }
@@ -128,7 +129,7 @@ model UserGift {
   sentBackGiftFor String?
   sentGiftBack    Boolean?
   giftType        TypeOfGift @default(NORMAL)
-  unlocked        Boolean?
+  unlocked        Boolean    @default(false)
   createdAt       DateTime   @default(now())
 }
 
@@ -278,6 +279,38 @@ model DailyStats {
   usersBlocked           Int      @default(0)
 }
 
+model DailyCheckInQuestion {
+  id        String   @id @default(cuid())
+  question String
+  answers  String[]
+
+  @@index([question])
+}
+
+model ExcludedSuggestion {
+  id          String   @id
+  fid         Int
+  excludedFid Int
+  createdAt   DateTime @default(now())
+
+  @@index([fid, excludedFid])
+}
+
+model InsightRating {
+  id       String @id
+  fid      Int
+  answerId String
+  rating   Int    @default(0)
+}
+
+model SharedInsightClickRecord {
+  id           String   @id
+  casterFid    Int
+  questionId   String
+  clickedByFid Int
+  createdAt    DateTime @default(now())
+}
+
 enum FriendRequestStatus {
   pending
   accepted
@@ -309,4 +342,9 @@ enum LimitType {
   FRIEND_REQUESTS
   GIFTS_SENT
   SUGGESTIONS_SHOWN
+}
+
+enum FriendRequestSource {
+  MANUAL
+  MUTUAL_FOLLOWERS
 }
