@@ -102,7 +102,7 @@ export const UserStatsTable: React.FC = () => {
             <th>Spam Score</th>
             <th>Red Flags</th>
             <th>Status</th>
-            <th>Claims Disabled</th>
+            <th>Under Review</th>
           </tr>
         </thead>
         <tbody>
@@ -143,7 +143,7 @@ export const UserStatsTable: React.FC = () => {
                       className={styles.enableClaimsButton}
                       onClick={() => handleEnableClaims(item.fid)}
                     >
-                      Enable Claims
+                      Enable Claims & Gifting
                     </button>
                   : ""
               }</td>
