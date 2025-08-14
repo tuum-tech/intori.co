@@ -7,7 +7,7 @@ import { getPageOfTopUserAnswerTotals } from '@/models/userAnswerTotals'
 import { countTotalFriends } from '@/models/friendRequests'
 import { countGiftsSent } from '@/models/userGift'
 import { getPointsTotalForFid } from '@/models/userPointTotals'
-import { countRedFlags } from '@/models/RedFlag'
+import { countRedFlagsLast7Days } from '@/models/RedFlag'
 import { getSpamScoreForFid } from "@/models/SpamScore"
 
 export type UserStatsType = {
@@ -69,7 +69,7 @@ const getUserStats = async (req: NextApiRequest, res: NextApiResponse<UserStatsR
         countTotalFriends(item.fid),
         countGiftsSent(item.fid),
         getPointsTotalForFid(item.fid),
-        countRedFlags(item.fid),
+        countRedFlagsLast7Days(item.fid),
         getSpamScoreForFid(item.fid)
       ])
       return {
