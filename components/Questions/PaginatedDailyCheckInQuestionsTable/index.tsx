@@ -9,6 +9,7 @@ import styles from './styles.module.css'
 const DailyCheckInQuestionRow = ({ question }: { question: DailyCheckInQuestion }) => {
   return (
     <tr>
+      <td>{question.category}</td>
       <td>{question.question}</td>
       <td>
         {question.answers.map((answer) => (
@@ -56,6 +57,7 @@ export const PaginatedDailyCheckInQuestionsTable: React.FC = () => {
         <table border={1} cellPadding={8} cellSpacing={0} style={{ width: '100%', marginTop: 16 }}>
           <thead>
             <tr>
+              <th>Category</th>
               <th>Question</th>
               <th>Answers</th>
             </tr>
