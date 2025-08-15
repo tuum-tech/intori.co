@@ -280,11 +280,14 @@ model DailyStats {
 }
 
 model DailyCheckInQuestion {
-  id        String   @id @default(cuid())
+  id       String    @id @default(cuid())
   question String
   answers  String[]
+  shownAt  DateTime?
+  category String
 
   @@index([question])
+  @@index([shownAt])
 }
 
 model ExcludedSuggestion {
@@ -309,6 +312,14 @@ model SharedInsightClickRecord {
   questionId   String
   clickedByFid Int
   createdAt    DateTime @default(now())
+}
+
+model DailyCheckInResponse {
+  id        String   @id
+  fid       Int
+  question  String
+  answer    String
+  createdAt DateTime @default(now())
 }
 
 enum FriendRequestStatus {

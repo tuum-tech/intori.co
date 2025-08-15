@@ -25,10 +25,20 @@ const getDailyCheckInQuestions = async (
   const where: Prisma.DailyCheckInQuestionWhereInput = {}
   
   if (search) {
-    where.question = {
-      contains: search,
-      mode: "insensitive"
-    }
+    where.OR = [
+      {
+        question: {
+          contains: search,
+          mode: "insensitive"
+        }
+      },
+      {
+        category: {
+          contains: search,
+          mode: "insensitive"
+        }
+      }
+    ]
   }
 
   const [questions, total] = await Promise.all([

@@ -39,6 +39,7 @@ export default async function importDailyCheckInQuestionsHandler(
     const csvRowValidation = yup.object({
       question: yup.string().required('Question is required'),
       answers: yup.string().required('Answers are required'),
+      category: yup.string().required('Category is required'),
     })
 
     const rowErrors: string[] = []
@@ -64,6 +65,7 @@ export default async function importDailyCheckInQuestionsHandler(
         await prisma.dailyCheckInQuestion.create({
           data: {
             question: questionData.question,
+            category: questionData.category,
             answers
           }
         })
