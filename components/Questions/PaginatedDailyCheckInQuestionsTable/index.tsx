@@ -9,6 +9,11 @@ import styles from './styles.module.css'
 const DailyCheckInQuestionRow = ({ question }: { question: DailyCheckInQuestion }) => {
   return (
     <tr>
+      <td>{
+        question.shownAt
+          ? new Date(question.shownAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })
+          : 'Not shown yet'
+      }</td>
       <td>{question.category}</td>
       <td>{question.question}</td>
       <td>
@@ -57,6 +62,7 @@ export const PaginatedDailyCheckInQuestionsTable: React.FC = () => {
         <table border={1} cellPadding={8} cellSpacing={0} style={{ width: '100%', marginTop: 16 }}>
           <thead>
             <tr>
+              <th>Shown</th>
               <th>Category</th>
               <th>Question</th>
               <th>Answers</th>
