@@ -1,0 +1,90 @@
+.applicationsTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 32px;
+}
+.applicationsTable thead th {
+  text-align: left;
+  color: grey;
+}
+.applicationsTable tbody tr:nth-child(odd) {
+  background: rgba(255, 255, 255, 0.05);
+}
+.applicationsTable tbody tr td {
+  padding: 8px 0;
+}
+
+.loadingRow {
+  text-align: center;
+  color: #6c757d;
+  font-style: italic;
+}
+
+.loadMoreContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 8px;
+}
+
+.approveButton {
+  background: #28a745;
+  border-color: #28a745;
+  color: #FFF;
+  font-size: 12px;
+  border-radius: 12px;
+  border: none;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.rejectButton {
+  background: #dc2626;
+  border-color: #dc2626;
+  color: #FFF;
+  font-size: 12px;
+  border-radius: 12px;
+  border: none;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.pendingBadge {
+  background: #ffc107;
+  color: #212529;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.approvedBadge {
+  background: #28a745;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.rejectedBadge {
+  background: #dc3545;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.unknownBadge {
+  background: #6c757d;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
