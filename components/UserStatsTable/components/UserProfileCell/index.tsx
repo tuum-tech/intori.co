@@ -24,7 +24,7 @@ export const UserProfileCell: React.FC<Props> = ({
   }
 
   if (!userDetails) {
-    return <td>{fid}</td>
+    return <td>FID {fid}</td>
   }
 
   const displayName = userDetails.displayName || userDetails.username
