@@ -322,6 +322,30 @@ model DailyCheckInResponse {
   createdAt DateTime @default(now())
 }
 
+model DailyCheckInRewardTransaction {
+  id              String   @id
+  fid             Int
+  address         String
+  bigIntAmount    BigInt
+  transactionHash String
+  createdAt       DateTime @default(now())
+
+  @@index([fid, createdAt])
+}
+
+model IntoriPlusApplication {
+  id        String                      @id
+  fid       Int
+  status    IntoriPlusApplicationStatus @default(PENDING)
+  createdAt DateTime                    @default(now())
+}
+
+model UserMiscPreferences {
+  fid                    Int     @id
+  showGiftsHelper        Boolean @default(true)
+  showDailyCheckInHelper Boolean @default(true)
+}
+
 enum FriendRequestStatus {
   pending
   accepted
@@ -358,4 +382,10 @@ enum LimitType {
 enum FriendRequestSource {
   MANUAL
   MUTUAL_FOLLOWERS
+}
+
+enum IntoriPlusApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
