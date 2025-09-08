@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react'
 import { prisma } from '@/prisma'
-import { IntoriPlusApplication } from '@prisma/client';
 
 const getIntoriPlusApplications = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
