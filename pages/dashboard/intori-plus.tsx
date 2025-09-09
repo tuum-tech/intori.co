@@ -5,6 +5,7 @@ import { getSession } from "next-auth/react"
 import { AppLayout } from "@/layouts/App"
 import { Section } from "@/components/common/Section"
 import { IntoriPlusApplicationsTable } from "@/components/IntoriPlusApplicationsTable"
+import { IntoriPlusStats } from "@/components/IntoriPlusStats"
 
 export const getServerSideProps = (async (context) => {
   const session = await getSession(context)
@@ -27,6 +28,7 @@ const IntoriPlus: NextPage = () => {
   return (
     <AppLayout>
       <Section title="Intori Plus Applications">
+        <IntoriPlusStats />
         <IntoriPlusApplicationsTable />
       </Section>
     </AppLayout>
