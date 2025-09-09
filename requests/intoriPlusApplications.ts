@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useInfiniteQuery, useMutation, useQueryClient, InfiniteData } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQueryClient, InfiniteData, useQuery } from '@tanstack/react-query';
 import { IntoriPlusApplication } from '@prisma/client';
 
 export interface IntoriPlusApplicationParams {
@@ -10,6 +10,12 @@ export interface IntoriPlusApplicationParams {
 export interface IntoriPlusApplicationResponse {
   items: IntoriPlusApplication[];
   hasMore: boolean;
+}
+
+export interface IntoriPlusApplicationStats {
+  totalApplicants: number;
+  approved: number;
+  pending: number;
 }
 
 const fetchIntoriPlusApplications = async ({ limit = 10, skip = 0 }: IntoriPlusApplicationParams): Promise<IntoriPlusApplicationResponse> => {
@@ -82,6 +88,17 @@ export const useUpdateApplicationStatus = () => {
       // Always refetch after error or success to ensure we have the latest data
       queryClient.invalidateQueries({ queryKey: ['intoriPlusApplications'] });
     }
+  });
+};
+
+export const useIntoriPlusApplicationStats = () => {
+  return useQuery<IntoriPlusApplicationStats, Error>({
+    queryKey: ['intoriPlusApplicationStats'],
+    queryFn: async () => {
+      const response = await axios.get('/api/intori-plus-applications/stats');
+      return response.data;
+    },
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 };
 

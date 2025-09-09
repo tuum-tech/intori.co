@@ -1,0 +1,59 @@
+.statsContainer {
+  margin-bottom: 24px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.loadingText {
+  font-size: 16px;
+  color: #6c757d;
+  text-align: center;
+  width: 100%;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 120px;
+}
+
+.statValue {
+  font-size: 24px;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.approvedValue {
+  color: #28a745;
+}
+
+.pendingValue {
+  color: #ffc107;
+}
+
+.statLabel {
+  font-size: 14px;
+  color: grey;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .statsContainer {
+    gap: 16px;
+    padding: 12px;
+  }
+  
+  .statItem {
+    min-width: 100px;
+  }
+  
+  .statValue {
+    font-size: 20px;
+  }
+}
