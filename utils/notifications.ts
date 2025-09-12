@@ -61,15 +61,10 @@ export async function sendFrameNotification({
   })
 
   const responseJson = await response.json()
-  console.log("notif res:", responseJson)
 
   if (response.status === 200) {
     if (responseJson.success === false) {
       return { state: "error", error: responseJson.error.errors }
-    }
-
-    if (responseJson.data.result.rateLimitedTokens.length) {
-      return { state: "rate_limit" }
     }
 
     return { state: "success" }
