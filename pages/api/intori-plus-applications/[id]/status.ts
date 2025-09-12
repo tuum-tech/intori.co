@@ -7,7 +7,7 @@ import { sendFrameNotification } from "@/utils/notifications"
 
 const updateApplicationStatus = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    if (req.method !== "PUT") {
+    if (req.method !== "PUT" && req.method !== "put") {
       return res.status(405).json({ error: "Method not allowed" })
     }
 
