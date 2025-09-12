@@ -53,11 +53,13 @@ export const useUpdateApplicationStatus = () => {
     onMutate: async ({ id, status }) => {
       // Cancel any outgoing refetches
       await queryClient.cancelQueries({ queryKey: ['intoriPlusApplications'] });
+      await queryClient.cancelQueries({ queryKey: ['intoriPlusApplicationStats'] });
 
-      // Snapshot the previous value
-      const previousData = queryClient.getQueryData(['intoriPlusApplications']);
+      // Snapshot the previous values
+      const previousApplicationsData = queryClient.getQueryData(['intoriPlusApplications']);
+      const previousStatsData = queryClient.getQueryData(['intoriPlusApplicationStats']);
 
-      // Optimistically update the cache
+      // Optimistically update the applications cache
       queryClient.setQueryData(['intoriPlusApplications'], (oldData: InfiniteData<IntoriPlusApplicationResponse> | undefined) => {
         if (!oldData?.pages) return oldData;
 
@@ -74,19 +76,39 @@ export const useUpdateApplicationStatus = () => {
         };
       });
 
-      // Return a context object with the snapshotted value
-      return { previousData };
+      // Optimistically update the stats cache
+      queryClient.setQueryData(['intoriPlusApplicationStats'], (oldStats: IntoriPlusApplicationStats | undefined) => {
+        if (!oldStats) return oldStats;
+        
+        const newStats = { ...oldStats };
+        
+        if (status === 'APPROVED') {
+          newStats.approved += 1;
+          newStats.pending -= 1;
+        } else if (status === 'REJECTED') {
+          newStats.pending -= 1;
+        }
+        
+        return newStats;
+      });
+
+      // Return a context object with the snapshotted values
+      return { previousApplicationsData, previousStatsData };
     },
     onError: (error, variables, context) => {
       // If the mutation fails, use the context returned from onMutate to roll back
-      if (context?.previousData) {
-        queryClient.setQueryData(['intoriPlusApplications'], context.previousData);
+      if (context?.previousApplicationsData) {
+        queryClient.setQueryData(['intoriPlusApplications'], context.previousApplicationsData);
+      }
+      if (context?.previousStatsData) {
+        queryClient.setQueryData(['intoriPlusApplicationStats'], context.previousStatsData);
       }
       console.error('Failed to update application status:', error);
     },
     onSettled: () => {
       // Always refetch after error or success to ensure we have the latest data
       queryClient.invalidateQueries({ queryKey: ['intoriPlusApplications'] });
+      queryClient.invalidateQueries({ queryKey: ['intoriPlusApplicationStats'] });
     }
   });
 };
