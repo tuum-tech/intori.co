@@ -1,8 +1,3 @@
-import {
-  SendNotificationRequest,
-  sendNotificationResponseSchema,
-} from "@farcaster/frame-sdk"
-
 import { getSpamScoreForFid } from "@/models/SpamScore"
 import { prisma } from "@/prisma"
 
@@ -62,19 +57,18 @@ export async function sendFrameNotification({
       body,
       targetUrl: (targetUrl ?? host) + (targetPath || "").trim(),
       tokens: [notificationDetails.token],
-    } satisfies SendNotificationRequest),
+    })
   })
 
   const responseJson = await response.json()
+  console.log("notif res:", responseJson)
 
   if (response.status === 200) {
-    const responseBody = sendNotificationResponseSchema.safeParse(responseJson)
-
-    if (responseBody.success === false) {
-      return { state: "error", error: responseBody.error.errors }
+    if (responseJson.success === false) {
+      return { state: "error", error: responseJson.error.errors }
     }
 
-    if (responseBody.data.result.rateLimitedTokens.length) {
+    if (responseJson.data.result.rateLimitedTokens.length) {
       return { state: "rate_limit" }
     }
 
