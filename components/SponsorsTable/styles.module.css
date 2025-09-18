@@ -1,0 +1,35 @@
+.sponsorsTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 32px;
+}
+.sponsorsTable thead th {
+  text-align: left;
+  color: grey;
+}
+.sponsorsTable tbody tr:nth-child(odd) {
+  background: rgba(255, 255, 255, 0.05);
+}
+.sponsorsTable tbody tr td {
+  padding: 8px 0;
+}
+
+.loadingContainer {
+  text-align: center;
+  color: #6c757d;
+  font-style: italic;
+  margin-top: 32px;
+}
+
+.errorContainer {
+  text-align: center;
+  color: #dc3545;
+  margin-top: 32px;
+}
+
+.emptyContainer {
+  text-align: center;
+  color: #6c757d;
+  font-style: italic;
+  margin-top: 32px;
+}

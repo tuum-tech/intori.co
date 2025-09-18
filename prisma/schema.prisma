@@ -355,7 +355,13 @@ model BrandedThirdPartyGiftPreferences {
   targetTopic  String
   createdByFid Int
   createdAt    DateTime   @default(now())
+  message      String
   UserGift     UserGift[]
+}
+
+model UserSponsorStatus {
+  fid       Int      @id
+  createdAt DateTime @default(now())
 }
 
 enum FriendRequestStatus {
