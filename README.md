@@ -16,7 +16,7 @@ cp .env.example .env.local
 Run the dev server:
 
 ```bash
-yarn install
+npm install
 
 npm run dev
 
@@ -24,8 +24,11 @@ npm run dev
 npm run build
 ```
 
-## Populate fake user answers
+## The Database
+The database schema and migrations are managed in the miniapp repo: https://github.com/tuum-tech/intori-frames-v2-app
 
-Your `NEXTAUTH_URL` must start with `http://localhost` and you must be logged in with Farcaster.
+When changes are migrated there, you can sync the prisma generated types and client here by running:
 
-Go to `/api/test` to populate 3 fake user answers with your authenticated FID.
+```bash
+npm run db:pull
+```

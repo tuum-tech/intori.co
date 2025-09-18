@@ -4,12 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build:frames": "npx tsx ./utils/frames/generateFrameImages.ts",
     "build": "next build",
     "start": "PORT=6868 next start",
     "lint": "next lint",
     "tsc": "tsc --noEmit",
     "db:pull": "prisma db pull && prisma generate --no-engine",
+
     "_comment": "For vercel prod deployment for the TS build checks",
     "postinstall": "prisma generate --no-engine"
   },
