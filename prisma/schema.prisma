@@ -122,15 +122,17 @@ model UserAnswerTotal {
 }
 
 model UserGift {
-  id              String     @id
-  sentFromFid     Int
-  sentToFid       Int
-  opened          Boolean    @default(false)
-  sentBackGiftFor String?
-  sentGiftBack    Boolean?
-  giftType        TypeOfGift @default(NORMAL)
-  unlocked        Boolean    @default(false)
-  createdAt       DateTime   @default(now())
+  id                               String                            @id
+  sentFromFid                      Int
+  sentToFid                        Int
+  opened                           Boolean                           @default(false)
+  sentBackGiftFor                  String?
+  sentGiftBack                     Boolean?
+  giftType                         TypeOfGift                        @default(NORMAL)
+  unlocked                         Boolean                           @default(false)
+  createdAt                        DateTime                          @default(now())
+  brandedThirdPartyPreferencesId   String?
+  BrandedThirdPartyGiftPreferences BrandedThirdPartyGiftPreferences? @relation(fields: [brandedThirdPartyPreferencesId], references: [id])
 }
 
 model UserInsightLike {
@@ -346,6 +348,16 @@ model UserMiscPreferences {
   showDailyCheckInHelper Boolean @default(true)
 }
 
+model BrandedThirdPartyGiftPreferences {
+  id           String     @id
+  brandUserFid Int
+  giftUrl      String
+  targetTopic  String
+  createdByFid Int
+  createdAt    DateTime   @default(now())
+  UserGift     UserGift[]
+}
+
 enum FriendRequestStatus {
   pending
   accepted
@@ -371,6 +383,7 @@ enum TypeOfGift {
   ENCOURAGEMENT
   HAPPY_BIRTHDAY
   PING
+  BRANDED_THIRD_PARTY
 }
 
 enum LimitType {
@@ -388,4 +401,5 @@ enum IntoriPlusApplicationStatus {
   PENDING
   APPROVED
   REJECTED
+  INSUFFICIENT_BALANCE
 }
