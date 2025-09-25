@@ -69,6 +69,13 @@ export const Dropdown: React.FC<Props> = ({
         }
     }, [])
 
+    const beforeItemOnClick = useCallback((e: React.MouseEvent, item: typeof items[1]) => {
+      if (item.onClick) {
+        item.onClick(e)
+        setIsOpen(false)
+      }
+    }, [])
+
     return (
         <div className={styles.dropdownContainer} ref={dropdownRef}>
             <button
@@ -89,7 +96,7 @@ export const Dropdown: React.FC<Props> = ({
                         >
                             {!!item.href
                                 ? <Link href={item.href} {...linkAttributes(item)}>{item.label}</Link>
-                                : <button type="button" onClick={item.onClick}>{item.label}</button>
+                                : <button type="button" onClick={(e) => beforeItemOnClick(e, item)}>{item.label}</button>
                             }
                         </li>
                     ))}

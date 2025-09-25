@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from "react"
 import { useQuery } from '@tanstack/react-query'
 import { Dropdown, DropdownItemType } from "@/components/common/Dropdown"
 import { PrimaryButton } from "@/components/common/Button"
@@ -6,9 +6,10 @@ import { PrimaryButton } from "@/components/common/Button"
 // The API returns { topics: string[] }
 type Props = {
   onTopicSelected: (topic: string) => void
+  label?: string
 }
 
-export const SelectTopicDropdown: React.FC<Props> = ({ onTopicSelected }) => {
+export const SelectTopicDropdown: React.FC<Props> = ({ onTopicSelected, label }) => {
   const { data, isLoading, isError } = useQuery({
     queryKey: ['topics'],
     queryFn: async () => {
@@ -25,10 +26,21 @@ export const SelectTopicDropdown: React.FC<Props> = ({ onTopicSelected }) => {
     onClick: () => onTopicSelected(topic)
   }))
 
+  const text = useMemo(() => {
+    if (isLoading) {
+      return "Loading..."
+    }
+
+    if (isError) {
+      return "Retry"
+    }
+    return label || "Filter by topic"
+  }, [isLoading, isError, label])
+
   return (
     <Dropdown items={items}>
       <PrimaryButton>
-        {isLoading ? 'Loading...' : isError ? 'Retry' : 'Filter by topic'}
+        {text}
       </PrimaryButton>
     </Dropdown>
   )

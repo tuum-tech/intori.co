@@ -349,13 +349,14 @@ model UserMiscPreferences {
 }
 
 model BrandedThirdPartyGiftPreferences {
-  id           String     @id
+  id           String                      @id @default(cuid())
   brandUserFid Int
   giftUrl      String
   targetTopic  String
   createdByFid Int
-  createdAt    DateTime   @default(now())
+  createdAt    DateTime                    @default(now())
   message      String
+  status       BrandedThirdPartyGiftStatus @default(PENDING)
   UserGift     UserGift[]
 }
 
@@ -408,4 +409,10 @@ enum IntoriPlusApplicationStatus {
   APPROVED
   REJECTED
   INSUFFICIENT_BALANCE
+}
+
+enum BrandedThirdPartyGiftStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }

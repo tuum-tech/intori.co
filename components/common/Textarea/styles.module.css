@@ -1,0 +1,31 @@
+.textareaContainer {
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.textareaContainer label {
+  color: #fff;
+}
+
+.textareaContainer textarea {
+  width: 100%;
+  background: #20202F;
+  border: 1px solid #9664FA;
+  border-radius: 12px;
+  padding: 10px 0px 10px 16px;
+  color: #FFF;
+  margin: 4px 0 0 0;
+  display: block;
+  max-width: 600px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.textareaContainer textarea:read-only {
+  cursor: pointer;
+}
+
+.textareaContainer textarea::placeholder,
+.textareaContainer textarea:placeholder {
+  color: #666;
+}

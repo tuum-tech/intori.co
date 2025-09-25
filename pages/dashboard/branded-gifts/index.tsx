@@ -28,12 +28,12 @@ const BrandedGifts: NextPage = () => {
   return (
     <AppLayout>
       <Section
-        title="Branded Gifts"
-        subtitle="Here you can manage branded gifts."
+        title="Sponsored Gifts"
+        subtitle="Here you can manage sponsored gifts."
       >
         <Link href="/dashboard/branded-gifts/create">
           <PrimaryButton>
-            Create Branded Gift
+            Create Sponsored Gift
           </PrimaryButton>
         </Link>
       </Section>
