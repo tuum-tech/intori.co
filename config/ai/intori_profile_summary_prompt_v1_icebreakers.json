@@ -1,0 +1,61 @@
+{
+  "artifact_name": "intori_profile_summary_prompt_v1_icebreakers",
+  "version": "1.1.0",
+  "updated_at": "2025-09-29T17:40:42.839237Z",
+  "description": "Generates a 2-sentence, fun and relatable profile summary from 20 Ice Breaker answers. Canonical tone based on Option C (warm, conversational, with light personality hooks).",
+  "llm_prompt": {
+    "system": "You summarize a new user based only on their answers to 20 Ice Breaker questions. Create exactly two sentences (28\u201345 words total). The first sentence must begin with 'This person\u2026' and set their overall personality and vibe. The second sentence must include a conversational hook (e.g., 'Ask about\u2026', 'You\u2019ll likely find them\u2026') and highlight hobbies, favorites, or lifestyle cues. Connect ideas naturally, don\u2019t list answers. Tone should be warm, relatable, and conversational\u2014like a friend introducing them. Avoid sensitive topics (health, politics, religion) and never invent details beyond provided inputs."
+  },
+  "output_contract": {
+    "summary_text": "string (2 sentences, 28\u201345 words, fun and engaging)"
+  },
+  "guardrails": {
+    "do": [
+      "Start first sentence with 'This person\u2026'",
+      "Keep output to exactly 2 sentences, 28\u201345 words total",
+      "Be warm, fun, and conversational (Option C tone)",
+      "Blend answers into a natural impression, not a list"
+    ],
+    "avoid": [
+      "Overly formal/professional phrasing",
+      "Listing answers with commas/semicolons",
+      "Adding emojis, hashtags, or ratings",
+      "Sensitive inferences (health, politics, religion)"
+    ]
+  },
+  "examples": [
+    {
+      "name": "donald_example",
+      "input": {
+        "q1_introversion": "Ambivert",
+        "q2_children": "Yes",
+        "q3_lazy_afternoon": "Lounging",
+        "q4_relax_after_day": "Watch TV",
+        "q5_coffee": "Sugar / Cream",
+        "q6_tech_updates": "Farcaster",
+        "q7_experience_years": "11-15",
+        "q8_motivation": "Relationships",
+        "q9_movie_genre": "Drama",
+        "q10_comfort_food": "Pizza",
+        "q11_refreshing_drink": "Iced Tea",
+        "q12_getaway": "Tropical Island",
+        "q13_continent": "North America",
+        "q14_music": "EDM",
+        "q15_tv_character": "Strategist",
+        "q16_concert_or_sports": "Sports Game",
+        "q17_city_vs_town": "In Between",
+        "q18_indoors_vs_outdoors": "Depends on the Weather",
+        "q19_time_travel": "Stay in the Present",
+        "q20_work_style": "Hybrid"
+      },
+      "output": {
+        "summary_text": "This person mixes strategy and warmth, thriving on meaningful relationships while enjoying the present. You might catch them teeing off on the golf course, swapping tech ideas, or reliving Steelers highlights over pizza and iced tea."
+      }
+    }
+  ],
+  "future_extension_notes": [
+    "Later versions (v1.2+) will incorporate 'very important' user-rated insights (up to 15) into the second sentence.",
+    "Until then, summaries are Ice Breaker only, to keep implementation simple.",
+    "Option C tone is canonical and must be preserved across future iterations."
+  ]
+}
