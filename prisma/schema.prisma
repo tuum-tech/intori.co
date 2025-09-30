@@ -164,6 +164,9 @@ model UserProfile {
   username        String
   bio             String
   UserInsightLike UserInsightLike[]
+  
+  clusters        UserCluster[]
+  summary         UserSummary?
 }
 
 model UserQuestionSkip {
@@ -369,22 +372,24 @@ model Cluster {
 }
 
 model UserCluster {
-  userId     String
+  userFid    Int
   clusterId  String
   joinedAt   DateTime   @default(now())
   activeAt   DateTime?
 
-  user       User       @relation(fields: [userId], references: [id])
-  cluster    Cluster    @relation(fields: [clusterId], references: [id])
+  user       UserProfile @relation(fields: [userFid], references: [fid])
+  cluster    Cluster     @relation(fields: [clusterId], references: [id])
 
-  @@id([userId, clusterId])
+  @@id([userFid, clusterId])
 }
 
 model UserSummary {
-  userId        String   @id
-  summaryText   String
-  generatedAt   DateTime @default(now())
-  source        String   // "icebreakers_v1"
+  userFid      Int      @id        // match UserProfile.fid type
+  summaryText  String
+  generatedAt  DateTime @default(now())
+  source       String   // "icebreakers_v1"
+
+  user         UserProfile @relation(fields: [userFid], references: [fid])
 }
 
 model FeedEvent {

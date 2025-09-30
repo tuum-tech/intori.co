@@ -11,7 +11,8 @@
     "tsc": "tsc --noEmit",
     "db:pull": "prisma db pull && prisma generate --no-engine",
     "_comment": "For vercel prod deployment for the TS build checks",
-    "postinstall": "prisma generate --no-engine"
+    "postinstall": "prisma generate --no-engine",
+    "seed:clusters": "node scripts/seedClusters.js"
   },
   "dependencies": {
     "@farcaster/auth-kit": "^0.2.1",
