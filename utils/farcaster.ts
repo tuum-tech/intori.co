@@ -14,28 +14,39 @@ declare interface AuthKitConfig {
   version?: string
 }
 
-export const domainFromNextUrl = () => {
+export const domainFromNextUrl = (): string => {
   if (process.env.NEXTAUTH_URL) {
     return new URL(process.env.NEXTAUTH_URL).host
   }
 
-  return window.location.host
+  if (typeof window !== "undefined" && window.location?.host) {
+    return window.location.host
+  }
+
+  // fallback (Vercel Preview/Prod)
+  return process.env.NEXT_PUBLIC_VERCEL_URL || "localhost:3000"
 }
 
-export const getAppUri = () => {
+export const getAppUri = (): string => {
   if (process.env.NEXTAUTH_URL) {
     return new URL(process.env.NEXTAUTH_URL).href
   }
 
-  return window.location.href
+  if (typeof window !== "undefined" && window.location?.href) {
+    return window.location.href
+  }
+
+  // fallback (Vercel Preview/Prod)
+  const host = process.env.NEXT_PUBLIC_VERCEL_URL || "localhost:3000"
+  return `https://${host}`
 }
 
-export const authKitConfig: AuthKitConfig = {
-  // For a production app, replace this with an Optimism Mainnet
-  // RPC URL from a provider like Alchemy or Infura.
+// 🟢 Changed: function instead of static object
+export const getAuthKitConfig = (): AuthKitConfig => ({
   rpcUrl: 'https://mainnet.optimism.io',
   domain: domainFromNextUrl(),
+  // extra slash at end is important
+  siweUri: getAppUri(),
+  version: 'v1',
+})
 
-  // extra slash at end is important.
-  siweUri: getAppUri()
-}
