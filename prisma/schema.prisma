@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider   = "prisma-client-js"
+  engineType = "library"
 }
 
 datasource db {
@@ -164,6 +165,9 @@ model UserProfile {
   username        String
   bio             String
   UserInsightLike UserInsightLike[]
+  
+  clusters        UserCluster[]
+  summary         UserSummary?
 }
 
 model UserQuestionSkip {
@@ -344,6 +348,59 @@ model UserMiscPreferences {
   fid                    Int     @id
   showGiftsHelper        Boolean @default(true)
   showDailyCheckInHelper Boolean @default(true)
+}
+
+model Cluster {
+  id            String        @id @default(cuid())
+  slug          String        @unique
+  label         String
+  blurb         String?
+  emoji         String?
+  accentColor   String?
+  priority      Int           @default(0)
+  autoJoin      Boolean       @default(false)
+
+  unlockRules   Json
+  joinLogic     Json
+  activeHours   Int?          // default 24
+  homeFeed      Json?
+  moderation    Json?
+  analytics     Json?
+
+  memberships   UserCluster[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model UserCluster {
+  userFid    Int
+  clusterId  String
+  joinedAt   DateTime   @default(now())
+  activeAt   DateTime?
+
+  user       UserProfile @relation(fields: [userFid], references: [fid])
+  cluster    Cluster     @relation(fields: [clusterId], references: [id])
+
+  @@id([userFid, clusterId])
+}
+
+model UserSummary {
+  userFid      Int      @id        // match UserProfile.fid type
+  summaryText  String
+  generatedAt  DateTime @default(now())
+  source       String   // "icebreakers_v1"
+
+  user         UserProfile @relation(fields: [userFid], references: [fid])
+}
+
+model FeedEvent {
+  id        String   @id @default(cuid())
+  type      String   // friend_connected | insight_boosted | etc
+  actorId   String?
+  payload   Json
+  createdAt DateTime @default(now())
+
+  @@index([createdAt, type])
 }
 
 enum FriendRequestStatus {

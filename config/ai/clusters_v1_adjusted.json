@@ -1,0 +1,2539 @@
+[
+  {
+    "id": "sports_fans",
+    "label": "Sports Fans",
+    "blurb": "For people who live and breathe teams, games, and big sports moments.",
+    "unlock_rules": {
+      "min_signals": 2,
+      "signals": [
+        {
+          "type": "icebreaker",
+          "question_key": "q16_concert_or_sports",
+          "equals": "Sports Game"
+        },
+        {
+          "type": "insight",
+          "question": "Do you play golf?",
+          "in": [
+            "Yes",
+            "Sometimes"
+          ],
+          "category": "Sports",
+          "disqualify": [
+            "No"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "What is your golf handicap range?",
+          "in": [
+            "Scratch",
+            "1-9",
+            "10-19",
+            "20+"
+          ],
+          "category": "Sports"
+        },
+        {
+          "type": "insight",
+          "question": "Do you follow Formula 1?",
+          "in": [
+            "Yes",
+            "Occasionally"
+          ],
+          "category": "Sports",
+          "disqualify": [
+            "No"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Which NFL conference do you support most?",
+          "in": [
+            "AFC",
+            "NFC"
+          ],
+          "category": "Sports",
+          "disqualify": [
+            "Neither"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Which AFC division is your favorite?",
+          "in": [
+            "AFC East",
+            "AFC North",
+            "AFC South",
+            "AFC West"
+          ],
+          "category": "Sports"
+        },
+        {
+          "type": "insight",
+          "question": "Which NFC division is your favorite?",
+          "in": [
+            "NFC East",
+            "NFC North",
+            "NFC South",
+            "NFC West"
+          ],
+          "category": "Sports"
+        },
+        {
+          "type": "insight",
+          "question": "Which AFC East team is your favorite?",
+          "in": [
+            "New England Patriots",
+            "New York Jets",
+            "Miami Dolphins",
+            "Buffalo Bills"
+          ],
+          "category": "Sports"
+        },
+        {
+          "type": "insight",
+          "question": "Which AFC North team is your favorite?",
+          "in": [
+            "Pittsburgh Steelers",
+            "Baltimore Ravens",
+            "Cincinnati Bengals",
+            "Cleveland Browns"
+          ],
+          "category": "Sports"
+        },
+        {
+          "type": "insight",
+          "question": "Which AFC South team is your favorite?",
+          "in": [
+            "Indianapolis Colts",
+            "Tennessee Titans",
+            "Houston Texans",
+            "Jacksonville Jaguars"
+          ],
+          "category": "Sports"
+        },
+        {
+          "type": "insight",
+          "question": "Which AFC West team is your favorite?",
+          "in": [
+            "Kansas City Chiefs",
+            "Denver Broncos",
+            "Las Vegas Raiders",
+            "Los Angeles Chargers"
+          ],
+          "category": "Sports"
+        },
+        {
+          "type": "insight",
+          "question": "Which NFC East team is your favorite?",
+          "in": [
+            "Dallas Cowboys",
+            "Philadelphia Eagles",
+            "New York Giants",
+            "Washington Commanders"
+          ],
+          "category": "Sports"
+        },
+        {
+          "type": "insight",
+          "question": "Which NFC North team is your favorite?",
+          "in": [
+            "Green Bay Packers",
+            "Chicago Bears",
+            "Minnesota Vikings",
+            "Detroit Lions"
+          ],
+          "category": "Sports"
+        },
+        {
+          "type": "insight",
+          "question": "Which NFC South team is your favorite?",
+          "in": [
+            "Tampa Bay Buccaneers",
+            "New Orleans Saints",
+            "Atlanta Falcons",
+            "Carolina Panthers"
+          ],
+          "category": "Sports"
+        },
+        {
+          "type": "insight",
+          "question": "Which NFC West team is your favorite?",
+          "in": [
+            "San Francisco 49ers",
+            "Seattle Seahawks",
+            "Los Angeles Rams",
+            "Arizona Cardinals"
+          ],
+          "category": "Sports"
+        },
+        {
+          "type": "insight",
+          "question": "Do you watch soccer?",
+          "in": [
+            "Yes",
+            "Occasionally"
+          ],
+          "category": "Sports",
+          "disqualify": [
+            "No"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Which soccer league do you follow most?",
+          "in": [
+            "EPL",
+            "La Liga",
+            "Bundesliga",
+            "Serie A",
+            "Ligue 1",
+            "MLS",
+            "Other"
+          ],
+          "category": "Sports"
+        },
+        {
+          "type": "insight",
+          "question": "Which EPL club is your favorite?",
+          "in": [
+            "Manchester United",
+            "Liverpool",
+            "Arsenal",
+            "Manchester City",
+            "Chelsea",
+            "Tottenham",
+            "Newcastle United",
+            "Aston Villa"
+          ],
+          "category": "Sports"
+        },
+        {
+          "type": "insight",
+          "question": "Which La Liga club is your favorite?",
+          "in": [
+            "Real Madrid",
+            "Barcelona",
+            "Atletico Madrid",
+            "Sevilla",
+            "Valencia",
+            "Real Sociedad",
+            "Villarreal",
+            "Real Betis"
+          ],
+          "category": "Sports"
+        },
+        {
+          "type": "insight",
+          "question": "Which Bundesliga club is your favorite?",
+          "in": [
+            "Bayern Munich",
+            "Borussia Dortmund",
+            "RB Leipzig",
+            "Bayer Leverkusen",
+            "Borussia Monchengladbach",
+            "Eintracht Frankfurt",
+            "VfB Stuttgart",
+            "Wolfsburg"
+          ],
+          "category": "Sports"
+        },
+        {
+          "type": "insight",
+          "question": "Which Serie A club is your favorite?",
+          "in": [
+            "Juventus",
+            "Inter Milan",
+            "AC Milan",
+            "Napoli",
+            "Roma",
+            "Lazio",
+            "Atalanta",
+            "Fiorentina"
+          ],
+          "category": "Sports"
+        },
+        {
+          "type": "insight",
+          "question": "Which Ligue 1 club is your favorite?",
+          "in": [
+            "PSG",
+            "Marseille",
+            "Lyon",
+            "Monaco",
+            "Lille",
+            "Nice",
+            "Rennes",
+            "Lens"
+          ],
+          "category": "Sports"
+        },
+        {
+          "type": "insight",
+          "question": "Which MLS club is your favorite?",
+          "in": [
+            "LAFC",
+            "LA Galaxy",
+            "Inter Miami",
+            "Seattle Sounders",
+            "Atlanta United",
+            "New York City FC",
+            "Portland Timbers",
+            "Austin FC"
+          ],
+          "category": "Sports"
+        },
+        {
+          "type": "insight",
+          "question": "Do you watch basketball?",
+          "in": [
+            "Yes",
+            "Occasionally"
+          ],
+          "category": "Sports",
+          "disqualify": [
+            "No"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Which NBA conference do you support most?",
+          "in": [
+            "Eastern",
+            "Western"
+          ],
+          "category": "Sports"
+        },
+        {
+          "type": "insight",
+          "question": "Which Eastern division do you follow most?",
+          "in": [
+            "Atlantic",
+            "Central",
+            "Southeast"
+          ],
+          "category": "Sports"
+        },
+        {
+          "type": "insight",
+          "question": "Which Western division do you follow most?",
+          "in": [
+            "Northwest",
+            "Pacific",
+            "Southwest"
+          ],
+          "category": "Sports"
+        },
+        {
+          "type": "insight",
+          "question": "Which Atlantic team is your favorite?",
+          "in": [
+            "Boston Celtics",
+            "Brooklyn Nets",
+            "New York Knicks",
+            "Philadelphia 76ers",
+            "Toronto Raptors"
+          ],
+          "category": "Sports"
+        },
+        {
+          "type": "insight",
+          "question": "Which Central team is your favorite?",
+          "in": [
+            "Chicago Bulls",
+            "Cleveland Cavaliers",
+            "Detroit Pistons",
+            "Indiana Pacers",
+            "Milwaukee Bucks"
+          ],
+          "category": "Sports"
+        },
+        {
+          "type": "insight",
+          "question": "Which Southeast team is your favorite?",
+          "in": [
+            "Atlanta Hawks",
+            "Charlotte Hornets",
+            "Miami Heat",
+            "Orlando Magic",
+            "Washington Wizards"
+          ],
+          "category": "Sports"
+        }
+      ],
+      "boost_signals": [
+        {
+          "type": "insight",
+          "question": "Which AFC East team is your favorite?",
+          "in": [
+            "New England Patriots",
+            "New York Jets",
+            "Miami Dolphins",
+            "Buffalo Bills"
+          ],
+          "category": "Sports",
+          "weight": 2
+        },
+        {
+          "type": "insight",
+          "question": "Which AFC North team is your favorite?",
+          "in": [
+            "Pittsburgh Steelers",
+            "Baltimore Ravens",
+            "Cincinnati Bengals",
+            "Cleveland Browns"
+          ],
+          "category": "Sports",
+          "weight": 2
+        },
+        {
+          "type": "insight",
+          "question": "Which AFC South team is your favorite?",
+          "in": [
+            "Indianapolis Colts",
+            "Tennessee Titans",
+            "Houston Texans",
+            "Jacksonville Jaguars"
+          ],
+          "category": "Sports",
+          "weight": 2
+        },
+        {
+          "type": "insight",
+          "question": "Which AFC West team is your favorite?",
+          "in": [
+            "Kansas City Chiefs",
+            "Denver Broncos",
+            "Las Vegas Raiders",
+            "Los Angeles Chargers"
+          ],
+          "category": "Sports",
+          "weight": 2
+        },
+        {
+          "type": "insight",
+          "question": "Which NFC East team is your favorite?",
+          "in": [
+            "Dallas Cowboys",
+            "Philadelphia Eagles",
+            "New York Giants",
+            "Washington Commanders"
+          ],
+          "category": "Sports",
+          "weight": 2
+        },
+        {
+          "type": "insight",
+          "question": "Which NFC North team is your favorite?",
+          "in": [
+            "Green Bay Packers",
+            "Chicago Bears",
+            "Minnesota Vikings",
+            "Detroit Lions"
+          ],
+          "category": "Sports",
+          "weight": 2
+        },
+        {
+          "type": "insight",
+          "question": "Which NFC South team is your favorite?",
+          "in": [
+            "Tampa Bay Buccaneers",
+            "New Orleans Saints",
+            "Atlanta Falcons",
+            "Carolina Panthers"
+          ],
+          "category": "Sports",
+          "weight": 2
+        },
+        {
+          "type": "insight",
+          "question": "Which NFC West team is your favorite?",
+          "in": [
+            "San Francisco 49ers",
+            "Seattle Seahawks",
+            "Los Angeles Rams",
+            "Arizona Cardinals"
+          ],
+          "category": "Sports",
+          "weight": 2
+        },
+        {
+          "type": "insight",
+          "question": "Which Atlantic team is your favorite?",
+          "in": [
+            "Boston Celtics",
+            "Brooklyn Nets",
+            "New York Knicks",
+            "Philadelphia 76ers",
+            "Toronto Raptors"
+          ],
+          "category": "Sports",
+          "weight": 2
+        },
+        {
+          "type": "insight",
+          "question": "Which Central team is your favorite?",
+          "in": [
+            "Chicago Bulls",
+            "Cleveland Cavaliers",
+            "Detroit Pistons",
+            "Indiana Pacers",
+            "Milwaukee Bucks"
+          ],
+          "category": "Sports",
+          "weight": 2
+        },
+        {
+          "type": "insight",
+          "question": "Which Southeast team is your favorite?",
+          "in": [
+            "Atlanta Hawks",
+            "Charlotte Hornets",
+            "Miami Heat",
+            "Orlando Magic",
+            "Washington Wizards"
+          ],
+          "category": "Sports",
+          "weight": 2
+        }
+      ],
+      "cooldown_days": 30
+    },
+    "join_logic": {
+      "auto_join": false,
+      "approval_dialog": "You\u2019ve unlocked Sports Fans. Join to see who\u2019s active today?"
+    },
+    "active_membership": {
+      "active_window_hours": 24
+    },
+    "home_feed": {
+      "unlock_reasons": [
+        "sports fan",
+        "loves live games",
+        "follows teams"
+      ]
+    },
+    "visuals": {
+      "emoji": "\ud83c\udfdf\ufe0f",
+      "accent_color": "#1F6FEB"
+    },
+    "priority": 100,
+    "exclusions": [],
+    "moderation": {
+      "avoid_terms": []
+    },
+    "analytics": {
+      "track": [
+        "joins",
+        "active_members",
+        "gift_opens",
+        "click_throughs"
+      ]
+    }
+  },
+  {
+    "id": "fitness_wellness",
+    "label": "Fitness & Wellness",
+    "blurb": "For those who care about movement, nutrition, and feeling good day to day.",
+    "unlock_rules": {
+      "min_signals": 1,
+      "signals": [
+        {
+          "type": "insight",
+          "question": "How many skincare or beauty products are in your daily routine?",
+          "in": [
+            "3\u20114",
+            "5\u20116",
+            "7+"
+          ],
+          "category": "Wellness",
+          "disqualify": [
+            "None",
+            "1\u20112"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Which area of self improvement are you focusing on?",
+          "in": [
+            "Fitness",
+            "Nutrition",
+            "Meditation"
+          ],
+          "category": "Wellness",
+          "disqualify": [
+            "None",
+            "Career Growth"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "How many miles do you run each week?",
+          "in": [
+            "15\u201130",
+            "30+"
+          ],
+          "category": "Wellness",
+          "disqualify": [
+            "None",
+            "1\u20115",
+            "6\u201114"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "How many workouts do you do each week?",
+          "in": [
+            "3\u20114",
+            "5+"
+          ],
+          "category": "Wellness",
+          "disqualify": [
+            "0",
+            "1\u20112"
+          ]
+        }
+      ],
+      "boost_signals": [],
+      "cooldown_days": 30
+    },
+    "join_logic": {
+      "auto_join": false,
+      "approval_dialog": "You\u2019ve unlocked Fitness & Wellness. Join to see who\u2019s active today?"
+    },
+    "active_membership": {
+      "active_window_hours": 24
+    },
+    "home_feed": {
+      "unlock_reasons": [
+        "focused on health",
+        "active lifestyle",
+        "gym or yoga"
+      ]
+    },
+    "visuals": {
+      "emoji": "\ud83d\udcaa",
+      "accent_color": "#22C55E"
+    },
+    "priority": 97,
+    "exclusions": [],
+    "moderation": {
+      "avoid_terms": []
+    },
+    "analytics": {
+      "track": [
+        "joins",
+        "active_members",
+        "gift_opens",
+        "click_throughs"
+      ]
+    }
+  },
+  {
+    "id": "collectors",
+    "label": "Collectors",
+    "blurb": "For fans of trading cards, vintage finds, and digital collectibles.",
+    "unlock_rules": {
+      "min_signals": 2,
+      "signals": [
+        {
+          "type": "insight",
+          "question": "Do you collect things?",
+          "in": [
+            "Yes",
+            "Occasionally"
+          ],
+          "category": "Collecting",
+          "disqualify": [
+            "No"
+          ]
+        }
+      ],
+      "boost_signals": [
+        {
+          "type": "insight",
+          "question": "Do you collect things?",
+          "in": [
+            "Yes",
+            "Occasionally"
+          ],
+          "category": "Collecting",
+          "disqualify": [
+            "No"
+          ],
+          "weight": 2
+        }
+      ],
+      "cooldown_days": 30
+    },
+    "join_logic": {
+      "auto_join": false,
+      "approval_dialog": "You\u2019ve unlocked Collectors. Join to see who\u2019s active today?"
+    },
+    "active_membership": {
+      "active_window_hours": 24
+    },
+    "home_feed": {
+      "unlock_reasons": [
+        "card collector",
+        "vintage hunter",
+        "digital collectibles"
+      ]
+    },
+    "visuals": {
+      "emoji": "\ud83e\uddf0",
+      "accent_color": "#F59E0B"
+    },
+    "priority": 94,
+    "exclusions": [],
+    "moderation": {
+      "avoid_terms": []
+    },
+    "analytics": {
+      "track": [
+        "joins",
+        "active_members",
+        "gift_opens",
+        "click_throughs"
+      ]
+    }
+  },
+  {
+    "id": "creators",
+    "label": "Creators",
+    "blurb": "For people who make things\u2014videos, art, writing\u2014and share them.",
+    "unlock_rules": {
+      "min_signals": 1,
+      "signals": [
+        {
+          "type": "insight",
+          "question": "How many anime series do you watch each year?",
+          "in": [
+            "3\u20115",
+            "6\u201110",
+            "10+"
+          ],
+          "category": "Entertainment",
+          "disqualify": [
+            "None",
+            "1\u20112"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "How often do you follow celebrity or entertainment news?",
+          "in": [
+            "Weekly",
+            "Daily"
+          ],
+          "category": "Entertainment",
+          "disqualify": [
+            "Never",
+            "Rarely",
+            "Monthly"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "How many smart home devices do you own?",
+          "in": [
+            "3\u20115",
+            "6+"
+          ],
+          "category": "Technology",
+          "disqualify": [
+            "None",
+            "1\u20112"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "How often do you upgrade your primary gadgets?",
+          "in": [
+            "Yearly",
+            "Every Six Months"
+          ],
+          "category": "Technology",
+          "disqualify": [
+            ">4 Years",
+            "2\u20114 Years"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "How are you staying up to date with tech trends?",
+          "in": [
+            "Apps",
+            "Blogs",
+            "Podcasts",
+            "Social Media",
+            "Conferences"
+          ],
+          "category": "Technology",
+          "disqualify": [
+            "I Don't",
+            "Friends"
+          ]
+        }
+      ],
+      "boost_signals": [],
+      "cooldown_days": 30
+    },
+    "join_logic": {
+      "auto_join": false,
+      "approval_dialog": "You\u2019ve unlocked Creators. Join to see who\u2019s active today?"
+    },
+    "active_membership": {
+      "active_window_hours": 24
+    },
+    "home_feed": {
+      "unlock_reasons": [
+        "creates content",
+        "shares art",
+        "writes and publishes"
+      ]
+    },
+    "visuals": {
+      "emoji": "\ud83c\udfa8",
+      "accent_color": "#8B5CF6"
+    },
+    "priority": 91,
+    "exclusions": [],
+    "moderation": {
+      "avoid_terms": []
+    },
+    "analytics": {
+      "track": [
+        "joins",
+        "active_members",
+        "gift_opens",
+        "click_throughs"
+      ]
+    }
+  },
+  {
+    "id": "investors_finance",
+    "label": "Investors & Finance",
+    "blurb": "For the numbers-curious: portfolios, crypto, markets, and money mindsets.",
+    "unlock_rules": {
+      "min_signals": 2,
+      "signals": [],
+      "boost_signals": [],
+      "cooldown_days": 30
+    },
+    "join_logic": {
+      "auto_join": false,
+      "approval_dialog": "You\u2019ve unlocked Investors & Finance. Join to see who\u2019s active today?"
+    },
+    "active_membership": {
+      "active_window_hours": 24
+    },
+    "home_feed": {
+      "unlock_reasons": [
+        "into markets",
+        "follows crypto",
+        "tracks portfolios"
+      ]
+    },
+    "visuals": {
+      "emoji": "\ud83d\udcc8",
+      "accent_color": "#10B981"
+    },
+    "priority": 88,
+    "exclusions": [],
+    "moderation": {
+      "avoid_terms": []
+    },
+    "analytics": {
+      "track": [
+        "joins",
+        "active_members",
+        "gift_opens",
+        "click_throughs"
+      ]
+    }
+  },
+  {
+    "id": "gamers",
+    "label": "Gamers",
+    "blurb": "For console, PC, and mobile players\u2014casual and competitive.",
+    "unlock_rules": {
+      "min_signals": 1,
+      "signals": [
+        {
+          "type": "insight",
+          "question": "How many board game sessions do you play per month?",
+          "in": [
+            "2\u20113",
+            "4+"
+          ],
+          "category": "Games",
+          "disqualify": [
+            "None",
+            "1"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Which platform do you game on most?",
+          "in": [
+            "PC",
+            "Console",
+            "Mobile",
+            "VR",
+            "Multiple Platforms"
+          ],
+          "category": "Gaming",
+          "disqualify": [
+            "None"
+          ]
+        }
+      ],
+      "boost_signals": [],
+      "cooldown_days": 30
+    },
+    "join_logic": {
+      "auto_join": false,
+      "approval_dialog": "You\u2019ve unlocked Gamers. Join to see who\u2019s active today?"
+    },
+    "active_membership": {
+      "active_window_hours": 24
+    },
+    "home_feed": {
+      "unlock_reasons": [
+        "casual gamer",
+        "plays PC/console",
+        "enjoys esports"
+      ]
+    },
+    "visuals": {
+      "emoji": "\ud83c\udfae",
+      "accent_color": "#0EA5E9"
+    },
+    "priority": 85,
+    "exclusions": [],
+    "moderation": {
+      "avoid_terms": []
+    },
+    "analytics": {
+      "track": [
+        "joins",
+        "active_members",
+        "gift_opens",
+        "click_throughs"
+      ]
+    }
+  },
+  {
+    "id": "music_lovers",
+    "label": "Music Lovers",
+    "blurb": "For people who build playlists, chase genres, and love live music.",
+    "unlock_rules": {
+      "min_signals": 1,
+      "signals": [
+        {
+          "type": "insight",
+          "question": "How many hours a week do you listen to music?",
+          "in": [
+            "11\u201120",
+            "20+"
+          ],
+          "category": "Music",
+          "disqualify": [
+            "<1",
+            "1\u20115",
+            "6\u201110"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Are you a DJ?",
+          "in": [
+            "Active",
+            "Hobbyist"
+          ],
+          "category": "Music",
+          "disqualify": [
+            "Learning",
+            "No"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Do you produce music?",
+          "in": [
+            "Active",
+            "Learning"
+          ],
+          "category": "Music",
+          "disqualify": [
+            "Curious",
+            "No"
+          ]
+        }
+      ],
+      "boost_signals": [
+        {
+          "type": "insight",
+          "question": "How many hours a week do you listen to music?",
+          "in": [
+            "11\u201120",
+            "20+"
+          ],
+          "category": "Music",
+          "disqualify": [
+            "<1",
+            "1\u20115",
+            "6\u201110"
+          ],
+          "weight": 2
+        },
+        {
+          "type": "insight",
+          "question": "Do you produce music?",
+          "in": [
+            "Active",
+            "Learning"
+          ],
+          "category": "Music",
+          "disqualify": [
+            "Curious",
+            "No"
+          ],
+          "weight": 2
+        }
+      ],
+      "cooldown_days": 30
+    },
+    "join_logic": {
+      "auto_join": false,
+      "approval_dialog": "You\u2019ve unlocked Music Lovers. Join to see who\u2019s active today?"
+    },
+    "active_membership": {
+      "active_window_hours": 24
+    },
+    "home_feed": {
+      "unlock_reasons": [
+        "builds playlists",
+        "concert-goer",
+        "genre explorer"
+      ]
+    },
+    "visuals": {
+      "emoji": "\ud83c\udfb5",
+      "accent_color": "#EF4444"
+    },
+    "priority": 82,
+    "exclusions": [],
+    "moderation": {
+      "avoid_terms": []
+    },
+    "analytics": {
+      "track": [
+        "joins",
+        "active_members",
+        "gift_opens",
+        "click_throughs"
+      ]
+    }
+  },
+  {
+    "id": "travel_enthusiasts",
+    "label": "Travel Enthusiasts",
+    "blurb": "For explorers of new places, cultures, and unforgettable trips.",
+    "unlock_rules": {
+      "min_signals": 1,
+      "signals": [
+        {
+          "type": "insight",
+          "question": "How many trips do you take per year?",
+          "in": [
+            "3\u20114",
+            "5+"
+          ],
+          "category": "Travel",
+          "disqualify": [
+            "None",
+            "1",
+            "2"
+          ]
+        }
+      ],
+      "boost_signals": [
+        {
+          "type": "insight",
+          "question": "How many trips do you take per year?",
+          "in": [
+            "3\u20114",
+            "5+"
+          ],
+          "category": "Travel",
+          "disqualify": [
+            "None",
+            "1",
+            "2"
+          ],
+          "weight": 2
+        }
+      ],
+      "cooldown_days": 30
+    },
+    "join_logic": {
+      "auto_join": false,
+      "approval_dialog": "You\u2019ve unlocked Travel Enthusiasts. Join to see who\u2019s active today?"
+    },
+    "active_membership": {
+      "active_window_hours": 24
+    },
+    "home_feed": {
+      "unlock_reasons": [
+        "loves to travel",
+        "adventure seeker",
+        "destination planner"
+      ]
+    },
+    "visuals": {
+      "emoji": "\ud83e\udded",
+      "accent_color": "#14B8A6"
+    },
+    "priority": 79,
+    "exclusions": [],
+    "moderation": {
+      "avoid_terms": []
+    },
+    "analytics": {
+      "track": [
+        "joins",
+        "active_members",
+        "gift_opens",
+        "click_throughs"
+      ]
+    }
+  },
+  {
+    "id": "pet_owners",
+    "label": "Pet Owners",
+    "blurb": "For the dog people, cat people, and everyone in between.",
+    "unlock_rules": {
+      "min_signals": 1,
+      "signals": [],
+      "boost_signals": [],
+      "cooldown_days": 30
+    },
+    "join_logic": {
+      "auto_join": false,
+      "approval_dialog": "You\u2019ve unlocked Pet Owners. Join to see who\u2019s active today?"
+    },
+    "active_membership": {
+      "active_window_hours": 24
+    },
+    "home_feed": {
+      "unlock_reasons": [
+        "dog person",
+        "cat person",
+        "pet parent"
+      ]
+    },
+    "visuals": {
+      "emoji": "\ud83d\udc3e",
+      "accent_color": "#F97316"
+    },
+    "priority": 76,
+    "exclusions": [],
+    "moderation": {
+      "avoid_terms": []
+    },
+    "analytics": {
+      "track": [
+        "joins",
+        "active_members",
+        "gift_opens",
+        "click_throughs"
+      ]
+    }
+  },
+  {
+    "id": "sustainable_living",
+    "label": "Sustainable Living",
+    "blurb": "For eco-minded choices, green habits, and mindful consumption.",
+    "unlock_rules": {
+      "min_signals": 1,
+      "signals": [
+        {
+          "type": "insight",
+          "question": "Do you consider yourself a frequent shopper?",
+          "in": [
+            "Yes",
+            "Sometimes"
+          ],
+          "category": "Shopping",
+          "disqualify": [
+            "No"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "How often do you volunteer in your community?",
+          "in": [
+            "Monthly",
+            "Weekly"
+          ],
+          "category": "Values",
+          "disqualify": [
+            "Never",
+            "Once A Year",
+            "Quarterly"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Do you actively follow scientific research?",
+          "in": [
+            "Yes",
+            "Occasionally"
+          ],
+          "category": "Values",
+          "disqualify": [
+            "No"
+          ]
+        }
+      ],
+      "boost_signals": [],
+      "cooldown_days": 30
+    },
+    "join_logic": {
+      "auto_join": false,
+      "approval_dialog": "You\u2019ve unlocked Sustainable Living. Join to see who\u2019s active today?"
+    },
+    "active_membership": {
+      "active_window_hours": 24
+    },
+    "home_feed": {
+      "unlock_reasons": [
+        "eco-minded",
+        "green shopper",
+        "minimalist leanings"
+      ]
+    },
+    "visuals": {
+      "emoji": "\ud83c\udf31",
+      "accent_color": "#16A34A"
+    },
+    "priority": 73,
+    "exclusions": [],
+    "moderation": {
+      "avoid_terms": []
+    },
+    "analytics": {
+      "track": [
+        "joins",
+        "active_members",
+        "gift_opens",
+        "click_throughs"
+      ]
+    }
+  },
+  {
+    "id": "bookworms",
+    "label": "Bookworms",
+    "blurb": "For readers, collectors of authors, and late-night page turners.",
+    "unlock_rules": {
+      "min_signals": 1,
+      "signals": [
+        {
+          "type": "insight",
+          "question": "How many books do you read each year?",
+          "in": [
+            "6\u201112",
+            "13\u201124",
+            "25+"
+          ],
+          "category": "Books",
+          "disqualify": [
+            "0\u20111",
+            "2\u20115"
+          ]
+        }
+      ],
+      "boost_signals": [
+        {
+          "type": "insight",
+          "question": "How many books do you read each year?",
+          "in": [
+            "6\u201112",
+            "13\u201124",
+            "25+"
+          ],
+          "category": "Books",
+          "disqualify": [
+            "0\u20111",
+            "2\u20115"
+          ],
+          "weight": 2
+        }
+      ],
+      "cooldown_days": 30
+    },
+    "join_logic": {
+      "auto_join": false,
+      "approval_dialog": "You\u2019ve unlocked Bookworms. Join to see who\u2019s active today?"
+    },
+    "active_membership": {
+      "active_window_hours": 24
+    },
+    "home_feed": {
+      "unlock_reasons": [
+        "avid reader",
+        "author fan",
+        "book club minded"
+      ]
+    },
+    "visuals": {
+      "emoji": "\ud83d\udcda",
+      "accent_color": "#6366F1"
+    },
+    "priority": 70,
+    "exclusions": [],
+    "moderation": {
+      "avoid_terms": []
+    },
+    "analytics": {
+      "track": [
+        "joins",
+        "active_members",
+        "gift_opens",
+        "click_throughs"
+      ]
+    }
+  },
+  {
+    "id": "movie_tv_fans",
+    "label": "Movie & TV Fans",
+    "blurb": "For streaming, characters, and scenes worth quoting.",
+    "unlock_rules": {
+      "min_signals": 1,
+      "signals": [
+        {
+          "type": "insight",
+          "question": "How many movies do you watch per month?",
+          "in": [
+            "5\u20118",
+            "9+"
+          ],
+          "category": "Movies",
+          "disqualify": [
+            "None",
+            "1\u20112",
+            "3\u20114"
+          ]
+        }
+      ],
+      "boost_signals": [
+        {
+          "type": "insight",
+          "question": "How many movies do you watch per month?",
+          "in": [
+            "5\u20118",
+            "9+"
+          ],
+          "category": "Movies",
+          "disqualify": [
+            "None",
+            "1\u20112",
+            "3\u20114"
+          ],
+          "weight": 2
+        }
+      ],
+      "cooldown_days": 30
+    },
+    "join_logic": {
+      "auto_join": false,
+      "approval_dialog": "You\u2019ve unlocked Movie & TV Fans. Join to see who\u2019s active today?"
+    },
+    "active_membership": {
+      "active_window_hours": 24
+    },
+    "home_feed": {
+      "unlock_reasons": [
+        "streaming fan",
+        "character-driven",
+        "movie buff"
+      ]
+    },
+    "visuals": {
+      "emoji": "\ud83c\udf7f",
+      "accent_color": "#F43F5E"
+    },
+    "priority": 67,
+    "exclusions": [],
+    "moderation": {
+      "avoid_terms": []
+    },
+    "analytics": {
+      "track": [
+        "joins",
+        "active_members",
+        "gift_opens",
+        "click_throughs"
+      ]
+    }
+  },
+  {
+    "id": "foodies",
+    "label": "Foodies",
+    "blurb": "For cuisine lovers, home cooks, and comfort-food seekers.",
+    "unlock_rules": {
+      "min_signals": 1,
+      "signals": [
+        {
+          "type": "insight",
+          "question": "How do you brew coffee at home most often?",
+          "in": [
+            "French Press",
+            "Espresso Machine",
+            "Pour Over"
+          ],
+          "category": "Food",
+          "disqualify": [
+            "None",
+            "Drip",
+            "Pod Machine"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "How many home\u2011cooked dinners do you make each week?",
+          "in": [
+            "3\u20114",
+            "5\u20116",
+            "7+"
+          ],
+          "category": "Food",
+          "disqualify": [
+            "0",
+            "1\u20112"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "How many new restaurants do you try each month?",
+          "in": [
+            "Two",
+            "Three",
+            "Four Plus"
+          ],
+          "category": "Food",
+          "disqualify": [
+            "None",
+            "One"
+          ]
+        }
+      ],
+      "boost_signals": [],
+      "cooldown_days": 30
+    },
+    "join_logic": {
+      "auto_join": false,
+      "approval_dialog": "You\u2019ve unlocked Foodies. Join to see who\u2019s active today?"
+    },
+    "active_membership": {
+      "active_window_hours": 24
+    },
+    "home_feed": {
+      "unlock_reasons": [
+        "home cook",
+        "coffee lover",
+        "comfort-food fan"
+      ]
+    },
+    "visuals": {
+      "emoji": "\ud83c\udf55",
+      "accent_color": "#EAB308"
+    },
+    "priority": 64,
+    "exclusions": [],
+    "moderation": {
+      "avoid_terms": []
+    },
+    "analytics": {
+      "track": [
+        "joins",
+        "active_members",
+        "gift_opens",
+        "click_throughs"
+      ]
+    }
+  },
+  {
+    "id": "tech_ai_curious",
+    "label": "Tech & AI Curious",
+    "blurb": "For tool tinkerers, gadget lovers, and AI explorers.",
+    "unlock_rules": {
+      "min_signals": 2,
+      "signals": [
+        {
+          "type": "insight",
+          "question": "How many smart home devices do you own?",
+          "in": [
+            "3\u20115",
+            "6+"
+          ],
+          "category": "Technology",
+          "disqualify": [
+            "None",
+            "1\u20112"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "How often do you upgrade your primary gadgets?",
+          "in": [
+            "Yearly",
+            "Every Six Months"
+          ],
+          "category": "Technology",
+          "disqualify": [
+            ">4 Years",
+            "2\u20114 Years"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "How are you staying up to date with tech trends?",
+          "in": [
+            "Apps",
+            "Blogs",
+            "Podcasts",
+            "Social Media",
+            "Conferences"
+          ],
+          "category": "Technology",
+          "disqualify": [
+            "I Don't",
+            "Friends"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Do you follow space missions or astronomy news?",
+          "in": [
+            "Yes",
+            "Occasionally"
+          ],
+          "category": "Science",
+          "disqualify": [
+            "No"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Do you follow AI research papers?",
+          "in": [
+            "Yes",
+            "Occasionally"
+          ],
+          "category": "Technology",
+          "disqualify": [
+            "Rarely",
+            "No"
+          ]
+        }
+      ],
+      "boost_signals": [
+        {
+          "type": "insight",
+          "question": "Do you follow AI research papers?",
+          "in": [
+            "Yes",
+            "Occasionally"
+          ],
+          "category": "Technology",
+          "disqualify": [
+            "Rarely",
+            "No"
+          ],
+          "weight": 2
+        }
+      ],
+      "cooldown_days": 30
+    },
+    "join_logic": {
+      "auto_join": false,
+      "approval_dialog": "You\u2019ve unlocked Tech & AI Curious. Join to see who\u2019s active today?"
+    },
+    "active_membership": {
+      "active_window_hours": 24
+    },
+    "home_feed": {
+      "unlock_reasons": [
+        "AI curious",
+        "gadget fan",
+        "loves new tools"
+      ]
+    },
+    "visuals": {
+      "emoji": "\ud83e\udd16",
+      "accent_color": "#06B6D4"
+    },
+    "priority": 61,
+    "exclusions": [],
+    "moderation": {
+      "avoid_terms": []
+    },
+    "analytics": {
+      "track": [
+        "joins",
+        "active_members",
+        "gift_opens",
+        "click_throughs"
+      ]
+    }
+  },
+  {
+    "id": "community_builders",
+    "label": "Community Builders",
+    "blurb": "For connection-seekers who bring people together.",
+    "unlock_rules": {
+      "min_signals": 2,
+      "signals": [
+        {
+          "type": "insight",
+          "question": "Do you have any children?",
+          "in": [
+            "One Child",
+            "Two Children",
+            "Three Or More",
+            "Expecting"
+          ],
+          "category": "Identity",
+          "disqualify": [
+            "No Kids"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Are you more of a morning person or night owl?",
+          "in": [
+            "Night Owl"
+          ],
+          "category": "Identity",
+          "disqualify": [
+            "Morning Person"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "How often do you volunteer in your community?",
+          "in": [
+            "Monthly",
+            "Weekly"
+          ],
+          "category": "Values",
+          "disqualify": [
+            "Never",
+            "Once A Year",
+            "Quarterly"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Do you actively follow scientific research?",
+          "in": [
+            "Yes",
+            "Occasionally"
+          ],
+          "category": "Values",
+          "disqualify": [
+            "No"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Which generation were you born into?",
+          "in": [
+            "Boomer",
+            "Gen X",
+            "Millennial",
+            "Gen Z",
+            "Gen Alpha"
+          ],
+          "category": "Identity"
+        },
+        {
+          "type": "insight",
+          "question": "How often do you follow politics?",
+          "in": [
+            "Daily",
+            "Weekly"
+          ],
+          "category": "Values",
+          "disqualify": [
+            "Elections",
+            "Never"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "How often do you follow geopolitics?",
+          "in": [
+            "Daily",
+            "Weekly"
+          ],
+          "category": "Values",
+          "disqualify": [
+            "Occasionally",
+            "Never"
+          ]
+        }
+      ],
+      "boost_signals": [],
+      "cooldown_days": 30
+    },
+    "join_logic": {
+      "auto_join": false,
+      "approval_dialog": "You\u2019ve unlocked Community Builders. Join to see who\u2019s active today?"
+    },
+    "active_membership": {
+      "active_window_hours": 24
+    },
+    "home_feed": {
+      "unlock_reasons": [
+        "brings people together",
+        "kindness-forward",
+        "values shared"
+      ]
+    },
+    "visuals": {
+      "emoji": "\ud83e\udd1d",
+      "accent_color": "#7C3AED"
+    },
+    "priority": 58,
+    "exclusions": [],
+    "moderation": {
+      "avoid_terms": []
+    },
+    "analytics": {
+      "track": [
+        "joins",
+        "active_members",
+        "gift_opens",
+        "click_throughs"
+      ]
+    }
+  },
+  {
+    "id": "night_owls_early_birds",
+    "label": "Night Owls & Early Birds",
+    "blurb": "For rhythms, routines, and the people who honor them.",
+    "unlock_rules": {
+      "min_signals": 1,
+      "signals": [
+        {
+          "type": "insight",
+          "question": "Do you have any pets?",
+          "in": [
+            "Dog",
+            "Cat",
+            "Multiple Pets",
+            "Exotic Pet"
+          ],
+          "category": "Lifestyle",
+          "disqualify": [
+            "No Pets"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Do you actively care for plants?",
+          "in": [
+            "A Few Houseplants",
+            "Many Houseplants",
+            "Small Garden",
+            "Large Garden"
+          ],
+          "category": "Lifestyle",
+          "disqualify": [
+            "No Plants"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "How often do you update decor in your living space?",
+          "in": [
+            "Yearly",
+            "Seasonally",
+            "Monthly"
+          ],
+          "category": "Lifestyle",
+          "disqualify": [
+            "Never",
+            "Every Few Years"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Do you have a dog?",
+          "in": [
+            "Yes",
+            "Planning"
+          ],
+          "category": "Lifestyle",
+          "disqualify": [
+            "No"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Do you have a cat?",
+          "in": [
+            "Yes",
+            "Planning"
+          ],
+          "category": "Lifestyle",
+          "disqualify": [
+            "No"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Do you take on DIY home projects?",
+          "in": [
+            "Frequently",
+            "Sometimes"
+          ],
+          "category": "Lifestyle",
+          "disqualify": [
+            "Rarely",
+            "Never"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Do you follow astrology?",
+          "in": [
+            "Yes",
+            "Casual"
+          ],
+          "category": "Lifestyle",
+          "disqualify": [
+            "Rarely",
+            "No"
+          ]
+        }
+      ],
+      "boost_signals": [],
+      "cooldown_days": 30
+    },
+    "join_logic": {
+      "auto_join": false,
+      "approval_dialog": "You\u2019ve unlocked Night Owls & Early Birds. Join to see who\u2019s active today?"
+    },
+    "active_membership": {
+      "active_window_hours": 24
+    },
+    "home_feed": {
+      "unlock_reasons": [
+        "morning person",
+        "night owl",
+        "routine-minded"
+      ]
+    },
+    "visuals": {
+      "emoji": "\ud83c\udf05",
+      "accent_color": "#FB7185"
+    },
+    "priority": 55,
+    "exclusions": [],
+    "moderation": {
+      "avoid_terms": []
+    },
+    "analytics": {
+      "track": [
+        "joins",
+        "active_members",
+        "gift_opens",
+        "click_throughs"
+      ]
+    }
+  },
+  {
+    "id": "regional_local_ties",
+    "label": "Regional/Local Ties",
+    "blurb": "For neighbors, hometown roots, and regional pride.",
+    "unlock_rules": {
+      "min_signals": 2,
+      "signals": [
+        {
+          "type": "icebreaker",
+          "question_key": "q13_continent",
+          "in": [
+            "North America",
+            "South America",
+            "Europe",
+            "Africa",
+            "Asia",
+            "Oceania"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Which continent do you live in?",
+          "in": [
+            "North America",
+            "South America",
+            "Europe",
+            "Africa",
+            "Asia",
+            "Oceania",
+            "Antarctica"
+          ],
+          "category": "Location"
+        },
+        {
+          "type": "insight",
+          "question": "Which country in North America is home for you?",
+          "in": [
+            "United States"
+          ],
+          "category": "Location",
+          "disqualify": [
+            "Canada",
+            "Mexico",
+            "Other NA"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Which US region is home for you?",
+          "in": [
+            "Northeast",
+            "Midwest",
+            "South",
+            "West",
+            "Territories"
+          ],
+          "category": "Location"
+        },
+        {
+          "type": "insight",
+          "question": "Which state in the Northeast do you live in?",
+          "in": [
+            "Maine",
+            "New Hampshire",
+            "Vermont",
+            "Massachusetts",
+            "Rhode Island",
+            "Connecticut",
+            "New York",
+            "New Jersey",
+            "Pennsylvania"
+          ],
+          "category": "Location"
+        },
+        {
+          "type": "insight",
+          "question": "Which state in the Midwest do you live in?",
+          "in": [
+            "Ohio",
+            "Michigan",
+            "Indiana",
+            "Illinois",
+            "Wisconsin",
+            "Minnesota",
+            "Iowa",
+            "Missouri",
+            "North Dakota",
+            "South Dakota",
+            "Nebraska",
+            "Kansas"
+          ],
+          "category": "Location"
+        },
+        {
+          "type": "insight",
+          "question": "Which state in the South do you live in?",
+          "in": [
+            "Delaware",
+            "Maryland",
+            "Virginia",
+            "West Virginia",
+            "Kentucky",
+            "North Carolina",
+            "South Carolina",
+            "Tennessee",
+            "Georgia",
+            "Florida",
+            "Alabama",
+            "Mississippi"
+          ],
+          "category": "Location"
+        },
+        {
+          "type": "insight",
+          "question": "Which state in the West do you live in?",
+          "in": [
+            "Alaska",
+            "Washington",
+            "Oregon",
+            "California",
+            "Nevada",
+            "Idaho",
+            "Montana",
+            "Wyoming",
+            "Utah",
+            "Colorado",
+            "Arizona",
+            "New Mexico"
+          ],
+          "category": "Location"
+        },
+        {
+          "type": "insight",
+          "question": "Which US territory do you live in?",
+          "in": [
+            "Puerto Rico",
+            "Guam",
+            "USVI",
+            "American Samoa",
+            "Northern Mariana"
+          ],
+          "category": "Location"
+        }
+      ],
+      "boost_signals": [],
+      "cooldown_days": 30
+    },
+    "join_logic": {
+      "auto_join": false,
+      "approval_dialog": "You\u2019ve unlocked Regional/Local Ties. Join to see who\u2019s active today?"
+    },
+    "active_membership": {
+      "active_window_hours": 24
+    },
+    "home_feed": {
+      "unlock_reasons": [
+        "local pride",
+        "regional roots",
+        "nearby neighbor"
+      ]
+    },
+    "visuals": {
+      "emoji": "\ud83d\udccd",
+      "accent_color": "#DC2626"
+    },
+    "priority": 52,
+    "exclusions": [],
+    "moderation": {
+      "avoid_terms": []
+    },
+    "analytics": {
+      "track": [
+        "joins",
+        "active_members",
+        "gift_opens",
+        "click_throughs"
+      ]
+    }
+  },
+  {
+    "id": "dreamers_ambition_seekers",
+    "label": "Dreamers & Ambition Seekers",
+    "blurb": "For goals, growth, and optimistic momentum.",
+    "unlock_rules": {
+      "min_signals": 1,
+      "signals": [
+        {
+          "type": "insight",
+          "question": "Do you have any pets?",
+          "in": [
+            "Dog",
+            "Cat",
+            "Multiple Pets",
+            "Exotic Pet"
+          ],
+          "category": "Lifestyle",
+          "disqualify": [
+            "No Pets"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Do you actively care for plants?",
+          "in": [
+            "A Few Houseplants",
+            "Many Houseplants",
+            "Small Garden",
+            "Large Garden"
+          ],
+          "category": "Lifestyle",
+          "disqualify": [
+            "No Plants"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "How often do you update decor in your living space?",
+          "in": [
+            "Yearly",
+            "Seasonally",
+            "Monthly"
+          ],
+          "category": "Lifestyle",
+          "disqualify": [
+            "Never",
+            "Every Few Years"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "How often do you volunteer in your community?",
+          "in": [
+            "Monthly",
+            "Weekly"
+          ],
+          "category": "Values",
+          "disqualify": [
+            "Never",
+            "Once A Year",
+            "Quarterly"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Do you have a dog?",
+          "in": [
+            "Yes",
+            "Planning"
+          ],
+          "category": "Lifestyle",
+          "disqualify": [
+            "No"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Do you have a cat?",
+          "in": [
+            "Yes",
+            "Planning"
+          ],
+          "category": "Lifestyle",
+          "disqualify": [
+            "No"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Do you actively follow scientific research?",
+          "in": [
+            "Yes",
+            "Occasionally"
+          ],
+          "category": "Values",
+          "disqualify": [
+            "No"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Do you take on DIY home projects?",
+          "in": [
+            "Frequently",
+            "Sometimes"
+          ],
+          "category": "Lifestyle",
+          "disqualify": [
+            "Rarely",
+            "Never"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Do you follow astrology?",
+          "in": [
+            "Yes",
+            "Casual"
+          ],
+          "category": "Lifestyle",
+          "disqualify": [
+            "Rarely",
+            "No"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "How often do you follow politics?",
+          "in": [
+            "Daily",
+            "Weekly"
+          ],
+          "category": "Values",
+          "disqualify": [
+            "Elections",
+            "Never"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "How often do you follow geopolitics?",
+          "in": [
+            "Daily",
+            "Weekly"
+          ],
+          "category": "Values",
+          "disqualify": [
+            "Occasionally",
+            "Never"
+          ]
+        }
+      ],
+      "boost_signals": [],
+      "cooldown_days": 30
+    },
+    "join_logic": {
+      "auto_join": false,
+      "approval_dialog": "You\u2019ve unlocked Dreamers & Ambition Seekers. Join to see who\u2019s active today?"
+    },
+    "active_membership": {
+      "active_window_hours": 24
+    },
+    "home_feed": {
+      "unlock_reasons": [
+        "goal oriented",
+        "optimistic",
+        "growth mindset"
+      ]
+    },
+    "visuals": {
+      "emoji": "\u2728",
+      "accent_color": "#A855F7"
+    },
+    "priority": 49,
+    "exclusions": [],
+    "moderation": {
+      "avoid_terms": []
+    },
+    "analytics": {
+      "track": [
+        "joins",
+        "active_members",
+        "gift_opens",
+        "click_throughs"
+      ]
+    }
+  },
+  {
+    "id": "outdoors_nature",
+    "label": "Outdoors & Nature",
+    "blurb": "For hiking trails, campfires, and fresh air.",
+    "unlock_rules": {
+      "min_signals": 1,
+      "signals": [
+        {
+          "type": "insight",
+          "question": "Do you have any pets?",
+          "in": [
+            "Dog",
+            "Cat",
+            "Multiple Pets",
+            "Exotic Pet"
+          ],
+          "category": "Lifestyle",
+          "disqualify": [
+            "No Pets"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Do you actively care for plants?",
+          "in": [
+            "A Few Houseplants",
+            "Many Houseplants",
+            "Small Garden",
+            "Large Garden"
+          ],
+          "category": "Lifestyle",
+          "disqualify": [
+            "No Plants"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "How often do you update decor in your living space?",
+          "in": [
+            "Yearly",
+            "Seasonally",
+            "Monthly"
+          ],
+          "category": "Lifestyle",
+          "disqualify": [
+            "Never",
+            "Every Few Years"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Do you have a dog?",
+          "in": [
+            "Yes",
+            "Planning"
+          ],
+          "category": "Lifestyle",
+          "disqualify": [
+            "No"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Do you have a cat?",
+          "in": [
+            "Yes",
+            "Planning"
+          ],
+          "category": "Lifestyle",
+          "disqualify": [
+            "No"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Do you take on DIY home projects?",
+          "in": [
+            "Frequently",
+            "Sometimes"
+          ],
+          "category": "Lifestyle",
+          "disqualify": [
+            "Rarely",
+            "Never"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Do you follow astrology?",
+          "in": [
+            "Yes",
+            "Casual"
+          ],
+          "category": "Lifestyle",
+          "disqualify": [
+            "Rarely",
+            "No"
+          ]
+        }
+      ],
+      "boost_signals": [],
+      "cooldown_days": 30
+    },
+    "join_logic": {
+      "auto_join": false,
+      "approval_dialog": "You\u2019ve unlocked Outdoors & Nature. Join to see who\u2019s active today?"
+    },
+    "active_membership": {
+      "active_window_hours": 24
+    },
+    "home_feed": {
+      "unlock_reasons": [
+        "hiker",
+        "camper",
+        "nature lover"
+      ]
+    },
+    "visuals": {
+      "emoji": "\ud83c\udfd5\ufe0f",
+      "accent_color": "#22C55E"
+    },
+    "priority": 46,
+    "exclusions": [],
+    "moderation": {
+      "avoid_terms": []
+    },
+    "analytics": {
+      "track": [
+        "joins",
+        "active_members",
+        "gift_opens",
+        "click_throughs"
+      ]
+    }
+  },
+  {
+    "id": "casual_socializers",
+    "label": "Casual Socializers",
+    "blurb": "For the chill moments\u2014hangouts, games, and low-pressure fun.",
+    "unlock_rules": {
+      "min_signals": 1,
+      "signals": [
+        {
+          "type": "insight",
+          "question": "How many anime series do you watch each year?",
+          "in": [
+            "3\u20115",
+            "6\u201110",
+            "10+"
+          ],
+          "category": "Entertainment",
+          "disqualify": [
+            "None",
+            "1\u20112"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Do you have any pets?",
+          "in": [
+            "Dog",
+            "Cat",
+            "Multiple Pets",
+            "Exotic Pet"
+          ],
+          "category": "Lifestyle",
+          "disqualify": [
+            "No Pets"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Do you actively care for plants?",
+          "in": [
+            "A Few Houseplants",
+            "Many Houseplants",
+            "Small Garden",
+            "Large Garden"
+          ],
+          "category": "Lifestyle",
+          "disqualify": [
+            "No Plants"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "How often do you update decor in your living space?",
+          "in": [
+            "Yearly",
+            "Seasonally",
+            "Monthly"
+          ],
+          "category": "Lifestyle",
+          "disqualify": [
+            "Never",
+            "Every Few Years"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "How often do you follow celebrity or entertainment news?",
+          "in": [
+            "Weekly",
+            "Daily"
+          ],
+          "category": "Entertainment",
+          "disqualify": [
+            "Never",
+            "Rarely",
+            "Monthly"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Do you have a dog?",
+          "in": [
+            "Yes",
+            "Planning"
+          ],
+          "category": "Lifestyle",
+          "disqualify": [
+            "No"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Do you have a cat?",
+          "in": [
+            "Yes",
+            "Planning"
+          ],
+          "category": "Lifestyle",
+          "disqualify": [
+            "No"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Do you take on DIY home projects?",
+          "in": [
+            "Frequently",
+            "Sometimes"
+          ],
+          "category": "Lifestyle",
+          "disqualify": [
+            "Rarely",
+            "Never"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "How often do you watch esports?",
+          "in": [
+            "Frequent",
+            "Occasional"
+          ],
+          "category": "Entertainment",
+          "disqualify": [
+            "Rare",
+            "Never"
+          ]
+        },
+        {
+          "type": "insight",
+          "question": "Do you follow astrology?",
+          "in": [
+            "Yes",
+            "Casual"
+          ],
+          "category": "Lifestyle",
+          "disqualify": [
+            "Rarely",
+            "No"
+          ]
+        }
+      ],
+      "boost_signals": [],
+      "cooldown_days": 30
+    },
+    "join_logic": {
+      "auto_join": false,
+      "approval_dialog": "You\u2019ve unlocked Casual Socializers. Join to see who\u2019s active today?"
+    },
+    "active_membership": {
+      "active_window_hours": 24
+    },
+    "home_feed": {
+      "unlock_reasons": [
+        "likes to hang",
+        "movie night",
+        "game night"
+      ]
+    },
+    "visuals": {
+      "emoji": "\ud83d\udecb\ufe0f",
+      "accent_color": "#60A5FA"
+    },
+    "priority": 43,
+    "exclusions": [],
+    "moderation": {
+      "avoid_terms": []
+    },
+    "analytics": {
+      "track": [
+        "joins",
+        "active_members",
+        "gift_opens",
+        "click_throughs"
+      ]
+    }
+  }
+]

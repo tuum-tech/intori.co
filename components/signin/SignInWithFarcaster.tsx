@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useCallback, useState, useEffect } from 'react'
 import { getCsrfToken, signIn, signOut } from "next-auth/react"
 import {
@@ -6,65 +8,68 @@ import {
   StatusAPIResponse
 } from "@farcaster/auth-kit"
 import "@farcaster/auth-kit/styles.css"
-import { authKitConfig } from '../../utils/farcaster'
+import { getAuthKitConfig } from '../../utils/farcaster'
 
 import styles from './SignInWithFarcaster.module.css'
 
 type Props = {
   redirect?: string
 }
+
 export const SignInWithFarcasterButton: React.FC<Props> = ({ redirect }) => {
-    const [error, setError] = useState(false)
+  const [error, setError] = useState(false)
+  const [authKitConfig, setAuthKitConfig] = useState<any>(null)
 
-    // A nonce ensures that each authentication request is unique.
-    // It prevents attackers from capturing a valid authentication request and replaying
-    // it to gain unauthorized access, because replaying the request with the same nonce
-    // would immediately be flagged as invalid by the system.
-    const getNonce = useCallback(async () => {
-        const nonce = await getCsrfToken()
+  // Build config only on client
+  useEffect(() => {
+    setAuthKitConfig(getAuthKitConfig())
+  }, [])
 
-        if (!nonce) {
-          throw new Error("Unable to generate nonce")
-        }
+  const getNonce = useCallback(async () => {
+    const nonce = await getCsrfToken()
+    if (!nonce) {
+      throw new Error("Unable to generate nonce")
+    }
+    return nonce
+  }, [])
 
-        return nonce
-    }, [])
+  const handleSuccess = useCallback(
+    async (res: StatusAPIResponse) => {
+      await signIn("credentials", {
+        message: res.message,
+        signature: res.signature,
+        name: res.username,
+        pfp: res.pfpUrl,
+        redirect: false,
+      })
 
-    const handleSuccess = useCallback(
-        async (res: StatusAPIResponse) => {
-            await signIn("credentials", {
-                message: res.message,
-                signature: res.signature,
-                name: res.username,
-                pfp: res.pfpUrl,
-                redirect: false,
-            })
+      window.location.href = redirect ?? "/dashboard"
+    },
+    [redirect]
+  )
 
-          window.location.href = redirect ?? "/dashboard"
-        },
-        [redirect]
-    )
+  useEffect(() => {
+    const buttonElement = document.querySelectorAll('.fc-authkit-signin-button button')
+    for (let i = 0; i < buttonElement.length; i++) {
+      (buttonElement[i] as HTMLButtonElement).innerText = 'Sign in with Farcaster'
+    }
+  }, [])
 
-    useEffect(() => {
-      const buttonElement = document.querySelectorAll('.fc-authkit-signin-button button');
+  // Don't render until config is ready
+  if (!authKitConfig) return null
 
-      for (let i = 0; i < buttonElement.length; i++) {
-        (buttonElement[i] as HTMLButtonElement).innerText = 'Sign in with Farcaster';
-      }
-    }, [])
-
-    return (
-      <div className={styles.farcasterButton}>
-        <AuthKitProvider config={authKitConfig}>
-          <SignInButton
-            nonce={getNonce}
-            onSuccess={handleSuccess}
-            onError={() => setError(true)}
-            onSignOut={() => signOut() }
-          />
-          {error && <div>Unable to sign in at this time.</div>}
-        </AuthKitProvider>
-      </div>
-    )
+  return (
+    <div className={styles.farcasterButton}>
+      <AuthKitProvider config={authKitConfig}>
+        <SignInButton
+          nonce={getNonce}
+          onSuccess={handleSuccess}
+          onError={() => setError(true)}
+          onSignOut={() => signOut()}
+        />
+        {error && <div>Unable to sign in at this time.</div>}
+      </AuthKitProvider>
+    </div>
+  )
 }
 
