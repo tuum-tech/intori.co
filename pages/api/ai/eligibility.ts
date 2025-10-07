@@ -1,18 +1,11 @@
 // pages/api/ai/eligibility.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/prisma";
-import { evaluateEligibility } from "@/lib/ai/eligibility";
-
-type UnlockSignal =
-  | { type: "icebreaker"; question_key: string; in?: string[]; not_in?: string[] }
-  | { type: "topic"; topic: string }
-  | { type: "answer"; question: string; in?: string[]; not_in?: string[] };
-
-type UnlockRules = {
-  min_signals?: number;
-  boost_signals?: number;
-  signals?: UnlockSignal[];
-};
+// ⬇️ Import the actual types from your lib to keep TS consistent
+import {
+  evaluateEligibility,
+  type UnlockRules as EligibilityUnlockRules,
+} from "@/lib/ai/eligibility";
 
 type Data =
   | {
@@ -49,13 +42,21 @@ export default async function handler(
 
   try {
     const clusters = await prisma.cluster.findMany({
-      select: { id: true, slug: true, label: true, priority: true, unlockRules: true },
+      select: {
+        id: true,
+        slug: true,
+        label: true,
+        priority: true,
+        unlockRules: true,
+      },
       orderBy: [{ priority: "desc" }, { label: "asc" }],
     });
 
     const results = clusters.map((c) => {
-      const rules = (c.unlockRules || {}) as UnlockRules;
+      // Use the lib’s type to satisfy TS
+      const rules = (c.unlockRules || {}) as EligibilityUnlockRules;
       const evalResult = evaluateEligibility(answers as any, rules);
+
       return {
         id: c.id,
         slug: c.slug,
@@ -68,7 +69,7 @@ export default async function handler(
     });
 
     return res.status(200).json({ ok: true, fid, results });
-  } catch (e: any) {
+  } catch (e) {
     console.error("eligibility route error:", e);
     return res.status(500).json({ ok: false, error: "Internal error" });
   }
