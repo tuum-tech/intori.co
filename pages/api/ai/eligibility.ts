@@ -1,42 +1,75 @@
+// pages/api/ai/eligibility.ts
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import { evaluateEligibility } from "@/lib/ai/eligibility";
 
-const prisma = new PrismaClient();
+type UnlockSignal =
+  | { type: "icebreaker"; question_key: string; in?: string[]; not_in?: string[] }
+  | { type: "topic"; topic: string }
+  | { type: "answer"; question: string; in?: string[]; not_in?: string[] };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+type UnlockRules = {
+  min_signals?: number;
+  boost_signals?: number;
+  signals?: UnlockSignal[];
+};
+
+type Data =
+  | {
+      ok: true;
+      fid: number;
+      results: Array<{
+        id: string;
+        slug: string;
+        label: string;
+        priority: number;
+        eligible: boolean;
+        qualifying: number;
+        score: number;
+      }>;
+    }
+  | { ok: false; error: string };
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<Data>
+) {
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Use POST" });
+    return res.status(405).json({ ok: false, error: "Method Not Allowed" });
+  }
+
+  const { fid, answers } = req.body as {
+    fid?: number;
+    answers?: unknown;
+  };
+
+  if (!fid || typeof fid !== "number") {
+    return res.status(400).json({ ok: false, error: "Missing or invalid fid" });
   }
 
   try {
-    const payload = (req.body ?? {}) as {
-      icebreakers?: Record<string, string>;
-      insights?: Array<{ question: string; answer: string }>;
-    };
-
     const clusters = await prisma.cluster.findMany({
-      orderBy: [{ priority: "desc" }, { slug: "asc" }],
-      // select minimal fields to keep payload small
-      select: { slug: true, label: true, priority: true, unlockRules: true },
+      select: { id: true, slug: true, label: true, priority: true, unlockRules: true },
+      orderBy: [{ priority: "desc" }, { label: "asc" }],
     });
 
     const results = clusters.map((c) => {
-      const rules = (c.unlockRules ?? {}) as any;
-      const r = evaluateEligibility(payload, rules);
+      const rules = (c.unlockRules || {}) as UnlockRules;
+      const evalResult = evaluateEligibility(answers as any, rules);
       return {
-        id: c.slug,
+        id: c.id,
+        slug: c.slug,
         label: c.label,
         priority: c.priority ?? 0,
-        eligible: r.eligible,
-        qualifying: r.qualifying,
-        score: r.score,
+        eligible: evalResult.eligible,
+        qualifying: evalResult.qualifying,
+        score: evalResult.score,
       };
     });
 
-    res.status(200).json({ ok: true, count: results.length, results });
-  } catch (err) {
-    console.error("eligibility error", err);
-    res.status(500).json({ ok: false, error: "Internal error" });
+    return res.status(200).json({ ok: true, fid, results });
+  } catch (e: any) {
+    console.error("eligibility route error:", e);
+    return res.status(500).json({ ok: false, error: "Internal error" });
   }
 }
