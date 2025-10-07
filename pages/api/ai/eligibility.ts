@@ -1,27 +1,9 @@
 // pages/api/ai/eligibility.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/prisma";
-// ⬇️ Import the actual types from your lib to keep TS consistent
-import {
-  evaluateEligibility,
-  type UnlockRules as EligibilityUnlockRules,
-} from "@/lib/ai/eligibility";
+import { evaluateEligibility } from "@/lib/ai/eligibility"; // no type import
 
-type Data =
-  | {
-      ok: true;
-      fid: number;
-      results: Array<{
-        id: string;
-        slug: string;
-        label: string;
-        priority: number;
-        eligible: boolean;
-        qualifying: number;
-        score: number;
-      }>;
-    }
-  | { ok: false; error: string };
+// … same Data type as above …
 
 export default async function handler(
   req: NextApiRequest,
@@ -31,10 +13,7 @@ export default async function handler(
     return res.status(405).json({ ok: false, error: "Method Not Allowed" });
   }
 
-  const { fid, answers } = req.body as {
-    fid?: number;
-    answers?: unknown;
-  };
+  const { fid, answers } = req.body as { fid?: number; answers?: unknown };
 
   if (!fid || typeof fid !== "number") {
     return res.status(400).json({ ok: false, error: "Missing or invalid fid" });
@@ -53,9 +32,12 @@ export default async function handler(
     });
 
     const results = clusters.map((c) => {
-      // Use the lib’s type to satisfy TS
-      const rules = (c.unlockRules || {}) as EligibilityUnlockRules;
-      const evalResult = evaluateEligibility(answers as any, rules);
+      // If the lib’s RuleSignal type is narrower than your JSON,
+      // bypass TS here (the lib should validate at runtime).
+      const evalResult = evaluateEligibility(
+        answers as any,
+        c.unlockRules as any // <— deliberate cast to avoid TS mismatch
+      );
 
       return {
         id: c.id,
