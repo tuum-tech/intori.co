@@ -1,9 +1,23 @@
 // pages/api/ai/eligibility.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/prisma";
-import { evaluateEligibility } from "@/lib/ai/eligibility"; // no type import
+import { scoreEligibility } from "@/lib/ai/eligibility"; // returns a number
 
-// … same Data type as above …
+type Data =
+  | {
+      ok: true;
+      fid: number;
+      results: Array<{
+        id: string;
+        slug: string;
+        label: string;
+        priority: number;
+        eligible: boolean;   // derived from score >= min_signals
+        qualifying: number;  // equal to score
+        score: number;       // same as qualifying
+      }>;
+    }
+  | { ok: false; error: string };
 
 export default async function handler(
   req: NextApiRequest,
@@ -13,7 +27,10 @@ export default async function handler(
     return res.status(405).json({ ok: false, error: "Method Not Allowed" });
   }
 
-  const { fid, answers } = req.body as { fid?: number; answers?: unknown };
+  const { fid, answers } = req.body as {
+    fid?: number;
+    answers?: unknown;
+  };
 
   if (!fid || typeof fid !== "number") {
     return res.status(400).json({ ok: false, error: "Missing or invalid fid" });
@@ -32,21 +49,21 @@ export default async function handler(
     });
 
     const results = clusters.map((c) => {
-      // If the lib’s RuleSignal type is narrower than your JSON,
-      // bypass TS here (the lib should validate at runtime).
-      const evalResult = evaluateEligibility(
-        answers as any,
-        c.unlockRules as any // <— deliberate cast to avoid TS mismatch
-      );
+      const rules = (c.unlockRules || {}) as any;
+      const minSignals =
+        typeof rules?.min_signals === "number" ? rules.min_signals : 1;
+
+      // scoreEligibility(answers, rules) -> number of matching signals
+      const score = scoreEligibility(answers as any, rules);
 
       return {
         id: c.id,
         slug: c.slug,
         label: c.label,
         priority: c.priority ?? 0,
-        eligible: evalResult.eligible,
-        qualifying: evalResult.qualifying,
-        score: evalResult.score,
+        eligible: score >= minSignals, // derive eligibility from score
+        qualifying: score,             // keep both for UI/debug
+        score,
       };
     });
 
