@@ -1,23 +1,16 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 
-const prisma = new PrismaClient();
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== "GET") return res.status(405).json({ ok: false, error: "Method Not Allowed" });
 
-/**
- * GET /api/clusters/list
- * Returns a small list of clusters so we can copy a real clusterId.
- */
-export default async function handler(_req: NextApiRequest, res: NextApiResponse) {
   try {
     const clusters = await prisma.cluster.findMany({
-      select: { id: true, slug: true, label: true, priority: true, autoJoin: true },
-      orderBy: [{ priority: "desc" }, { label: "asc" }],
-      take: 50,
+      orderBy: { priority: "desc" },
     });
-
-    return res.status(200).json({ ok: true, count: clusters.length, clusters });
-  } catch (err: any) {
-    console.error("List clusters error:", err);
+    return res.json({ ok: true, clusters });
+  } catch (e) {
+    console.error("List clusters error:", e);
     return res.status(500).json({ ok: false, error: "Internal error" });
   }
 }

@@ -164,9 +164,8 @@ model UserProfile {
   power_badge     Boolean
   username        String
   bio             String
-  UserInsightLike UserInsightLike[]
-  
   clusters        UserCluster[]
+  UserInsightLike UserInsightLike[]
   summary         UserSummary?
 }
 
@@ -351,51 +350,47 @@ model UserMiscPreferences {
 }
 
 model Cluster {
-  id            String        @id @default(cuid())
-  slug          String        @unique
-  label         String
-  blurb         String?
-  emoji         String?
-  accentColor   String?
-  priority      Int           @default(0)
-  autoJoin      Boolean       @default(false)
-
-  unlockRules   Json
-  joinLogic     Json
-  activeHours   Int?          // default 24
-  homeFeed      Json?
-  moderation    Json?
-  analytics     Json?
-
-  memberships   UserCluster[]
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  id          String        @id @default(cuid())
+  slug        String        @unique
+  label       String
+  blurb       String?
+  emoji       String?
+  accentColor String?
+  priority    Int           @default(0)
+  autoJoin    Boolean       @default(false)
+  unlockRules Json
+  joinLogic   Json
+  activeHours Int?
+  homeFeed    Json?
+  moderation  Json?
+  analytics   Json?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  memberships UserCluster[]
 }
 
 model UserCluster {
-  userFid    Int
-  clusterId  String
-  joinedAt   DateTime   @default(now())
-  activeAt   DateTime?
-
-  user       UserProfile @relation(fields: [userFid], references: [fid])
-  cluster    Cluster     @relation(fields: [clusterId], references: [id])
+  userFid   Int
+  clusterId String
+  joinedAt  DateTime    @default(now())
+  activeAt  DateTime?
+  cluster   Cluster     @relation(fields: [clusterId], references: [id])
+  user      UserProfile @relation(fields: [userFid], references: [fid])
 
   @@id([userFid, clusterId])
 }
 
 model UserSummary {
-  userFid      Int      @id        // match UserProfile.fid type
-  summaryText  String
-  generatedAt  DateTime @default(now())
-  source       String   // "icebreakers_v1"
-
-  user         UserProfile @relation(fields: [userFid], references: [fid])
+  userFid     Int         @id
+  summaryText String
+  generatedAt DateTime    @default(now())
+  source      String
+  user        UserProfile @relation(fields: [userFid], references: [fid])
 }
 
 model FeedEvent {
   id        String   @id @default(cuid())
-  type      String   // friend_connected | insight_boosted | etc
+  type      String
   actorId   String?
   payload   Json
   createdAt DateTime @default(now())
