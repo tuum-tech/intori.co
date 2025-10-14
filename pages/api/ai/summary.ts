@@ -21,6 +21,33 @@ type Err = {
 const MODEL = process.env.INTORI_OPENAI_MODEL || "gpt-4o-mini";
 const SOURCE = "icebreakers_v1";
 
+function getErrorMessage(err: unknown): string {
+  if (err && typeof err === "object" && "message" in err) {
+    const m = (err as { message?: unknown }).message;
+    if (typeof m === "string") return m;
+  }
+  try {
+    return JSON.stringify(err);
+  } catch {
+    return String(err);
+  }
+}
+
+function getPrismaCode(err: unknown): string | undefined {
+  if (err && typeof err === "object" && "code" in err) {
+    const c = (err as { code?: unknown }).code;
+    if (typeof c === "string") return c;
+  }
+  if (err && typeof err === "object" && "meta" in err) {
+    const meta = (err as { meta?: unknown }).meta;
+    if (meta && typeof meta === "object" && "code" in meta) {
+      const mc = (meta as { code?: unknown }).code;
+      if (typeof mc === "string") return mc;
+    }
+  }
+  return undefined;
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Ok | Err>
@@ -70,14 +97,13 @@ export default async function handler(
       resp.choices?.[0]?.message?.content?.trim() ||
       "This person has a friendly, balanced vibe and a variety of interests.";
 
-    // If this is a dry-run, don't persist—just return the text.
     if (dryRun) {
       return res
         .status(200)
         .json({ ok: true, fid: fidNum, summary, source: SOURCE, saved: false });
     }
 
-    // Try to persist the summary. If the table isn't there yet, return saved:false.
+    // Try to persist; if the table isn't present yet, return saved:false.
     try {
       await prisma.userSummary.upsert({
         where: { userFid: fidNum },
@@ -88,12 +114,9 @@ export default async function handler(
       return res
         .status(200)
         .json({ ok: true, fid: fidNum, summary, source: SOURCE, saved: true });
-    } catch (persistErr: any) {
-      const msg = String(persistErr?.message || "");
-      const code = (persistErr && (persistErr.code || persistErr.meta?.code)) as
-        | string
-        | undefined;
-
+    } catch (persistErr: unknown) {
+      const msg = getErrorMessage(persistErr);
+      const code = getPrismaCode(persistErr);
       const missingTable =
         code === "P2021" ||
         /does not exist/i.test(msg) ||
@@ -101,7 +124,6 @@ export default async function handler(
         /Table .*UserSummary.* does not exist/i.test(msg);
 
       if (missingTable) {
-        // Backend repo hasn’t deployed the migration yet—don’t fail the request.
         return res.status(200).json({
           ok: true,
           fid: fidNum,
@@ -110,14 +132,11 @@ export default async function handler(
           saved: false,
         });
       }
-      // Unknown persistence error—bubble up as 500 with details.
       console.error("summary persist error:", persistErr);
-      return res
-        .status(500)
-        .json({ ok: false, error: "Internal error", details: msg });
+      return res.status(500).json({ ok: false, error: "Internal error", details: msg });
     }
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : String(e);
+  } catch (e: unknown) {
+    const msg = getErrorMessage(e);
     console.error("summary route error:", e);
     return res.status(500).json({ ok: false, error: "Internal error", details: msg });
   }
