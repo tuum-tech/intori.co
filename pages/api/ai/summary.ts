@@ -9,7 +9,7 @@ type Ok = {
   fid: number;
   summary: string;
   source: string; // e.g., "icebreakers_v1"
-  saved: boolean;
+  saved: boolean; // false when table isn't available yet
 };
 
 type Err = {
@@ -70,26 +70,55 @@ export default async function handler(
       resp.choices?.[0]?.message?.content?.trim() ||
       "This person has a friendly, balanced vibe and a variety of interests.";
 
+    // If this is a dry-run, don't persist—just return the text.
     if (dryRun) {
       return res
         .status(200)
         .json({ ok: true, fid: fidNum, summary, source: SOURCE, saved: false });
     }
 
-    await prisma.userSummary.upsert({
-      where: { userFid: fidNum },
-      create: { userFid: fidNum, summaryText: summary, source: SOURCE },
-      update: { summaryText: summary, source: SOURCE, generatedAt: new Date() },
-    });
+    // Try to persist the summary. If the table isn't there yet, return saved:false.
+    try {
+      await prisma.userSummary.upsert({
+        where: { userFid: fidNum },
+        create: { userFid: fidNum, summaryText: summary, source: SOURCE },
+        update: { summaryText: summary, source: SOURCE, generatedAt: new Date() },
+      });
 
-    return res
-      .status(200)
-      .json({ ok: true, fid: fidNum, summary, source: SOURCE, saved: true });
+      return res
+        .status(200)
+        .json({ ok: true, fid: fidNum, summary, source: SOURCE, saved: true });
+    } catch (persistErr: any) {
+      const msg = String(persistErr?.message || "");
+      const code = (persistErr && (persistErr.code || persistErr.meta?.code)) as
+        | string
+        | undefined;
+
+      const missingTable =
+        code === "P2021" ||
+        /does not exist/i.test(msg) ||
+        /relation .*usersummary.* does not exist/i.test(msg) ||
+        /Table .*UserSummary.* does not exist/i.test(msg);
+
+      if (missingTable) {
+        // Backend repo hasn’t deployed the migration yet—don’t fail the request.
+        return res.status(200).json({
+          ok: true,
+          fid: fidNum,
+          summary,
+          source: SOURCE,
+          saved: false,
+        });
+      }
+      // Unknown persistence error—bubble up as 500 with details.
+      console.error("summary persist error:", persistErr);
+      return res
+        .status(500)
+        .json({ ok: false, error: "Internal error", details: msg });
+    }
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     console.error("summary route error:", e);
-    return res
-      .status(500)
-      .json({ ok: false, error: "Internal error", details: msg });
+    return res.status(500).json({ ok: false, error: "Internal error", details: msg });
   }
 }
