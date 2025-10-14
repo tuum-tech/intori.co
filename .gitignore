@@ -39,3 +39,6 @@ yarn-error.log*
 .env.development
 .env.production
 /pages/dev/**
+
+# Dashboard repo should never commit DB migrations
+prisma/migrations/
