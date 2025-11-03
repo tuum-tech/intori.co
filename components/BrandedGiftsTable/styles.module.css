@@ -1,0 +1,120 @@
+.brandedGiftsTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 32px;
+}
+
+.brandedGiftsTable thead th {
+  text-align: left;
+  color: grey;
+}
+
+.brandedGiftsTable tbody tr:nth-child(odd) {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.brandedGiftsTable tbody tr td {
+  padding: 8px 0;
+}
+
+.loadingContainer,
+.errorContainer,
+.emptyContainer {
+  text-align: center;
+  margin-top: 32px;
+  font-style: italic;
+}
+
+.loadingContainer,
+.emptyContainer {
+  color: #6c757d;
+}
+
+.errorContainer {
+  color: #dc3545;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 8px;
+}
+
+.approveButton {
+  background: #28a745;
+  border-color: #28a745;
+  color: #FFF;
+  font-size: 12px;
+  border-radius: 12px;
+  border: none;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.approveButton:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
+.rejectButton {
+  background: #dc2626;
+  border-color: #dc2626;
+  color: #FFF;
+  font-size: 12px;
+  border-radius: 12px;
+  border: none;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.rejectButton:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
+.pendingBadge {
+  background: #ffc107;
+  color: #212529;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.approvedBadge {
+  background: #28a745;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.rejectedBadge {
+  background: #dc3545;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.urlLink {
+  color: #9664FA;
+  text-decoration: none;
+}
+
+.urlLink:hover {
+  text-decoration: underline;
+}
+
+.messageCell {
+  max-width: 200px;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.statusOnly {
+  color: #6c757d;
+  font-style: italic;
+  font-size: 12px;
+}
