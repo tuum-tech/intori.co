@@ -50,11 +50,11 @@ model PointRecord {
   id                     String                @id
   fid                    Int
   points                 Int
-  pointsMultiplier       Int
   action                 PointRecordActionType
   relevantActionObjectId String?
   description            String
   createdAt              DateTime              @default(now())
+  pointsBeforeMigration  Int?
 }
 
 model Question {
@@ -361,6 +361,8 @@ enum PointRecordActionType {
   sentSuperGift
   openedSuperGift
   castShare
+  unlockedTopic
+  boostInsight
 }
 
 enum TypeOfGift {
@@ -388,4 +390,5 @@ enum IntoriPlusApplicationStatus {
   PENDING
   APPROVED
   REJECTED
+  INSUFFICIENT_BALANCE
 }
