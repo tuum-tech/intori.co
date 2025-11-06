@@ -2,22 +2,38 @@
   "name": "app.intori.co",
   "version": "0.1.0",
   "private": true,
+  "_scripts_note": "Scripts are grouped by purpose: lifecycle > quality > DB/Prisma > AI utilities > misc.",
   "scripts": {
+    "// lifecycle": "────────────────────────────────────",
     "dev": "next dev",
-    "build:frames": "npx tsx ./utils/frames/generateFrameImages.ts",
     "build": "next build",
     "start": "PORT=6868 next start",
+    "postinstall": "prisma generate --no-engine",
+
+    "// quality": "────────────────────────────────────",
     "lint": "next lint",
     "tsc": "tsc --noEmit",
+
+    "// db & prisma": "────────────────────────────────────",
     "db:pull": "prisma db pull && prisma generate --no-engine",
-    "_comment": "For vercel prod deployment for the TS build checks",
-    "postinstall": "prisma generate --no-engine"
+    "prisma:generate": "prisma generate",
+    "prisma:migrate:dev": "prisma migrate dev",
+    "prisma:studio": "prisma studio",
+    "seed:clusters": "node scripts/seedClusters.js",
+
+    "// ai utilities": "────────────────────────────────────",
+    "backfill:dry": "DRY_RUN=true INCLUDE_VIP=true MIN_ANSWERS=2 LIMIT=20 OFFSET=0 tsx -r dotenv/config scripts/backfillSummaries.ts",
+    "backfill:write": "DRY_RUN=false USE_PROD_DB=true INCLUDE_VIP=true MIN_ANSWERS=2 LIMIT=20 OFFSET=0 tsx -r dotenv/config scripts/backfillSummaries.ts",
+
+
+    "// misc": "────────────────────────────────────",
+    "build:frames": "npx tsx ./utils/frames/generateFrameImages.ts"
   },
   "dependencies": {
     "@farcaster/auth-kit": "^0.2.1",
     "@farcaster/hub-nodejs": "^0.11.10",
     "@neynar/nodejs-sdk": "^1.66.0",
-    "@prisma/client": "^6.7.0",
+    "@prisma/client": "^6.16.3",
     "@tanstack/react-query": "^5.73.3",
     "@tanstack/react-query-devtools": "^5.73.3",
     "@types/dotenv-safe": "^8.1.6",
@@ -36,6 +52,7 @@
     "next": "^14.2.2",
     "next-auth": "^4.24.7",
     "normalize.css": "^8.0.1",
+    "openai": "^6.2.0",
     "prisma": "^6.7.0",
     "react": "^18",
     "react-chartjs-2": "^5.2.0",
