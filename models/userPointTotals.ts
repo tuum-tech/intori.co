@@ -1,13 +1,29 @@
 import { prisma } from "@/prisma"
 
-export const getPointsTotalForFid = async (fid: number): Promise<string> => {
-  const total = await prisma.userPointTotals.findFirst({
-    where: { fid }
+export const getPointsTotalForFid = async (
+  fid: number,
+): Promise<string> => {
+  const mostRecentClaimTransactionRecord = await prisma.claimTransactionRecord.findFirst({
+    where: {
+      fid
+    },
+    orderBy: {
+      createdAt: "desc"
+    }
   })
 
-  if (!total) {
-    return "0"
-  }
+  const pointRecordsSinceLastClaim = await prisma.pointRecord.findMany({
+    where: {
+      AND: [
+        { fid },
+        {
+          createdAt: {
+            gt: mostRecentClaimTransactionRecord?.createdAt ?? new Date(0)
+          }
+        }
+      ]
+    }
+  })
 
-  return total.bigIntPoints.toString()
+  return pointRecordsSinceLastClaim.toString()
 }
