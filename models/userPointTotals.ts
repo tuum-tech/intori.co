@@ -25,5 +25,11 @@ export const getPointsTotalForFid = async (
     }
   })
 
-  return pointRecordsSinceLastClaim.toString()
+  const total = pointRecordsSinceLastClaim.reduce((acc, record) => acc + BigInt(record.points), BigInt(0))
+
+  if (total < BigInt(0)) {
+    return "0"
+  }
+
+  return total.toString()
 }
